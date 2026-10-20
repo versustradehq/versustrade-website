@@ -1,0 +1,13 @@
+name = "versustrade-rates"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+# Your website's address, so only your site can read the rates in a browser.
+# Use the exact origin, for example https://versustrade.com (no trailing slash).
+[vars]
+ALLOWED_ORIGIN = "https://YOURDOMAIN.com"
+
+# Run: wrangler kv namespace create RATES   then paste the id here.
+[[kv_namespaces]]
+binding = "RATES"
+id = "PASTE_KV_NAMESPACE_ID_HERE"
