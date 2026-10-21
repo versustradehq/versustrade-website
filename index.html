@@ -62,8 +62,8 @@ button{background:none;border:0;cursor:pointer}
 .hero-globe{position:relative;z-index:2;width:100%;max-width:540px;justify-self:end}
 .hero-globe canvas{width:100%;aspect-ratio:1;height:auto;display:block;cursor:grab;touch-action:pan-y;pointer-events:auto;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
 .hero-globe canvas.grab{cursor:grabbing}
-.hero-globe-cap{margin-top:-9%;text-align:center;font-size:clamp(17px,2vw,21px);font-weight:700;letter-spacing:-.015em;color:var(--text)}
-@media (max-width:899px){.hero-grid{grid-template-columns:minmax(0,1fr)}.hero-globe{justify-self:center;max-width:420px;margin-top:8px}.hero-copy{text-align:center}.hero-btns{margin-left:auto;margin-right:auto}}
+.hero .hero-globe-cap{margin-top:-11%;text-align:center;font-size:clamp(15px,1.7vw,18px);font-weight:400;letter-spacing:0;color:var(--text)}
+@media (max-width:899px){.hero-grid{grid-template-columns:minmax(0,1fr)}.hero-globe{justify-self:center;max-width:420px;margin-top:8px}.hero-copy{text-align:center}.hero-btns{justify-content:center}}
 @media (max-width:640px){.hero{padding:48px 0 40px}.hero h1{font-size:clamp(32px,9.4vw,52px)}}
 
 /* Floating chat button */
@@ -73,10 +73,10 @@ button{background:none;border:0;cursor:pointer}
 .fab.fab-hide{opacity:0;pointer-events:none;transform:scale(.8)}
 
 /* Hero buttons: glass red, same look as the Sign up button */
-.hero-btns{margin-top:36px;display:flex;flex-direction:column;gap:14px;max-width:520px}
-.hero-btn{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:20px 28px;font-size:19px;font-weight:700}
-.hero-btn svg{width:22px;height:22px;flex-shrink:0}
-@media (max-width:640px){.hero-btn{padding:18px 24px;font-size:18px}}
+.hero-btns{margin-top:30px;display:flex;flex-wrap:wrap;gap:12px}
+.btn.hero-btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:11px 22px;font-size:15px;font-weight:700}
+.hero-btn svg{width:18px;height:18px;flex-shrink:0}
+@media (max-width:560px){.hero-btns{flex-direction:column;gap:10px}.btn.hero-btn{width:100%;padding:11px 20px}}
 
 /* Stats band */
 .stats{background:linear-gradient(120deg,#0A0A0A 0%,#240A0E 55%,#6E0B16 100%);color:#fff}
@@ -100,6 +100,7 @@ section{padding:96px 0}
 h2{font-size:clamp(28px,4vw,40px);line-height:1.2;font-weight:900;letter-spacing:-.035em}
 .center{text-align:center}
 .lead{margin:16px auto 0;max-width:640px;color:var(--muted);font-size:17px}
+.trust-copy{max-width:680px;font-size:clamp(16px,2vw,19px);line-height:1.6}
 .lead a{color:var(--text);text-decoration:underline}
 
 /* Video */
@@ -117,10 +118,6 @@ h2{font-size:clamp(28px,4vw,40px);line-height:1.2;font-weight:900;letter-spacing
 :root[data-theme="dark"] .shield-light{display:none}
 :root[data-theme="dark"] .shield-dark{display:block}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .shield-light{display:none}:root:not([data-theme="light"]) .shield-dark{display:block}}
-.points{margin-top:56px;display:grid;grid-template-columns:repeat(4,1fr);gap:32px;max-width:1000px;margin-inline:auto}
-.points div{border-left:2px solid var(--red);padding-left:16px}
-.points b{display:block;font-size:17px;margin-bottom:6px;font-weight:900;letter-spacing:-.03em}
-.points p{font-size:14px;color:var(--muted)}
 
 /* Support */
 .side h2{font-size:clamp(28px,4vw,36px)}
@@ -274,7 +271,6 @@ main{position:relative;z-index:1;background:var(--bg)}
   .vt-logo img{height:28px}
   .vt-logo span{font-size:19px}
   .vt-signup{padding:8px 14px;font-size:13px}
-  .points{grid-template-columns:repeat(2,1fr)}
 }
 @media (max-width:640px){
   .wrap{padding:0 16px}
@@ -284,7 +280,6 @@ main{position:relative;z-index:1;background:var(--bg)}
   .strip .wrap>div{border-left:0;border-top:1px solid var(--line);padding:18px 0;text-align:center}
   .strip .wrap>div:first-child{border-top:0}
   .video{border-radius:16px}
-  .points{grid-template-columns:1fr}
 }
 @media (max-width:420px){.vt-logo span{font-size:17px}.vt-actions .vt-login{padding:8px 8px}.vt-bar{gap:6px}}
 @media (max-width:380px){.vt-actions .vt-login{display:none}}
@@ -514,13 +509,7 @@ main{position:relative;z-index:1;background:var(--bg)}
       <img class="shield shield-light" src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/SHIELD%20VERSUSTRADE.png" alt="VersusTrade shield" loading="lazy" decoding="async">
       <img class="shield shield-dark" src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/SHIELD%20VERSUSTRADE%20black%20%20background.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
       <h2>Built Around Trust</h2>
-      <p class="lead">Trading carries risk. We put the facts up front so you can decide with clear eyes. <a href="/legal/#risk">Read the risk disclosure</a></p>
-      <div class="points" style="text-align:left">
-        <div><b>Risk up front</b><p>Every market guide states what you can lose, not only what you can win.</p></div>
-        <div><b>Clear terms</b><p>Plain-language terms and privacy policy, one page each.</p></div>
-        <div><b>Education first</b><p>Blog guides explain the basics before you trade.</p></div>
-        <div><b>Humans on call</b><p>Reach a representative when the assistant is not enough.</p></div>
-      </div>
+      <p class="lead trust-copy">Digital assets move fast, and trust is what lets you move with confidence. At VersusTrade we keep our rates clear, our process simple and our team within reach, so you always know where you stand before you trade. Choose a brand that treats your trust as its most valuable asset.</p>
     </div>
   </section>
 
