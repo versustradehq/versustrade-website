@@ -50,6 +50,9 @@ button{background:none;border:0;cursor:pointer}
 .vt-icon{width:40px;justify-content:center}
 .vt-icon:hover{border-color:var(--red)}
 .vt-icon svg{width:18px;height:18px}
+/* Header: soft backdrop appears once the page scrolls, so text never shows between the pills */
+.vt-header::before{content:"";position:absolute;left:0;right:0;top:calc(-12px - env(safe-area-inset-top,0px));height:96px;z-index:-1;pointer-events:none;background:linear-gradient(to bottom,var(--bg) 0,color-mix(in srgb,var(--bg) 94%,transparent) 55%,transparent);opacity:0;transition:opacity .25s}
+.vt-header.scrolled::before{opacity:1}
 .vt-menu{display:none}
 .vt-sheet{display:none;pointer-events:auto;position:absolute;left:24px;right:24px;top:64px;padding:8px;border-radius:20px;background:color-mix(in srgb,var(--bg) 88%,transparent);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid var(--line);box-shadow:0 12px 32px rgba(0,0,0,.14)}
 .vt-sheet.open{display:block}
@@ -64,6 +67,7 @@ button{background:none;border:0;cursor:pointer}
 
 
 /* Article */
+.vt-bar{max-width:1056px}
 .art-top{position:relative;overflow:hidden;padding:136px 0 0;background:
   radial-gradient(520px 260px at 10% 6%,color-mix(in srgb,#2BB673 22%,transparent),transparent 70%),
   radial-gradient(560px 260px at 70% 0%,color-mix(in srgb,var(--red) 18%,transparent),transparent 70%),var(--soft)}
@@ -88,7 +92,7 @@ button{background:none;border:0;cursor:pointer}
 .faq h3{margin-top:28px;font-size:18px;font-weight:700}
 .faq h3+p{margin-top:6px}
 .cta{max-width:1056px;margin:24px auto 72px;padding:0 24px}
-.cta-card{max-width:720px;padding:36px 28px;border:1px solid var(--line);border-radius:24px;text-align:center;background:linear-gradient(120deg,var(--bg) 30%,var(--red-tint))}
+.cta-card{padding:36px 28px;border:1px solid var(--line);border-radius:24px;text-align:center;background:linear-gradient(120deg,var(--bg) 30%,var(--red-tint))}
 .cta-card h2{font-size:24px;font-weight:900;letter-spacing:-.05em}
 .cta-card p{margin:10px auto 0;max-width:460px;color:var(--muted);font-size:15px}
 .btns{margin-top:24px;display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
@@ -399,6 +403,8 @@ $('fsub').addEventListener('submit', function (e) {
 var menuBtn = $('vtMenu'), sheet = $('vtSheet');
 menuBtn.addEventListener('click', function () { var o = sheet.classList.toggle('open'); menuBtn.setAttribute('aria-expanded', o ? 'true' : 'false'); });
 document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { sheet.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); } });
+// Header backdrop on scroll
+(function () { var h = document.getElementById('vtHeader'); if (!h) return; function f() { h.classList.toggle('scrolled', window.scrollY > 8); } f(); window.addEventListener('scroll', f, { passive: true }); })();
 try { var saved = localStorage.getItem('vt-theme'); if (saved) document.documentElement.setAttribute('data-theme', saved); } catch (x) {}
 $('vtTheme').addEventListener('click', function () {
   var r = document.documentElement, dark = r.getAttribute('data-theme') === 'dark' || (!r.getAttribute('data-theme') && matchMedia('(prefers-color-scheme:dark)').matches);
