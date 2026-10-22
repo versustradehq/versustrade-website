@@ -63,8 +63,14 @@ button{background:none;border:0;cursor:pointer}
 .hero-globe canvas{width:100%;aspect-ratio:1;height:auto;display:block;cursor:grab;touch-action:pan-y;pointer-events:auto;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
 .hero-globe canvas.grab{cursor:grabbing}
 .hero .hero-globe-cap{margin-top:-11%;text-align:center;font-size:clamp(13px,1.3vw,15px);font-weight:400;letter-spacing:0;color:var(--text)}
-@media (max-width:899px){.hero-grid{grid-template-columns:minmax(0,1fr)}.hero-globe{justify-self:center;max-width:420px;margin-top:8px}.hero-copy{text-align:center}.hero-btns{justify-content:center}}
+@media (max-width:899px){.hero-grid{grid-template-columns:minmax(0,1fr)}.hero-globe{justify-self:center;max-width:420px;margin-top:8px}.hero-copy{text-align:center}.hero-btns{margin-left:auto;margin-right:auto}}
 @media (max-width:640px){.hero{padding:48px 0 40px}.hero h1{font-size:clamp(32px,9.4vw,52px)}}
+
+/* Full-screen video pop-up */
+.vmodal{position:fixed;inset:0;z-index:1000;background:#000;display:grid;place-items:center}
+.vmodal video{width:100%;height:100%;object-fit:contain;background:#000}
+.vclose{position:absolute;top:max(12px,env(safe-area-inset-top));right:14px;z-index:2;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;font-size:28px;line-height:1;display:grid;place-items:center;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.vclose:hover{background:rgba(255,255,255,.28)}
 
 /* Floating chat button */
 .fab{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:90;width:58px;height:58px;display:grid;place-items:center;border-radius:50%;color:#fff;background:linear-gradient(145deg,#F0384A,#C9121F);box-shadow:0 10px 28px -6px rgba(225,29,46,.6),inset 0 1px 1px rgba(255,255,255,.4);transition:transform .25s,opacity .3s}
@@ -73,10 +79,10 @@ button{background:none;border:0;cursor:pointer}
 .fab.fab-hide{opacity:0;pointer-events:none;transform:scale(.8)}
 
 /* Hero buttons: glass red, same look as the Sign up button */
-.hero-btns{margin-top:30px;display:flex;flex-wrap:wrap;gap:12px}
+.hero-btns{margin-top:30px;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:12px;width:max-content;max-width:100%}
 .btn.hero-btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:11px 22px;font-size:15px;font-weight:700}
 .hero-btn svg{width:18px;height:18px;flex-shrink:0}
-@media (max-width:560px){.hero-btns{flex-direction:column;gap:10px}.btn.hero-btn{width:100%;padding:11px 20px}}
+@media (max-width:560px){.hero-btns{display:flex;flex-direction:column;gap:10px;width:100%}.btn.hero-btn{width:100%;padding:11px 20px}}
 
 /* Stats band */
 .stats{background:linear-gradient(120deg,#0A0A0A 0%,#240A0E 55%,#6E0B16 100%);color:#fff}
@@ -104,7 +110,9 @@ h2{font-size:clamp(28px,4vw,40px);line-height:1.2;font-weight:900;letter-spacing
 .lead a{color:var(--text);text-decoration:underline}
 
 /* Video */
-.video{margin-top:40px;position:relative;aspect-ratio:16/9;border-radius:24px;overflow:hidden;background:linear-gradient(135deg,#2a0b0f,var(--red-dark) 60%,var(--red));display:grid;place-items:center}
+.video{margin-top:40px;position:relative;aspect-ratio:16/9;border-radius:24px;overflow:hidden;cursor:pointer;background:var(--poster,none) center/cover no-repeat,linear-gradient(135deg,#2a0b0f,var(--red-dark) 60%,var(--red));display:grid;place-items:center}
+.video::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.35))}
+.video .play{position:relative}
 .video video,.video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .video video{background:#000;object-fit:contain}
 .play{width:76px;height:76px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 8px 30px rgba(0,0,0,.3);transition:transform .15s}
@@ -121,7 +129,7 @@ h2{font-size:clamp(28px,4vw,40px);line-height:1.2;font-weight:900;letter-spacing
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .shield-light{display:none}:root:not([data-theme="light"]) .shield-dark{display:block}}
 
 /* Support */
-.side h2{font-size:clamp(28px,4vw,36px)}
+.side h2{font-size:clamp(28px,4vw,36px);text-align:center}
 .card{margin-top:32px;border:1px solid var(--line);border-radius:24px;padding:48px 24px;text-align:center;background:linear-gradient(120deg,var(--bg) 30%,var(--red-tint))}
 .card h3{font-size:24px;font-weight:900;letter-spacing:-.03em}
 .card p{margin:10px auto 0;max-width:520px;color:var(--muted);font-size:15px}
@@ -210,6 +218,15 @@ h2{font-size:clamp(28px,4vw,40px);line-height:1.2;font-weight:900;letter-spacing
   .rt-grid>div:last-child{text-align:center}
   .rt-text{margin-left:auto;margin-right:auto}
 }
+
+/* Gift card call-to-action */
+.gc{padding:16px 0 0}
+.gc-card{max-width:960px;margin:0 auto;padding:56px 48px;border-radius:24px;color:#fff;background:radial-gradient(120% 150% at 12% 15%,#5E0F1A 0%,#260A0F 55%,#0B0B0B 100%)}
+.gc-h{font-size:clamp(28px,4.4vw,44px);line-height:1.15;font-weight:800;letter-spacing:-.025em;text-align:left}
+.gc-h span{color:#FF9AA4}
+.gc-btn{display:flex;align-items:center;justify-content:center;width:100%;max-width:420px;margin-top:32px;padding:18px 40px;border-radius:999px;background:#FFD9DD;color:#2A0A0F;font-size:18px;font-weight:700;transition:background .2s,transform .2s}
+.gc-btn:hover{background:#FFE9EB;transform:translateY(-2px)}
+@media (max-width:640px){.gc-card{padding:40px 24px}.gc-btn{max-width:none}}
 
 /* Cinematic footer: curtain reveal */
 main{position:relative;z-index:1;background:var(--bg)}
@@ -303,9 +320,11 @@ main{position:relative;z-index:1;background:var(--bg)}
 .tm-menu button{display:flex;width:100%;justify-content:space-between;gap:12px;padding:10px 12px;border-radius:10px;font-size:14px;font-weight:700;text-align:left}
 .tm-menu button small{color:var(--muted);font-weight:400}
 .tm-menu button:hover,.tm-menu button[aria-selected="true"]{background:var(--red-tint)}
-.tm-big{display:flex;align-items:baseline;justify-content:center;gap:6px;margin:48px 0 10px;min-height:74px;max-width:100%}
+.tm-big{display:flex;align-items:baseline;justify-content:center;gap:6px;margin:48px 0 10px;min-height:74px;max-width:100%;position:relative}
 .tm-sym,.tm-unit{font-size:32px;font-weight:900;color:var(--muted)}
-.tm-big input{border:0;background:none;outline:0;font-size:60px;font-weight:900;letter-spacing:-.04em;line-height:1.1;width:1.4ch;min-width:0;max-width:100%;color:var(--text);caret-color:var(--red);padding:0}
+.tm-big input,.tm-measure{font-size:60px;font-weight:900;letter-spacing:-.04em;line-height:1.1;font-family:inherit}
+.tm-big input{border:0;background:none;outline:0;width:1.4ch;min-width:0;max-width:100%;color:var(--text);caret-color:var(--red);padding:0;text-align:center}
+.tm-measure{position:absolute;left:0;top:0;visibility:hidden;white-space:pre;pointer-events:none}
 .tm-big input::placeholder{color:color-mix(in oklch,var(--text) 25%,transparent)}
 .tm-sub{display:flex;align-items:center;justify-content:center;gap:10px;font-weight:700;font-size:17px;color:var(--muted)}
 .tm-swapbtn{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--text)}
@@ -326,7 +345,7 @@ main{position:relative;z-index:1;background:var(--bg)}
 .tm-arow .tm-ico{width:46px;height:46px;font-size:18px}
 .tm-arow .nm{min-width:0}.tm-arow .nm b{display:block;font-size:16px}.tm-arow .nm small{color:var(--muted);font-size:14px}
 .tm-arow .apx{margin-left:auto;text-align:right;flex-shrink:0}.tm-arow .apx b{display:block;font-size:15px}.tm-arow .apx span{font-size:14px}
-@media (max-width:640px){.tm-big input{font-size:46px}.tm-sym,.tm-unit{font-size:26px}#tmTrade{min-height:520px}}
+@media (max-width:640px){.tm-big input,.tm-measure{font-size:46px}.tm-sym,.tm-unit{font-size:26px}#tmTrade{min-height:520px}}
 /* Border beam on the active Buy / Sell tab */
 .tm-tabs button{position:relative}
 .bb{--bb-size:64px;display:none;position:absolute;inset:0;border-radius:inherit;pointer-events:none;border:1.5px solid transparent;-webkit-mask:linear-gradient(transparent,transparent),linear-gradient(#000,#000);-webkit-mask-clip:padding-box,border-box;-webkit-mask-composite:destination-in;mask:linear-gradient(transparent,transparent),linear-gradient(#000,#000);mask-clip:padding-box,border-box;mask-composite:intersect}
@@ -371,9 +390,9 @@ main{position:relative;z-index:1;background:var(--bg)}
       <div class="hero-btns">
         <a class="btn red hero-btn" href="#markets">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>
-          Buy &amp; sell crypto
+          Buy &amp; Sell Crypto
         </a>
-        <a class="btn red hero-btn" href="https://wa.me/YOURNUMBER?text=Hi%20VersusTrade%2C%20I%20want%20to%20sell%20a%20gift%20card" target="_blank" rel="noopener">
+        <a class="btn red hero-btn" href="https://api.whatsapp.com/send?phone=2349015508108&amp;text=Hi%20VersusTrade%2C%20I%20want%20to%20sell%20a%20gift%20card" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg>
           Sell gift cards
         </a>
@@ -409,7 +428,7 @@ main{position:relative;z-index:1;background:var(--bg)}
     <div class="wrap">
       <div class="tm-grid">
         <div>
-          <h2 class="tm-h">Buy &amp; sell crypto</h2>
+          <h2 class="tm-h">Buy &amp; Sell Crypto</h2>
           <div class="tm-card" id="tmTrade">
             <div class="tm-tabs" role="tablist" aria-label="Order side">
               <button type="button" role="tab" id="tmBuyTab" aria-selected="true">Buy<span class="bb" aria-hidden="true"></span></button>
@@ -428,6 +447,7 @@ main{position:relative;z-index:1;background:var(--bg)}
             <div class="tm-big">
               <span class="tm-sym" id="tmSym">&#8358;</span>
               <input id="tmAmt" type="text" inputmode="decimal" placeholder="0" aria-label="Amount" autocomplete="off" maxlength="16">
+              <span class="tm-measure" id="tmMeasure" aria-hidden="true"></span>
               <span class="tm-unit" id="tmUnit" hidden>BTC</span>
             </div>
             <div class="tm-sub">
@@ -493,13 +513,22 @@ main{position:relative;z-index:1;background:var(--bg)}
     </div>
   </section>
 
+  <!-- Gift cards call-to-action -->
+  <section class="gc">
+    <div class="wrap">
+      <div class="gc-card">
+        <h2 class="gc-h">Ready to Start Trading <span>Gift Cards?</span></h2>
+        <a class="gc-btn" href="https://api.whatsapp.com/send?phone=2349015508108&amp;text=Hi%20VersusTrade%2C%20I%20want%20to%20sell%20a%20gift%20card" target="_blank" rel="noopener">Sell Now</a>
+      </div>
+    </div>
+  </section>
+
   <!-- Video -->
   <section>
     <div class="wrap">
       <h2 class="center">Hear What the CEO Has to Say</h2>
-      <div class="video" id="vtVideo" data-src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/VERSUSTRADE%20-ASSETS%20VS%20LIABILITY.mp4">
-        <button class="play" type="button" aria-label="Play video"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></button>
-        <small>Assets vs Liability</small>
+      <div class="video" id="vtVideo" data-src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/CEO.mp4" data-poster="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/FROM%20THE%20CEO.jpg" style="--poster:url('https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/FROM%20THE%20CEO.jpg')">
+        <button class="play" type="button" aria-label="Play the video from the CEO"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></button>
       </div>
     </div>
   </section>
@@ -523,14 +552,14 @@ main{position:relative;z-index:1;background:var(--bg)}
         <p>Not sure how to trade or stuck on a chart? Ask our assistant, or talk to a representative.</p>
         <div class="btns">
           <a class="btn red" href="/support/">Chat with us</a>
-          <a class="btn" href="https://wa.me/YOURNUMBER?text=Hi%20VersusTrade" target="_blank" rel="noopener">Chat on WhatsApp</a>
+          <a class="btn" href="https://api.whatsapp.com/send?phone=2349015508108&amp;text=Hi%20VersusTrade" target="_blank" rel="noopener">Chat on WhatsApp</a>
         </div>
       </div>
     </div>
   </section>
 </main>
 
-<a class="fab" id="vtFab" href="https://wa.me/YOURNUMBER?text=Hi%20VersusTrade" target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp">
+<a class="fab" id="vtFab" href="https://api.whatsapp.com/send?phone=2349015508108&amp;text=Hi%20VersusTrade" target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
 </a>
 
@@ -556,7 +585,7 @@ main{position:relative;z-index:1;background:var(--bg)}
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>
             Create free account
           </a>
-          <a class="cf-pill cf-mag lg" href="https://wa.me/YOURNUMBER?text=Hi%20VersusTrade" target="_blank" rel="noopener">
+          <a class="cf-pill cf-mag lg" href="https://api.whatsapp.com/send?phone=2349015508108&amp;text=Hi%20VersusTrade" target="_blank" rel="noopener">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
             Chat on WhatsApp
           </a>
@@ -687,22 +716,32 @@ main{position:relative;z-index:1;background:var(--bg)}
     c.addEventListener('pointerleave', function () { hovering = false; c.style.setProperty('--rx', '0deg'); c.style.setProperty('--ry', '0deg'); });
   })();
 
-  // "Watch this video" scrolls to the demo video and starts it
-  document.getElementById('rtWatch').addEventListener('click', function () {
-    var v = document.getElementById('vtVideo');
-    v.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    setTimeout(function () { var b = v.querySelector('.play'); if (b) b.click(); }, 400);
-  });
-  // Video: click to load the file or embed set in data-src
-  var v = document.getElementById('vtVideo');
-  v.querySelector('.play').addEventListener('click', function(){
-    var src = v.getAttribute('data-src'); if (!src) return;
-    var el = /youtube|vimeo/.test(src) ? document.createElement('iframe') : document.createElement('video');
-    el.src = src;
-    if (el.tagName === 'VIDEO') { el.controls = true; el.autoplay = true; el.playsInline = true; el.setAttribute('playsinline', ''); el.preload = 'auto'; el.setAttribute('aria-label', 'Video: Assets vs Liability'); }
-    else { el.allow = 'autoplay; fullscreen'; el.allowFullscreen = true; el.title = 'Video'; }
-    v.innerHTML = ''; v.appendChild(el);
-  });
+  // CEO video: tapping the poster (or "Watch this video") opens the video in a full-screen pop-up.
+  var v = document.getElementById('vtVideo'), box = null;
+  function closeVideo() {
+    if (!box) return;
+    var el = box.querySelector('video');
+    try { el.pause(); el.removeAttribute('src'); el.load(); } catch (e) {}
+    box.remove(); box = null; document.body.style.overflow = '';
+    if (document.fullscreenElement) { try { document.exitFullscreen(); } catch (e) {} }
+  }
+  function openVideo() {
+    var src = v.getAttribute('data-src'); if (!src || box) return;
+    box = document.createElement('div'); box.className = 'vmodal';
+    box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-label', 'Video from the CEO');
+    var x = document.createElement('button'); x.type = 'button'; x.className = 'vclose'; x.setAttribute('aria-label', 'Close video'); x.innerHTML = '&times;';
+    x.addEventListener('click', closeVideo);
+    var el = document.createElement('video');
+    el.src = src; el.poster = v.getAttribute('data-poster') || ''; el.controls = true; el.autoplay = true; el.preload = 'auto';
+    el.playsInline = true; el.setAttribute('playsinline', '');
+    box.appendChild(el); box.appendChild(x); document.body.appendChild(box); document.body.style.overflow = 'hidden';
+    try { var rf = box.requestFullscreen || box.webkitRequestFullscreen; if (rf) { var pr = rf.call(box); if (pr && pr.catch) pr.catch(function () {}); } } catch (e) {}
+    x.focus();
+  }
+  document.addEventListener('fullscreenchange', function () { if (!document.fullscreenElement && box) closeVideo(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeVideo(); });
+  v.addEventListener('click', openVideo);
+  document.getElementById('rtWatch').addEventListener('click', openVideo);
 })();
 </script>
 <script>
@@ -739,10 +778,16 @@ main{position:relative;z-index:1;background:var(--bg)}
       if (!(p > 0)) return;
       T[s] = { s: s, base: m.base, quote: m.quote, p: p, o: o, q: +(ws ? x.q : x.quoteVolume) };
     });
+    derive();
+  }
+  // USDT/USD has no market of its own: it is worked out from USDC/USDT (USDC is pegged 1:1 to the US dollar).
+  function derive() {
+    var u = T.USDCUSDT;
+    if (u && u.p > 0) T.USDTUSD = { s: 'USDTUSD', base: 'USDT', quote: 'USD', p: 1 / u.p, o: u.o > 0 ? 1 / u.o : 1 / u.p, q: u.q };
   }
   function chg(t) { return t.o > 0 ? (t.p - t.o) / t.o * 100 : 0; }
   function fn(x, d) { return x.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d }); }
-  function fp(p) { return fn(p, p >= 1000 ? 2 : p >= 1 ? 4 : p >= 0.01 ? 5 : 8); }
+  function fp(p) { return fn(p, p >= 1000 ? 2 : p >= 0.1 ? 4 : p >= 0.01 ? 5 : 8); }
   function fv(v) { return v >= 1e9 ? (v / 1e9).toFixed(2) + 'B' : v >= 1e6 ? (v / 1e6).toFixed(2) + 'M' : v >= 1e3 ? (v / 1e3).toFixed(2) + 'K' : v.toFixed(2); }
   function fc(c) { return (c >= 0 ? '+' : '') + c.toFixed(2) + '%'; }
   function ico(b) {
@@ -762,9 +807,10 @@ main{position:relative;z-index:1;background:var(--bg)}
   function loadSpark(s) {
     if (S[s] || P[s]) return;
     P[s] = 1;
-    fetch(API + '/api/v3/klines?symbol=' + s + '&interval=1h&limit=24')
+    var inv = s === 'USDTUSD'; // drawn from the USDC/USDT chart, flipped
+    fetch(API + '/api/v3/klines?symbol=' + (inv ? 'USDCUSDT' : s) + '&interval=1h&limit=24')
       .then(function (r) { return r.json(); })
-      .then(function (k) { S[s] = k.map(function (x) { return +x[4]; }); delete P[s]; drawMarkets(); })
+      .then(function (k) { S[s] = k.map(function (x) { return inv ? 1 / +x[4] : +x[4]; }); delete P[s]; drawMarkets(); })
       .catch(function () { S[s] = []; delete P[s]; });
   }
 
@@ -821,7 +867,11 @@ main{position:relative;z-index:1;background:var(--bg)}
     return dp === null ? ip : (ip || '0') + '.' + dp;
   }
   function val() { return parseFloat($('tmAmt').value.replace(/,/g, '')) || 0; }
-  function sizeIn() { var el = $('tmAmt'); el.style.width = (Math.max(el.value.length, 1) + 0.3) + 'ch'; }
+  function sizeIn() {
+    var el = $('tmAmt'), m = $('tmMeasure');
+    m.textContent = el.value || el.placeholder || '0';
+    el.style.width = (Math.ceil(m.getBoundingClientRect().width) + 4) + 'px'; // exactly as wide as the digits, so the group stays centred
+  }
   function rowRt(a) {
     if (!(a.p > 0)) return '<b>\u2014</b>';
     var c = a.o > 0 ? (a.p - a.o) / a.o * 100 : 0, up = c >= 0;
@@ -846,7 +896,7 @@ main{position:relative;z-index:1;background:var(--bg)}
     var go = $('tmGo');
     go.textContent = 'Continue with ' + (NAME[st.base] || st.base);
     go.className = 'tm-go' + (buy ? '' : ' sell');
-    go.disabled = !(v > 0 && pf > 0);
+    go.disabled = !(v > 0);
     sizeIn();
     if (!$('tmSheet').hidden && Object.keys(T).length !== listN && !st.aq) drawList();
     else if (!$('tmSheet').hidden) {
@@ -886,6 +936,7 @@ main{position:relative;z-index:1;background:var(--bg)}
     var q = st.query.trim().toUpperCase().replace('/', '');
     var l = all.filter(function (t) { return !q || t.s.indexOf(q) > -1; });
     l.sort(function (a, b) {
+      if (st.filter === 'trending' && (a.s === 'USDTUSD') !== (b.s === 'USDTUSD')) return a.s === 'USDTUSD' ? -1 : 1; // USDT stays on top
       return st.filter === 'gainers' ? chg(b) - chg(a) : st.filter === 'losers' ? chg(a) - chg(b) : usd(b) - usd(a);
     });
     l = l.slice(0, 8);
@@ -940,9 +991,9 @@ main{position:relative;z-index:1;background:var(--bg)}
   });
   $('tmGo').addEventListener('click', function () {
     var a = asset(st.base), pf = a ? a.p * perUsd() : 0, v = val(), fiatP = st.prim === 'fiat';
-    if (!(v > 0) || !(pf > 0)) return;
-    var fiat = fiatP ? v : v * pf, qty = fiatP ? v / pf : v;
-    var q = ['side=' + st.mode, 'asset=' + st.base, 'currency=' + st.ccy, 'amount=' + fiat.toFixed(2), 'qty=' + qty.toFixed(8), 'rate=' + (st.ccy === 'NGN' ? rate() : 1)].join('&');
+    if (!(v > 0)) return;
+    var fiat = fiatP ? v : (pf > 0 ? v * pf : 0), qty = fiatP ? (pf > 0 ? v / pf : 0) : v; // still works if live prices are down
+    var q = ['side=' + st.mode, 'asset=' + st.base, 'currency=' + st.ccy, 'amount=' + (fiat > 0 ? fiat.toFixed(2) : ''), 'qty=' + (qty > 0 ? qty.toFixed(8) : ''), 'rate=' + (st.ccy === 'NGN' ? rate() : 1)].join('&');
     window.location.href = CFG.checkoutUrl + (CFG.checkoutUrl.indexOf('?') > -1 ? '&' : '?') + q;
   });
   $('tmSearch').addEventListener('input', function (e) { st.query = e.target.value; drawMarkets(); });
@@ -993,7 +1044,7 @@ main{position:relative;z-index:1;background:var(--bg)}
       if (!m || !(x.p > 0)) return;
       T[x.s] = { s: x.s, base: m.base, quote: m.quote, p: x.p, o: x.o > 0 ? x.o : x.p, q: x.q || 0 }; n++;
     });
-    if (n) lastData = Date.now();
+    if (n) { lastData = Date.now(); derive(); }
     return n;
   }
   function loadCG() {
