@@ -137,57 +137,98 @@ button{background:none;border:0;cursor:pointer}
 .pgtxt{display:none;font-size:14px;font-weight:500}
 @media (max-width:640px){.nums{display:none}.pgtxt{display:block}.pg span{display:none}.pg{padding:10px}}
 
-/* Footer (10x-style layout, with the VERSUSTRADE wordmark) */
-.foot{position:relative;overflow:hidden;background:var(--soft);border-top:1px solid var(--line)}
+/* Footer: card layout (10x-style) + VERSUSTRADE wordmark */
+.foot{position:relative;overflow:hidden;background:var(--bg)}
 .foot .wrap{position:relative;z-index:1}
-.f-logo{display:flex;align-items:center;gap:8px;line-height:1}
-.f-logo img{height:26px;width:26px;object-fit:contain;display:block;flex-shrink:0}
-.f-logo span{display:block;font-weight:700;font-size:18px;line-height:1;letter-spacing:-.02em;color:var(--logo-text);padding-bottom:1px}
-.ft-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 0;border-bottom:1px solid var(--line)}
-.ft-nav{display:flex;gap:28px}
-.ft-nav a{font-size:15px;font-weight:600;color:var(--muted);transition:color .15s}
-.ft-nav a:hover{color:var(--text)}
-.ft-signin{padding:9px 18px;border:1px solid var(--line);border-radius:999px;background:var(--bg);font-size:14px;font-weight:700;transition:border-color .15s,color .15s}
-.ft-signin:hover{border-color:var(--red);color:var(--red)}
-.ft-main{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:56px 72px;padding:80px 0 72px}
-.ft-h{font-size:clamp(28px,3.4vw,42px);line-height:1.15;font-weight:800;letter-spacing:-.035em}
-.ft-hwrap{position:relative;display:inline-block}
-.ft-cols{margin-top:88px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:36px 28px}
-.ft-cols h4,.ft-links-h{font-size:16px;font-weight:800;margin-bottom:16px}
-.ft-cols ul,.ft-links{list-style:none;display:grid;gap:12px}
-.ft-cols a,.ft-links a{font-size:15px;font-weight:600;color:var(--muted);transition:color .15s}
-.ft-cols a:hover,.ft-links a:hover{color:var(--text)}
-.ft-right{display:flex;flex-direction:column;justify-content:flex-start;gap:28px}
-.ft-socials{position:relative;display:flex;gap:12px}
-.ft-socials a{width:56px;height:56px;display:grid;place-items:center;border-radius:16px;background:var(--bg);border:1px solid var(--line);color:var(--text);transition:transform .2s,border-color .2s,color .2s}
-.ft-socials a:hover{transform:translateY(-3px);border-color:var(--red);color:var(--red)}
-.ft-socials svg{width:22px;height:22px}
-.ft-credits{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;padding:22px 0 0;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+.ft-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:12px;padding:12px 0 40px}
+.ft-card{background:var(--soft);border-radius:20px;padding:44px 48px}
+.ft-left{display:flex;flex-direction:column;justify-content:space-between;gap:72px;min-height:470px}
+.ft-h{font-size:clamp(30px,3vw,40px);line-height:1.06;font-weight:700;letter-spacing:-.035em}
+.ft-red{color:var(--red)}
+.ft-hwrap{position:relative;display:block}
+.ft-cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px}
+.ft-cols h4{font-size:16px;font-weight:600;margin-bottom:8px}
+.ft-cols ul{list-style:none;display:grid;gap:8px}
+.ft-cols a{font-size:16px;font-weight:500;color:var(--muted);transition:color .15s}
+.ft-cols a:hover{color:var(--text)}
+.ft-right{display:flex;flex-direction:column;gap:12px}
+.ft-right .ft-card{flex:1}
+.ft-socials{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.ft-socials a{height:132px;display:grid;place-items:center;border-radius:20px;background:var(--soft);color:var(--text);transition:transform .2s,color .2s}
+.ft-socials a:hover{transform:translateY(-3px);color:var(--red)}
+.ft-socials svg{width:30px;height:30px}
+.ft-credits{display:flex;flex-direction:column;align-items:center;gap:10px;padding:8px 0 0;font-size:14px;color:var(--muted);text-align:center}
 .ft-credits nav{display:flex;gap:20px}
 .ft-credits a:hover{color:var(--text)}
-.risk{margin-top:12px;font-size:13px;color:var(--muted)}
+.risk{margin:12px auto 0;max-width:720px;text-align:center;font-size:13px;color:var(--muted)}
+/* Newsletter (ported from the NewsletterForm component) */
+.ft-news{margin-top:56px}
+.nl{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:24px 56px;align-items:center;padding:40px 48px;border-radius:24px;background:var(--soft)}
+.nl-title{font-size:24px;font-weight:600;letter-spacing:-.02em;line-height:1.2}
+.nl-sub{margin-top:12px;font-size:14px;line-height:1.7;color:var(--muted)}
+.nl-row{display:flex;gap:8px}
+.nl-row input{flex:1;min-width:0;height:44px;min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:6px;background:var(--bg);font-size:14px;outline:0;transition:border-color .15s}
+.nl-row input::placeholder{color:var(--muted)}
+.nl-row input:focus{border-color:var(--text)}
+.nl-row input[aria-invalid="true"]{border-color:#fda4af}
+.nl-row input:disabled{background:var(--soft)}
+.nl-btn{flex-shrink:0;height:44px;padding:0 24px;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:6px;background:var(--text);color:var(--bg);font-size:14px;font-weight:600;white-space:nowrap;transition:opacity .15s}
+.nl-btn:hover{opacity:.85}
+.nl-btn:disabled{opacity:.6;cursor:not-allowed}
+.nl-btn svg{width:15px;height:15px;flex-shrink:0}
+.nl-btn .nl-spin{width:16px;height:16px;animation:nlSpin .8s linear infinite}
+@keyframes nlSpin{to{transform:rotate(360deg)}}
+.nl-hint,.nl-err{margin-top:8px;font-size:12px}
+.nl-hint{color:var(--muted)}
+.nl-err{margin-top:6px;color:color-mix(in srgb,#e11d48 85%,var(--text))}
+.nl-fail,.nl-ok{margin-top:12px;display:flex;align-items:flex-start;gap:10px;padding:12px 14px;font-size:14px;line-height:1.5}
+.nl-fail{border-left:2px solid #f43f5e;background:color-mix(in srgb,#f43f5e 10%,transparent);color:color-mix(in srgb,#e11d48 80%,var(--text))}
+.nl-ok{margin-top:0;border-left:2px solid #10b981;background:color-mix(in srgb,#10b981 12%,transparent);color:color-mix(in srgb,#059669 70%,var(--text))}
+.nl-fail svg,.nl-ok svg{width:16px;height:16px;flex-shrink:0;margin-top:2px}
+.nl [hidden]{display:none!important}
+@media (max-width:899px){.ft-news{margin-top:32px}.nl{grid-template-columns:minmax(0,1fr);padding:28px 22px;gap:20px}}
+@media (max-width:560px){.ft-lw{display:table}}
+@media (max-width:700px){.nl-row{flex-direction:column}.nl-row input{flex:none;width:100%}.nl-btn{width:100%}}
+@media (prefers-reduced-motion:reduce){.nl-btn .nl-spin{animation:none}}
+/* Footer coin animation (phones only) */
+.ft-cols{position:relative}
+.ft-coins{display:none}
+@media (max-width:899px){.ft-coins{display:block;position:absolute;right:0;top:50%;transform:translateY(-50%);width:clamp(104px,34vw,170px);aspect-ratio:523/269;pointer-events:none}.ft-coins svg{display:block;width:100%;height:100%}}
 /* Animated pointer tags */
 .ptr{--c:#8CFBB2;position:absolute;z-index:2;pointer-events:none;animation:ftA 8s ease-in-out infinite}
 .ptr.red{--c:#E11D2E;animation:ftB 9.5s ease-in-out infinite}
 .ptr.red b{color:#fff}
-.ft-red{color:var(--red)}
 .ptr svg{position:absolute;left:0;top:0;width:18px;height:18px;fill:var(--c);filter:drop-shadow(0 1px 2px rgba(0,0,0,.2))}
-.ptr b{display:block;margin:13px 0 0 12px;padding:7px 13px;border-radius:12px;background:var(--c);color:#1E1E1E;font-size:14px;font-weight:600;line-height:1.2;white-space:nowrap;box-shadow:0 6px 16px -6px rgba(0,0,0,.25)}
-.ptr.green{left:6%;top:calc(100% + 6px)}
-.ft-socials .ptr{left:84px;top:calc(100% + 8px)}
+.ptr b{display:block;letter-spacing:0;text-transform:none;margin:13px 0 0 12px;padding:7px 13px;border-radius:12px;background:var(--c);color:#1E1E1E;font-size:14px;font-weight:600;line-height:1.2;white-space:nowrap;box-shadow:0 6px 16px -6px rgba(0,0,0,.25)}
+.ptr.ink{--c:var(--logo-text)}
+.ft-lw{position:relative;display:inline-block}
+.ft-lw .ptr{left:calc(100% - 8px);right:auto;top:calc(100% - 2px);animation:ftC 9s ease-in-out infinite}
+.ptr.ink b{color:var(--bg)}
+.ft-socials a{position:relative}
+.ft-socials .ptr{left:calc(100% - 78px);top:calc(100% - 20px)}
+.ft-socials .ptr.red{animation:ftC 9s ease-in-out infinite}
+@keyframes ftC{0%,100%{transform:translate(0,0) rotate(0)}30%{transform:translate(-12px,6px) rotate(-1.5deg)}60%{transform:translate(3px,10px) rotate(1deg)}85%{transform:translate(-7px,-3px) rotate(-.5deg)}}
 @keyframes ftA{0%,100%{transform:translate(0,0) rotate(0)}22%{transform:translate(22px,-8px) rotate(2deg)}48%{transform:translate(10px,16px) rotate(-1.5deg)}74%{transform:translate(-16px,6px) rotate(1deg)}}
 @keyframes ftB{0%,100%{transform:translate(0,0) rotate(0)}28%{transform:translate(-20px,10px) rotate(-2deg)}55%{transform:translate(14px,-12px) rotate(1.5deg)}80%{transform:translate(24px,8px) rotate(-1deg)}}
-.f-giant{display:block;margin-top:24px;text-align:center;white-space:nowrap;user-select:none;pointer-events:none;font-size:14.5vw;line-height:.78;font-weight:900;letter-spacing:-.05em;color:transparent;-webkit-text-stroke:1px color-mix(in oklch,var(--text) 10%,transparent);background:linear-gradient(180deg,color-mix(in oklch,var(--text) 16%,transparent) 0%,transparent 75%);-webkit-background-clip:text;background-clip:text;transform:translateY(10%)}
-@media (max-width:899px){.ft-main{grid-template-columns:minmax(0,1fr);padding:56px 0 48px}.ft-cols{margin-top:80px}.ptr.green{left:4%}}
-@media (max-width:700px){.ft-nav{display:none}}
-@media (max-width:560px){.ft-cols{grid-template-columns:repeat(2,minmax(0,1fr))}.ft-socials .ptr{left:70px}}
-@media (prefers-reduced-motion:reduce){.ptr,.ptr.red{animation:none}}
+.f-giant{display:block;margin-top:40px;text-align:center;white-space:nowrap;user-select:none;pointer-events:none;font-size:14.5vw;line-height:.78;font-weight:900;letter-spacing:-.05em;color:transparent;-webkit-text-stroke:1px color-mix(in oklch,var(--text) 10%,transparent);background:linear-gradient(180deg,color-mix(in oklch,var(--text) 16%,transparent) 0%,transparent 75%);-webkit-background-clip:text;background-clip:text;transform:translateY(10%)}
+@media (max-width:899px){
+  .ft-grid{grid-template-columns:minmax(0,1fr);padding:12px 0 36px}
+  .ft-card{padding:28px 22px}
+  .ft-left{min-height:0;gap:52px}
+  .ft-cols{grid-template-columns:minmax(0,1fr);gap:26px}
+  .ft-cols a{font-size:17px}
+  .ft-cols h4{margin-bottom:4px}
+  .ft-cols ul{gap:6px}
+  .ft-socials a{height:96px}
+  .ft-right .ft-card{flex:none}
+}
+@media (prefers-reduced-motion:reduce){.ptr,.ptr.red,.ft-socials .ptr.red,.ft-lw .ptr{animation:none}}
 /* Mobile arrangement: centred intro, search, then scrolling underline tabs, then bordered cards */
 .hl{display:block;color:var(--red)}
 @media (max-width:899px){
   .bh{padding:104px 0 36px;text-align:center}
   .bh .kicker{display:none}
-  .bh-anim{position:static;display:block;width:128px;margin:0 auto 14px;opacity:1}
+  .bh-anim{position:static;display:block;width:min(290px,76vw);margin:-30px auto -34px;opacity:1}
   .bh .wrap{padding:0 12px}
   .bh h1{max-width:none;font-size:clamp(30px,10.6vw,60px)}
   .bh .tag{margin:6px auto 0;font-size:22px}
@@ -285,32 +326,44 @@ button{background:none;border:0;cursor:pointer}
 
 <footer class="foot">
   <div class="wrap">
-    <div class="ft-bar">
-      <a class="f-logo" href="/" aria-label="VersusTrade home"><img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/REAL%20LOGO%20%20VERSUSTRADE.png" alt="" width="26" height="26"><span>VersusTrade</span></a>
-      <nav class="ft-nav" aria-label="Footer"><a href="/">Home</a><a href="/#markets">Buy &amp; sell</a><a href="/blog/">Blog</a><a href="/support/">Support</a></nav>
-      <a class="ft-signin" href="/login/">Log in</a>
-    </div>
-    <div class="ft-main">
-      <div class="ft-left">
+    <section class="ft-news">
+      <form class="nl" id="nlForm" novalidate data-slot="newsletter-form">
+        <div class="nl-copy">
+          <h2 class="nl-title">Stay in the loop</h2>
+          <p class="nl-sub">Weekly crypto guides and updates from VersusTrade. No spam.</p>
+        </div>
+        <div class="nl-body">
+          <div class="nl-fields" id="nlFields">
+            <div class="nl-row">
+              <input id="nlEmail" name="email" type="email" autocomplete="email" placeholder="Enter your email" aria-label="Email address" aria-describedby="nlHint">
+              <button class="nl-btn" id="nlBtn" type="submit"><svg class="nl-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" hidden><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg><span id="nlLabel">Subscribe</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+            </div>
+            <p class="nl-hint" id="nlHint">Unsubscribe anytime. We never share your email.</p>
+            <p class="nl-err" id="nlErr" role="alert" hidden></p>
+            <div class="nl-fail" id="nlFail" role="alert" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg><span>We couldn&rsquo;t add you to the list. Please try again.</span></div>
+          </div>
+          <div class="nl-ok" id="nlOk" role="status" aria-live="polite" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><p>You&rsquo;re subscribed. Thanks for joining.</p></div>
+        </div>
+      </form>
+    </section>
+    <div class="ft-grid">
+      <section class="ft-card ft-left">
         <div class="ft-hwrap">
-          <h3 class="ft-h">Stay Connected &mdash;<br><span class="ft-red">Explore These Links</span></h3>
-          <div class="ptr green" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M2 1.5l13 6-5.6 1.8L7.6 15z"/></svg><b>See you on VersusTrade!</b></div>
+          <h3 class="ft-h">Stay Connected &mdash;<br><span class="ft-red">Explore Other <span class="ft-lw">Links<span class="ptr ink" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M2 1.5l13 6-5.6 1.8L7.6 15z"/></svg><b>See you on VersusTrade!</b></span></span></span></h3>
         </div>
         <div class="ft-cols">
-          <div><h4>Company</h4><ul><li><a href="/support/">Support</a></li><li><a href="/blog/">Blog</a></li><li><a href="https://wa.me/YOURNUMBER?text=Hi%20VersusTrade" target="_blank" rel="noopener">WhatsApp</a></li></ul></div>
+          <div class="ft-coins" id="ftCoins" aria-hidden="true"></div>
+          <div><h4>Company</h4><ul><li><a href="/support/">Support</a></li><li><a href="/blog/">Blog</a></li><li><a href="https://www.tiktok.com/@versustradehq" target="_blank" rel="noopener">TikTok</a></li></ul></div>
+          <div><h4>Trade</h4><ul><li><a href="/#markets">Buy &amp; sell crypto</a></li><li><a href="/#markets">Sell Gift Cards</a></li><li><a href="/blog/send-usdt-without-buying-crypto-first/">Send USDT guide</a></li></ul></div>
           <div><h4>Legal</h4><ul><li><a href="/legal/#privacy">Privacy Policy</a></li><li><a href="/legal/#terms">Terms of Use</a></li><li><a href="/legal/#risk">Risk Disclosure</a></li></ul></div>
-          <div><h4>Trade</h4><ul><li><a href="/#markets">Buy &amp; sell crypto</a></li><li><a href="/#markets">Live markets</a></li><li><a href="/blog/send-usdt-without-buying-crypto-first/">Send USDT guide</a></li></ul></div>
         </div>
-      </div>
+      </section>
       <div class="ft-right">
-        <div>
-          <h3 class="ft-h">Join the<br>community</h3>
-        </div>
+        <section class="ft-card"><h3 class="ft-h">Join the<br>community</h3></section>
         <div class="ft-socials">
-          <a href="#" aria-label="VersusTrade on X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg></a>
+          <a href="https://x.com/VersusTrade_HQ" target="_blank" rel="noopener" aria-label="VersusTrade on X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg></a>
           <a href="#" aria-label="VersusTrade on Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg></a>
-          <a href="https://wa.me/YOURNUMBER?text=Hi%20VersusTrade" target="_blank" rel="noopener" aria-label="VersusTrade on WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg></a>
-          <div class="ptr red" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M2 1.5l13 6-5.6 1.8L7.6 15z"/></svg><b>Follow us</b></div>
+          <a href="https://www.tiktok.com/@versustradehq" target="_blank" rel="noopener" aria-label="VersusTrade on TikTok"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg><div class="ptr red" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M2 1.5l13 6-5.6 1.8L7.6 15z"/></svg><b>Follow us</b></div></a>
         </div>
       </div>
     </div>
@@ -373,7 +426,7 @@ var POSTS = [
   var a=lottie.loadAnimation({container:el,renderer:"svg",loop:false,autoplay:false,animationData:{"v":"5.5.4","fr":60,"ip":0,"op":100,"w":600,"h":600,"nm":"bitcoin","ddd":0,"assets":[],"layers":[{"ddd":0,"ind":1,"ty":4,"nm":"Shape Layer 3","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"s":true,"x":{"a":0,"k":300,"ix":3},"y":{"a":1,"k":[{"i":{"x":[0.667],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":86,"s":[271]},{"t":98,"s":[170]}],"ix":4}},"a":{"a":0,"k":[0,0,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[-21.508,-17.39],[-30,33.237]],"o":[[51,41.237],[18.029,-19.974]],"v":[[-121,-82],[114,-80]],"c":false},"ix":2},"nm":"Path 1","mn":"ADBE Vector Shape - Group","hd":false},{"ind":1,"ty":"sh","ix":2,"ks":{"a":0,"k":{"i":[[-21.16,-17.811],[-31,61.237]],"o":[[68,57.237],[12.153,-24.006]],"v":[[-160,12],[160,2]],"c":false},"ix":2},"nm":"Path 2","mn":"ADBE Vector Shape - Group","hd":false},{"ind":2,"ty":"sh","ix":3,"ks":{"a":0,"k":{"i":[[-21.508,-17.39],[-30,33.237]],"o":[[51,41.237],[18.029,-19.974]],"v":[[-124,112],[117,110]],"c":false},"ix":2},"nm":"Path 3","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"tm","s":{"a":1,"k":[{"i":{"x":[0.833],"y":[1]},"o":{"x":[0.167],"y":[0]},"t":84,"s":[100]},{"t":92,"s":[0]}],"ix":1},"e":{"a":1,"k":[{"i":{"x":[0.833],"y":[1]},"o":{"x":[0.167],"y":[0]},"t":92,"s":[100]},{"t":100,"s":[0]}],"ix":2},"o":{"a":0,"k":0,"ix":3},"m":1,"ix":4,"nm":"Trim Paths 1","mn":"ADBE Vector Filter - Trim","hd":false},{"ty":"st","c":{"a":0,"k":[0.819607843137,0.490196078431,0.094117647059,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":4,"ix":5},"lc":1,"lj":1,"ml":4,"bm":0,"nm":"Stroke 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Shape 1","np":6,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":85,"op":180,"st":0,"bm":0},{"ddd":0,"ind":2,"ty":4,"nm":"bitcoin Outlines","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"s":true,"x":{"a":0,"k":300,"ix":3},"y":{"a":1,"k":[{"i":{"x":[0.311],"y":[1]},"o":{"x":[0.689],"y":[0]},"t":0,"s":[220]},{"i":{"x":[0.516],"y":[1]},"o":{"x":[0.499],"y":[0]},"t":25,"s":[361]},{"i":{"x":[0.311],"y":[1]},"o":{"x":[0.74],"y":[0]},"t":50,"s":[220]},{"i":{"x":[0.502],"y":[1]},"o":{"x":[0.518],"y":[0]},"t":75,"s":[361]},{"t":100,"s":[220]}],"ix":4}},"a":{"a":0,"k":[545.5,545.5,0],"ix":1},"s":{"a":1,"k":[{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.333,0.333,0.333],"y":[0,0,0]},"t":0,"s":[24,26,100]},{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.333,0.333,0.333],"y":[0,0,0]},"t":20,"s":[26,24,100]},{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.167,0.167,0.167],"y":[0,0,0]},"t":44,"s":[24,26,100]},{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.333,0.333,0.333],"y":[0,0,0]},"t":70,"s":[26,24,100]},{"i":{"x":[0.833,0.833,0.833],"y":[1,1,1]},"o":{"x":[0.333,0.333,0.333],"y":[0,0,0]},"t":85,"s":[25,25,100]},{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.167,0.167,0.167],"y":[0,0,0]},"t":88.334,"s":[0,26,100]},{"i":{"x":[0.833,0.833,0.833],"y":[1,1,1]},"o":{"x":[0.167,0.167,0.167],"y":[0,0,0]},"t":91.639,"s":[24,26,100]},{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.167,0.167,0.167],"y":[0,0,0]},"t":94.283,"s":[0,26,100]},{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.167,0.167,0.167],"y":[0,0,0]},"t":96.93,"s":[24,26,100]},{"t":100,"s":[24,26,100]}],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[22.726,-72.414],[0,0],[0,0]],"o":[[-21.418,68.248],[0,0],[0,0]],"v":[[123.032,-61.916],[-21.087,-42.676],[7.347,-153.034]],"c":true},"ix":2},"nm":"Path 1","mn":"ADBE Vector Shape - Group","hd":false},{"ind":1,"ty":"sh","ix":2,"ks":{"a":0,"k":{"i":[[19.283,-77.671],[0,0],[0,0]],"o":[[-20.366,82.033],[0,0],[0,0]],"v":[[106.27,115.223],[-65.739,136.656],[-34.882,15.044]],"c":true},"ix":2},"nm":"Path 2","mn":"ADBE Vector Shape - Group","hd":false},{"ind":2,"ty":"sh","ix":3,"ks":{"a":0,"k":{"i":[[-12.283,56.69],[40.488,12.334],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[3.568,-14.986],[-5.35,-12.122],[31.098,-126.875],[8.9,-7.911],[12.962,3.173],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[-9.683,37.027],[-40.604,99.335],[15.962,9.547]],"o":[[17.906,-82.643],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[49.206,12.217],[5.143,11.653],[-29.397,119.937],[-9.802,8.713],[-7.986,17.426],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[52.91,8.503],[40.519,-99.125],[21.054,-7.167]],"v":[[234.788,-56.167],[123.032,-191.877],[145.539,-284.811],[88.34,-298.987],[67.853,-208.939],[23.339,-219.564],[42.988,-310.325],[-11.285,-323.654],[-35.433,-230.96],[-147.418,-259.399],[-162.5,-199.738],[-98.41,-173],[-128.026,-31.602],[-166.658,105.799],[-225.468,98.901],[-252.694,163.52],[-140.521,192.562],[-163.595,284.932],[-107.486,298.926],[-83.89,207.445],[-39.964,218.698],[-61.888,309.481],[-6.143,323.654],[17.03,231.768],[212.112,162.088],[164.417,19.67]],"c":true},"ix":2},"nm":"Path 3","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"fl","c":{"a":0,"k":[1,1,1,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fill 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[535.865,535.547],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Group 1","np":4,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false},{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,-282.77],[282.77,0],[0,282.77],[-282.77,0]],"o":[[0,282.77],[-282.77,0],[0,-282.77],[282.77,0]],"v":[[512,0],[0,512],[-512,0],[0,-512]],"c":true},"ix":2},"nm":"Path 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"fl","c":{"a":0,"k":[0.969000004787,0.57599995931,0.102000000898,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fill 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[545.213,545.217],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Group 2","np":2,"cix":2,"bm":0,"ix":2,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":180,"st":0,"bm":0},{"ddd":0,"ind":3,"ty":4,"nm":"Shape Layer 2","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[300,300,0],"ix":2},"a":{"a":0,"k":[0,0,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":1,"k":[{"i":{"x":0.833,"y":0.833},"o":{"x":0.333,"y":0},"t":0,"s":[{"i":[[15.454,-2.449],[-141.25,0.5],[-6,0.75],[7.505,1.217]],"o":[[-153,24.25],[5.056,-0.018],[12.406,-1.551],[-9.25,-1.5]],"v":[[-31,-214.25],[-16.25,54.75],[0.5,53],[10,-213]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.167,"y":0.167},"t":3,"s":[{"i":[[15.458,-2.422],[-143.719,0.765],[-6,0.75],[7.505,1.217]],"o":[[-156.175,24.426],[5.056,-0.026],[12.406,-1.551],[-9.25,-1.5]],"v":[[-25.143,-210.435],[-10.805,55.654],[5.945,53.904],[15.857,-209.185]],"c":true}]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.333,"y":0},"t":5,"s":[{"i":[[15.46,-2.407],[-145.061,0.909],[-6,0.75],[7.505,1.217]],"o":[[-157.9,24.522],[5.056,-0.03],[12.406,-1.551],[-9.25,-1.5]],"v":[[-22.734,-205.277],[-7.848,60.003],[8.903,58.253],[18.266,-204.027]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.167,"y":0.167},"t":7,"s":[{"i":[[15.464,-2.381],[-147.415,1.161],[-6,0.75],[7.505,1.217]],"o":[[-160.927,24.69],[5.056,-0.038],[12.406,-1.551],[-9.25,-1.5]],"v":[[-24.475,-197.383],[-7.505,64.598],[9.245,62.848],[16.525,-196.133]],"c":true}]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.333,"y":0},"t":10,"s":[{"i":[[15.471,-2.333],[-151.75,1.625],[-6,0.75],[7.505,1.217]],"o":[[-166.5,25],[5.056,-0.052],[12.406,-1.551],[-9.25,-1.5]],"v":[[-22,-175.75],[-6.875,83],[9.875,81.25],[19,-174.5]],"c":true}]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.167,"y":0.167},"t":11,"s":[{"i":[[15.472,-2.325],[-152.446,1.7],[-6,0.75],[7.505,1.217]],"o":[[-167.394,25.05],[5.056,-0.054],[12.406,-1.551],[-9.25,-1.5]],"v":[[-22.046,-161.125],[-5.396,94.945],[11.354,93.195],[18.954,-159.875]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.167,"y":0.167},"t":12,"s":[{"i":[[15.476,-2.303],[-154.369,1.906],[-6,0.75],[7.505,1.217]],"o":[[-169.868,25.187],[5.055,-0.06],[12.406,-1.551],[-9.25,-1.5]],"v":[[-20.631,-144.745],[-1.894,110.09],[14.856,108.34],[20.369,-143.495]],"c":true}]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.333,"y":0},"t":15,"s":[{"i":[[15.482,-2.258],[-158.439,2.342],[-6,0.75],[7.505,1.217]],"o":[[-175.1,25.478],[5.055,-0.073],[12.406,-1.551],[-9.25,-1.5]],"v":[[-17.637,-97.629],[-2.273,154.591],[14.477,152.841],[23.363,-96.379]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.167,"y":0.167},"t":16,"s":[{"i":[[15.483,-2.254],[-158.835,2.384],[-6,0.75],[7.505,1.217]],"o":[[-175.61,25.506],[5.055,-0.075],[12.406,-1.551],[-9.25,-1.5]],"v":[[-23.195,-85.469],[-7.317,163.864],[9.433,162.114],[17.805,-84.219]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":20,"s":[{"i":[[15.489,-2.216],[-162.25,2.75],[-6,0.75],[7.505,1.217]],"o":[[-180,25.75],[5.055,-0.086],[12.406,-1.551],[-9.25,-1.5]],"v":[[-23,-67.25],[-7.5,181.25],[9.25,179.5],[18,-66]],"c":true}]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.333,"y":0},"t":25,"s":[{"i":[[15.506,-2.094],[-154,0],[-6,0.75],[7.505,1.217]],"o":[[-168.5,22.75],[5.056,0],[12.406,-1.551],[-9.25,-1.5]],"v":[[-22.75,-63],[-14.25,184],[9.75,184],[18.25,-61.75]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.167,"y":0.167},"t":28,"s":[{"i":[[15.506,-2.094],[-155.903,0.476],[-5.987,0.826],[7.505,1.217]],"o":[[-168.5,22.75],[5.056,-0.014],[12.354,-1.703],[-9.25,-1.5]],"v":[[-25.067,-69.611],[-16.203,183.958],[10.139,184.172],[22.187,-65.139]],"c":true}]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.333,"y":0},"t":30,"s":[{"i":[[15.506,-2.094],[-156.937,0.734],[-5.979,0.868],[7.505,1.217]],"o":[[-168.5,22.75],[5.056,-0.022],[12.326,-1.786],[-9.25,-1.5]],"v":[[-20.152,-73.974],[-9.548,176.991],[14.208,176.55],[21.239,-72.381]],"c":true}]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.167,"y":0.167},"t":33,"s":[{"i":[[15.506,-2.094],[-160.277,1.569],[-5.956,1.001],[7.505,1.217]],"o":[[-168.5,22.75],[5.055,-0.047],[12.236,-2.053],[-9.25,-1.5]],"v":[[-20.197,-94.168],[-5.199,163.305],[18.278,162.364],[21.64,-92.186]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.167,"y":0.167},"t":34,"s":[{"i":[[15.506,-2.094],[-161.433,1.859],[-5.947,1.048],[10.273,2.989]],"o":[[-168.5,22.75],[5.055,-0.056],[12.205,-2.145],[-8.998,-2.618]],"v":[[-17.264,-104.106],[-2.711,153.654],[20.67,152.539],[26.227,-98.989]],"c":true}]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.333,"y":0},"t":35,"s":[{"i":[[15.506,-2.094],[-162.092,2.023],[-5.943,1.074],[7.505,1.217]],"o":[[-168.5,22.75],[5.055,-0.061],[12.187,-2.198],[-9.25,-1.5]],"v":[[-15.592,-109.768],[-1.293,148.155],[22.032,146.942],[26.487,-107.574]],"c":true}]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.167,"y":0.167},"t":36,"s":[{"i":[[15.506,-2.094],[-162.594,2.149],[-5.939,1.094],[7.505,1.217]],"o":[[-168.5,22.75],[5.055,-0.064],[12.173,-2.238],[-9.25,-1.5]],"v":[[-16.27,-121.298],[-3.215,138.408],[20.069,137.119],[25.876,-119.045]],"c":true}]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.167,"y":0.167},"t":37,"s":[{"i":[[15.506,-2.094],[-163.985,2.497],[-5.929,1.15],[7.505,1.217]],"o":[[-168.5,22.75],[5.055,-0.075],[12.136,-2.349],[-9.25,-1.5]],"v":[[-18.101,-133.207],[-2.856,128.843],[20.312,127.345],[24.23,-130.792]],"c":true}]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.167,"y":0.167},"t":38,"s":[{"i":[[15.506,-2.094],[-165.253,2.813],[-5.92,1.201],[7.233,2.346]],"o":[[-168.5,22.75],[5.055,-0.084],[12.101,-2.45],[-12.243,-3.971]],"v":[[-16.757,-147.092],[-1.857,115.424],[21.205,113.736],[26.243,-142.029]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.167,"y":0.167},"t":39,"s":[{"i":[[15.506,-2.094],[-166.319,3.08],[-5.913,1.243],[7.406,1.627]],"o":[[-168.5,22.75],[5.055,-0.092],[12.073,-2.536],[-10.336,-2.397]],"v":[[-17.105,-157.751],[-1.517,107.635],[21.457,105.787],[25.72,-154.156]],"c":true}]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.333,"y":0},"t":40,"s":[{"i":[[15.506,-2.094],[-166.927,3.232],[-5.909,1.268],[7.505,1.217]],"o":[[-168.5,22.75],[5.055,-0.097],[12.056,-2.584],[-9.25,-1.5]],"v":[[-17.302,-167.748],[-0.538,97.703],[22.385,95.764],[25.421,-164.99]],"c":true}]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.167,"y":0.167},"t":41,"s":[{"i":[[15.506,-2.094],[-167.251,3.313],[-5.906,1.281],[7.505,1.217]],"o":[[-168.5,22.75],[5.055,-0.099],[12.047,-2.61],[-9.25,-1.5]],"v":[[-18.029,-176.748],[-1.876,88.984],[21.02,86.996],[24.738,-173.952]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.167,"y":0.167},"t":43,"s":[{"i":[[15.506,-2.094],[-168.674,3.669],[-5.896,1.338],[7.505,1.217]],"o":[[-168.5,22.75],[5.055,-0.11],[12.009,-2.724],[-9.25,-1.5]],"v":[[-17.616,-192.966],[0.058,71.501],[22.835,69.3],[25.341,-190.004]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":44,"s":[{"i":[[15.506,-2.094],[-169,3.75],[-5.894,1.351],[7.505,1.217]],"o":[[-168.5,22.75],[5.055,-0.112],[12,-2.75],[-9.25,-1.5]],"v":[[-18.75,-199.75],[0.5,67.5],[23.25,65.25],[24.25,-196.75]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":47,"s":[{"i":[[15.506,-2.094],[-169,3.75],[-5.894,1.351],[7.505,1.217]],"o":[[-168.5,22.75],[5.055,-0.112],[12,-2.75],[-9.25,-1.5]],"v":[[-16.75,-209.5],[-1.125,57],[21.625,54.75],[26.25,-206.5]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":50,"s":[{"i":[[15.506,-2.094],[-169,3.75],[-5.894,1.351],[7.505,1.217]],"o":[[-168.5,22.75],[5.055,-0.112],[12,-2.75],[-9.25,-1.5]],"v":[[-17.75,-211.25],[1.25,51.5],[24,49.25],[25.25,-208.25]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":54,"s":[{"i":[[15.504,-2.11],[-168.071,3.613],[-5.909,1.268],[7.532,1.779]],"o":[[-170.083,23.163],[5.055,-0.109],[12.056,-2.585],[-9.105,-2.14]],"v":[[-16.793,-206.715],[1.725,54.073],[27.149,48.892],[26.501,-202.533]],"c":true}]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.333,"y":0},"t":56,"s":[{"i":[[15.502,-2.123],[-167.367,3.508],[-5.92,1.205],[7.552,2.204]],"o":[[-171.283,23.476],[5.055,-0.106],[12.098,-2.46],[-8.996,-2.625]],"v":[[-16.069,-203.28],[2.085,56.021],[23.383,53.892],[27.448,-198.204]],"c":true}]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.167,"y":0.167},"t":58,"s":[{"i":[[15.5,-2.139],[-166.496,3.379],[-5.933,1.128],[7.529,1.71]],"o":[[-172.766,23.863],[5.055,-0.102],[12.151,-2.305],[-9.123,-2.063]],"v":[[-16.722,-190.765],[-0.52,62.198],[20.004,60.134],[26.036,-187.164]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.167,"y":0.167},"t":59,"s":[{"i":[[15.498,-2.149],[-165.941,3.297],[-5.942,1.078],[7.514,1.396]],"o":[[-173.712,24.11],[5.055,-0.1],[12.184,-2.207],[-9.204,-1.704]],"v":[[-17.138,-182.792],[-0.268,66.867],[19.763,64.843],[25.137,-180.132]],"c":true}]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.333,"y":0},"t":60,"s":[{"i":[[15.497,-2.155],[-165.625,3.25],[-5.947,1.05],[7.505,1.217]],"o":[[-174.25,24.25],[5.055,-0.099],[12.203,-2.15],[-9.25,-1.5]],"v":[[-17.375,-178.25],[0.875,74.375],[20.625,72.375],[24.625,-176.125]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.167,"y":0.167},"t":61,"s":[{"i":[[15.496,-2.162],[-165.195,3.187],[-5.954,1.012],[7.505,1.217]],"o":[[-174.983,24.441],[5.055,-0.097],[12.229,-2.074],[-9.25,-1.5]],"v":[[-18.092,-165.407],[-0.765,84.26],[18.603,82.292],[23.781,-163.394]],"c":true}]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.333,"y":0},"t":62,"s":[{"i":[[15.495,-2.17],[-164.765,3.123],[-5.96,0.974],[7.505,1.217]],"o":[[-175.715,24.632],[5.055,-0.096],[12.255,-1.998],[-9.25,-1.5]],"v":[[-18.808,-152.564],[-1.404,99.145],[17.581,97.208],[22.937,-150.662]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.167,"y":0.167},"t":63,"s":[{"i":[[15.494,-2.176],[-164.43,3.073],[-5.966,0.944],[7.505,1.217]],"o":[[-176.285,24.781],[5.055,-0.094],[12.275,-1.938],[-9.25,-1.5]],"v":[[-19.366,-133.187],[-1.902,112.472],[16.786,110.56],[22.28,-131.371]],"c":true}]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.333,"y":0},"t":65,"s":[{"i":[[15.492,-2.194],[-163.475,2.932],[-5.981,0.859],[7.505,1.217]],"o":[[-177.913,25.206],[5.055,-0.091],[12.332,-1.769],[-9.25,-1.5]],"v":[[-20.958,-99.036],[-3.323,150.55],[14.515,148.709],[20.404,-97.468]],"c":true}]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.167,"y":0.167},"t":66,"s":[{"i":[[15.492,-2.196],[-163.318,2.909],[-5.983,0.845],[7.505,1.217]],"o":[[-178.18,25.275],[5.055,-0.09],[12.342,-1.741],[-9.25,-1.5]],"v":[[-18.768,-87.798],[-2.405,156.649],[15.295,154.82],[22.549,-86.271]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.167,"y":0.167},"t":67,"s":[{"i":[[15.491,-2.201],[-163.044,2.868],[-5.988,0.821],[7.505,1.217]],"o":[[-178.648,25.397],[5.055,-0.089],[12.358,-1.692],[-9.25,-1.5]],"v":[[-18.177,-79.847],[-0.794,167.356],[16.662,165.547],[23.058,-78.392]],"c":true}]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.333,"y":0},"t":70,"s":[{"i":[[15.489,-2.216],[-162.25,2.75],[-6,0.75],[7.505,1.217]],"o":[[-180,25.75],[5.055,-0.086],[12.406,-1.551],[-9.25,-1.5]],"v":[[-23,-67.25],[-7.5,181.25],[9.25,179.5],[18,-66]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.167,"y":0.167},"t":71,"s":[{"i":[[15.491,-2.203],[-161.392,2.464],[-6,0.75],[7.505,1.217]],"o":[[-178.804,25.438],[5.055,-0.077],[12.406,-1.551],[-9.25,-1.5]],"v":[[-21.974,-65.808],[-8.202,181.536],[9.302,179.968],[19.026,-64.558]],"c":true}]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.333,"y":0},"t":75,"s":[{"i":[[15.506,-2.094],[-154,0],[-6,0.75],[7.505,1.217]],"o":[[-168.5,22.75],[5.056,0],[12.406,-1.551],[-9.25,-1.5]],"v":[[-22.75,-63],[-14.25,184],[9.75,184],[18.25,-61.75]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.167,"y":0.167},"t":78,"s":[{"i":[[15.499,-2.14],[-152.348,0.065],[-6,0.75],[7.418,1.637]],"o":[[-166.491,22.944],[5.056,-0.002],[12.406,-1.551],[-11.259,-2.553]],"v":[[-21.389,-68.181],[-12.079,179.966],[10.981,179.739],[19.935,-65.959]],"c":true}]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.333,"y":0},"t":80,"s":[{"i":[[15.495,-2.165],[-151.45,0.1],[-6,0.75],[7.371,1.865]],"o":[[-165.4,23.05],[5.056,-0.004],[12.406,-1.551],[-12.35,-3.125]],"v":[[-20.65,-75.625],[-10.9,177.775],[11.65,177.425],[20.85,-72.875]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.167,"y":0.167},"t":82,"s":[{"i":[[15.49,-2.204],[-150.038,0.156],[-6,0.75],[23.086,4.604]],"o":[[-163.683,23.216],[5.056,-0.006],[12.406,-1.551],[-10.633,-2.225]],"v":[[-20.31,-85.023],[-11.256,168.076],[10.491,167.532],[20.914,-83.104]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":83,"s":[{"i":[[15.488,-2.218],[-149.544,0.175],[-6,0.75],[7.472,1.381]],"o":[[-163.083,23.274],[5.056,-0.006],[12.406,-1.551],[-10.033,-1.91]],"v":[[-23.565,-91.013],[-11.381,164.681],[10.085,164.069],[17.561,-89.384]],"c":true}]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.333,"y":0},"t":85,"s":[{"i":[[15.485,-2.236],[-148.9,0.2],[-6,0.75],[7.505,1.217]],"o":[[-162.3,23.35],[5.056,-0.007],[12.406,-1.551],[-9.25,-1.5]],"v":[[-24.55,-108.25],[-13.55,147.55],[7.55,146.85],[16.45,-107]],"c":true}]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.167,"y":0.167},"t":87,"s":[{"i":[[10.298,-8.33],[-53.222,-49.945],[-13.647,2.969],[6.382,2.721]],"o":[[-52.223,39.864],[4.023,6.267],[9.477,-5.99],[-7.08,-2.692]],"v":[[-40.777,-126.864],[-42.778,124.945],[6.647,127.031],[10.343,-130.415]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.167,"y":0.167},"t":88,"s":[{"i":[[6.37,-12.946],[-11.233,-99.584],[-3.612,4.696],[5.531,3.86]],"o":[[-10.78,99.959],[3.241,11.017],[7.259,-9.351],[-5.436,-3.595]],"v":[[-30.22,-140.959],[-29.767,109.584],[5.964,112.022],[5.718,-148.147]],"c":true}]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.333,"y":0},"t":89,"s":[{"i":[[4.682,-14.929],[-23.48,-105.553],[-3.17,5.427],[5.165,4.35]],"o":[[-24.23,77.267],[2.905,13.059],[6.306,-10.796],[-4.73,-3.983]],"v":[[-31.27,-147.017],[-32.77,102.553],[5.67,105.573],[3.73,-155.767]],"c":true}]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.167,"y":0.167},"t":90,"s":[{"i":[[15.237,-18.234],[-52.723,-72.546],[-3.931,4.17],[6.008,3.92]],"o":[[-60.763,77.766],[18.277,19.454],[7.946,-8.31],[-5.85,-3.705]],"v":[[-59.237,-158.766],[-58.277,91.546],[16.864,96.389],[15.51,-162.752]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.167,"y":0.167},"t":91,"s":[{"i":[[12.741,-5.068],[-156.874,-21.514],[-5.266,1.963],[7.487,3.165]],"o":[[-137.597,14.634],[4.498,3.38],[10.824,-3.948],[-7.815,-3.216]],"v":[[-17.403,-176.634],[-12.126,91.514],[14.47,85.778],[22.411,-175.014]],"c":true}]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.333,"y":0},"t":92,"s":[{"i":[[15.562,-1.617],[-148.9,0.2],[-6,0.75],[8.3,2.75]],"o":[[-161.2,16.75],[5.056,-0.007],[12.406,-1.551],[-8.895,-2.947]],"v":[[-12.55,-187],[-3.55,79.55],[17.55,78.85],[28.95,-181.75]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.167,"y":0.167},"t":93,"s":[{"i":[[9.014,-8.533],[-62.59,-45.926],[-6.86,6.164],[5.465,6.969]],"o":[[-66.59,66.758],[12.41,8.074],[9.14,-5.836],[-5.563,-6.215]],"v":[[-39.41,-189.758],[-36.41,73.926],[11.86,69.836],[15.59,-188.758]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":94,"s":[{"i":[[2.467,-15.45],[-10.73,-105.803],[-1.67,8.427],[2.631,11.188]],"o":[[-10.98,68.767],[1.35,13.31],[2.43,-12.264],[-2.23,-9.483]],"v":[[-34.27,-190.517],[-35.27,60.303],[2.17,62.823],[2.23,-195.767]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":95,"s":[{"i":[[6.806,-11.045],[-56.787,-70.469],[-3.113,5.868],[4.521,8.125]],"o":[[-31.72,64.678],[6.863,6.948],[5.756,-8.693],[-4.523,-7.054]],"v":[[-36.78,-196.178],[-28.613,57.802],[6.88,60.165],[9.887,-199.594]],"c":true}]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.333,"y":0},"t":97,"s":[{"i":[[15.485,-2.236],[-148.9,0.2],[-6,0.75],[8.3,2]],"o":[[-162.3,23.35],[5.056,-0.007],[12.406,-1.551],[-9.11,-2.195]],"v":[[-16.3,-211.25],[-7.8,57.3],[16.3,54.85],[25.2,-207.25]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.167,"y":0.167},"t":98,"s":[{"i":[[15.477,-2.291],[-146.917,0.278],[-6,0.75],[8.094,1.797]],"o":[[-159.889,23.583],[5.056,-0.01],[12.406,-1.551],[-9.146,-2.015]],"v":[[-26.111,-212.028],[-15.991,56.639],[6.204,54.37],[15.259,-208.741]],"c":true}]},{"t":100,"s":[{"i":[[15.454,-2.449],[-141.25,0.5],[-6,0.75],[7.505,1.217]],"o":[[-153,24.25],[5.056,-0.018],[12.406,-1.551],[-9.25,-1.5]],"v":[[-31,-214.25],[-16.25,54.75],[0.5,53],[10,-213]],"c":true}]}],"ix":2},"nm":"Path 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"fl","c":{"a":0,"k":[0.819607843137,0.490921200023,0.093210302615,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fill 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Shape 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":85,"op":180,"st":0,"bm":0},{"ddd":0,"ind":4,"ty":4,"nm":"bitcoin Outlines 2","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"s":true,"x":{"a":0,"k":300,"ix":3},"y":{"a":1,"k":[{"i":{"x":[0.311],"y":[1]},"o":{"x":[0.689],"y":[0]},"t":1,"s":[220]},{"i":{"x":[0.516],"y":[1]},"o":{"x":[0.499],"y":[0]},"t":26,"s":[361]},{"i":{"x":[0.311],"y":[1]},"o":{"x":[0.74],"y":[0]},"t":51,"s":[220]},{"i":{"x":[0.502],"y":[1]},"o":{"x":[0.518],"y":[0]},"t":76,"s":[361]},{"t":101,"s":[220]}],"ix":4}},"a":{"a":0,"k":[581.5,545.5,0],"ix":1},"s":{"a":1,"k":[{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.333,0.333,0.333],"y":[0,0,0]},"t":1,"s":[24,26,100]},{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.333,0.333,0.333],"y":[0,0,0]},"t":21,"s":[26,24,100]},{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.167,0.167,0.167],"y":[0,0,0]},"t":45,"s":[24,26,100]},{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.333,0.333,0.333],"y":[0,0,0]},"t":71,"s":[26,24,100]},{"i":{"x":[0.833,0.833,0.833],"y":[1,1,1]},"o":{"x":[0.333,0.333,0.333],"y":[0,0,0]},"t":86,"s":[25,25,100]},{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.167,0.167,0.167],"y":[0,0,0]},"t":89.334,"s":[0,26,100]},{"i":{"x":[0.833,0.833,0.833],"y":[1,1,1]},"o":{"x":[0.167,0.167,0.167],"y":[0,0,0]},"t":92.639,"s":[24,26,100]},{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.167,0.167,0.167],"y":[0,0,0]},"t":95.283,"s":[0,26,100]},{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.167,0.167,0.167],"y":[0,0,0]},"t":97.93,"s":[24,26,100]},{"t":101,"s":[24,26,100]}],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,-282.77],[282.77,0],[0,282.77],[-282.77,0]],"o":[[0,282.77],[-282.77,0],[0,-282.77],[282.77,0]],"v":[[512,0],[0,512],[-512,0],[0,-512]],"c":true},"ix":2},"nm":"Path 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"fl","c":{"a":0,"k":[0.847058832645,0.509775519371,0.102975770831,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fill 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[545.213,545.217],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Group 2","np":2,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":85,"st":1,"bm":0},{"ddd":0,"ind":5,"ty":4,"nm":"Shape Layer 4","sr":1,"ks":{"o":{"a":1,"k":[{"i":{"x":[0.667],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":0,"s":[7]},{"i":{"x":[0.667],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":26,"s":[19]},{"i":{"x":[0.667],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":51,"s":[7]},{"i":{"x":[0.667],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":76,"s":[19]},{"t":100,"s":[7]}],"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[299,484,0],"ix":2},"a":{"a":0,"k":[-1,193,0],"ix":1},"s":{"a":1,"k":[{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.333,0.333,0.333],"y":[0,0,0]},"t":0,"s":[100,100,100]},{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.333,0.333,0.333],"y":[0,0,0]},"t":26,"s":[131,100,100]},{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.333,0.333,0.333],"y":[0,0,0]},"t":51,"s":[100,100,100]},{"i":{"x":[0.667,0.667,0.667],"y":[0.444,1,1]},"o":{"x":[0.333,0.333,0.333],"y":[0,0,0]},"t":76,"s":[131,100,100]},{"i":{"x":[0.667,0.667,0.667],"y":[0.979,1,1]},"o":{"x":[0.333,0.333,0.333],"y":[0.02,0,0]},"t":85,"s":[121.191,100,100]},{"i":{"x":[0.667,0.667,0.667],"y":[0.862,1,1]},"o":{"x":[0.333,0.333,0.333],"y":[-0.035,0,0]},"t":88,"s":[30.5,100,100]},{"i":{"x":[0.667,0.667,0.667],"y":[0.961,1,1]},"o":{"x":[0.333,0.333,0.333],"y":[-0.2,0,0]},"t":92,"s":[105.074,100,100]},{"i":{"x":[0.667,0.667,0.667],"y":[0.753,1,1]},"o":{"x":[0.333,0.333,0.333],"y":[-0.038,0,0]},"t":95,"s":[66.518,100,100]},{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.333,0.333,0.333],"y":[-1.052,0,0]},"t":98,"s":[106.227,100,100]},{"t":100,"s":[100,100,100]}],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"d":1,"ty":"el","s":{"a":0,"k":[157,19],"ix":2},"p":{"a":0,"k":[0,0],"ix":3},"nm":"Ellipse Path 1","mn":"ADBE Vector Shape - Ellipse","hd":false},{"ty":"fl","c":{"a":0,"k":[0.447058823529,0.447058823529,0.447058823529,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fill 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[-1.5,193.5],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Ellipse 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":180,"st":0,"bm":0}],"markers":[]}});
   // Frame 75 is where the coin touches the ground (lowest point, widest shadow). It rests there,
   // and each play runs 75 -> 100 -> 0 -> 75 (two bounces and a flip), so it always lands back on the ground.
-  var GROUND=75, PLAYS=2, EVERY=15000, n=0, busy=false;
+  var GROUND=75, PLAYS=3, EVERY=15000, n=0, busy=false;
   function play(){ a.playSegments([[GROUND,100],[0,GROUND]],true); }
   function burst(){ if(busy||document.hidden) return; busy=true; n=0; play(); }
   a.addEventListener('complete',function(){ n++; if(n<PLAYS){ play(); } else { busy=false; a.goToAndStop(GROUND,true); } });
@@ -468,7 +521,71 @@ $('vtTheme').addEventListener('click', function () {
   fit(); window.addEventListener('resize', fit); window.addEventListener('load', fit);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
 })();
+
+// Newsletter form (ported from the NewsletterForm component).
+// To connect your email provider, define this before the page's scripts:
+//   window.VT_NEWSLETTER = { subscribe: async function (email) { /* send the email; throw on failure */ } };
+(function () {
+  var form = document.getElementById('nlForm'); if (!form) return;
+  var $ = function (id) { return document.getElementById(id); };
+  var input = $('nlEmail'), btn = $('nlBtn'), label = $('nlLabel'), spin = btn.querySelector('.nl-spin'), chev = btn.querySelector('svg:not(.nl-spin)');
+  var hint = $('nlHint'), err = $('nlErr'), fail = $('nlFail'), fields = $('nlFields'), ok = $('nlOk');
+  var RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/, busy = false, done = false;
+  function setError(msg) {
+    err.textContent = msg; err.hidden = !msg; hint.hidden = !!msg;
+    input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+    input.setAttribute('aria-describedby', msg ? 'nlErr' : 'nlHint');
+  }
+  function setBusy(b) { busy = b; input.disabled = b; btn.disabled = b; spin.hidden = !b; chev.style.display = b ? 'none' : ''; label.textContent = b ? 'Joining\u2026' : 'Subscribe'; form.setAttribute('aria-busy', b ? 'true' : 'false'); }
+  function subscribe(email) {
+    if (window.VT_NEWSLETTER && typeof window.VT_NEWSLETTER.subscribe === 'function') return window.VT_NEWSLETTER.subscribe(email);
+    return Promise.resolve(); // TODO: connect to your email provider (see note above)
+  }
+  input.addEventListener('input', function () { fail.hidden = true; if (!err.hidden) setError(''); });
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (busy || done) return;
+    var v = input.value.trim();
+    if (!v) { setError('Email is required.'); return; }
+    if (!RE.test(v)) { setError('Enter a valid email address.'); return; }
+    setError(''); fail.hidden = true; setBusy(true);
+    Promise.resolve().then(function () { return subscribe(v); }).then(function () {
+      done = true; fields.hidden = true; ok.hidden = false;
+    }, function () { fail.hidden = false; }).then(function () { setBusy(false); });
+  });
+})();
+
+// Footer coin animation: runs at 2x speed, plays when the footer comes into view, then again every minute.
+(function () {
+  var box = document.getElementById('ftCoins'); if (!box) return;
+  var REST = 10, SPEED = 2, EVERY = 60000, anim = null, timer = null;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  function withLottie(cb) {
+    if (window.lottie) return cb();
+    var sc = document.createElement('script');
+    sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie_light.min.js';
+    sc.onload = cb; document.head.appendChild(sc);
+  }
+  function play() { if (anim && !document.hidden) anim.goToAndPlay(0, true); }
+  function start() {
+    if (anim || !window.VT_COINS) return;
+    withLottie(function () {
+      anim = window.lottie.loadAnimation({ container: box, renderer: 'svg', loop: false, autoplay: false, animationData: window.VT_COINS, rendererSettings: { viewBoxSize: '423 249 523 269' } });
+      anim.setSpeed(SPEED);
+      anim.addEventListener('complete', function () { anim.goToAndStop(REST, true); });
+      anim.addEventListener('DOMLoaded', function () {
+        anim.goToAndStop(REST, true);
+        if (!reduce) { play(); timer = setInterval(play, EVERY); }
+      });
+    });
+  }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { start(); io.disconnect(); } }); }, { rootMargin: '0px 0px 120px 0px' });
+    io.observe(box);
+  } else { start(); }
+})();
 </script>
 <script src="chat-widget.js" defer></script>
+<script src="coins.js" defer></script>
 </body>
 </html>
