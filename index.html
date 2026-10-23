@@ -46,9 +46,9 @@ button{background:none;border:0;cursor:pointer}
   .vt-header.scrolled .vt-bar{height:52px;padding:0 16px}
 }
 .vt-bar{max-width:1440px;margin:0 auto;height:var(--header-h);padding:0 24px;display:flex;align-items:center;gap:20px}
-.vt-logo{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.vt-logo{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .vt-logo img{height:32px;width:auto;display:block;object-fit:contain}
-.vt-logo span{font-weight:500;font-size:20px;letter-spacing:-.015em;color:var(--text)}
+.vt-logo span{font-weight:800;font-size:22px;letter-spacing:-.015em;color:var(--text)}
 .vt-actions{display:flex;align-items:center;gap:6px;margin-left:auto;flex-shrink:0}
 .vt-login{padding:8px 14px;font-size:14px;font-weight:500;border-radius:999px}
 .vt-login:hover{color:var(--red)}
@@ -396,103 +396,25 @@ html.ac-on [data-ac]>*:not([data-ac-in]){opacity:0}
 .gh-band{position:absolute;top:50%;left:50%;background:var(--gh-glare);will-change:transform}
 .gh-rim{position:absolute;inset:0;padding:1px;border-radius:inherit;-webkit-mask-image:linear-gradient(#000 0 0),linear-gradient(#000 0 0);-webkit-mask-clip:content-box,border-box;-webkit-mask-composite:xor;mask-image:linear-gradient(#000 0 0),linear-gradient(#000 0 0);mask-clip:content-box,border-box;mask-composite:exclude}
 .gh-band--rim{background:var(--gh-rim)}
-/* ===== GooeyNav (header) ===== */
-.vt-bar{position:relative}
-.vt-nav{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:1}
-#markets,#rates,#trust,#support,#giftcards{scroll-margin-top:84px}
-@media (max-width:1023px){
-  .gooey-nav .gooey-nav__item.gooey-nav__item--desk{display:none}
-  .gooey-nav .gooey-nav__list{flex-wrap:nowrap}
-  #markets,#rates,#trust,#support,#giftcards{scroll-margin-top:76px}
-}
-.gooey-nav{--gn-pad:6px;--gn-gap:4px;--gn-font:14px;--gn-x:16px;--gn-y:9px;position:relative;display:inline-flex;max-width:100%;font-size:var(--gn-font);line-height:1.2}
-.gooey-nav--sm{--gn-pad:5px;--gn-gap:2px;--gn-font:13px;--gn-x:13px;--gn-y:7px}
-.gooey-nav--lg{--gn-pad:7px;--gn-gap:6px;--gn-font:16px;--gn-x:20px;--gn-y:11px}
-.gooey-nav--framed{padding:var(--gn-pad);border-radius:999px;background:var(--gn-frame);box-shadow:var(--gn-frame-shadow);-webkit-backdrop-filter:blur(20px) saturate(1.6);backdrop-filter:blur(20px) saturate(1.6)}
-.gooey-nav__stage{position:relative;max-width:100%}
-.gooey-nav__canvas{position:absolute;top:0;left:0;pointer-events:none}
-.gooey-nav__fallback{position:absolute;top:0;left:0;display:none;border-radius:999px;background:var(--gn-pill);pointer-events:none}
-.gooey-nav__list{position:relative;display:flex;flex-wrap:wrap;gap:var(--gn-gap);margin:0;padding:0;list-style:none}
-.gooey-nav__list--active{position:absolute;inset:0;color:var(--gn-active-ink);visibility:hidden;clip-path:inset(100%);pointer-events:none}
-.gooey-nav__item{display:flex}
-.gooey-nav__link{display:inline-flex;align-items:center;gap:8px;padding:var(--gn-y) var(--gn-x);border:none;border-radius:999px;background:none;color:var(--gn-muted);font:inherit;font-weight:500;text-decoration:none;white-space:nowrap;cursor:pointer;transition:color .2s ease;-webkit-tap-highlight-color:transparent}
-.gooey-nav__list--active .gooey-nav__link{color:inherit}
-.gooey-nav__item[data-active] .gooey-nav__link{color:var(--gn-ink)}
-.gooey-nav__link:focus-visible{outline:2px solid var(--gn-ink);outline-offset:2px}
-.gooey-nav__rim{position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px var(--gn-frame-edge),inset 0 1px 0 var(--gn-frame-highlight);pointer-events:none}
-@media (hover:hover){.gooey-nav__link:hover{color:var(--gn-ink)}}
-.cf-ctrls{display:flex;align-items:center;gap:12px}
-.cf-theme:hover svg{transform:rotate(35deg)}
-@media (max-width:768px){.cf-ctrls{order:2}}
-.vt-logo .vt-mark{width:38px;height:38px;flex-shrink:0;display:grid;place-items:center;box-sizing:border-box;padding:4px;border:2px solid var(--red);border-radius:9px;background:transparent}
-.vt-logo .vt-mark img{width:100%;height:100%;object-fit:contain;display:block}
-@media (max-width:1023px){.vt-logo .vt-mark{width:34px;height:34px}}
-/* ===== CardNav (3-line button that opens the card menu) ===== */
-.vt-actions .card-nav{margin-left:2px}
-.card-nav{--cn-bar:44px;--cn-inset:8px;--cn-gap:8px;--cn-radius:16px;--cn-card:150px;position:relative;width:var(--cn-bar);height:var(--cn-bar);flex-shrink:0;font-size:14px;line-height:1.4;-webkit-tap-highlight-color:transparent}
-.card-nav__panel{position:absolute;top:0;right:0;z-index:10;width:var(--cn-bar);height:var(--cn-bar);border-radius:var(--cn-radius);overflow:hidden;background:var(--cn-panel);box-shadow:var(--cn-shadow)}
-.card-nav__rim{position:absolute;inset:0;z-index:3;border-radius:inherit;box-shadow:inset 0 0 0 1px var(--cn-edge),inset 0 1px 0 var(--cn-highlight);pointer-events:none}
-.card-nav__bar{position:absolute;top:0;right:0;z-index:2;width:var(--cn-bar);height:var(--cn-bar)}
-.card-nav__menu{display:grid;place-items:center;width:100%;height:100%;padding:0;border:0;border-radius:var(--cn-radius);background:none;color:var(--cn-text);cursor:pointer;outline:none;transition:background-color .2s ease}
-.card-nav__menu:hover{background:var(--cn-hover)}
-.card-nav__menu:focus-visible,.card-nav__link:focus-visible{outline:2px solid var(--cn-ring);outline-offset:2px}
-.card-nav__burger{position:relative;width:18px;height:12px}
-.card-nav__line{position:absolute;left:0;width:100%;height:1.5px;border-radius:2px;background:currentColor;transition:transform .5s cubic-bezier(.22,1,.36,1),top .5s cubic-bezier(.22,1,.36,1)}
-.card-nav__line--top{top:2.25px}
-.card-nav__line--bottom{top:8.25px}
-.card-nav[data-open] .card-nav__line--top{top:5.25px;transform:rotate(45deg)}
-.card-nav[data-open] .card-nav__line--bottom{top:5.25px;transform:rotate(-45deg)}
-.card-nav__content{position:absolute;top:var(--cn-bar);right:0;display:flex;flex-direction:column;gap:var(--cn-gap);padding:0 var(--cn-inset) var(--cn-inset);box-sizing:border-box;perspective:900px;visibility:hidden}
-.card-nav[data-shown] .card-nav__content{visibility:visible}
-.card-nav__cards{display:flex;gap:var(--cn-gap)}
-.card-nav[data-narrow] .card-nav__cards{flex-direction:column}
-.card-nav__card{position:relative;display:flex;flex:1 1 0;flex-direction:column;gap:18px;min-width:0;min-height:var(--cn-card);padding:16px 16px 14px;border-radius:calc(var(--cn-radius) - 4px);box-sizing:border-box;background:var(--cn-tile);box-shadow:var(--cn-tile-rim);color:var(--cn-text);transform-origin:50% 0;will-change:transform,opacity}
-.card-nav[data-narrow] .card-nav__card{flex:none;min-height:0;gap:10px;padding:14px 14px 12px}
-.card-nav[data-narrow] .card-nav__links{flex-direction:row;flex-wrap:wrap;gap:2px 16px}
-.card-nav__card-head{display:flex;flex-direction:column;gap:4px}
-.card-nav__label{font-size:17px;font-weight:600;letter-spacing:-.015em}
-.card-nav__description{margin:0;color:var(--cn-muted);font-size:13px;line-height:1.45}
-.card-nav__links{display:flex;flex-direction:column;gap:2px;margin:auto 0 0;padding:0;list-style:none}
-.card-nav__link{display:inline-flex;align-items:center;gap:8px;padding:3px 0;border:0;border-radius:6px;background:none;color:inherit;font-family:inherit;font-size:14px;font-weight:500;text-decoration:none;cursor:pointer;outline:none;opacity:.82;transition:opacity .2s ease}
-.card-nav__link:hover{opacity:1}
-.card-nav__arrow{position:relative;display:inline-block;flex:none;width:14px;height:14px;overflow:hidden}
-.card-nav__arrow svg{position:absolute;inset:0;width:100%;height:100%;transition:transform .45s cubic-bezier(.22,1,.36,1)}
-.card-nav__arrow svg:last-child{transform:translate(-110%,110%)}
-.card-nav__link:hover .card-nav__arrow svg:first-child,.card-nav__link:focus-visible .card-nav__arrow svg:first-child{transform:translate(110%,-110%)}
-.card-nav__link:hover .card-nav__arrow svg:last-child,.card-nav__link:focus-visible .card-nav__arrow svg:last-child{transform:translate(0,0)}
-@media (prefers-reduced-motion:reduce){.card-nav__line,.card-nav__arrow svg{transition:none}}
-@media (max-width:480px){
-  .vt-bar{padding:0 12px}
-  .vt-logo{gap:4px}
-  .vt-logo span{font-size:12px}
-  .vt-logo .vt-mark{width:28px;height:28px;padding:3px;border-radius:7px}
-  .vt-nav .gooey-nav.gooey-nav--sm{--gn-pad:4px;--gn-font:12px;--gn-x:10px;--gn-y:6px}
-}
-@media (min-width:481px) and (max-width:1023px){.vt-logo span{font-size:15px}}
-/* mobile + tablet header: brand | Log in pill | menu button */
-@media (max-width:1023px){
-  .vt-bar{height:64px;padding:0 14px;gap:10px}
-  .vt-nav{position:static;transform:none;margin-left:auto}
-  .vt-actions{margin-left:0}
-  .vt-actions .card-nav{margin-left:0}
-  .card-nav{--cn-bar:48px;--cn-radius:24px}
-  .vt-logo{gap:8px}
-  .vt-logo .vt-mark{width:44px;height:44px;padding:5px;border-radius:11px}
-  .vt-logo span{font-size:22px}
-  .vt-nav .gooey-nav.gooey-nav--sm{--gn-pad:4px;--gn-font:14px;--gn-x:18px;--gn-y:11.5px}
-}
-@media (max-width:480px){
-  .vt-bar{padding:0 12px;gap:8px}
-  .vt-logo{gap:6px}
-  .vt-logo .vt-mark{width:40px;height:40px;padding:4px;border-radius:10px}
-  .vt-logo span{font-size:20px}
-  .vt-nav .gooey-nav.gooey-nav--sm{--gn-font:13px;--gn-x:15px;--gn-y:12px}
-}
-@media (max-width:360px){
-  .vt-logo .vt-mark{width:36px;height:36px}
-  .vt-logo span{font-size:17px}
-  .vt-nav .gooey-nav.gooey-nav--sm{--gn-x:12px}
-}
+.rt-left{min-width:0}
+.rt-left .rt-note{margin-top:16px;text-align:center}
+/* Flying button (ported from FlyingButton): the stage covers the support section; the button rests at its bottom edge */
+.flying-button{--fly-bg:#27272a;--fly-ink:#f5f5f5;--fly-pod:#18181b;--fly-glow:#8ec5ff;--fly-thrust:0;--fly-h:44px;--fly-px:22px;--fly-fs:14px;--fly-scale:1;position:relative;width:100%;height:100%;overflow:hidden;isolation:isolate;touch-action:manipulation}
+.fb-stage{position:fixed;left:0;right:0;top:0;bottom:24px;width:auto;height:auto;z-index:200;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .45s ease,visibility 0s linear .45s}
+.fb-stage.on{opacity:1;visibility:visible;transition:opacity .45s ease}
+.fb-stage .flying-button__craft{pointer-events:auto}
+.flying-button__smoke{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+.flying-button__craft{position:absolute;left:0;top:0;z-index:1;display:inline-flex;align-items:center;justify-content:center;height:var(--fly-h);margin:0;padding:0 var(--fly-px);border:0;border-radius:calc(var(--fly-h)/2);background:var(--fly-bg);color:var(--fly-ink);font-family:inherit;font-size:var(--fly-fs);font-weight:500;line-height:1;letter-spacing:.01em;white-space:nowrap;cursor:pointer;outline:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;touch-action:none;transform-origin:50% 50%;will-change:transform;visibility:hidden}
+.flying-button[data-ready] .flying-button__craft{visibility:visible}
+.flying-button__craft:focus-visible{outline:2px solid color-mix(in srgb,var(--fly-ink) 60%,transparent);outline-offset:3px}
+.flying-button__face{position:absolute;inset:0;border-radius:inherit;background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,0) 46%),linear-gradient(0deg,color-mix(in srgb,var(--fly-glow) calc(var(--fly-thrust)*34%),transparent),transparent 62%);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),inset 0 -1px 0 rgba(0,0,0,.25);pointer-events:none}
+.flying-button[data-theme="light"] .flying-button__face{background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,0) 50%),linear-gradient(0deg,color-mix(in srgb,var(--fly-glow) calc(var(--fly-thrust)*30%),transparent),transparent 62%);box-shadow:inset 0 0 0 1px rgba(0,0,0,.06),inset 0 -1px 0 rgba(0,0,0,.08)}
+.flying-button__label{position:relative}
+.flying-button__craft[data-hover]{filter:brightness(1.12)}
+.flying-button[data-theme="light"] .flying-button__craft[data-hover]{filter:brightness(.97)}
+.flying-button__pod{position:absolute;top:calc(100% - 3px*var(--fly-scale));width:calc(14px*var(--fly-scale));height:calc(8px*var(--fly-scale));border-radius:2px 2px 5px 5px;background:linear-gradient(180deg,var(--fly-pod),color-mix(in srgb,var(--fly-pod) 80%,#000));transform:translateX(-50%);z-index:-1;pointer-events:none}
+.flying-button__pod::after{content:'';position:absolute;left:50%;bottom:0;width:calc(7px*var(--fly-scale));height:calc(2px*var(--fly-scale));border-radius:2px 2px 1px 1px;transform:translateX(-50%);background:color-mix(in srgb,var(--fly-glow) calc(var(--fly-thrust)*100%),#3f3f46);box-shadow:0 1px 4px color-mix(in srgb,var(--fly-glow) calc(var(--fly-thrust)*90%),transparent)}
+.flying-button[data-theme="light"] .flying-button__pod::after{background:color-mix(in srgb,var(--fly-glow) calc(var(--fly-thrust)*100%),#52525b)}
 </style>
 </head>
 <body>
@@ -500,14 +422,15 @@ html.ac-on [data-ac]>*:not([data-ac-in]){opacity:0}
 <header class="vt-header" id="vtHeader">
   <div class="vt-bar">
     <a class="vt-logo" href="/" aria-label="VersusTrade home">
-      <span class="vt-mark" id="vtMark"><img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/REAL%20LOGO%20%20VERSUSTRADE.png" alt="" width="28" height="28" decoding="async"></span>
+      <img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/REAL%20LOGO%20%20VERSUSTRADE.png" alt="" width="32" height="32" decoding="async">
       <span>VersusTrade</span>
     </a>
-    <div class="vt-nav" id="vtNav"></div>
     <div class="vt-actions">
+      <a class="vt-login" href="/login/">Log in</a>
+      <a class="vt-signup" href="/signup/">Sign up</a>
       <button class="vt-icon vt-hide-m" type="button" aria-label="Search"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="9" cy="9" r="6"/><path d="M14 14l4 4"/></svg></button>
       <button class="vt-icon vt-hide-m" type="button" aria-label="Language"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="8"/><path d="M2 10h16M10 2c2.5 2.3 3.5 5 3.5 8s-1 5.700-3.500 8c-2.500-2.300-3.500-5-3.500-8s1-5.700 3.500-8z"/></svg></button>
-      <div id="vtMenu"></div>
+      <button class="vt-icon" id="vtTheme" type="button" aria-label="Toggle light or dark theme"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="3.5"/><path d="M10 1.500v2M10 16.500v2M1.500 10h2M16.500 10h2M4 4l1.400 1.400M14.600 14.600L16 16M4 16l1.400-1.400M14.600 5.400L16 4"/></svg></button>
     </div>
   </div>
 </header>
@@ -517,7 +440,7 @@ html.ac-on [data-ac]>*:not([data-ac-in]){opacity:0}
   <div class="hero">
     <div class="wrap hero-grid">
     <div class="hero-copy" data-ac="mount">
-      <h1>Digital Assets Meet <em style="white-space:nowrap">Real Value</em><span style="color:var(--red)">.</span></h1>
+      <h1>Digital Assets Meet <em style="white-space:nowrap">Real Value</em>.</h1>
       <p><span class="ph" id="vtPH"><span class="ph-box" aria-hidden="true"><svg class="ph-ptr" viewBox="0 0 16 16" width="18" height="18" fill="currentColor"><path d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103z"/></svg></span><span class="ph-text">Powered by Reliability. Driven by Trust.</span></span></p>
       <div class="hero-btns">
         <a class="btn red hero-btn" href="#markets">
@@ -622,6 +545,7 @@ html.ac-on [data-ac]>*:not([data-ac-in]){opacity:0}
   <section class="rt" id="rates">
     <div class="wrap">
       <div class="rt-grid" data-ac>
+        <div class="rt-left">
         <div class="rc" id="rtCard" data-video="">
           <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><filter id="rcDistort" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.012 0.02" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="14" xChannelSelector="R" yChannelSelector="G"/></filter></svg>
           <div class="rc-metal"></div>
@@ -636,18 +560,19 @@ html.ac-on [data-ac]>*:not([data-ac-in]){opacity:0}
             <p class="rc-std" id="rtStd">Checking the standard rate&hellip;</p>
           </div>
         </div>
+        <p class="rt-note">Rates are set by VersusTrade and can change. Check before you trade.</p>
+        </div>
         <div>
           <h2>How to use our site</h2>
           <p class="rt-text">Here&rsquo;s how easy it is to get started on our platform. Watch the video to get up and running fast.</p>
           <button type="button" class="btn red rt-watch" id="rtWatch"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M6 4l14 8-14 8z"/></svg> Watch this video</button>
-          <p class="rt-note">Rates are set by VersusTrade and can change. Check before you trade. <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener" style="text-decoration:underline">Rates By Exchange Rate API</a></p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Gift cards: bouncing cards with a Sell gift cards button underneath -->
-  <section class="gc" id="giftcards">
+  <section class="gc">
     <div class="wrap">
       <div class="bc-wrap" id="bcWrap">
         <div class="bounce-cards" id="bcRoot" role="group" aria-label="Gift cards you can sell">
@@ -658,7 +583,7 @@ html.ac-on [data-ac]>*:not([data-ac-in]){opacity:0}
           <div class="bounce-cards__card"><img src="https://images.unsplash.com/photo-1763440519433-5467759054fc?w=480&amp;h=480&amp;fit=crop" alt="Gift card" width="240" height="240" draggable="false" loading="lazy"></div>
         </div>
       </div>
-      <div class="gc-cta" data-ac><a class="btn red gc-sell" data-glare href="https://api.whatsapp.com/send?phone=2349015508108&amp;text=Hi%20VersusTrade%2C%20I%20want%20to%20sell%20a%20gift%20card" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="18" height="18"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg> Sell Gift Cards</a></div>
+      <div class="gc-cta" data-ac><a class="btn red gc-sell" href="https://api.whatsapp.com/send?phone=2349015508108&amp;text=Hi%20VersusTrade%2C%20I%20want%20to%20sell%20a%20gift%20card" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="18" height="18"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg> Sell Gift Cards</a></div>
     </div>
   </section>
 
@@ -731,7 +656,7 @@ html.ac-on [data-ac]>*:not([data-ac-in]){opacity:0}
         </div>
         <div class="cf-row cf-sec">
           <a class="cf-pill cf-mag" href="/legal/#terms">Terms of Use</a>
-          <a class="cf-pill cf-mag" href="/legal/#privacy">Privacy Policy</a>
+          <a class="cf-pill cf-mag" href="/privacy/">Privacy Policy</a>
           <a class="cf-pill cf-mag" href="/legal/#risk">Risk Disclosure</a>
           <a class="cf-pill cf-mag" href="/blog/">Blog</a>
           <a class="cf-pill cf-mag" href="/support/">Support</a>
@@ -744,15 +669,14 @@ html.ac-on [data-ac]>*:not([data-ac-in]){opacity:0}
 
   <div class="cf-bottom" id="cfBottom">
     <div class="cf-copy">&copy; 2026 VersusTrade. All rights reserved.</div>
-    <div class="cf-ctrls">
-      <button type="button" class="cf-pill cf-mag cf-top cf-theme" id="vtTheme" aria-label="Toggle light or dark theme"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="3.5"/><path d="M10 1.500v2M10 16.500v2M1.500 10h2M16.500 10h2M4 4l1.400 1.400M14.600 14.600L16 16M4 16l1.400-1.400M14.600 5.400L16 4"/></svg></button>
-      <button type="button" class="cf-pill cf-mag cf-top" id="cfTop" aria-label="Back to top">
+    <button type="button" class="cf-pill cf-mag cf-top" id="cfTop" aria-label="Back to top">
       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
-      </button>
-    </div>
+    </button>
   </div>
 </footer>
 </div>
+
+<div class="fb-stage" id="fbStage"></div>
 
 <script>
 (function () {
@@ -1946,7 +1870,7 @@ html.ac-on [data-ac]>*:not([data-ac-in]){opacity:0}
   window.addEventListener('resize', layout);
   window.addEventListener('scroll', update, { passive: true });
 
-  document.getElementById('cfTop').addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+  document.getElementById('cfTop').addEventListener('click', function () { if (window.vtFlyToTop && window.vtFlyToTop()) return; window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
   // Magnetic buttons (mouse only)
   if (!reduce && window.matchMedia('(hover:hover) and (pointer:fine)').matches) {
@@ -2135,582 +2059,1700 @@ html.ac-on [data-ac]>*:not([data-ac-in]){opacity:0}
 })();
 </script>
 <script>
-/* GooeyNav: vanilla port of the React component. WebGL2 gooey pill with CSS fallback. */
 (function () {
-  var CONFIG = {
-    items: [
-      { desk: true, label: 'Home', href: '#top' },
-      { desk: true, label: 'Markets', href: '#markets' },
-      { desk: true, label: 'Rates', href: '#rates' },
-      { desk: true, label: 'Support', href: '#support' },
-      { label: 'Log in', href: '/login/' }
-    ],
-    initialActiveIndex: 0, size: 'md', frame: true, particleCount: 15, spread: 56,
-    animationTime: 600, timeVariance: 300, gooeyness: 0.5, wobble: 0.5, hoverEffect: true,
-    onChange: function (index, item) { console.log(index, item.label); }
-  };
-  var THEMES = {
-    dark: { '--gn-frame': 'rgba(38, 35, 46, 0.66)', '--gn-frame-edge': 'rgba(255, 255, 255, 0.08)', '--gn-frame-highlight': 'rgba(255, 255, 255, 0.07)', '--gn-frame-shadow': '0 22px 44px -20px rgba(0, 0, 0, 0.8), 0 6px 16px -8px rgba(0, 0, 0, 0.5)', '--gn-ink': '#f4f4f5', '--gn-muted': 'rgba(244, 244, 245, 0.62)' },
-    light: { '--gn-frame': 'rgba(240, 240, 243, 0.8)', '--gn-frame-edge': 'rgba(24, 24, 27, 0.07)', '--gn-frame-highlight': 'rgba(255, 255, 255, 0.95)', '--gn-frame-shadow': '0 22px 44px -22px rgba(24, 24, 27, 0.3), 0 6px 16px -10px rgba(24, 24, 27, 0.16)', '--gn-ink': '#27272a', '--gn-muted': 'rgba(39, 39, 42, 0.62)' }
-  };
-  var PILLS = {
-    dark: { color: '#f4f4f5', hover: 'rgba(255, 255, 255, 0.08)', shadow: 0.4 },
-    light: { color: '#27272a', hover: 'rgba(24, 24, 27, 0.06)', shadow: 0.2 }
-  };
-  var MAX_DROPS = 32, MAX_PILLS = 4, MARGIN = 72;
-  var VERTEX = '#version 300 es\nin vec2 aPosition;\nvoid main(){gl_Position=vec4(aPosition,0.0,1.0);}\n';
-  var FRAGMENT = '#version 300 es\nprecision highp float;\n' +
-    'uniform vec2 uSize;uniform float uRatio;uniform vec4 uPills[' + MAX_PILLS + '];uniform vec4 uHover;uniform vec4 uDrops[' + MAX_DROPS + '];uniform vec2 uTails[' + MAX_DROPS + '];uniform vec3 uTints[' + MAX_DROPS + '];uniform int uCount;uniform float uSmooth;uniform vec3 uPill;uniform vec4 uHoverColor;uniform float uShadow;\nout vec4 outColor;\n' +
-    'float sdPill(vec2 p,vec4 box){vec2 extent=max(box.zw,vec2(0.0));float r=min(extent.x,extent.y);vec2 q=abs(p-box.xy)-extent+r;return length(max(q,0.0))+min(max(q.x,q.y),0.0)-r;}\n' +
-    'float sdCapsule(vec2 p,vec2 a,vec2 b,float r){vec2 pa=p-a;vec2 ba=b-a;float h=clamp(dot(pa,ba)/max(dot(ba,ba),0.0001),0.0,1.0);return length(pa-ba*h)-r;}\n' +
-    'vec4 blend(vec4 a,vec4 b,float k){float h=clamp(0.5+0.5*(b.w-a.w)/k,0.0,1.0);return vec4(mix(b.rgb,a.rgb,h),mix(b.w,a.w,h)-k*h*(1.0-h));}\n' +
-    'vec4 field(vec2 p){vec4 shape=vec4(uPill,1e5);\n' +
-    'for(int i=0;i<' + MAX_PILLS + ';i++){vec4 pill=uPills[i];if(pill.z<=0.0)continue;shape=blend(shape,vec4(uPill,sdPill(p,pill)),uSmooth);}\n' +
-    'for(int i=0;i<' + MAX_DROPS + ';i++){if(i>=uCount)break;vec4 drop=uDrops[i];if(drop.z<=0.0)continue;float d=sdCapsule(p,drop.xy,drop.xy-uTails[i],drop.z);if(d>shape.w+uSmooth)continue;shape=blend(shape,vec4(uTints[i],d),uSmooth);}\n' +
-    'return shape;}\n' +
-    'void main(){vec2 p=vec2(gl_FragCoord.x,uSize.y*uRatio-gl_FragCoord.y)/uRatio;vec4 shape=field(p);float d=shape.w;float aa=max(fwidth(d),0.35);float body=clamp(0.5-d/aa,0.0,1.0);\n' +
-    'vec2 grad=vec2(dFdx(d),-dFdy(d));vec2 n=length(grad)>0.0001?normalize(grad):vec2(0.0,1.0);\n' +
-    'float rim=(1.0-smoothstep(0.0,1.6,-d))*max(0.0,-n.y)*0.3;\n' +
-    'vec3 fill=mix(shape.rgb,vec3(1.0),rim)*(1.0-0.06*max(0.0,n.y)*(1.0-smoothstep(0.0,6.0,-d)));\n' +
-    'float lifted=field(p-vec2(0.0,3.0)).w;float shadow=(1.0-smoothstep(-3.0,9.0,lifted))*uShadow*(1.0-body);\n' +
-    'float hover=clamp(0.5-sdPill(p,uHover)/aa,0.0,1.0)*uHoverColor.a;\n' +
-    'vec4 color=vec4(0.0,0.0,0.0,shadow);color=vec4(uHoverColor.rgb*hover,hover)+color*(1.0-hover);color=vec4(fill*body,body)+color*(1.0-body);outColor=color;}\n';
+const G = 1100;
+const SPRING = 380;
+const DAMP = 10;
+const REST = G / (2 * SPRING);
+const POD_H = 5;
+const MAX_JETS = 4;
+const TILT_MAX = 0.55;
+const G_RIDE = G * 0.75;
+const FLIP_TIME = 0.42;
+const SIZES = {
+  small: { h: 36, px: 16, fs: 13, k: 0.82 },
+  medium: { h: 44, px: 22, fs: 14, k: 1 },
+  large: { h: 52, px: 26, fs: 16, k: 1.18 },
+  'extra-large': { h: 60, px: 30, fs: 18, k: 1.36 }
+};
 
-  function parse(value) {
-    var m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(String(value).trim());
-    if (m) {
-      var hex = m[1].length === 3 ? m[1].replace(/./g, function (d) { return d + d; }) : m[1];
-      return [0, 2, 4].map(function (i) { return parseInt(hex.slice(i, i + 2), 16) / 255; }).concat(1);
+const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+const num = (v, d) => (Number.isFinite(Number(v)) && v !== null && v !== '' ? Number(v) : d);
+const smooth = t => {
+  const s = clamp(t, 0, 1);
+  return s * s * (3 - 2 * s);
+};
+const jerk = t => {
+  const s = clamp(t, 0, 1);
+  return s * s * s * (10 + s * (6 * s - 15));
+};
+const jerkV = t => {
+  const s = clamp(t, 0, 1);
+  return 30 * s * s * (1 - s) * (1 - s);
+};
+const jerkA = t => {
+  const s = clamp(t, 0, 1);
+  return 60 * s * (1 - s) * (1 - 2 * s);
+};
+const wave = (t, k) =>
+  Math.sin(t * 1.31 + k) * 0.5 + Math.sin(t * 2.73 + k * 1.7) * 0.3 + Math.sin(t * 5.19 + k * 2.3) * 0.2;
+const waveD = (t, k) =>
+  Math.cos(t * 1.31 + k) * 0.655 + Math.cos(t * 2.73 + k * 1.7) * 0.819 + Math.cos(t * 5.19 + k * 2.3) * 1.038;
+
+const rgb = hex => {
+  const h = String(hex || '').replace('#', '');
+  const v = h.length === 3 ? h.replace(/(.)/g, '$1$1') : h.padEnd(6, '0').slice(0, 6);
+  const n = parseInt(v, 16);
+  if (!Number.isFinite(n)) return [1, 1, 1];
+  return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
+};
+
+const VERT = `#version 300 es
+out vec2 vUv;
+void main() {
+  vec2 p = vec2(float((gl_VertexID << 1) & 2), float(gl_VertexID & 2));
+  vUv = p;
+  gl_Position = vec4(p * 2.0 - 1.0, 0.0, 1.0);
+}`;
+
+const HEAD = `#version 300 es
+precision highp float;
+precision highp sampler2D;
+in vec2 vUv;
+out vec4 outColor;
+`;
+
+const JETS = `
+uniform vec4 uJetA[${MAX_JETS}];
+uniform vec4 uJetB[${MAX_JETS}];
+uniform float uJetBend[${MAX_JETS}];
+float jetWeight(vec2 p, vec4 a, vec4 b, out float along) {
+  vec2 rel = p - a.xy;
+  along = dot(rel, a.zw);
+  vec2 off = rel - a.zw * clamp(along, 0.0, b.z);
+  return exp(-dot(off, off) / (b.y * b.y)) * smoothstep(-b.y, 0.0, along);
+}
+`;
+
+const NOISE = `
+float hash(vec2 p) {
+  p = fract(p * vec2(123.34, 456.21));
+  p += dot(p, p + 45.32);
+  return fract(p.x * p.y);
+}
+float noise(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+  f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x), f.y);
+}
+`;
+
+const ADVECT = `${HEAD}
+uniform sampler2D uVelocity;
+uniform sampler2D uSource;
+uniform vec2 uWorld;
+uniform float uDt;
+uniform float uKeep;
+void main() {
+  vec2 v = textureLod(uVelocity, vUv, 0.0).xy;
+  if (!(abs(v.x) < 4000.0 && abs(v.y) < 4000.0)) v = vec2(0.0);
+  vec4 c = textureLod(uSource, vUv - uDt * v / uWorld, 0.0) * uKeep;
+  outColor = all(lessThan(abs(c), vec4(1e4))) ? c : vec4(0.0);
+}`;
+
+const FORCE = `${HEAD}
+uniform sampler2D uVelocity;
+uniform sampler2D uDye;
+uniform vec2 uWorld;
+uniform float uDt;
+uniform float uBuoyancy;
+uniform float uLift;
+uniform float uDamping;
+uniform float uSpread;
+uniform float uSplash;
+uniform float uFriction;
+uniform float uWind;
+uniform vec3 uKick;
+uniform vec4 uCraft;
+uniform vec4 uCraftMotion;
+uniform vec2 uTurb;
+uniform float uTime;
+uniform float uObstacle;
+${JETS}
+${NOISE}
+vec2 curlNoise(vec2 p) {
+  float e = 0.35;
+  float a = noise(p + vec2(0.0, e));
+  float b = noise(p - vec2(0.0, e));
+  float c = noise(p + vec2(e, 0.0));
+  float d = noise(p - vec2(e, 0.0));
+  return vec2(a - b, d - c) / (2.0 * e);
+}
+void main() {
+  vec2 p = vUv * uWorld;
+  vec2 v = textureLod(uVelocity, vUv, 0.0).xy;
+  vec2 d = textureLod(uDye, vUv, 1.0).xy;
+  float smokeHere = smoothstep(0.02, 0.4, d.x + d.y);
+  vec2 tq = p / uTurb.y;
+  vec2 turb = curlNoise(tq + vec2(uTime * 0.21, -uTime * 0.37)) + 0.5 * curlNoise(tq * 2.3 + vec2(-uTime * 0.53, uTime * 0.29) + 7.0);
+  v += turb * uTurb.x * smokeHere * uDt;
+  v.y += (uBuoyancy * d.y + uLift * d.x) * uDt;
+  v /= 1.0 + uDamping * uDt;
+  v.x /= 1.0 + uFriction * exp(-p.y / 18.0) * uDt;
+  v.x += (uWind - v.x) * (1.0 - exp(-0.35 * uDt)) * smoothstep(0.0, 60.0, p.y);
+  for (int i = 0; i < ${MAX_JETS}; i++) {
+    vec4 b = uJetB[i];
+    if (b.w <= 0.0) continue;
+    vec4 a = uJetA[i];
+    vec2 rel = p - a.xy;
+    float along = dot(rel, a.zw);
+    float across = dot(rel, vec2(-a.w, a.z));
+    float reach = a.w < -0.2 ? a.y / -a.w : max(b.z, 1.0);
+    float bn = clamp(along / max(reach, 1.0), 0.0, 1.0);
+    across -= uJetBend[i] * bn * bn;
+    vec2 dir = normalize(a.zw + vec2(-a.w, a.z) * (2.0 * uJetBend[i] * bn / max(reach, 1.0)));
+    float sN = clamp(along / max(b.z, 1.0), 0.0, 1.0);
+    float R = b.y + uSpread * clamp(along, 0.0, b.z);
+    float wr = exp(-across * across / (R * R));
+    float wa = smoothstep(-b.y, 0.0, along) * (1.0 - smoothstep(0.55, 1.0, sN));
+    float rate = mix(46.0, 7.0, sN);
+    float w = (1.0 - exp(-uDt * rate)) * wr * wa * clamp(b.w * 3.0, 0.0, 1.0);
+    float U = b.x * sqrt(b.y / R);
+    v = mix(v, dir * U, w);
+  }
+  for (int i = 0; i < ${MAX_JETS}; i++) {
+    vec4 b = uJetB[i];
+    if (b.w <= 0.0) continue;
+    vec4 a = uJetA[i];
+    if (a.w > -0.2) continue;
+    float reach = a.y / -a.w;
+    float gx = a.x + a.z * reach - a.w * uJetBend[i];
+    float near = exp(-reach / uKick.x);
+    float sx = uKick.y + reach * 0.25;
+    float kx = (p.x - gx) / (sx * 1.6);
+    float ky = p.y / (uKick.z * 1.5);
+    float k = exp(-kx * kx - ky * ky);
+    float side = clamp((p.x - gx) / sx, -1.0, 1.0);
+    v += uDt * uSplash * b.w * near * k * vec2(side * 0.7, 0.9);
+  }
+  vec2 q = p - uCraft.xy;
+  float c = cos(uCraftMotion.z);
+  float s = sin(uCraftMotion.z);
+  vec2 lq = vec2(c * q.x + s * q.y, -s * q.x + c * q.y);
+  vec2 e = abs(lq) - uCraft.zw + uCraft.w;
+  float sd = length(max(e, 0.0)) + min(max(e.x, e.y), 0.0) - uCraft.w;
+  float inside = smoothstep(2.0, -2.0, sd) * uObstacle;
+  vec2 cv = uCraftMotion.xy + uCraftMotion.w * vec2(-q.y, q.x);
+  v = mix(v, cv, inside);
+  float speed = length(v);
+  if (!(speed < 1e5)) v = vec2(0.0);
+  else if (speed > 2600.0) v *= 2600.0 / speed;
+  outColor = vec4(v, 0.0, 1.0);
+}`;
+
+const CURL = `${HEAD}
+uniform sampler2D uVelocity;
+uniform vec2 uTexel;
+void main() {
+  float L = textureLod(uVelocity, vUv - vec2(uTexel.x, 0.0), 0.0).y;
+  float R = textureLod(uVelocity, vUv + vec2(uTexel.x, 0.0), 0.0).y;
+  float B = textureLod(uVelocity, vUv - vec2(0.0, uTexel.y), 0.0).x;
+  float T = textureLod(uVelocity, vUv + vec2(0.0, uTexel.y), 0.0).x;
+  outColor = vec4(0.5 * (R - L - T + B), 0.0, 0.0, 1.0);
+}`;
+
+const VORTICITY = `${HEAD}
+uniform sampler2D uVelocity;
+uniform sampler2D uCurl;
+uniform vec2 uTexel;
+uniform float uStrength;
+uniform float uDt;
+void main() {
+  float L = textureLod(uCurl, vUv - vec2(uTexel.x, 0.0), 0.0).x;
+  float R = textureLod(uCurl, vUv + vec2(uTexel.x, 0.0), 0.0).x;
+  float B = textureLod(uCurl, vUv - vec2(0.0, uTexel.y), 0.0).x;
+  float T = textureLod(uCurl, vUv + vec2(0.0, uTexel.y), 0.0).x;
+  float C = textureLod(uCurl, vUv, 0.0).x;
+  vec2 f = 0.5 * vec2(abs(T) - abs(B), abs(R) - abs(L));
+  f /= length(f) + 1e-4;
+  f *= uStrength * C;
+  f.y *= -1.0;
+  vec2 v = textureLod(uVelocity, vUv, 0.0).xy + f * uDt;
+  if (!(abs(v.x) < 4000.0 && abs(v.y) < 4000.0)) v = vec2(0.0);
+  outColor = vec4(v, 0.0, 1.0);
+}`;
+
+const DIVERGENCE = `${HEAD}
+uniform sampler2D uVelocity;
+uniform vec2 uTexel;
+void main() {
+  vec2 C = textureLod(uVelocity, vUv, 0.0).xy;
+  float L = textureLod(uVelocity, vUv - vec2(uTexel.x, 0.0), 0.0).x;
+  float R = textureLod(uVelocity, vUv + vec2(uTexel.x, 0.0), 0.0).x;
+  float B = textureLod(uVelocity, vUv - vec2(0.0, uTexel.y), 0.0).y;
+  float T = textureLod(uVelocity, vUv + vec2(0.0, uTexel.y), 0.0).y;
+  if (vUv.y - uTexel.y < 0.0) B = -C.y;
+  outColor = vec4(0.5 * (R - L + T - B), 0.0, 0.0, 1.0);
+}`;
+
+const PRESSURE_SAMPLE = `
+float pressureAt(sampler2D tex, vec2 uv, vec2 texel, float c, int side) {
+  if (side == 0 && uv.x - texel.x < 0.0) return 0.0;
+  if (side == 1 && uv.x + texel.x > 1.0) return 0.0;
+  if (side == 2 && uv.y - texel.y < 0.0) return c;
+  if (side == 3 && uv.y + texel.y > 1.0) return 0.0;
+  vec2 o = side == 0 ? vec2(-texel.x, 0.0) : side == 1 ? vec2(texel.x, 0.0) : side == 2 ? vec2(0.0, -texel.y) : vec2(0.0, texel.y);
+  return textureLod(tex, uv + o, 0.0).x;
+}
+`;
+
+const PRESSURE = `${HEAD}
+uniform sampler2D uPressure;
+uniform sampler2D uDivergence;
+uniform vec2 uTexel;
+${PRESSURE_SAMPLE}
+void main() {
+  float C = textureLod(uPressure, vUv, 0.0).x;
+  float L = pressureAt(uPressure, vUv, uTexel, C, 0);
+  float R = pressureAt(uPressure, vUv, uTexel, C, 1);
+  float B = pressureAt(uPressure, vUv, uTexel, C, 2);
+  float T = pressureAt(uPressure, vUv, uTexel, C, 3);
+  float div = textureLod(uDivergence, vUv, 0.0).x;
+  float pr = (L + R + B + T - div) * 0.25;
+  outColor = vec4(abs(pr) < 1e6 ? pr : 0.0, 0.0, 0.0, 1.0);
+}`;
+
+const GRADIENT = `${HEAD}
+uniform sampler2D uPressure;
+uniform sampler2D uVelocity;
+uniform vec2 uTexel;
+${PRESSURE_SAMPLE}
+void main() {
+  float C = textureLod(uPressure, vUv, 0.0).x;
+  float L = pressureAt(uPressure, vUv, uTexel, C, 0);
+  float R = pressureAt(uPressure, vUv, uTexel, C, 1);
+  float B = pressureAt(uPressure, vUv, uTexel, C, 2);
+  float T = pressureAt(uPressure, vUv, uTexel, C, 3);
+  vec2 v = textureLod(uVelocity, vUv, 0.0).xy - 0.5 * vec2(R - L, T - B);
+  if (vUv.y - uTexel.y < 0.0) v.y = max(v.y, 0.0);
+  if (!(abs(v.x) < 4000.0 && abs(v.y) < 4000.0)) v = vec2(0.0);
+  outColor = vec4(v, 0.0, 1.0);
+}`;
+
+const BLUR = `${HEAD}
+uniform sampler2D uSource;
+uniform vec2 uStep;
+void main() {
+  vec2 c = textureLod(uSource, vUv, 0.0).xy * 0.2270270;
+  c += textureLod(uSource, vUv + uStep * 1.3846154, 0.0).xy * 0.3162162;
+  c += textureLod(uSource, vUv - uStep * 1.3846154, 0.0).xy * 0.3162162;
+  c += textureLod(uSource, vUv + uStep * 3.2307692, 0.0).xy * 0.0702703;
+  c += textureLod(uSource, vUv - uStep * 3.2307692, 0.0).xy * 0.0702703;
+  outColor = vec4(c, 0.0, 1.0);
+}`;
+
+const SCALE = `${HEAD}
+uniform sampler2D uSource;
+uniform float uScale;
+void main() {
+  outColor = textureLod(uSource, vUv, 0.0) * uScale;
+}`;
+
+const DYE = `${HEAD}
+uniform sampler2D uVelocity;
+uniform sampler2D uSource;
+uniform vec2 uWorld;
+uniform float uDt;
+uniform vec2 uKeep;
+uniform vec4 uRate;
+uniform vec4 uCol;
+uniform vec3 uKick;
+uniform float uDisperse;
+uniform float uDispV;
+uniform vec4 uCraft;
+uniform vec4 uCraftMotion;
+uniform vec2 uGap;
+uniform float uJetX[${MAX_JETS}];
+uniform float uJetN;
+uniform float uFloor;
+uniform float uTime;
+${JETS}
+${NOISE}
+void main() {
+  vec2 v = textureLod(uVelocity, vUv, 0.0).xy;
+  vec2 val = textureLod(uSource, vUv - uDt * v / uWorld, 0.0).xy * uKeep;
+  val.x *= exp(-uDisperse * max(length(v) - uDispV, 0.0) * 0.01 * uDt);
+  {
+    vec2 q = vUv * uWorld - uCraft.xy;
+    float c = cos(uCraftMotion.z);
+    float sn = sin(uCraftMotion.z);
+    vec2 lq = vec2(c * q.x + sn * q.y, -sn * q.x + c * q.y);
+    float belly = uCraft.y - uCraft.w - 7.0;
+    float depth = 0.68 * belly * smoothstep(40.0, 110.0, belly);
+    float below = -lq.y - uCraft.w;
+    float wy = smoothstep(-4.0, 6.0, below) * (1.0 - smoothstep(depth * 0.7, depth, below));
+    float nearest = 1e4;
+    float outer = 0.0;
+    for (int k = 0; k < ${MAX_JETS}; k++) {
+      if (float(k) >= uJetN) break;
+      nearest = min(nearest, abs(lq.x - uJetX[k]));
+      outer = max(outer, abs(uJetX[k]));
     }
-    var r = /rgba?\(([^)]+)\)/i.exec(String(value));
-    if (r) { var p = r[1].split(',').map(parseFloat); return [p[0] / 255, p[1] / 255, p[2] / 255, p[3] != null ? p[3] : 1]; }
-    return [1, 1, 1, 1];
+    float wx = uGap.x > 1.0 ? smoothstep(uGap.x * 0.22, uGap.x * 0.4, nearest) * (1.0 - smoothstep(outer - uGap.x * 0.1, outer, abs(lq.x))) : 0.0;
+    val.x *= exp(-uGap.y * wx * wy * uDt);
   }
-  function contrastInk(c) { return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2] > 0.55 ? '#18161d' : '#ffffff'; }
-  function clamp01(v) { return Math.min(1, Math.max(0, v)); }
-  function travelEase(t) { var x = clamp01(t); return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; }
-  function bezier(a, b, c, d, t) { var u = 1 - t; return u * u * u * a + 3 * u * u * t * b + 3 * u * t * t * c + t * t * t * d; }
-  function pillPath(x, y, w, h) {
-    if (w <= 0.5 || h <= 0.5) return '';
-    var r = Math.min(w, h) / 2;
-    return 'M' + (x + r) + ',' + y + 'H' + (x + w - r) + 'A' + r + ',' + r + ' 0 0 1 ' + (x + w) + ',' + (y + r) + 'V' + (y + h - r) + 'A' + r + ',' + r + ' 0 0 1 ' + (x + w - r) + ',' + (y + h) + 'H' + (x + r) + 'A' + r + ',' + r + ' 0 0 1 ' + x + ',' + (y + h - r) + 'V' + (y + r) + 'A' + r + ',' + r + ' 0 0 1 ' + (x + r) + ',' + y + 'Z';
+  val.x = max(val.x - uFloor * uDt, 0.0);
+  vec2 p = vUv * uWorld;
+  for (int i = 0; i < ${MAX_JETS}; i++) {
+    vec4 jb = uJetB[i];
+    if (jb.w <= 0.0) continue;
+    vec4 ja = uJetA[i];
+    vec2 rel = p - ja.xy;
+    float along = dot(rel, ja.zw);
+    float across = dot(rel, vec2(-ja.w, ja.z));
+    vec2 off = rel - ja.zw * clamp(along, 0.0, 6.0);
+    float wn = exp(-dot(off, off) / (jb.y * jb.y)) * smoothstep(-jb.y, 0.0, along);
+    float pulse = 0.6 + 0.8 * noise(vec2(uTime * 6.0 + float(i) * 13.1, along * 0.06 + float(i)));
+    val.x += uRate.x * jb.w * wn * pulse * uDt;
+    val.y += uRate.y * jb.w * wn * uDt;
+    float reach = ja.w < -0.2 ? ja.y / -ja.w : 1e4;
+    float sN = clamp(along / max(reach, 1.0), 0.0, 1.0);
+    across -= uJetBend[i] * sN * sN;
+    float R = uCol.y + uCol.x * clamp(along, 0.0, reach);
+    float wc = exp(-across * across / (R * R)) * smoothstep(0.45, 0.8, sN) * (1.0 - step(reach + 2.0, along));
+    float grain = 0.45 + 1.1 * noise(vec2(across * 0.12 + float(i) * 3.0, along * 0.05 - uTime * 9.0));
+    val.x += uRate.w * jb.w * wc * grain * uDt;
+    val.y += uRate.y * 0.25 * jb.w * wc * uDt;
+    if (reach < 1e3) {
+      float gx = ja.x + ja.z * reach - ja.w * uJetBend[i];
+      float near = exp(-reach / uKick.x);
+      float spread = uKick.y + reach * 0.25;
+      float kx = (p.x - gx) / spread;
+      float ky = p.y / uKick.z;
+      float k = exp(-kx * kx - ky * ky);
+      float g2 = 0.5 + noise(vec2(p.x * 0.08, uTime * 4.0 + float(i) * 9.0));
+      val.x += uRate.z * jb.w * near * k * g2 * uDt;
+      val.y += uRate.y * 0.4 * jb.w * near * k * uDt;
+    }
   }
-  function compile(gl, type, src) { var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; }
-  var UNIFORMS = ['uSize', 'uRatio', 'uPills', 'uHover', 'uDrops', 'uTails', 'uTints', 'uCount', 'uSmooth', 'uPill', 'uHoverColor', 'uShadow'];
-  function build(gl) {
-    var program = gl.createProgram();
-    gl.attachShader(program, compile(gl, gl.VERTEX_SHADER, VERTEX));
-    gl.attachShader(program, compile(gl, gl.FRAGMENT_SHADER, FRAGMENT));
-    gl.linkProgram(program);
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) { gl.deleteProgram(program); return null; }
-    var uniforms = {};
-    UNIFORMS.forEach(function (n) { uniforms[n] = gl.getUniformLocation(program, n); });
-    var buffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
-    return { program: program, uniforms: uniforms, buffer: buffer, position: gl.getAttribLocation(program, 'aPosition') };
+  if (!(val.x < 1e3 && val.y < 1e3 && val.x >= 0.0 && val.y >= 0.0)) val = vec2(0.0);
+  outColor = vec4(val, 0.0, 1.0);
+}`;
+
+const RENDER = `${HEAD}
+uniform sampler2D uDye;
+uniform vec2 uWorld;
+uniform vec2 uDyeSize;
+uniform float uTime;
+uniform float uLightTheme;
+uniform vec3 uSmoke;
+uniform vec3 uShade;
+uniform vec3 uThrust;
+uniform vec4 uLook;
+uniform vec4 uLook2;
+uniform vec4 uLook3;
+uniform vec4 uCol;
+uniform float uGamma;
+uniform float uTone;
+uniform vec3 uLight2;
+uniform float uThreshold;
+uniform float uScale;
+uniform vec4 uCraft;
+uniform vec4 uCraftMotion;
+${JETS}
+${NOISE}
+float dens(vec2 p, float lod) {
+  return textureLod(uDye, p / uWorld, lod).x;
+}
+float hash1(float n) {
+  return fract(sin(n * 127.1) * 43758.5453);
+}
+float fbm2(vec2 p) {
+  return noise(p) * 0.65 + noise(p * 2.13 + 17.0) * 0.35;
+}
+float flowNoise(float q, float xn, float t, float id, float rate) {
+  float c = t / 0.7;
+  float f1 = fract(c);
+  float f2 = fract(c + 0.5);
+  float k1 = floor(c);
+  float k2 = floor(c + 0.5);
+  float n1 = fbm2(vec2(q - f1 * 0.7 * rate + hash1(k1 + id * 7.0) * 41.0, xn * 1.15 + id * 3.7));
+  float n2 = fbm2(vec2(q - f2 * 0.7 * rate + hash1(k2 + id * 7.0 + 0.5) * 41.0, xn * 1.15 + id * 3.7 + 11.0));
+  float w1 = 1.0 - abs(2.0 * f1 - 1.0);
+  float w2 = 1.0 - w1;
+  return 0.5 + (n1 * w1 + n2 * w2 - 0.5) / sqrt(w1 * w1 + w2 * w2);
+}
+float column(vec2 p, vec4 a, float str, float id, float t, float bend, out float xn, out float s) {
+  vec2 rel = p - a.xy;
+  s = dot(rel, a.zw);
+  float x = dot(rel, vec2(-a.w, a.z));
+  float S = a.w < -0.2 ? a.y / -a.w : 1e4;
+  float bn = clamp(s / max(S, 1.0), 0.0, 1.0);
+  x -= bend * bn * bn;
+  xn = 0.0;
+  if (s < -4.0 || s > S + 6.0) return 0.0;
+  float sc = clamp(s, 0.0, S);
+  float R = uCol.y + uCol.x * sc;
+  float flare = smoothstep(S - 32.0 * uScale, S + 2.0, sc);
+  R *= 1.0 + 1.3 * flare * flare;
+  xn = x / R;
+  if (abs(xn) > 3.2) return 0.0;
+  float q = log(1.0 + 0.22 * sc / (9.0 * uScale)) / 0.22;
+  float lam = 9.0 * uScale + 0.22 * sc;
+  float U = uCol.w * sqrt(str) * sqrt(uCol.y / R);
+  float n = flowNoise(q, xn, t, id, U / lam);
+  float amp = 0.12 + 0.5 * smoothstep(4.0, 70.0, sc);
+  float u = abs(xn) * (1.0 - amp * (n - 0.5) * 1.8);
+  float prof = exp(-u * u * 1.7);
+  float dil = pow(uCol.y / R, 0.5);
+  float onset = smoothstep(2.0 * uScale, 16.0 * uScale, s);
+  float tail = 1.0 - smoothstep(S - 2.0, S + 6.0, s);
+  return uCol.z * str * prof * dil * onset * tail * (0.7 + 0.6 * n);
+}
+float shape(vec2 p, float lod) {
+  return log(1.0 + 3.0 * dens(p, lod));
+}
+void main() {
+  vec2 p = vUv * uWorld;
+  float texel = uWorld.x / uDyeSize.x;
+  float D = textureLod(uDye, vUv, uLook.w).x;
+  float heat = textureLod(uDye, vUv, 0.5).y;
+
+  float e = uLook3.x;
+  float lodN = max(log2(e / texel), 0.0) + uLook3.y;
+  vec2 g = vec2(shape(p + vec2(e, 0.0), lodN) - shape(p - vec2(e, 0.0), lodN), shape(p + vec2(0.0, e), lodN) - shape(p - vec2(0.0, e), lodN)) / (2.0 * e);
+  float e2 = e * 3.0;
+  float lodB = lodN + 1.6;
+  vec2 g2 = vec2(shape(p + vec2(e2, 0.0), lodB) - shape(p - vec2(e2, 0.0), lodB), shape(p + vec2(0.0, e2), lodB) - shape(p - vec2(0.0, e2), lodB)) / (2.0 * e2);
+  vec3 nS = normalize(vec3(-(g * uLook3.z + g2 * uLook3.w) * uLook.y, 1.0));
+
+  float colD = 0.0;
+  vec2 colN = vec2(0.0);
+  float colHot = 0.0;
+  float colNear = 0.0;
+  for (int i = 0; i < ${MAX_JETS}; i++) {
+    vec4 jb = uJetB[i];
+    if (jb.w <= 0.0) continue;
+    vec4 ja = uJetA[i];
+    float xn;
+    float sa;
+    float cd = column(p, ja, min(jb.w, 1.6), float(i), uTime, uJetBend[i], xn, sa);
+    colD += cd;
+    colN += vec2(-ja.w, ja.z) * clamp(xn, -1.6, 1.6) * cd;
+    colHot += cd * exp(-max(sa, 0.0) / 45.0);
+    colNear += cd * exp(-max(sa, 0.0) / 16.0);
+  }
+  float Dt = D + colD;
+  float alpha = 1.0 - exp(-uLook.x * pow(max(D - uThreshold, 0.0) + colD, uGamma));
+  vec2 cn = colD > 1e-5 ? colN / colD : vec2(0.0);
+  vec3 nC = normalize(vec3(cn * 0.85, sqrt(max(1.0 - dot(cn, cn) * 0.72, 0.08))));
+  float wC = colD / max(Dt, 1e-5);
+  vec3 n = normalize(mix(nS, nC, wC));
+  vec3 L = normalize(vec3(-0.38, 0.6, 0.72));
+  float diff = clamp((dot(n, L) + uLook2.z) / (1.0 + uLook2.z), 0.0, 1.0);
+
+  vec2 ld = normalize(L.xy);
+  float tau = 0.0;
+  float dist = 2.0;
+  float stepLen = 3.0;
+  for (int i = 0; i < 9; i++) {
+    float lod = max(log2(stepLen / texel), 0.0);
+    tau += dens(p + ld * dist, lod) * stepLen;
+    dist += stepLen;
+    stepLen *= 1.4;
+  }
+  float sun = mix(exp(-uLook.z * tau), 1.0, wC * 0.6);
+  float ao = mix(exp(-uLook2.w * dens(p, 4.5)), 1.0, wC);
+
+  vec3 amb = vec3(0.84, 0.88, 1.0) * uLook2.x;
+  vec3 key = vec3(1.0, 0.985, 0.96) * uLook2.y;
+  vec3 lit = amb * ao + key * sun * diff;
+
+  vec3 jl = vec3(0.0);
+  vec3 core = vec3(0.0);
+  for (int i = 0; i < ${MAX_JETS}; i++) {
+    vec4 jb = uJetB[i];
+    if (jb.w <= 0.0) continue;
+    vec4 ja = uJetA[i];
+    vec2 rel = p - ja.xy;
+    float along = dot(rel, ja.zw);
+    float across = dot(rel, vec2(-ja.w, ja.z));
+    float str = min(jb.w, 1.6);
+    float flick = 0.9 + 0.2 * noise(vec2(uTime * 38.0, float(i) * 5.0));
+    float len = (8.0 + 12.0 * str) * flick * uScale;
+    float sN = along / len;
+    float wid = 3.2 * uScale * (0.9 - 0.5 * clamp(sN, 0.0, 1.0)) + 0.3;
+    float radial = exp(-across * across / (wid * wid));
+    float axial = smoothstep(-0.12, 0.04, sN) * pow(clamp(1.0 - sN, 0.0, 1.0), 1.5);
+    float c = radial * axial * str;
+    core += mix(uThrust, vec3(1.0), smoothstep(0.25, 0.9, c)) * c * 1.3;
+    float d = length(rel - ja.zw * clamp(along, 0.0, len));
+    core += uThrust * str * (0.22 * exp(-d / (5.0 * uScale)) + 0.06 * exp(-d / (18.0 * uScale)));
+    jl += uThrust * str * uLight2.x * (exp(-d / (30.0 * uScale)) + 0.45 * exp(-d / (100.0 * uScale)));
   }
 
-  var host = document.getElementById('vtNav');
-  if (!host) return;
-  var root = document.documentElement;
-  var items = CONFIG.items;
-  var current = CONFIG.initialActiveIndex;
-  var S = { pillRgb: [0, 0, 0, 1], hoverRgb: [0, 0, 0, 0], shadow: 0.2, tints: [] };
-  for (var k in CONFIG) S[k] = CONFIG[k];
+  vec3 jlNear = jl * 0.35 + uThrust * colNear / max(Dt, 1e-4) * 0.9;
+  jl += uThrust * colHot / max(Dt, 1e-4) * 0.9;
+  if (uLightTheme > 0.5) {
+    float shade = dot(lit + jl * 0.8, vec3(0.3333)) * uLight2.z;
+    vec3 ink = mix(uShade, uSmoke, smoothstep(0.15, 1.2, shade));
+    alpha = 1.0 - pow(1.0 - alpha, 1.25);
+    ink = mix(ink, uThrust, clamp(dot(jlNear, vec3(0.3333)) * 0.5, 0.0, 0.3));
+    float ca = clamp(max(core.r, max(core.g, core.b)) * 0.85, 0.0, 1.0);
+    vec3 coreInk = mix(uThrust, vec3(1.0), 0.35 * smoothstep(0.7, 1.0, ca));
+    vec3 lc = ink * alpha * (1.0 - ca) + coreInk * ca;
+    float la = alpha + ca * (1.0 - alpha);
+    outColor = vec4(lc, la);
+    return;
+  }
+  vec3 smoke = uSmoke * (lit + jl) * uLight2.z;
+  smoke = mix(smoke / (1.0 + 0.35 * max(smoke - 0.8, 0.0)), 1.0 - exp(-smoke * 1.35), uTone);
+  vec3 emit = mix(uThrust, vec3(1.0), 0.5) * heat * heat * uLight2.y;
+  vec3 col = (smoke + emit) * alpha + core;
+  float a = clamp(max(alpha, max(col.r, max(col.g, col.b))), 0.0, 1.0);
+  col = min(col, vec3(a));
+  col += (hash(gl_FragCoord.xy + fract(uTime) * 61.0) - 0.5) / 255.0 * a;
+  outColor = vec4(max(col, 0.0), a);
+}`;
 
-  /* DOM */
-  var nav = document.createElement('nav');
-  nav.setAttribute('aria-label', 'Primary');
-  nav.className = 'gooey-nav gooey-nav--' + CONFIG.size + (CONFIG.frame ? ' gooey-nav--framed' : '');
-  nav.innerHTML = (CONFIG.frame ? '<span class="gooey-nav__rim"></span>' : '') +
-    '<div class="gooey-nav__stage"><canvas class="gooey-nav__canvas" aria-hidden="true"></canvas><span class="gooey-nav__fallback" aria-hidden="true"></span><ul class="gooey-nav__list"></ul><ul class="gooey-nav__list gooey-nav__list--active" aria-hidden="true"></ul></div>';
-  host.appendChild(nav);
-  var stage = nav.querySelector('.gooey-nav__stage'), canvas = nav.querySelector('canvas'),
-      fallback = nav.querySelector('.gooey-nav__fallback'),
-      list = nav.querySelectorAll('ul')[0], overlay = nav.querySelectorAll('ul')[1];
-  items.forEach(function (item, i) {
-    var li = document.createElement('li');
-    li.className = 'gooey-nav__item' + (item.desk ? ' gooey-nav__item--desk' : ''); li.setAttribute('data-gooey-index', i);
-    var a = document.createElement('a');
-    a.className = 'gooey-nav__link'; a.href = item.href;
-    a.innerHTML = '<span class="gooey-nav__label">' + item.label + '</span>';
-    a.addEventListener('click', function (e) { e.preventDefault(); pick(i, true); });
-    li.appendChild(a); list.appendChild(li);
-    var ol = document.createElement('li');
-    ol.className = 'gooey-nav__item' + (item.desk ? ' gooey-nav__item--desk' : '');
-    ol.innerHTML = '<span class="gooey-nav__link"><span class="gooey-nav__label">' + item.label + '</span></span>';
-    overlay.appendChild(ol);
+const SMOKE = {
+  colSpread: 0.1,
+  colR: 3.6,
+  colD: 1.25,
+  colU: 420,
+  splash: 400,
+  friction: 5,
+  disperse: 0.6,
+  dispV: 60,
+  gap: 10,
+  wind: 8,
+  turb: 350,
+  turbScale: 34,
+  jetLight: 0.3,
+  threshold: 0.035,
+  blur: 3,
+  emit: 0,
+  exposure: 1.3,
+  tone: 1,
+  gamma: 0.6,
+  kickNear: 45,
+  kickW: 18,
+  kickH: 14,
+  vort: 6,
+  spread: 0.1,
+  floor: 0.02,
+  keepD: 0.3,
+  keepIdle: 0.45,
+  keepH: 1.6,
+  rateN: 0,
+  rateH: 6,
+  rateK: 20,
+  rateC: 3,
+  buoy: 330,
+  lift: 22,
+  damp: 0.55,
+  radius: 6,
+  speed: 380,
+  reach: 0.9,
+  forceMax: 240,
+  alphaK: 4,
+  relief: 9,
+  shadow: 0.026,
+  alphaLod: 0,
+  ambient: 0.58,
+  key: 0.82,
+  wrap: 0.35,
+  ao: 0.35,
+  normalE: 3,
+  normalLod: -0.8,
+  fine: 0.35,
+  broad: 0.9,
+  iters: 28
+};
+
+function createEngine({ root, canvas, button, cursor, props }) {
+  const gl = canvas.getContext('webgl2', {
+    alpha: true,
+    premultipliedAlpha: true,
+    antialias: false,
+    depth: false,
+    stencil: false,
+    powerPreference: 'high-performance'
   });
-  function markActive() {
-    [].forEach.call(list.children, function (li, i) {
-      var a = li.firstChild;
-      if (i === current) { li.setAttribute('data-active', ''); a.setAttribute('aria-current', 'page'); }
-      else { li.removeAttribute('data-active'); a.removeAttribute('aria-current'); }
-    });
-  }
+  const motionQuery =
+    typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+  const s = {
+    W: 0,
+    H: 0,
+    dpr: 1,
+    bw: 0,
+    bh: 0,
+    x: 0,
+    vx: 0,
+    y: -REST,
+    vy: 0,
+    th: 0,
+    w: 0,
+    fvx: 0,
+    fvy: 0,
+    thrust: [0, 0, 0, 0],
+    delay: [0, 0, 0, 0],
+    phase: 'rest',
+    pt: 0,
+    clock: 0,
+    seed: Math.random() * 100,
+    wind: 1,
+    alt: 160,
+    climbT: 1.6,
+    y0: 0,
+    vrPrev: 0,
+    hold: 2.4,
+    xRef: 0,
+    landX: 0,
+    boost: false,
+    contact: true,
+    placed: false,
+    target: { x: 0, y: 0 },
+    pointer: { in: false, x: 0, y: 0, type: 'mouse' },
+    off: { x: 0, y: 0 },
+    attached: false,
+    hover: false,
+    armed: true,
+    carry: false,
+    pressed: false,
+    press: null,
+    drag: null,
+    suppress: false,
+    lastC: null,
+    lastTh: 0,
+    quiet: 0,
+    running: false,
+    last: 0,
+    raf: 0,
+    simTime: 0,
+    activity: 0
+  };
 
-  /* Theme follows the site's light/dark toggle */
-  var engine = null;
-  function isDark() { return getComputedStyle(root).colorScheme === 'dark'; }
-  function applyTheme() {
-    var key = isDark() ? 'dark' : 'light', t = THEMES[key], p = PILLS[key];
-    for (var v in t) nav.style.setProperty(v, t[v]);
-    S.pillRgb = parse(p.color); S.hoverRgb = parse(p.hover); S.shadow = p.shadow;
-    nav.style.setProperty('--gn-pill', p.color);
-    nav.style.setProperty('--gn-active-ink', contrastInk(S.pillRgb));
-    if (engine) engine.refresh();
-  }
-
-  /* Engine */
-  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var gl = canvas.getContext('webgl2', { alpha: true, premultipliedAlpha: true, antialias: false });
-  var pipeline = gl ? build(gl) : null;
-  fallback.style.display = pipeline ? 'none' : 'block';
-  canvas.style.display = pipeline ? 'block' : 'none';
-
-  var view = { width: 0, height: 0 }, rects = [], target = -1, pills = new Map(), drops = [];
-  var hover = { x: 0, y: 0, w: 0, h: 0, alpha: 0, index: -1 };
-  var pillData = new Float32Array(MAX_PILLS * 4), dropData = new Float32Array(MAX_DROPS * 4),
-      tailData = new Float32Array(MAX_DROPS * 2), tintData = new Float32Array(MAX_DROPS * 3);
-  var raf = 0, last = 0;
-
-  function measure() {
-    var box = stage.getBoundingClientRect(), ratio = Math.min(window.devicePixelRatio || 1, 2);
-    view.width = box.width; view.height = box.height;
-    var ow = box.width + MARGIN * 2, oh = box.height + MARGIN * 2;
-    canvas.style.left = -MARGIN + 'px'; canvas.style.top = -MARGIN + 'px';
-    canvas.style.width = ow + 'px'; canvas.style.height = oh + 'px';
-    var w = Math.max(1, Math.round(ow * ratio)), h = Math.max(1, Math.round(oh * ratio));
-    if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
-    rects = Array.prototype.map.call(list.children, function (item) {
-      var r = item.getBoundingClientRect();
-      return { x: r.left - box.left, y: r.top - box.top, w: r.width, h: r.height };
-    });
-  }
-
-  function trace(boxes, blobs, smooth) {
-    function field(x, y) {
-      var d = 1e5, i, v;
-      function merge(value) { var h = clamp01(0.5 + 0.5 * (value - d) / smooth); d = value + (d - value) * h - smooth * h * (1 - h); }
-      for (i = 0; i < boxes.length; i++) {
-        var b = boxes[i], r = Math.min(b.hw, b.hh);
-        var qx = Math.abs(x - b.cx) - b.hw + r, qy = Math.abs(y - b.cy) - b.hh + r;
-        merge(Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - r);
+  let sim = null;
+  if (gl) {
+    const floatOk = gl.getExtension('EXT_color_buffer_float') || gl.getExtension('EXT_color_buffer_half_float');
+    if (floatOk) {
+      try {
+        sim = createSim(gl);
+      } catch (err) {
+        sim = null;
       }
-      for (i = 0; i < blobs.length; i++) {
-        var o = blobs[i], px = x - o.x, py = y - o.y, bx = -o.tx, by = -o.ty, span = bx * bx + by * by;
-        var h = span > 0.0001 ? clamp01((px * bx + py * by) / span) : 0;
-        v = Math.hypot(px - bx * h, py - by * h) - o.r;
-        if (v > d + smooth) continue;
-        merge(v);
-      }
-      return d;
     }
-    var step = 2, parts = [];
-    for (var y = 0; y < view.height; y += 1) {
-      var cy = y + 0.5, previous = field(0, cy), start = previous < 0 ? 0 : null;
-      for (var x = step; x <= view.width + step; x += step) {
-        var value = field(Math.min(x, view.width), cy);
-        if ((previous < 0) !== (value < 0)) {
-          var cross = x - step + step * previous / (previous - value);
-          if (value < 0) start = cross;
-          else if (start !== null) { parts.push('M' + start.toFixed(1) + ',' + y + 'H' + cross.toFixed(1) + 'V' + (y + 1) + 'H' + start.toFixed(1) + 'Z'); start = null; }
-        }
-        previous = value;
-      }
-      if (start !== null) parts.push('M' + start.toFixed(1) + ',' + y + 'H' + view.width + 'V' + (y + 1) + 'H' + start.toFixed(1) + 'Z');
-    }
-    return parts.join('');
   }
 
-  function pill(index) { if (!pills.has(index)) pills.set(index, { mass: 0, scale: 0, velocity: 0, outgoing: 0 }); return pills.get(index); }
-  function shape(index, amount) {
-    var rect = rects[index];
-    if (!rect || amount <= 0.002) return null;
-    var h = rect.h * Math.min(1.08, 0.42 + 0.58 * Math.sqrt(Math.max(0, amount)));
-    var w = Math.max(h, rect.w * Math.pow(Math.max(0, amount), 0.75));
-    return { x: rect.x + rect.w / 2 - w / 2, y: rect.y + rect.h / 2 - h / 2, w: w, h: h };
-  }
-  function plan(drop, index, now, fresh) {
-    var rect = rects[index]; if (!rect) return;
-    var reach = Math.max(0, S.spread);
-    var ex = rect.x + rect.w / 2 + (Math.random() - 0.5) * rect.w * 0.45;
-    var ey = rect.y + rect.h / 2 + (Math.random() - 0.5) * rect.h * 0.2;
-    var base = Math.max(0.15, S.animationTime / 1000);
-    var variance = (Math.random() - 0.5) * (Math.max(0, S.timeVariance) / 1000);
-    var duration = Math.max(0.15, base * (0.62 + Math.random() * 0.32) + variance * 0.6);
-    var out = Math.random() * Math.PI * 2, into = Math.random() * Math.PI * 2;
-    var burst = reach * (0.7 + Math.random() * 0.6), swing = reach * (0.55 + Math.random() * 0.55);
-    var carry = Math.min(duration / 3, 0.12);
-    drop.index = index; drop.start = now; drop.duration = duration;
-    drop.path = [drop.x, drop.y,
-      fresh ? drop.x + Math.cos(out) * burst * 1.6 : drop.x + drop.vx * carry,
-      fresh ? drop.y + Math.sin(out) * burst * 1.6 : drop.y + drop.vy * carry,
-      ex + Math.cos(into) * swing * 1.5, ey + Math.sin(into) * swing * 1.5, ex, ey];
-  }
-  function emit(from, to, now) {
-    var source = pills.get(from), rect = rects[from];
-    if (!source || !rect || !rects[to]) return;
-    var available = source.mass - source.outgoing;
-    if (available <= 0.002) return;
-    var room = MAX_DROPS - drops.length;
-    var count = Math.min(room, Math.max(1, Math.round(Math.max(1, S.particleCount) * available)));
-    if (count <= 0) return;
-    var spreadTime = Math.max(0.15, S.animationTime / 1000) * 0.16;
-    for (var i = 0; i < count; i++) {
-      var mass = available / count;
-      source.outgoing += mass;
-      drops.push({
-        x: rect.x + rect.w / 2 + (Math.random() - 0.5) * rect.w * 0.6,
-        y: rect.y + rect.h / 2 + (Math.random() - 0.5) * rect.h * 0.3,
-        vx: 0, vy: 0, mass: mass, size: 0.8 + Math.random() * 0.4, given: 0, source: from, index: to,
-        leave: now + Math.random() * spreadTime * 1000, emerged: 0, absorbed: 0, state: 'waiting',
-        tint: S.tints.length ? S.tints[Math.floor(Math.random() * S.tints.length)] : null
+  const still = () => Boolean(motionQuery && motionQuery.matches);
+  const scale = () => (SIZES[props.current.size] || SIZES.medium).k;
+  const podH = () => POD_H * scale();
+  const count = () => clamp(Math.round(num(props.current.jets, 2)), 1, MAX_JETS);
+  const offsets = () => {
+    const n = count();
+    if (n === 1) return [0];
+    const a = s.bw * (n === 2 ? 0.3 : 0.34);
+    return Array.from({ length: n }, (_, k) => a * ((2 * k) / (n - 1) - 1));
+  };
+  const feet = () => {
+    const xs = offsets();
+    return xs.length > 1 ? [xs[0], xs[xs.length - 1]] : [-0.3 * s.bw, 0.3 * s.bw];
+  };
+  const totalThrust = () => s.thrust[0] + s.thrust[1] + s.thrust[2] + s.thrust[3];
+  const flying = () =>
+    s.phase === 'ignite' || s.phase === 'climb' || s.phase === 'hover' || s.phase === 'descend' || s.phase === 'drag';
+  const xLimits = () => [s.bw / 2 + 4, Math.max(s.bw / 2 + 4, s.W - s.bw / 2 - 4)];
+
+  const home = () => {
+    const [lo, hi] = xLimits();
+    return clamp(s.W / 2, lo, hi);
+  };
+
+  const craftCenter = () => ({
+    x: s.x,
+    y: podH() + s.bh / 2 + s.y + REST
+  });
+
+  const nozzles = () => {
+    const c = craftCenter();
+    const cs = Math.cos(s.th);
+    const sn = Math.sin(s.th);
+    const ry = props.current.thrusters ? -(s.bh / 2 + podH()) + 1 : -(s.bh / 2) + 2;
+    return offsets().map(rx => ({ x: c.x + rx * cs - ry * sn, y: c.y + rx * sn + ry * cs, dx: sn, dy: -cs }));
+  };
+
+  const cssCenter = () => {
+    const c = craftCenter();
+    return { x: c.x, y: s.H - c.y };
+  };
+
+  const place = () => {
+    const c = craftCenter();
+    const left = c.x - s.bw / 2;
+    const top = s.H - c.y - s.bh / 2;
+    button.style.transform = `translate3d(${left.toFixed(2)}px, ${top.toFixed(2)}px, 0) rotate(${(-s.th).toFixed(5)}rad)`;
+    root.style.setProperty('--fly-thrust', clamp(totalThrust() * 0.9, 0, 1.2).toFixed(3));
+  };
+
+  const jetUniforms = list => {
+    const a = new Float32Array(MAX_JETS * 4);
+    const b = new Float32Array(MAX_JETS * 4);
+    const bend = [0, 0, 0, 0];
+    const n = list.length;
+    const K = SMOKE;
+    const k = scale();
+    list.forEach((q, i) => {
+      const str = clamp(s.thrust[i] * n, 0, 2);
+      const reach = q.dy < -0.2 ? q.y / -q.dy : K.forceMax;
+      a.set([q.x, q.y, q.dx, q.dy], i * 4);
+      b.set(
+        [K.speed * Math.sqrt(str), K.radius * k, Math.min(K.forceMax, reach * K.reach), str > 0.004 ? str : 0],
+        i * 4
+      );
+      const across = s.fvx * -q.dy + s.fvy * q.dx;
+      bend[i] = clamp(-across * 0.22, -0.55 * reach, 0.55 * reach);
+    });
+    return { a, b, bend };
+  };
+
+  const draw = dt => {
+    if (!sim) return;
+    const P = props.current;
+    const list = nozzles();
+    const jets = jetUniforms(list);
+    const c = craftCenter();
+    const xs = offsets();
+    const k = scale();
+    const craft = [c.x, c.y, s.bw / 2, s.bh / 2];
+    const motion = [s.vx, s.vy, s.th, s.w];
+    const calm = (1 - smooth((Math.abs(s.fvx) - 40) / 100)) * (1 - smooth((Math.abs(s.th) - 0.1) / 0.2));
+    if (dt > 0) {
+      s.simTime += dt;
+      sim.step(dt, {
+        jets,
+        craft,
+        motion,
+        calm,
+        scale: k,
+        activity: s.activity,
+        jetX: [0, 1, 2, 3].map(i => (i < xs.length ? xs[i] : 0)),
+        jetN: xs.length,
+        spacing: xs.length > 1 ? xs[1] - xs[0] : 0,
+        wind: s.wind * SMOKE.wind,
+        time: s.simTime,
+        smoke: clamp(num(P.smoke, 1), 0, 3),
+        turbulence: clamp(num(P.turbulence, 1), 0, 3)
       });
     }
-  }
-
-  function render() {
-    var height = (rects[target] && rects[target].h) || (rects[0] && rects[0].h) || 36;
-    var smooth = height * (0.18 + 0.5 * clamp01(S.gooeyness));
-    var boxes = [], blobs = [], i;
-    pills.forEach(function (state, index) {
-      var b = shape(index, state.scale);
-      if (b) boxes.push({ cx: b.x + b.w / 2, cy: b.y + b.h / 2, hw: b.w / 2, hh: b.h / 2 });
+    const smoke = rgb(P.smokeColor);
+    sim.render(canvas.width, canvas.height, {
+      jets,
+      craft,
+      motion,
+      scale: k,
+      activity: s.activity,
+      time: s.simTime,
+      light: P.theme === 'light',
+      smokeColor: smoke,
+      shadeColor: smoke.map((v, i) => v * 0.74 + [0.0, 0.012, 0.045][i]),
+      thrustColor: rgb(P.thrustColor)
     });
-    for (i = 0; i < drops.length; i++) {
-      var drop = drops[i];
-      if (drop.state === 'waiting') continue;
-      var radius = 0.26 * height * drop.size * Math.min(drop.emerged, 1 - drop.absorbed);
-      if (radius <= 0.05) continue;
-      var speed = Math.hypot(drop.vx, drop.vy), length = Math.min(radius * 1.1, speed * 0.018);
-      blobs.push({ x: drop.x, y: drop.y, r: radius, tx: speed > 0.01 ? drop.vx / speed * length : 0, ty: speed > 0.01 ? drop.vy / speed * length : 0, tint: drop.tint });
-    }
-    if (boxes.length === 1 && !blobs.length) {
-      var b0 = boxes[0];
-      overlay.style.clipPath = "path('" + pillPath(b0.cx - b0.hw, b0.cy - b0.hh, b0.hw * 2, b0.hh * 2) + "')";
-    } else {
-      overlay.style.clipPath = "path('" + (trace(boxes, blobs, smooth) || 'M0,0Z') + "')";
-    }
-    overlay.style.visibility = 'visible';
+  };
 
-    if (!pipeline || !gl) {
-      var fb = shape(target, 1);
-      if (fb) {
-        fallback.style.transform = 'translate(' + fb.x.toFixed(2) + 'px, ' + fb.y.toFixed(2) + 'px)';
-        fallback.style.width = fb.w + 'px'; fallback.style.height = fb.h + 'px';
+  const measure = () => {
+    const r = root.getBoundingClientRect();
+    const W0 = s.W;
+    s.W = Math.max(1, r.width);
+    s.H = Math.max(1, r.height);
+    s.bw = button.offsetWidth;
+    s.bh = button.offsetHeight;
+    if (!s.placed) {
+      s.x = home();
+      s.placed = true;
+    } else if (W0 > 0 && W0 !== s.W) s.x *= s.W / W0;
+    const [lo, hi] = xLimits();
+    s.x = clamp(s.x, lo, hi);
+    s.dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const cw = Math.round(s.W * s.dpr);
+    const ch = Math.round(s.H * s.dpr);
+    if (canvas.width !== cw || canvas.height !== ch) {
+      canvas.width = cw;
+      canvas.height = ch;
+    }
+    if (sim) sim.resize(s.W, s.H);
+    root.dataset.ready = '';
+    place();
+    if (!s.running) draw(0);
+  };
+
+  const overCraft = (px, py, margin = 0) => {
+    const c = cssCenter();
+    const a = s.th;
+    const dx = px - c.x;
+    const dy = py - c.y;
+    const lx = dx * Math.cos(a) - dy * Math.sin(a);
+    const ly = dx * Math.sin(a) + dy * Math.cos(a);
+    return Math.abs(lx) <= s.bw / 2 + 2 + margin && ly >= -s.bh / 2 - 2 - margin && ly <= s.bh / 2 + podH() + margin;
+  };
+
+  const begin = () => {
+    s.pt = 0;
+    s.armed = false;
+    s.seed = Math.random() * 100;
+    s.wind = Math.random() < 0.5 ? -1 - Math.random() : 1 + Math.random();
+    s.vrPrev = 0;
+    s.quiet = 0;
+    s.boost = false;
+  };
+
+  const launch = () => {
+    if (s.phase !== 'rest' || still()) return false;
+    const P = props.current;
+    begin();
+    s.phase = 'ignite';
+    s.delay = s.delay.map(() => Math.random() * 0.07);
+    const top = s.H - s.bh - podH() - 30 - REST;
+    s.alt = clamp(s.y + num(P.altitude, 170), s.y + 24, Math.max(s.y + 24, top));
+    s.climbT = num(P.climbTime, 0) > 0 ? num(P.climbTime, 0) : 1.15 + (s.alt - s.y) / 420;
+    s.hold = Math.max(0, num(P.hoverTime, 2.4));
+    s.xRef = s.x;
+    wake();
+    return true;
+  };
+
+  const chooseLanding = lead => {
+    const [lo, hi] = xLimits();
+    s.landX = clamp(s.x + lead, lo, hi);
+  };
+
+  const physics = dt => {
+    const P = props.current;
+    const wob = clamp(num(P.wobble, 1), 0, 3);
+    s.pt += dt;
+    s.clock += dt;
+    const I = (s.bw * s.bw + s.bh * s.bh) / 12;
+    const cs = Math.max(Math.cos(s.th), 0.5);
+    let total = 0;
+    let control = false;
+    let xt = s.xRef;
+    let kp = 3;
+    let kd = 3.6;
+    if (s.phase === 'ignite') {
+      total = 0.9 * smooth(s.pt / 0.5);
+      if (s.pt >= 0.5) {
+        s.phase = 'climb';
+        s.pt = 0;
+        s.y0 = s.y;
       }
-      fallback.style.opacity = fb ? '1' : '0';
+    }
+    if (s.phase === 'climb') {
+      const u = s.pt / s.climbT;
+      const span = s.alt - s.y0;
+      const yr = s.y0 + span * jerk(u);
+      const vr = (span * jerkV(u)) / s.climbT;
+      const ar = (span * jerkA(u)) / (s.climbT * s.climbT);
+      total = (G + ar + 30 * (yr - s.y) + 8 * (vr - s.vy)) / (G * cs);
+      control = true;
+      if (u >= 1) {
+        s.phase = 'hover';
+        s.pt = 0;
+      }
+    } else if (s.phase === 'hover') {
+      const t = s.clock * 0.8;
+      const yr = s.alt + 3.5 * wob * wave(t, s.seed);
+      const vr = 3.5 * wob * 0.8 * waveD(t, s.seed);
+      total = (G + 30 * (yr - s.y) + 8 * (vr - s.vy)) / (G * cs);
+      control = true;
+      if (s.pt >= s.hold) {
+        s.phase = 'descend';
+        s.pt = 0;
+        s.vrPrev = 0;
+        chooseLanding(0);
+      }
+    } else if (s.phase === 'drag') {
+      const yr = s.target.y - podH() - s.bh / 2 - REST;
+      total = (G + 34 * (yr - s.y) - 10 * s.vy) / (G * cs);
+      control = true;
+    } else if (s.phase === 'descend') {
+      xt = s.landX;
+      kp = s.boost ? 5 : 4;
+      kd = s.boost ? 4.6 : 4.2;
+      const vmax = 170;
+      const vt = 32;
+      const off = s.boost ? smooth((Math.abs(s.landX - s.x) - 20) / 40) : smooth((Math.abs(s.landX - s.x) - 3) / 23);
+      const h = Math.max(s.y + REST, 0);
+      const profile = (vt + (vmax - vt) * (1 - Math.exp(-h / 52))) * (1 - (s.boost ? 0.45 : 0.88) * off);
+      const ramp = s.boost ? vmax * 3 : vmax * smooth(s.pt / 0.9) + 1;
+      const vr = -Math.min(profile, ramp);
+      const ar = clamp((vr - s.vrPrev) / Math.max(dt, 1e-4), -600, 600);
+      s.vrPrev = vr;
+      total = (G + ar + (s.boost ? 9 : 7) * (vr - s.vy)) / (G * cs);
+      control = true;
+      if (s.contact && s.pt > 0.3) {
+        s.phase = 'landed';
+        s.pt = 0;
+        s.boost = false;
+      }
+    } else if (s.phase === 'landed') {
+      total = 0;
+      if (s.pt > 0.6 && totalThrust() < 0.03) {
+        s.phase = 'rest';
+        s.pt = 0;
+        s.thrust = [0, 0, 0, 0];
+        s.vy = 0;
+        s.w = 0;
+        s.vx = 0;
+      }
+    }
+    total = Number.isFinite(total) ? clamp(total, 0, s.boost ? 2.6 : 1.9) : 1;
+
+    const xs = offsets();
+    const n = xs.length;
+    const sx2 = xs.reduce((acc, v) => acc + v * v, 0);
+    const hand = s.phase === 'drag' ? clamp(100 * (s.target.x - s.x) - 17 * s.vx, -2400, 2400) : 0;
+    let alphaCmd = 0;
+    if (control) {
+      const gust = 0.8 * wob * wave(s.clock * 1.7, s.seed + 3);
+      const aCmd = s.phase === 'drag' ? hand * 0.75 : kp * (xt - s.x) - kd * s.vx;
+      const lean = s.boost ? 0.45 : 0.32;
+      const thRef = clamp(-Math.atan2(aCmd, G), -lean, lean);
+      alphaCmd = -81 * (s.th - thRef) - 14 * s.w - gust;
+    }
+    const cap = (s.boost ? 2.6 : 2.4) / n;
+    const spool = (cur, cmd) => cur + (cmd - cur) * (1 - Math.exp(-dt / (cmd > cur ? 0.08 : 0.17)));
+    const unit = sx2 > 1 ? (alphaCmd * I) / (G * sx2) : 0;
+    const room = Math.abs(unit) * Math.max(0, ...xs.map(Math.abs));
+    const base = Math.min(total / n, Math.max(cap - room, cap * 0.5));
+    let torque = 0;
+    for (let k = 0; k < MAX_JETS; k += 1) {
+      let cmd = 0;
+      if (k < n) {
+        cmd = clamp(base + unit * xs[k], 0, cap);
+        if (s.phase === 'ignite' && s.pt < s.delay[k]) cmd = 0;
+      }
+      s.thrust[k] = spool(s.thrust[k], cmd);
+      if (k < n) torque += s.thrust[k] * xs[k];
+    }
+
+    const T = totalThrust() * G;
+    let ax = s.phase === 'drag' ? hand : -T * Math.sin(s.th) - 0.8 * s.vx;
+    let ay = T * Math.cos(s.th) - G - 0.3 * s.vy;
+    let alpha = (torque * G) / I - 1.2 * s.w;
+    if (control) {
+      if (s.phase !== 'drag') ax += 12 * wob * wave(s.clock * 0.7, s.seed + 7);
+      alpha += 0.9 * wob * wave(s.clock * 2.3, s.seed + 11);
+      if (sx2 < 1) alpha += alphaCmd;
+      if (Math.abs(s.th) > 0.35) alpha -= (s.th - Math.sign(s.th) * 0.35) * 160;
+    }
+    const c = craftCenter();
+    const csn = Math.cos(s.th);
+    const sn = Math.sin(s.th);
+    const ry = -(s.bh / 2 + podH());
+    let contact = false;
+    feet().forEach(rx => {
+      const ox = rx * csn - ry * sn;
+      const oy = rx * sn + ry * csn;
+      const footY = c.y + oy;
+      const pen = REST - footY;
+      if (pen > 0) {
+        contact = true;
+        const vpy = s.vy + s.w * ox;
+        const vpx = s.vx - s.w * oy;
+        const fy = Math.max(0, SPRING * pen - DAMP * vpy);
+        const fx = -10 * vpx;
+        ay += fy;
+        ax += fx;
+        alpha += (ox * fy - oy * fx) / I;
+      }
+    });
+    s.contact = contact;
+    s.vx = clamp(s.vx + ax * dt, -1500, 1500);
+    s.vy = clamp(s.vy + ay * dt, -1500, 1500);
+    s.w = clamp(s.w + alpha * dt, -14, 14);
+    s.x += s.vx * dt;
+    s.y += s.vy * dt;
+    s.th += s.w * dt;
+    if (Math.abs(s.th) > TILT_MAX) {
+      s.th = Math.sign(s.th) * TILT_MAX;
+      if (s.w * s.th > 0) s.w = 0;
+    }
+    const [lo, hi] = xLimits();
+    if (s.x < lo || s.x > hi) {
+      s.x = clamp(s.x, lo, hi);
+      s.vx = 0;
+    }
+    if (s.y + REST < -40) {
+      s.y = -REST;
+      s.vy = 0;
+    }
+    if (!Number.isFinite(s.y + s.x + s.th + s.vy + s.vx + s.w + totalThrust())) {
+      Object.assign(s, { x: s.W / 2, vx: 0, y: -REST, vy: 0, th: 0, w: 0, thrust: [0, 0, 0, 0], phase: 'rest' });
+      s.drag = null;
+    }
+  };
+
+  const updatePointer = dt => {
+    const P = props.current;
+    const p = s.pointer;
+    const c = cssCenter();
+    if (s.attached && !s.drag && s.lastC) {
+      const fx = p.x + s.off.x;
+      const fy = p.y + s.off.y;
+      const da = -(s.th - s.lastTh);
+      const rx = fx - s.lastC.x;
+      const ry = fy - s.lastC.y;
+      const nx = c.x + rx * Math.cos(da) - ry * Math.sin(da);
+      const ny = c.y + rx * Math.sin(da) + ry * Math.cos(da);
+      s.off.x += nx - fx;
+      s.off.y += ny - fy;
+    }
+    s.lastC = c;
+    s.lastTh = s.th;
+    const fx = p.x + s.off.x;
+    const fy = p.y + s.off.y;
+    const over = p.in && overCraft(fx, fy, s.attached || s.drag ? 10 : 0);
+    if (over !== s.hover) {
+      s.hover = over;
+      if (over) button.dataset.hover = '';
+      else delete button.dataset.hover;
+    }
+    if (!over && !s.drag) {
+      s.attached = false;
+      if (s.phase === 'rest') s.armed = true;
+    }
+    if (over && s.armed && s.phase === 'rest' && p.type === 'mouse' && P.trigger !== 'click' && launch()) {
+      s.attached = Boolean(P.carryCursor);
+    }
+    if (s.phase === 'rest' && Math.abs(s.off.x) + Math.abs(s.off.y) < 12) {
+      const k = Math.exp(-dt * 6);
+      s.off.x *= k;
+      s.off.y *= k;
+    }
+    if (Math.abs(s.off.x) + Math.abs(s.off.y) < 0.3 && (!s.attached || s.phase === 'rest')) {
+      s.off.x = 0;
+      s.off.y = 0;
+      if (s.phase === 'rest') s.attached = false;
+    }
+    const carry =
+      Boolean(P.carryCursor) &&
+      p.in &&
+      p.type === 'mouse' &&
+      (s.attached || Boolean(s.drag) || s.off.x !== 0 || s.off.y !== 0);
+    if (carry !== s.carry) {
+      s.carry = carry;
+      if (carry) root.dataset.carry = '';
+      else delete root.dataset.carry;
+    }
+    if (carry && cursor) {
+      cursor.style.transform = `translate3d(${(fx - 1.8).toFixed(2)}px, ${(fy - 1.75).toFixed(2)}px, 0)`;
+    }
+  };
+
+  const frame = now => {
+    s.raf = 0;
+    const dt = s.last ? clamp((now - s.last) / 1000, 0, 1 / 30) : 1 / 60;
+    s.last = now;
+    if (dt > 0) {
+      if (s.phase !== 'rest') {
+        const steps = 6;
+        for (let i = 0; i < steps; i += 1) physics(dt / steps);
+      }
+      const kf = 1 - Math.exp(-dt / 0.12);
+      s.fvx += (s.vx - s.fvx) * kf;
+      s.fvy += (s.vy - s.fvy) * kf;
+      updatePointer(dt);
+      place();
+      draw(dt);
+      const thrust = totalThrust();
+      s.quiet = thrust > 0.01 || s.phase !== 'rest' ? 0 : s.quiet + dt;
+      const firing = thrust > 0.05 ? 1 : 0;
+      s.activity += (firing - s.activity) * (1 - Math.exp(-dt / (firing ? 0.25 : 1.6)));
+    }
+    if (s.phase !== 'rest' || s.quiet < 7 || s.carry) s.raf = requestAnimationFrame(frame);
+    else {
+      s.running = false;
+      s.last = 0;
+      if (sim) sim.clear();
+      draw(0);
+    }
+  };
+
+  const wake = () => {
+    if (s.raf) return;
+    s.running = true;
+    s.raf = requestAnimationFrame(frame);
+  };
+
+  const local = e => {
+    const r = root.getBoundingClientRect();
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
+  };
+
+  const pointerAt = () => {
+    const p = s.pointer;
+    const mouse = p.type === 'mouse';
+    return { x: p.x + (mouse ? s.off.x : 0), y: p.y + (mouse ? s.off.y : 0) };
+  };
+
+  const aim = () => {
+    if (!s.drag) return;
+    const f = pointerAt();
+    const [lo, hi] = xLimits();
+    const low = podH() + s.bh / 2;
+    s.target.x = clamp(f.x - s.drag.gx, lo, hi);
+    s.target.y = clamp(s.H - (f.y - s.drag.gy), low, Math.max(low, s.H - s.bh / 2 - 6));
+  };
+
+  const startDrag = e => {
+    const f = pointerAt();
+    const c = cssCenter();
+    s.drag = { gx: f.x - c.x, gy: f.y - c.y };
+    s.phase = 'drag';
+    s.pt = 0;
+    s.attached = false;
+    s.pressed = false;
+    s.suppress = true;
+    s.boost = false;
+    delete button.dataset.pressed;
+    root.dataset.dragging = '';
+    try {
+      root.setPointerCapture(e.pointerId);
+    } catch (err) {}
+    aim();
+  };
+
+  const endDrag = e => {
+    s.drag = null;
+    s.press = null;
+    delete root.dataset.dragging;
+    try {
+      root.releasePointerCapture(e.pointerId);
+    } catch (err) {}
+    s.phase = 'hover';
+    s.pt = 0;
+    s.alt = s.y;
+    const [lo, hi] = xLimits();
+    s.xRef = clamp(s.x + s.vx * 0.3, lo, hi);
+    s.hold = Math.min(Math.max(0, num(props.current.hoverTime, 2.4)), 0.9);
+  };
+
+  const onMove = e => {
+    const q = local(e);
+    const p = s.pointer;
+    if (p.in && !s.attached && !s.drag && (s.off.x || s.off.y)) {
+      const k = Math.exp(-Math.hypot(q.x - p.x, q.y - p.y) / 110);
+      s.off.x *= k;
+      s.off.y *= k;
+    }
+    p.x = q.x;
+    p.y = q.y;
+    p.in = true;
+    p.type = e.pointerType || 'mouse';
+    if (s.press && !s.drag && flying() && Math.hypot(q.x - s.press.x, q.y - s.press.y) > 4) startDrag(e);
+    if (s.drag) aim();
+    updatePointer(0);
+    if (s.carry || s.phase !== 'rest') wake();
+  };
+
+  const onLeave = () => {
+    if (s.drag) return;
+    s.pointer.in = false;
+    s.attached = false;
+    s.off.x = 0;
+    s.off.y = 0;
+    updatePointer(0);
+  };
+
+  const onDown = e => {
+    const q = local(e);
+    const p = s.pointer;
+    p.x = q.x;
+    p.y = q.y;
+    p.in = true;
+    p.type = e.pointerType || 'mouse';
+    s.suppress = false;
+    const f = pointerAt();
+    if (!overCraft(f.x, f.y, s.attached ? 10 : 0)) return;
+    if (p.type !== 'mouse' && s.phase === 'rest' && props.current.trigger !== 'click') launch();
+    s.press = { x: q.x, y: q.y };
+    if (s.carry && p.type === 'mouse') {
+      s.pressed = true;
+      button.dataset.pressed = '';
+    }
+  };
+
+  const onUp = e => {
+    if (s.drag) {
+      endDrag(e);
       return;
     }
-    var slot = 0;
-    for (i = 0; i < boxes.length && slot < MAX_PILLS; i++, slot++) {
-      pillData[slot * 4] = boxes[i].cx + MARGIN; pillData[slot * 4 + 1] = boxes[i].cy + MARGIN;
-      pillData[slot * 4 + 2] = boxes[i].hw; pillData[slot * 4 + 3] = boxes[i].hh;
+    s.press = null;
+    if (!s.pressed) return;
+    s.pressed = false;
+    delete button.dataset.pressed;
+    if (s.carry && s.hover) {
+      if (props.current.trigger === 'click' && launch()) s.attached = Boolean(props.current.carryCursor);
+      if (props.current.onClick) props.current.onClick(e);
     }
-    pillData.fill(0, slot * 4);
-    var count = 0;
-    for (i = 0; i < blobs.length && count < MAX_DROPS; i++, count++) {
-      var bl = blobs[i];
-      dropData[count * 4] = bl.x + MARGIN; dropData[count * 4 + 1] = bl.y + MARGIN; dropData[count * 4 + 2] = bl.r; dropData[count * 4 + 3] = 0;
-      tailData[count * 2] = bl.tx; tailData[count * 2 + 1] = bl.ty;
-      var tint = bl.tint || S.pillRgb;
-      tintData[count * 3] = tint[0]; tintData[count * 3 + 1] = tint[1]; tintData[count * 3 + 2] = tint[2];
-    }
-    var u = pipeline.uniforms;
-    gl.viewport(0, 0, canvas.width, canvas.height);
-    gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.useProgram(pipeline.program);
-    gl.bindBuffer(gl.ARRAY_BUFFER, pipeline.buffer);
-    gl.enableVertexAttribArray(pipeline.position);
-    gl.vertexAttribPointer(pipeline.position, 2, gl.FLOAT, false, 0, 0);
-    gl.uniform2f(u.uSize, view.width + MARGIN * 2, view.height + MARGIN * 2);
-    gl.uniform1f(u.uRatio, canvas.width / Math.max(1, view.width + MARGIN * 2));
-    gl.uniform4fv(u.uPills, pillData);
-    gl.uniform4f(u.uHover, hover.x + MARGIN, hover.y + MARGIN, hover.w / 2, hover.h / 2);
-    gl.uniform4fv(u.uDrops, dropData); gl.uniform2fv(u.uTails, tailData); gl.uniform3fv(u.uTints, tintData);
-    gl.uniform1i(u.uCount, count); gl.uniform1f(u.uSmooth, smooth);
-    gl.uniform3f(u.uPill, S.pillRgb[0], S.pillRgb[1], S.pillRgb[2]);
-    gl.uniform4f(u.uHoverColor, S.hoverRgb[0], S.hoverRgb[1], S.hoverRgb[2], S.hoverRgb[3] * hover.alpha);
-    gl.uniform1f(u.uShadow, S.shadow);
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-  }
-
-  function tick(now) {
-    raf = 0;
-    var dt = Math.min(0.05, (now - last) / 1000 || 0);
-    last = now;
-    var emergeTime = 0.09, absorbTime = 0.12;
-    for (var i = drops.length - 1; i >= 0; i--) {
-      var drop = drops[i];
-      if (drop.state === 'waiting') {
-        if (now < drop.leave) continue;
-        drop.state = 'flying'; plan(drop, drop.index, now, true);
-      }
-      if (drop.state === 'flying') {
-        drop.emerged = Math.min(1, drop.emerged + dt / emergeTime);
-        var src = pills.get(drop.source);
-        if (src && drop.given < drop.mass) {
-          var st = Math.min(drop.mass * (dt / emergeTime), drop.mass - drop.given);
-          src.mass = Math.max(0, src.mass - st); src.outgoing = Math.max(0, src.outgoing - st); drop.given += st;
-        }
-        var t = clamp01((now - drop.start) / 1000 / drop.duration), eased = travelEase(t), p = drop.path;
-        var x = bezier(p[0], p[2], p[4], p[6], eased), y = bezier(p[1], p[3], p[5], p[7], eased);
-        if (dt > 0) { drop.vx = (x - drop.x) / dt; drop.vy = (y - drop.y) / dt; }
-        drop.x = x; drop.y = y;
-        if (t >= 1) drop.state = 'absorbing';
-      }
-      if (drop.state === 'absorbing') {
-        var step = Math.min(1 - drop.absorbed, dt / absorbTime);
-        drop.absorbed += step; drop.vx *= 0.8; drop.vy *= 0.8;
-        var hostPill = pill(drop.index);
-        hostPill.mass = Math.min(1, hostPill.mass + drop.mass * step);
-        if (drop.absorbed >= 1) drops.splice(i, 1);
-      }
-    }
-    var zeta = reduced ? 1 : 1 - 0.72 * clamp01(S.wobble), omega = 26;
-    var steps = Math.max(1, Math.ceil(dt / (1 / 240))), h = dt / steps;
-    pills.forEach(function (state, index) {
-      for (var n = 0; n < steps; n++) {
-        state.velocity += (omega * omega * (state.mass - state.scale) - 2 * zeta * omega * state.velocity) * h;
-        state.scale += state.velocity * h;
-      }
-      if (index !== target && state.mass <= 0.002 && state.outgoing <= 0.002 && Math.abs(state.scale) < 0.004) pills.delete(index);
-    });
-    if (hover.index >= 0 && rects[hover.index]) {
-      var rc = rects[hover.index], k2 = 1 - Math.exp(-dt / 0.06);
-      hover.x += (rc.x + rc.w / 2 - hover.x) * k2; hover.y += (rc.y + rc.h / 2 - hover.y) * k2;
-      hover.w += (rc.w - hover.w) * k2; hover.h += (rc.h - hover.h) * k2;
-    }
-    var hoverGoal = S.hoverEffect && hover.index >= 0 && hover.index !== target ? 1 : 0;
-    hover.alpha += (hoverGoal - hover.alpha) * (1 - Math.exp(-dt / 0.08));
-    render();
-    var hostP = pills.get(target);
-    var resting = drops.length === 0 && pills.size === 1 && hostP && Math.abs(hostP.mass - hostP.scale) < 0.0008 && Math.abs(hostP.velocity) < 0.004;
-    var hr = rects[hover.index];
-    var hovering = Math.abs(hoverGoal - hover.alpha) > 0.003 || (hr && Math.abs(hr.x + hr.w / 2 - hover.x) + Math.abs(hr.w - hover.w) > 0.1);
-    if (!resting || hovering) raf = requestAnimationFrame(tick);
-    else { hostP.mass = 1; hostP.scale = 1; hostP.velocity = 0; hover.alpha = hoverGoal; render(); }
-  }
-  function wake() { if (raf) return; last = performance.now(); raf = requestAnimationFrame(tick); }
-  function settle(index) {
-    pills.clear(); drops.length = 0; target = index;
-    var s = pill(index); s.mass = 1; s.scale = 1; s.velocity = 0; render();
-  }
-  function go(index) {
-    if (index === target) return;
-    if (!rects[index] || reduced || target < 0) { settle(index); return; }
-    var now = performance.now();
-    target = index; pill(index);
-    drops.forEach(function (drop) {
-      drop.index = index;
-      if (drop.state === 'flying') plan(drop, index, now, false);
-      if (drop.state === 'absorbing') { drop.state = 'flying'; drop.mass *= 1 - drop.absorbed; drop.absorbed = 0; plan(drop, index, now, false); }
-    });
-    Array.from(pills.keys()).forEach(function (from) { if (from !== index) emit(from, index, now); });
-    wake();
-  }
-  list.addEventListener('pointerover', function (e) {
-    var item = e.target.closest('[data-gooey-index]');
-    if (!item || !list.contains(item)) return;
-    var index = Number(item.getAttribute('data-gooey-index')), rect = rects[index];
-    if (!rect) return;
-    if (hover.alpha < 0.01) { hover.x = rect.x + rect.w / 2; hover.y = rect.y + rect.h / 2; hover.w = rect.w; hover.h = rect.h; }
-    hover.index = index; wake();
-  });
-  list.addEventListener('pointerleave', function () { hover.index = -1; wake(); });
-  new ResizeObserver(function () {
-    measure();
-    if (!drops.length) settle(target < 0 ? current : target); else render();
-  }).observe(list);
-
-  engine = { go: go, refresh: function () { measure(); render(); wake(); } };
-
-  /* Size: compact on phones where the nav sits on its own row */
-  var mq = window.matchMedia('(max-width: 1023px)');
-  function applySize() {
-    var want = mq.matches ? items.length - 1 : -1;
-    if (want >= 0 && current !== want) pick(want, false);
-    else if (want < 0 && current === items.length - 1) { current = 0; markActive(); go(0); spy(); }
-    nav.classList.toggle('gooey-nav--sm', mq.matches);
-    nav.classList.toggle('gooey-nav--md', !mq.matches);
-  }
-  if (mq.addEventListener) mq.addEventListener('change', applySize);
-  applySize();
-
-  /* Selection + scroll sync */
-  var lock = 0;
-  function pick(index, fromClick) {
-    if (index !== current) {
-      current = index; markActive(); go(index);
-      if (S.onChange) S.onChange(index, items[index]);
-    }
-    if (fromClick) {
-      lock = Date.now() + 1000;
-      var id = items[index].href.slice(1), el = id && id !== 'top' ? document.getElementById(id) : null;
-      if (el) el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
-      else window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
-    }
-  }
-  function spy() {
-    if (Date.now() < Math.max(lock, window.__vtLock || 0)) return;
-    var line = (document.getElementById('vtHeader').offsetHeight || 64) + window.innerHeight * 0.3, found = 0;
-    items.forEach(function (it, i) {
-      var el = it.href.length > 1 ? document.getElementById(it.href.slice(1)) : null;
-      if (el && el.getBoundingClientRect().top <= line) found = i;
-    });
-    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) found = items.length - 1;
-    if (mq.matches) found = items.length - 1;
-    else if (window.scrollY < 40) found = 0;
-    pick(found, false);
-  }
-  var spyTick = 0;
-  window.addEventListener('scroll', function () {
-    if (spyTick) return;
-    spyTick = requestAnimationFrame(function () { spyTick = 0; spy(); });
-  }, { passive: true });
-
-  /* Theme: react to the site's toggle and the OS setting */
-  new MutationObserver(applyTheme).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
-  if (window.matchMedia) {
-    var dm = window.matchMedia('(prefers-color-scheme: dark)');
-    if (dm.addEventListener) dm.addEventListener('change', applyTheme);
-  }
-
-  if (mq.matches) current = items.length - 1;
-  applyTheme(); markActive(); measure(); settle(current);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { measure(); if (!drops.length) settle(target); });
-  spy();
-})();
-</script>
-
-<script>
-/* CardNav: vanilla port. Only the 3-line button shows at the top right; click opens the full card menu. */
-(function () {
-  var host = document.getElementById('vtMenu');
-  if (!host) return;
-  var root = document.documentElement;
-  var ITEMS = [
-    { label: 'Explore', description: 'Trade crypto and gift cards at clear rates.', links: [
-      { label: 'Sell Crypto', href: '#markets', tab: 'tmSellTab' }, { label: 'Buy Crypto', href: '#markets', tab: 'tmBuyTab' }, { label: 'Sell Gift Cards', href: '#giftcards' }] },
-    { label: 'Help', description: 'Answers instantly, and real people when you need them.', links: [
-      { label: 'Support', href: '#support' },
-      { label: 'Chat on WhatsApp', href: 'https://api.whatsapp.com/send?phone=2349015508108&text=Hi%20VersusTrade', external: true }] },
-    { label: 'Company', description: 'Learn more about VersusTrade.', links: [
-      { label: 'About Us', href: '/about/' }, { label: 'Versus Blog', href: '/blog/' }] }
-  ];
-  var THEMES = {
-    dark: { '--cn-panel': '#26232e', '--cn-edge': 'rgba(255,255,255,0.08)', '--cn-highlight': 'rgba(255,255,255,0.07)', '--cn-shadow': '0 24px 48px -20px rgba(0,0,0,0.8), 0 6px 16px -8px rgba(0,0,0,0.5)', '--cn-text': '#f4f4f5', '--cn-muted': 'rgba(244,244,245,0.56)', '--cn-hover': 'rgba(255,255,255,0.06)', '--cn-ring': 'rgba(244,244,245,0.55)', '--cn-tile': 'linear-gradient(180deg,#34303d 0%,#27242f 100%)', '--cn-tile-rim': 'inset 0 0 0 1px rgba(255,255,255,0.06), inset 0 1px 0 rgba(255,255,255,0.1), 0 4px 10px -4px rgba(0,0,0,0.6)' },
-    light: { '--cn-panel': '#f4f4f6', '--cn-edge': 'rgba(24,24,27,0.07)', '--cn-highlight': 'rgba(255,255,255,0.95)', '--cn-shadow': '0 24px 48px -24px rgba(24,24,27,0.3), 0 6px 16px -10px rgba(24,24,27,0.16)', '--cn-text': '#18181b', '--cn-muted': 'rgba(24,24,27,0.56)', '--cn-hover': 'rgba(24,24,27,0.05)', '--cn-ring': 'rgba(24,24,27,0.45)', '--cn-tile': 'linear-gradient(180deg,#ffffff 0%,#f8f8fa 100%)', '--cn-tile-rim': 'inset 0 0 0 1px rgba(24,24,27,0.07), inset 0 1px 0 rgba(255,255,255,1), 0 4px 10px -5px rgba(24,24,27,0.22)' }
   };
-  var CFG = { stagger: 0.12, bounce: 0.2, speed: 1, maxWidth: 800, narrow: 560, effect: 'rise' };
-  var ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg>';
-  function clamp(v, a, b) { return Math.min(b, Math.max(a, v)); }
-  function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
 
-  host.className = 'card-nav';
-  host.innerHTML =
-    '<nav class="card-nav__panel" aria-label="Menu">' +
-      '<div class="card-nav__bar"><button type="button" class="card-nav__menu" aria-expanded="false" aria-controls="vtMenuContent" aria-label="Open menu">' +
-        '<span class="card-nav__burger" aria-hidden="true"><span class="card-nav__line card-nav__line--top"></span><span class="card-nav__line card-nav__line--bottom"></span></span></button></div>' +
-      '<div class="card-nav__content" id="vtMenuContent" aria-hidden="true"><div class="card-nav__cards"></div></div>' +
-      '<span class="card-nav__rim"></span></nav>';
-  var panel = host.querySelector('.card-nav__panel'), btn = host.querySelector('.card-nav__menu'),
-      content = host.querySelector('.card-nav__content'), cardsEl = host.querySelector('.card-nav__cards');
-  var cards = [];
-  ITEMS.forEach(function (item) {
-    var card = document.createElement('div');
-    card.className = 'card-nav__card';
-    card.innerHTML = '<div class="card-nav__card-head"><span class="card-nav__label">' + item.label + '</span><p class="card-nav__description">' + item.description + '</p></div><ul class="card-nav__links"></ul>';
-    var ul = card.querySelector('ul');
-    item.links.forEach(function (link) {
-      var li = document.createElement('li'), a = document.createElement('a');
-      a.className = 'card-nav__link'; a.href = link.href; a.tabIndex = -1;
-      if (link.external) { a.target = '_blank'; a.rel = 'noopener'; }
-      a.innerHTML = '<span class="card-nav__arrow" aria-hidden="true">' + ARROW + ARROW + '</span>' + link.label;
-      a.addEventListener('click', function (e) { onLink(e, link); });
-      li.appendChild(a); ul.appendChild(li);
-    });
-    cardsEl.appendChild(card); cards.push(card);
-  });
-
-  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var open = false, p = 0, v = 0, openW = CFG.maxWidth, contentH = 0, bar = 44, raf = 0, last = 0;
-
-  function applyTheme() {
-    var t = THEMES[getComputedStyle(root).colorScheme === 'dark' ? 'dark' : 'light'];
-    for (var k in t) host.style.setProperty(k, t[k]);
-  }
-  function layout() {
-    bar = parseFloat(getComputedStyle(host).getPropertyValue('--cn-bar')) || 44;
-    var right = host.getBoundingClientRect().right;
-    openW = Math.max(240, Math.min(CFG.maxWidth, right - 16));
-    host.toggleAttribute('data-narrow', openW < CFG.narrow);
-    content.style.width = openW + 'px';
-    contentH = content.offsetHeight;
-  }
-  function render() {
-    panel.style.width = (bar + clamp(p, 0, 1) * (openW - bar)) + 'px';
-    panel.style.height = (bar + Math.max(0, p) * contentH) + 'px';
-    var n = cards.length, lag = n > 1 ? Math.min(CFG.stagger, 0.7 / (n - 1)) : 0, span = 1 - lag * (n - 1);
-    cards.forEach(function (card, i) {
-      var local = clamp((p - i * lag) / Math.max(span, 0.05), 0, 1), e = easeOut(local);
-      card.style.transform = 'translateY(' + ((1 - e) * 26) + 'px) scale(' + (0.97 + 0.03 * e) + ')';
-      card.style.opacity = String(e);
-    });
-  }
-  function tick(now) {
-    raf = 0;
-    var dt = last ? Math.min(0.05, (now - last) / 1000) : 1 / 60; last = now;
-    var target = open ? 1 : 0;
-    if (reduce) { p = target; v = 0; }
-    else {
-      var k = 160 * CFG.speed * CFG.speed, zeta = open ? 1 - 0.68 * CFG.bounce : 1;
-      var steps = Math.ceil(dt / (1 / 240)), h = dt / steps;
-      for (var i = 0; i < steps; i++) { v += (-k * (p - target) - 2 * zeta * Math.sqrt(k) * v) * h; p += v * h; }
-    }
-    var done = Math.abs(p - target) < 0.0005 && Math.abs(v) < 0.002;
-    if (done) { p = target; v = 0; }
-    render();
-    if (done && target === 0) host.removeAttribute('data-shown');
-    if (!done) raf = requestAnimationFrame(tick);
-  }
-  function wake() { if (!raf) { last = 0; raf = requestAnimationFrame(tick); } }
-  function setOpen(next) {
-    if (next === open) return;
-    open = next;
-    if (open) { layout(); host.setAttribute('data-shown', ''); }
-    host.toggleAttribute('data-open', open);
-    btn.setAttribute('aria-expanded', open); btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
-    content.setAttribute('aria-hidden', !open);
-    [].forEach.call(content.querySelectorAll('a'), function (a) { a.tabIndex = open ? 0 : -1; });
-    wake();
-  }
-  function onLink(e, link) {
-    if (link.href.charAt(0) === '#') {
+  const onClick = e => {
+    if (s.suppress) {
+      s.suppress = false;
+      e.stopPropagation();
       e.preventDefault();
-      window.__vtLock = Date.now() + 1000;
-      var el = link.href.length > 1 && link.href !== '#top' ? document.getElementById(link.href.slice(1)) : null;
-      if (el) el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
-      else window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
-      if (link.tab) setTimeout(function () { var t = document.getElementById(link.tab); if (t) t.click(); }, 500);
-      setTimeout(function () { window.dispatchEvent(new Event('scroll')); }, 1050);
+      return;
     }
-    setOpen(false);
+    if (props.current.onClick) props.current.onClick(e);
+    if (s.phase !== 'rest') return;
+    if (launch() && s.pointer.type === 'mouse' && s.pointer.in && s.hover) {
+      s.attached = Boolean(props.current.carryCursor);
+    }
+  };
+
+  root.addEventListener('pointermove', onMove);
+  root.addEventListener('pointerenter', onMove);
+  root.addEventListener('pointerleave', onLeave);
+  root.addEventListener('pointerdown', onDown);
+  root.addEventListener('pointerup', onUp);
+  root.addEventListener('pointercancel', onUp);
+  button.addEventListener('click', onClick);
+
+  const ro = new ResizeObserver(measure);
+  ro.observe(root);
+  ro.observe(button);
+  measure();
+
+  return {
+    refresh: measure,
+    launch() {
+      return launch();
+    },
+    isResting() {
+      return s.phase === 'rest';
+    },
+    climbTime() {
+      return s.climbT;
+    },
+    phase() {
+      return s.phase;
+    },
+    progress() {
+      return s.phase === 'climb' ? clamp(s.pt / s.climbT, 0, 1) : s.phase === 'ignite' ? 0 : 1;
+    },
+    destroy() {
+      ro.disconnect();
+      if (s.raf) cancelAnimationFrame(s.raf);
+      root.removeEventListener('pointermove', onMove);
+      root.removeEventListener('pointerenter', onMove);
+      root.removeEventListener('pointerleave', onLeave);
+      root.removeEventListener('pointerdown', onDown);
+      root.removeEventListener('pointerup', onUp);
+      root.removeEventListener('pointercancel', onUp);
+      button.removeEventListener('click', onClick);
+      if (sim) sim.dispose();
+    }
+  };
+}
+
+function createSim(gl) {
+  const compile = (type, src) => {
+    const sh = gl.createShader(type);
+    gl.shaderSource(sh, src);
+    gl.compileShader(sh);
+    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
+      const log = gl.getShaderInfoLog(sh);
+      gl.deleteShader(sh);
+      throw new Error(log);
+    }
+    return sh;
+  };
+  const vs = compile(gl.VERTEX_SHADER, VERT);
+  const programs = [];
+  const make = src => {
+    const fs = compile(gl.FRAGMENT_SHADER, src);
+    const p = gl.createProgram();
+    gl.attachShader(p, vs);
+    gl.attachShader(p, fs);
+    gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+    gl.deleteShader(fs);
+    const u = {};
+    const count = gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS);
+    for (let i = 0; i < count; i += 1) {
+      const info = gl.getActiveUniform(p, i);
+      u[info.name.replace(/\[0\]$/, '')] = gl.getUniformLocation(p, info.name);
+    }
+    const prog = { p, u };
+    programs.push(prog);
+    return prog;
+  };
+
+  const P = {
+    advect: make(ADVECT),
+    force: make(FORCE),
+    curl: make(CURL),
+    vorticity: make(VORTICITY),
+    divergence: make(DIVERGENCE),
+    pressure: make(PRESSURE),
+    gradient: make(GRADIENT),
+    scale: make(SCALE),
+    blur: make(BLUR),
+    dye: make(DYE),
+    render: make(RENDER)
+  };
+
+  const vao = gl.createVertexArray();
+  const targets = [];
+
+  const target = (w, h, internal, mips) => {
+    const tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    const levels = mips ? Math.floor(Math.log2(Math.max(w, h))) + 1 : 1;
+    gl.texStorage2D(gl.TEXTURE_2D, levels, internal, w, h);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, mips ? gl.LINEAR_MIPMAP_LINEAR : gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    const fbo = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+    gl.viewport(0, 0, w, h);
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    const t = { tex, fbo, w, h, mips };
+    targets.push(t);
+    return t;
+  };
+  const pair = (w, h, internal, mips) => {
+    const p = { read: target(w, h, internal, mips), write: target(w, h, internal, mips) };
+    p.swap = () => {
+      const t = p.read;
+      p.read = p.write;
+      p.write = t;
+    };
+    return p;
+  };
+
+  let f = null;
+  let world = [1, 1];
+
+  const free = () => {
+    targets.forEach(t => {
+      gl.deleteTexture(t.tex);
+      gl.deleteFramebuffer(t.fbo);
+    });
+    targets.length = 0;
+  };
+
+  const resize = (W, H) => {
+    const cell = Math.max(2, W / 520, H / 300);
+    const vw = Math.max(16, Math.round(W / cell));
+    const vh = Math.max(16, Math.round(H / cell));
+    const dw = Math.max(16, Math.round(W / (cell / 2)));
+    const dh = Math.max(16, Math.round(H / (cell / 2)));
+    world = [W, H];
+    if (f && f.vw === vw && f.vh === vh && f.dw === dw && f.dh === dh) return;
+    free();
+    f = {
+      vw,
+      vh,
+      dw,
+      dh,
+      velocity: pair(vw, vh, gl.RG16F, false),
+      pressure: pair(vw, vh, gl.R16F, false),
+      divergence: target(vw, vh, gl.R16F, false),
+      curl: target(vw, vh, gl.R16F, false),
+      dye: pair(dw, dh, gl.RG16F, false),
+      soft: target(dw, dh, gl.RG16F, true),
+      temp: target(dw, dh, gl.RG16F, false)
+    };
+  };
+
+  let unit = 0;
+  const bind = (prog, values) => {
+    gl.useProgram(prog.p);
+    unit = 0;
+    Object.entries(values).forEach(([name, v]) => {
+      const loc = prog.u[name];
+      if (loc === undefined || loc === null) return;
+      if (typeof v === 'number') gl.uniform1f(loc, v);
+      else if (v.f1) gl.uniform1fv(loc, v.f1);
+      else if (v.tex) {
+        gl.activeTexture(gl.TEXTURE0 + unit);
+        gl.bindTexture(gl.TEXTURE_2D, v.tex);
+        gl.uniform1i(loc, unit);
+        unit += 1;
+      } else if (v.length === 2) gl.uniform2fv(loc, v);
+      else if (v.length === 3) gl.uniform3fv(loc, v);
+      else gl.uniform4fv(loc, v);
+    });
+  };
+  const run = (prog, values, out) => {
+    bind(prog, values);
+    if (out) {
+      gl.bindFramebuffer(gl.FRAMEBUFFER, out.fbo);
+      gl.viewport(0, 0, out.w, out.h);
+    }
+    gl.bindVertexArray(vao);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  };
+
+  const step = (dt, o) => {
+    if (!f) return;
+    const K = SMOKE;
+    gl.disable(gl.BLEND);
+    const vt = [1 / f.vw, 1 / f.vh];
+    run(
+      P.advect,
+      { uVelocity: f.velocity.read, uSource: f.velocity.read, uWorld: world, uDt: dt, uKeep: 1 },
+      f.velocity.write
+    );
+    f.velocity.swap();
+    run(
+      P.force,
+      {
+        uVelocity: f.velocity.read,
+        uDye: f.soft,
+        uWorld: world,
+        uDt: dt,
+        uBuoyancy: K.buoy,
+        uLift: K.lift,
+        uDamping: K.damp,
+        uSpread: K.spread,
+        uSplash: K.splash,
+        uFriction: K.friction,
+        uWind: o.wind,
+        uTurb: [K.turb * (0.35 + 0.65 * o.activity), K.turbScale],
+        uTime: o.time,
+        uObstacle: o.calm,
+        uKick: [K.kickNear * o.scale, K.kickW * o.scale, K.kickH * o.scale],
+        uCraft: o.craft,
+        uCraftMotion: o.motion,
+        uJetA: o.jets.a,
+        uJetB: o.jets.b,
+        uJetBend: { f1: o.jets.bend }
+      },
+      f.velocity.write
+    );
+    f.velocity.swap();
+    run(P.curl, { uVelocity: f.velocity.read, uTexel: vt }, f.curl);
+    run(
+      P.vorticity,
+      {
+        uVelocity: f.velocity.read,
+        uCurl: f.curl,
+        uTexel: vt,
+        uStrength: K.vort * o.turbulence * (0.4 + 0.6 * o.activity),
+        uDt: dt
+      },
+      f.velocity.write
+    );
+    f.velocity.swap();
+    run(P.divergence, { uVelocity: f.velocity.read, uTexel: vt }, f.divergence);
+    run(P.scale, { uSource: f.pressure.read, uScale: 0.8 }, f.pressure.write);
+    f.pressure.swap();
+    for (let i = 0; i < K.iters; i += 1) {
+      run(P.pressure, { uPressure: f.pressure.read, uDivergence: f.divergence, uTexel: vt }, f.pressure.write);
+      f.pressure.swap();
+    }
+    run(P.gradient, { uPressure: f.pressure.read, uVelocity: f.velocity.read, uTexel: vt }, f.velocity.write);
+    f.velocity.swap();
+
+    run(
+      P.dye,
+      {
+        uVelocity: f.velocity.read,
+        uSource: f.dye.read,
+        uWorld: world,
+        uDt: dt,
+        uKeep: [Math.exp(-(K.keepD + K.keepIdle * (1 - o.activity)) * dt), Math.exp(-K.keepH * dt)],
+        uRate: [K.rateN * o.smoke, K.rateH, K.rateK * o.smoke, K.rateC * o.smoke],
+        uSpread: K.spread,
+        uCol: [K.colSpread, K.colR * o.scale, K.colD, K.colU],
+        uKick: [K.kickNear * o.scale, K.kickW * o.scale, K.kickH * o.scale],
+        uDisperse: K.disperse,
+        uDispV: K.dispV,
+        uCraft: o.craft,
+        uCraftMotion: o.motion,
+        uGap: [o.spacing, K.gap * o.calm],
+        uJetX: { f1: o.jetX },
+        uJetN: o.jetN,
+        uFloor: K.floor,
+        uTime: o.time,
+        uJetA: o.jets.a,
+        uJetB: o.jets.b,
+        uJetBend: { f1: o.jets.bend }
+      },
+      f.dye.write
+    );
+    f.dye.swap();
+    const spread = K.blur / 2;
+    run(P.blur, { uSource: f.dye.read, uStep: [spread / f.dw, 0] }, f.temp);
+    run(P.blur, { uSource: f.temp, uStep: [0, spread / f.dh] }, f.soft);
+    gl.bindTexture(gl.TEXTURE_2D, f.soft.tex);
+    gl.generateMipmap(gl.TEXTURE_2D);
+  };
+
+  const render = (cw, ch, o) => {
+    if (!f) return;
+    const K = SMOKE;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.viewport(0, 0, cw, ch);
+    gl.disable(gl.BLEND);
+    run(P.render, {
+      uDye: f.soft,
+      uWorld: world,
+      uDyeSize: [f.dw, f.dh],
+      uTime: o.time,
+      uLightTheme: o.light ? 1 : 0,
+      uSmoke: o.smokeColor,
+      uShade: o.shadeColor,
+      uThrust: o.thrustColor,
+      uLook: [K.alphaK * (0.6 + 0.4 * o.activity), K.relief, K.shadow, K.alphaLod],
+      uLook2: [K.ambient, K.key, K.wrap, K.ao],
+      uLook3: [K.normalE, K.normalLod, K.fine, K.broad],
+      uCol: [K.colSpread, K.colR * o.scale, K.colD, K.colU],
+      uScale: o.scale,
+      uGamma: K.gamma,
+      uTone: K.tone,
+      uLight2: [K.jetLight, K.emit, K.exposure],
+      uThreshold: K.threshold * (0.3 + 0.7 * o.activity),
+      uCraft: o.craft,
+      uCraftMotion: o.motion,
+      uJetA: o.jets.a,
+      uJetB: o.jets.b,
+      uJetBend: { f1: o.jets.bend }
+    });
+  };
+
+  const clear = () => {
+    if (!f) return;
+    [
+      f.velocity.read,
+      f.velocity.write,
+      f.pressure.read,
+      f.pressure.write,
+      f.dye.read,
+      f.dye.write,
+      f.soft,
+      f.temp
+    ].forEach(t => {
+      gl.bindFramebuffer(gl.FRAMEBUFFER, t.fbo);
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+    });
+    gl.bindTexture(gl.TEXTURE_2D, f.soft.tex);
+    gl.generateMipmap(gl.TEXTURE_2D);
+  };
+
+  const dispose = () => {
+    free();
+    programs.forEach(p => gl.deleteProgram(p.p));
+    gl.deleteShader(vs);
+    gl.deleteVertexArray(vao);
+  };
+
+  return { step, render, resize, clear, dispose };
+}
+
+
+// ---- Mount: "Flying VersusTraders" rests in the footer. The back-to-top arrow launches it: it thrusts to the top of the screen
+// in step with the page scrolling to the top, hovers briefly, then drops back down slowly, trailing smoke. ----
+(function () {
+  var stage = document.getElementById('fbStage'), cfWrap = document.getElementById('cfWrap');
+  if (!stage || !cfWrap) return;
+  var root = document.documentElement;
+  var HOP = { altitude: 170, hoverTime: 2.4, climbTime: 0 }; // what a tap on the button itself does
+  var opts = {
+    size: 'medium', altitude: HOP.altitude, hoverTime: HOP.hoverTime, climbTime: HOP.climbTime, jets: 2, thrusters: true,
+    trigger: 'click', carryCursor: false, smoke: 1, turbulence: 1, wobble: 1, thrustColor: '#fa0303', smokeColor: '#eef1f6',
+    theme: 'dark', onClick: null
+  };
+  var propsRef = { current: opts }, engine = null, started = false, busy = false, scrollAnim = 0;
+  var dims = SIZES[opts.size];
+  stage.className = 'flying-button fb-stage';
+  stage.setAttribute('data-trigger', 'click');
+  stage.innerHTML =
+    '<canvas class="flying-button__smoke" aria-hidden="true"></canvas>' +
+    '<button type="button" class="flying-button__craft">' +
+    '<span class="flying-button__face" aria-hidden="true"></span><span class="flying-button__label">Flying VersusTraders</span>' +
+    '<span class="flying-button__pod" style="left:20%" aria-hidden="true"></span><span class="flying-button__pod" style="left:80%" aria-hidden="true"></span></button>';
+  function applyTheme() {
+    var t = getComputedStyle(root).colorScheme === 'dark' ? 'dark' : 'light';
+    opts.theme = t; stage.setAttribute('data-theme', t);
+    stage.style.setProperty('--fly-bg', t === 'light' ? '#18181b' : '#27272a');
+    stage.style.setProperty('--fly-ink', t === 'light' ? '#fafafa' : '#f5f5f5');
+    stage.style.setProperty('--fly-glow', opts.thrustColor);
+    stage.style.setProperty('--fly-h', dims.h + 'px'); stage.style.setProperty('--fly-px', dims.px + 'px');
+    stage.style.setProperty('--fly-fs', dims.fs + 'px'); stage.style.setProperty('--fly-scale', dims.k);
+    if (engine) engine.refresh();
   }
-
-  btn.addEventListener('click', function () { setOpen(!open); });
-  document.addEventListener('pointerdown', function (e) { if (open && !host.contains(e.target)) setOpen(false); });
-  document.addEventListener('keydown', function (e) { if (open && e.key === 'Escape') { setOpen(false); btn.focus(); } });
-  window.addEventListener('resize', function () { layout(); render(); });
-  new ResizeObserver(function () { if (open) { contentH = content.offsetHeight; render(); } }).observe(content);
+  applyTheme();
   new MutationObserver(applyTheme).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
-  if (window.matchMedia) { var dm = window.matchMedia('(prefers-color-scheme: dark)'); if (dm.addEventListener) dm.addEventListener('change', applyTheme); }
+  if (window.matchMedia) try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme); } catch (e) {}
 
-  applyTheme(); layout(); render();
+  // Where the "ground" is: level with the back-to-top arrow (or just above the footer's bottom row on narrow screens).
+  function floorPx() {
+    var bar = document.getElementById('cfBottom'), up = document.getElementById('cfTop');
+    if (!bar || !up) return 24;
+    var br = bar.getBoundingClientRect(), ur = up.getBoundingClientRect(), vh = window.innerHeight;
+    if (getComputedStyle(bar).flexDirection === 'column') return Math.max(8, Math.round(vh - br.top + 12));
+    return Math.max(8, Math.round(vh - (ur.top + ur.height / 2) - dims.h / 2 - POD_H));
+  }
+  function footerShown() { return cfWrap.getBoundingClientRect().top < window.innerHeight * 0.15; }
+  function sync() {
+    if (!busy) stage.style.bottom = floorPx() + 'px'; // never move the ground mid-flight
+    stage.classList.toggle('on', busy || footerShown());
+  }
+  window.addEventListener('scroll', sync, { passive: true });
+  window.addEventListener('resize', sync);
+
+  function start() {
+    if (started) return; started = true;
+    sync();
+    engine = createEngine({ root: stage, canvas: stage.querySelector('canvas'), button: stage.querySelector('button'), cursor: null, props: propsRef });
+  }
+  if ('IntersectionObserver' in window) {
+    var lazy = new IntersectionObserver(function (en) { if (en[0].isIntersecting) { lazy.disconnect(); start(); } }, { rootMargin: '600px 0px' });
+    lazy.observe(cfWrap);
+  } else start();
+  sync();
+
+  // Back-to-top arrow: thrust up to the top of the screen at the same pace the page scrolls, then drop back slowly.
+  window.vtFlyToTop = function () {
+    if (!engine || busy) return false;
+    var y0 = window.scrollY;
+    if (y0 < 80) return false;
+    opts.altitude = 5000; opts.hoverTime = 0.25; opts.climbTime = Math.min(3.4, Math.max(1.8, 1.5 + y0 / 5000));
+    var ok = engine.launch();
+    opts.altitude = HOP.altitude; opts.hoverTime = HOP.hoverTime; opts.climbTime = HOP.climbTime;
+    if (!ok) return false; // reduced motion, or already flying: the normal scroll takes over
+    busy = true; sync();
+    // The scroll is driven by the climb itself (not by a separate clock), so the page and the button stay in step at any frame rate.
+    function release() {
+      cancelAnimationFrame(scrollAnim); root.style.scrollBehavior = '';
+      ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach(function (n) { window.removeEventListener(n, release); });
+    }
+    function step() {
+      var ph = engine.phase(), climbing = ph === 'ignite' || ph === 'climb';
+      window.scrollTo(0, climbing ? y0 * (1 - jerk(engine.progress())) : 0);
+      if (climbing) scrollAnim = requestAnimationFrame(step); else release();
+    }
+    root.style.scrollBehavior = 'auto';
+    ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach(function (n) { window.addEventListener(n, release, { passive: true }); });
+    scrollAnim = requestAnimationFrame(step);
+    var watch = setInterval(function () {
+      if (!engine.isResting()) return;
+      clearInterval(watch);
+      setTimeout(function () { busy = false; sync(); }, 900); // let it sit for a moment, then it slips away until the footer is back
+    }, 200);
+    return true;
+  };
+})();
 })();
 </script>
-
 </body>
 </html>
