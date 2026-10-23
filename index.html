@@ -46,9 +46,9 @@ button{background:none;border:0;cursor:pointer}
   .vt-header.scrolled .vt-bar{height:52px;padding:0 16px}
 }
 .vt-bar{max-width:1440px;margin:0 auto;height:var(--header-h);padding:0 24px;display:flex;align-items:center;gap:20px}
-.vt-logo{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.vt-logo{display:flex;align-items:center;gap:5px;flex-shrink:0}
 .vt-logo img{height:32px;width:auto;display:block;object-fit:contain}
-.vt-logo span{font-weight:500;font-size:22px;letter-spacing:-.015em;color:var(--text)}
+.vt-logo span{font-weight:500;font-size:20px;letter-spacing:-.015em;color:var(--text)}
 .vt-actions{display:flex;align-items:center;gap:6px;margin-left:auto;flex-shrink:0}
 .vt-login{padding:8px 14px;font-size:14px;font-weight:500;border-radius:999px}
 .vt-login:hover{color:var(--red)}
@@ -399,11 +399,11 @@ html.ac-on [data-ac]>*:not([data-ac-in]){opacity:0}
 /* ===== GooeyNav (header) ===== */
 .vt-bar{position:relative}
 .vt-nav{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:1}
-#markets,#rates,#trust,#support{scroll-margin-top:84px}
+#markets,#rates,#trust,#support,#giftcards{scroll-margin-top:84px}
 @media (max-width:1023px){
   .gooey-nav .gooey-nav__item.gooey-nav__item--desk{display:none}
   .gooey-nav .gooey-nav__list{flex-wrap:nowrap}
-  #markets,#rates,#trust,#support{scroll-margin-top:76px}
+  #markets,#rates,#trust,#support,#giftcards{scroll-margin-top:76px}
 }
 .gooey-nav{--gn-pad:6px;--gn-gap:4px;--gn-font:14px;--gn-x:16px;--gn-y:9px;position:relative;display:inline-flex;max-width:100%;font-size:var(--gn-font);line-height:1.2}
 .gooey-nav--sm{--gn-pad:5px;--gn-gap:2px;--gn-font:13px;--gn-x:13px;--gn-y:7px}
@@ -463,12 +463,12 @@ html.ac-on [data-ac]>*:not([data-ac-in]){opacity:0}
 @media (prefers-reduced-motion:reduce){.card-nav__line,.card-nav__arrow svg{transition:none}}
 @media (max-width:480px){
   .vt-bar{padding:0 12px}
-  .vt-logo{gap:6px}
-  .vt-logo span{font-size:13px}
+  .vt-logo{gap:4px}
+  .vt-logo span{font-size:12px}
   .vt-logo .vt-mark{width:28px;height:28px;padding:3px;border-radius:7px}
   .vt-nav .gooey-nav.gooey-nav--sm{--gn-pad:4px;--gn-font:12px;--gn-x:10px;--gn-y:6px}
 }
-@media (min-width:481px) and (max-width:1023px){.vt-logo span{font-size:16px}}
+@media (min-width:481px) and (max-width:1023px){.vt-logo span{font-size:15px}}
 </style>
 </head>
 <body>
@@ -623,7 +623,7 @@ html.ac-on [data-ac]>*:not([data-ac-in]){opacity:0}
   </section>
 
   <!-- Gift cards: bouncing cards with a Sell gift cards button underneath -->
-  <section class="gc">
+  <section class="gc" id="giftcards">
     <div class="wrap">
       <div class="bc-wrap" id="bcWrap">
         <div class="bounce-cards" id="bcRoot" role="group" aria-label="Gift cards you can sell">
@@ -2564,13 +2564,13 @@ html.ac-on [data-ac]>*:not([data-ac-in]){opacity:0}
   if (!host) return;
   var root = document.documentElement;
   var ITEMS = [
-    { label: 'Explore', description: 'Jump to any part of the page.', links: [
-      { label: 'Home', href: '#top' }, { label: 'Markets', href: '#markets' }, { label: 'Rates', href: '#rates' }] },
+    { label: 'Explore', description: 'Trade crypto and gift cards at clear rates.', links: [
+      { label: 'Sell Crypto', href: '#markets', tab: 'tmSellTab' }, { label: 'Buy Crypto', href: '#markets', tab: 'tmBuyTab' }, { label: 'Sell Gift Cards', href: '#giftcards' }] },
     { label: 'Help', description: 'Answers instantly, and real people when you need them.', links: [
-      { label: 'Built around trust', href: '#trust' }, { label: 'Support', href: '#support' },
+      { label: 'Support', href: '#support' },
       { label: 'Chat on WhatsApp', href: 'https://api.whatsapp.com/send?phone=2349015508108&text=Hi%20VersusTrade', external: true }] },
-    { label: 'Account', description: 'Access your VersusTrade account.', links: [
-      { label: 'Log in', href: '/login/' }] }
+    { label: 'Company', description: 'Learn more about VersusTrade.', links: [
+      { label: 'About Us', href: '/about/' }, { label: 'Versus Blog', href: '/blog/' }] }
   ];
   var THEMES = {
     dark: { '--cn-panel': '#26232e', '--cn-edge': 'rgba(255,255,255,0.08)', '--cn-highlight': 'rgba(255,255,255,0.07)', '--cn-shadow': '0 24px 48px -20px rgba(0,0,0,0.8), 0 6px 16px -8px rgba(0,0,0,0.5)', '--cn-text': '#f4f4f5', '--cn-muted': 'rgba(244,244,245,0.56)', '--cn-hover': 'rgba(255,255,255,0.06)', '--cn-ring': 'rgba(244,244,245,0.55)', '--cn-tile': 'linear-gradient(180deg,#34303d 0%,#27242f 100%)', '--cn-tile-rim': 'inset 0 0 0 1px rgba(255,255,255,0.06), inset 0 1px 0 rgba(255,255,255,0.1), 0 4px 10px -4px rgba(0,0,0,0.6)' },
@@ -2666,6 +2666,7 @@ html.ac-on [data-ac]>*:not([data-ac-in]){opacity:0}
       var el = link.href.length > 1 && link.href !== '#top' ? document.getElementById(link.href.slice(1)) : null;
       if (el) el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
       else window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+      if (link.tab) setTimeout(function () { var t = document.getElementById(link.tab); if (t) t.click(); }, 500);
       setTimeout(function () { window.dispatchEvent(new Event('scroll')); }, 1050);
     }
     setOpen(false);
