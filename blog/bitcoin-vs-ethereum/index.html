@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bitcoin vs Ethereum: what&rsquo;s the difference? | VersusTrade</title>
+<meta name="description" content="Bitcoin is digital money. Ethereum is a platform for apps. Here is what each one is for, side by side, in plain language.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
+<script>try{var t=localStorage.getItem("vt-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<style>
+:root{
+  --red:#E11D2E;--red-dark:#B8101F;--red-tint:#FDECEE;
+  --bg:#fff;--soft:#FAFAFA;--text:#1A1A1A;--muted:#6B6B6B;--line:#EDEDED;--pill:#F3F3F3;
+  --header-h:64px;--logo-text:#000;
+  --font:"Inter",system-ui,"Segoe UI",Roboto,Ubuntu,sans-serif;
+  color-scheme:light;
+}
+:root[data-theme="dark"]{--bg:#121212;--soft:#171717;--text:#F5F5F5;--muted:#A3A3A3;--line:#2A2A2A;--pill:#232323;--red-tint:#2E1519;--logo-text:#fff;color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121212;--soft:#171717;--text:#F5F5F5;--muted:#A3A3A3;--line:#2A2A2A;--pill:#232323;--red-tint:#2E1519;--logo-text:#fff;color-scheme:dark}}
+*{box-sizing:border-box;margin:0;padding:0}
+html{padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.5}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit;color:inherit}
+button{background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--red);outline-offset:2px;border-radius:6px}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+
+/* Header: floating glass pills */
+.vt-header{position:fixed;left:0;right:0;z-index:100;top:calc(env(safe-area-inset-top,0px) + 12px);pointer-events:none}
+.vt-bar{max-width:1200px;margin:0 auto;padding:0 24px;height:56px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px}
+.pill{pointer-events:auto;display:flex;align-items:center;height:40px;border-radius:999px;background:color-mix(in srgb,var(--bg) 38%,transparent);-webkit-backdrop-filter:blur(18px) saturate(1.8);backdrop-filter:blur(18px) saturate(1.8);border:1px solid rgba(255,255,255,.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 8px 24px -8px rgba(0,0,0,.18)}
+:root[data-theme="dark"] .pill{border-color:rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 8px 24px -8px rgba(0,0,0,.5)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .pill{border-color:rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 8px 24px -8px rgba(0,0,0,.5)}}
+.vt-logo{justify-self:start;gap:8px;padding:0 16px 0 9px;line-height:1}
+.vt-logo img{height:26px;width:26px;object-fit:contain;display:block;flex-shrink:0}
+.vt-logo span{display:block;font-weight:700;font-size:17px;line-height:1;letter-spacing:-.02em;color:var(--logo-text);padding-bottom:1px}
+.vt-nav{justify-self:center;padding:4px;gap:2px}
+.vt-nav a{display:flex;align-items:center;height:30px;padding:0 13px;border-radius:999px;font-size:14px;font-weight:500;color:var(--muted);transition:background .15s,color .15s}
+.vt-nav a:hover{background:color-mix(in srgb,var(--text) 8%,transparent);color:var(--text)}
+.vt-nav a[aria-current="page"]{background:color-mix(in srgb,var(--text) 10%,transparent);color:var(--text)}
+.vt-actions{justify-self:end;display:flex;align-items:center;gap:8px;pointer-events:none}
+.vt-login{padding:0 16px;font-size:14px;font-weight:500}
+.vt-login:hover{color:var(--red)}
+.vt-signup{pointer-events:auto;display:flex;align-items:center;height:40px;padding:0 18px;font-size:14px;font-weight:700;color:#fff;background:var(--red);border-radius:999px;transition:background .15s}
+.vt-signup:hover{background:var(--red-dark)}
+.vt-icon{width:40px;justify-content:center}
+.vt-icon:hover{border-color:var(--red)}
+.vt-icon svg{width:18px;height:18px}
+/* Header: soft backdrop appears once the page scrolls, so text never shows between the pills */
+.vt-header::before{content:"";position:absolute;left:0;right:0;top:calc(-12px - env(safe-area-inset-top,0px));height:96px;z-index:-1;pointer-events:none;background:linear-gradient(to bottom,var(--bg) 0,color-mix(in srgb,var(--bg) 94%,transparent) 55%,transparent);opacity:0;transition:opacity .25s}
+.vt-header.scrolled::before{opacity:1}
+.vt-menu{display:none}
+.vt-sheet{display:none;pointer-events:auto;position:absolute;left:24px;right:24px;top:64px;padding:8px;border-radius:20px;background:color-mix(in srgb,var(--bg) 88%,transparent);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid var(--line);box-shadow:0 12px 32px rgba(0,0,0,.14)}
+.vt-sheet.open{display:block}
+.vt-sheet a{display:block;padding:12px 14px;border-radius:12px;font-weight:600}
+.vt-sheet a:hover{background:var(--pill)}
+@media (max-width:760px){
+  .vt-bar{display:flex;justify-content:space-between}
+  .vt-nav,.vt-login{display:none}
+  .vt-menu{display:flex}
+  .vt-actions{margin-left:auto}
+}
+
+
+/* Article */
+.vt-bar{max-width:1056px}
+.art-top{position:relative;overflow:hidden;padding:136px 0 0;background:
+  radial-gradient(520px 260px at 10% 6%,color-mix(in srgb,#2BB673 22%,transparent),transparent 70%),
+  radial-gradient(560px 260px at 70% 0%,color-mix(in srgb,var(--red) 18%,transparent),transparent 70%),var(--soft)}
+.art-head{max-width:1056px;margin:0 auto;padding:0 24px 40px}
+.back{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--muted)}
+.back:hover{color:var(--red)}
+.cat{display:block;margin-top:28px;font-size:14px;font-weight:600;color:var(--red)}
+.art-head h1{max-width:760px;margin-top:10px;font-size:clamp(32px,5.4vw,48px);line-height:1.1;font-weight:900;letter-spacing:-.05em}
+.byline{margin-top:20px;font-size:14px;color:var(--muted)}
+.hero-cover{max-width:1056px;margin:0 auto;padding:0 24px}
+.hero-art{position:relative;aspect-ratio:2.2;border-radius:16px;overflow:hidden}
+.hero-art svg.art{position:absolute;inset:0;width:100%;height:100%;display:block}
+.tbl{margin-top:24px;overflow-x:auto;border:1px solid var(--line);border-radius:16px}
+.tbl table{width:100%;border-collapse:collapse;font-size:15px;line-height:1.5}
+.tbl th,.tbl td{padding:12px 16px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+.tbl tr:last-child td{border-bottom:0}
+.tbl thead th{background:var(--soft);font-weight:700}
+.tbl td:first-child{font-weight:600;white-space:nowrap}
+.prose{grid-column:1;grid-row:1;max-width:720px;margin:0;padding:56px 0 24px;font-size:18px;line-height:1.7}
+.prose p{margin-top:18px}
+.prose .lead-p{margin-top:0;font-size:20px;color:var(--muted)}
+.prose h2{margin-top:48px;font-size:26px;line-height:1.25;font-weight:900;letter-spacing:-.04em}
+.prose ul,.prose ol{margin:18px 0 0 22px}
+.prose li{margin-top:8px;padding-left:4px}
+.prose li::marker{color:var(--red);font-weight:700}
+.prose strong{font-weight:700}
+.prose a{color:var(--red);text-decoration:underline;text-underline-offset:3px}
+.callout{margin-top:28px;padding:18px 20px;border-left:3px solid var(--red);border-radius:0 12px 12px 0;background:var(--red-tint);font-size:16px;line-height:1.6}
+.faq h3{margin-top:28px;font-size:18px;font-weight:700}
+.faq h3+p{margin-top:6px}
+.cta{max-width:1056px;margin:24px auto 72px;padding:0 24px}
+.cta-card{padding:36px 28px;border:1px solid var(--line);border-radius:24px;text-align:center;background:linear-gradient(120deg,var(--bg) 30%,var(--red-tint))}
+.cta-card h2{font-size:24px;font-weight:900;letter-spacing:-.05em}
+.cta-card p{margin:10px auto 0;max-width:460px;color:var(--muted);font-size:15px}
+.btns{margin-top:24px;display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.btn{padding:13px 24px;border-radius:999px;font-weight:700;font-size:15px;border:1px solid var(--text)}
+.btn.red{background:var(--red);border-color:var(--red);color:#fff}
+.btn.red:hover{background:var(--red-dark)}
+.btn:not(.red):hover{border-color:var(--red);color:var(--red)}
+
+
+/* Table of contents: sticky side card on desktop, collapsible card at the top on mobile */
+.post-layout{max-width:1056px;margin:0 auto;padding:0 24px;display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:64px;align-items:start}
+.prose h2{scroll-margin-top:96px}
+.toc{grid-column:2;grid-row:1;position:sticky;top:96px;margin-top:56px;padding:8px;border-radius:24px;background:var(--soft);border:1px solid var(--line);max-height:calc(100vh - 128px);overflow:auto}
+.toc-h{width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 16px 14px;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-align:left}
+.toc-h svg{width:18px;height:18px;flex-shrink:0;transition:transform .2s}
+.toc-h[aria-expanded="false"] svg{transform:rotate(180deg)}
+.toc-list{list-style:none;margin:0 8px;padding:8px 0;border-top:1px solid var(--line)}
+.toc-list a{display:block;padding:10px 12px;border-radius:12px;font-size:14px;line-height:1.4;font-weight:500;color:var(--muted);transition:background .15s,color .15s}
+.toc-list a:hover{color:var(--text)}
+.toc-list a.on{background:var(--pill);color:var(--text);font-weight:600}
+.toc.collapsed .toc-list{display:none}
+@media (min-width:900px){.toc-h{cursor:default;pointer-events:none}.toc-h svg{display:none}.toc.collapsed .toc-list{display:block}}
+@media (max-width:899px){
+  .post-layout{grid-template-columns:minmax(0,1fr);gap:0}
+  .toc{grid-column:1;grid-row:1;position:static;margin-top:32px;max-height:none}
+  .prose{grid-row:2;padding-top:32px}
+}
+
+/* Continue reading */
+.related{max-width:1056px;margin:0 auto;padding:0 24px 56px}
+.rel-top{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding-top:56px;border-top:1px solid var(--line)}
+.rel-top h2{font-size:26px;font-weight:900;letter-spacing:-.04em}
+.rel-top a{font-weight:600;color:var(--muted)}
+.rel-top a:hover{color:var(--red)}
+.rel-grid{margin-top:32px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.rel-card{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:24px;overflow:hidden;background:var(--bg);transition:border-color .2s}
+.rel-card:hover{border-color:color-mix(in srgb,var(--red) 40%,var(--line))}
+.rel-card:hover h3{color:var(--red)}
+.rel-cover{position:relative;aspect-ratio:1.8;overflow:hidden;isolation:isolate}
+.rel-cover svg.art,.rel-cover img.art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.rel-pills{position:absolute;left:14px;right:14px;bottom:12px;display:flex;justify-content:space-between;gap:8px}
+.rel-pills span{padding:5px 12px;border-radius:999px;font-size:13px;font-weight:600;color:#444;background:rgba(255,255,255,.78);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.rel-card h3{padding:22px 24px 28px;font-size:20px;line-height:1.3;font-weight:700;letter-spacing:-.01em;transition:color .15s}
+@media (max-width:820px){.rel-grid{grid-template-columns:minmax(0,1fr)}}
+.disc{max-width:1056px;margin:0 auto;padding:0 24px 56px;font-size:13px;color:var(--muted)}
+/* Footer: card layout (10x-style) + VERSUSTRADE wordmark */
+.foot{position:relative;overflow:hidden;background:var(--bg)}
+.foot .wrap{position:relative;z-index:1}
+.ft-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:12px;padding:12px 0 40px}
+.ft-card{background:var(--soft);border-radius:20px;padding:44px 48px}
+.ft-left{display:flex;flex-direction:column;justify-content:space-between;gap:72px;min-height:470px}
+.ft-h{font-size:clamp(30px,3vw,40px);line-height:1.06;font-weight:700;letter-spacing:-.035em}
+.ft-red{color:var(--red)}
+.ft-hwrap{position:relative;display:block}
+.ft-cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px}
+.ft-cols h4{font-size:16px;font-weight:600;margin-bottom:8px}
+.ft-cols ul{list-style:none;display:grid;gap:8px}
+.ft-cols a{font-size:16px;font-weight:500;color:var(--muted);transition:color .15s}
+.ft-cols a:hover{color:var(--text)}
+.ft-right{display:flex;flex-direction:column;gap:12px}
+.ft-right .ft-card{flex:1}
+.ft-socials{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.ft-socials a{height:132px;display:grid;place-items:center;border-radius:20px;background:var(--soft);color:var(--text);transition:transform .2s,color .2s}
+.ft-socials a:hover{transform:translateY(-3px);color:var(--red)}
+.ft-socials svg{width:30px;height:30px}
+.ft-credits{display:flex;flex-direction:column;align-items:center;gap:10px;padding:8px 0 0;font-size:14px;color:var(--muted);text-align:center}
+.ft-credits nav{display:flex;gap:20px}
+.ft-credits a:hover{color:var(--text)}
+.risk{margin:12px auto 0;max-width:720px;text-align:center;font-size:13px;color:var(--muted)}
+/* Newsletter (ported from the NewsletterForm component) */
+.ft-news{margin-top:56px}
+.nl{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:24px 56px;align-items:center;padding:40px 48px;border-radius:24px;background:var(--soft)}
+.nl-title{font-size:24px;font-weight:600;letter-spacing:-.02em;line-height:1.2}
+.nl-sub{margin-top:12px;font-size:14px;line-height:1.7;color:var(--muted)}
+.nl-row{display:flex;gap:8px}
+.nl-row input{flex:1;min-width:0;height:44px;min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:6px;background:var(--bg);font-size:14px;outline:0;transition:border-color .15s}
+.nl-row input::placeholder{color:var(--muted)}
+.nl-row input:focus{border-color:var(--text)}
+.nl-row input[aria-invalid="true"]{border-color:#fda4af}
+.nl-row input:disabled{background:var(--soft)}
+.nl-btn{flex-shrink:0;height:44px;padding:0 24px;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:6px;background:var(--text);color:var(--bg);font-size:14px;font-weight:600;white-space:nowrap;transition:opacity .15s}
+.nl-btn:hover{opacity:.85}
+.nl-btn:disabled{opacity:.6;cursor:not-allowed}
+.nl-btn svg{width:15px;height:15px;flex-shrink:0}
+.nl-btn .nl-spin{width:16px;height:16px;animation:nlSpin .8s linear infinite}
+@keyframes nlSpin{to{transform:rotate(360deg)}}
+.nl-hint,.nl-err{margin-top:8px;font-size:12px}
+.nl-hint{color:var(--muted)}
+.nl-err{margin-top:6px;color:color-mix(in srgb,#e11d48 85%,var(--text))}
+.nl-fail,.nl-ok{margin-top:12px;display:flex;align-items:flex-start;gap:10px;padding:12px 14px;font-size:14px;line-height:1.5}
+.nl-fail{border-left:2px solid #f43f5e;background:color-mix(in srgb,#f43f5e 10%,transparent);color:color-mix(in srgb,#e11d48 80%,var(--text))}
+.nl-ok{margin-top:0;border-left:2px solid #10b981;background:color-mix(in srgb,#10b981 12%,transparent);color:color-mix(in srgb,#059669 70%,var(--text))}
+.nl-fail svg,.nl-ok svg{width:16px;height:16px;flex-shrink:0;margin-top:2px}
+.nl [hidden]{display:none!important}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none}
+@media (max-width:899px){.ft-news{margin-top:32px}.nl{grid-template-columns:minmax(0,1fr);padding:28px 22px;gap:20px}}
+@media (max-width:700px){.nl-row{flex-direction:column}.nl-row input{flex:none;width:100%}.nl-btn{width:100%}}
+@media (prefers-reduced-motion:reduce){.nl-btn .nl-spin{animation:none}}
+/* Footer coin animation (phones only) */
+.ft-cols{position:relative}
+.ft-coins{display:none}
+@media (max-width:899px){.ft-coins{display:block;position:absolute;right:0;top:50%;transform:translateY(-50%);width:clamp(104px,34vw,170px);aspect-ratio:523/269;pointer-events:none}.ft-coins svg{display:block;width:100%;height:100%}}
+/* Footer extras (from the homepage footer): glow, grid, scrolling banner, "Ready to trade?" line, back-to-top */
+.fx-aurora{position:absolute;left:50%;top:46%;width:80vw;height:60%;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0;transform:translate(-50%,-50%);animation:fxBreathe 8s ease-in-out infinite alternate;background:radial-gradient(circle at 50% 50%,color-mix(in oklch,var(--red) 20%,transparent) 0%,color-mix(in oklch,var(--red-dark) 14%,transparent) 40%,transparent 70%)}
+.fx-grid{position:absolute;inset:0;z-index:0;pointer-events:none;background-size:60px 60px;background-image:linear-gradient(to right,color-mix(in oklch,var(--text) 4%,transparent) 1px,transparent 1px),linear-gradient(to bottom,color-mix(in oklch,var(--text) 4%,transparent) 1px,transparent 1px);-webkit-mask-image:linear-gradient(to bottom,transparent,#000 25%,#000 75%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 25%,#000 75%,transparent)}
+.fx-band{position:relative;z-index:1;padding:44px 0 12px;overflow:hidden}
+.fx-marquee{overflow:hidden;padding:15px 0;border-top:1px solid color-mix(in oklch,var(--line) 70%,transparent);border-bottom:1px solid color-mix(in oklch,var(--line) 70%,transparent);background:color-mix(in srgb,var(--bg) 60%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);transform:rotate(-1.2deg) scale(1.04);-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.fx-track{display:flex;width:max-content;animation:fxMarquee 40s linear infinite;font-size:12px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
+.fx-item{display:flex;align-items:center;gap:48px;padding:0 24px;white-space:nowrap}
+.fx-item .p{color:color-mix(in srgb,var(--red) 70%,transparent)}
+.fx-item .s{color:color-mix(in srgb,var(--text) 45%,transparent)}
+.fx-ready{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px 40px;margin-top:48px}
+.fx-h{font-size:clamp(30px,4.4vw,52px);line-height:1.02;font-weight:900;letter-spacing:-.045em}
+.fx-links{display:flex;flex-wrap:wrap;gap:12px 32px}
+.fx-links a{display:inline-flex;align-items:center;gap:8px;font-size:16px;font-weight:600;color:var(--text);text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--text) 25%,transparent);text-underline-offset:5px;transition:color .15s,text-decoration-color .15s}
+.fx-links a span{display:inline-block;transition:transform .2s}
+.fx-links a:hover{color:var(--red);text-decoration-color:var(--red)}
+.fx-links a:hover span{transform:translateX(4px)}
+.fx-ready + .ft-news{margin-top:28px}
+.ft-credits{position:relative}
+.ft-top{width:44px;height:44px;display:grid;place-items:center;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--muted);transition:color .15s,border-color .15s}
+.ft-top:hover{color:var(--red);border-color:var(--red)}
+.ft-top svg{width:18px;height:18px;transition:transform .3s}
+.ft-top:hover svg{transform:translateY(-3px)}
+@media (min-width:900px){.ft-top{position:absolute;right:0;top:50%;transform:translateY(-50%)}}
+@keyframes fxBreathe{0%{transform:translate(-50%,-50%) scale(1);opacity:.6}100%{transform:translate(-50%,-50%) scale(1.1);opacity:1}}
+@keyframes fxMarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (max-width:899px){.fx-band{padding-top:32px}.fx-track{font-size:11px}.fx-ready{margin-top:36px}}
+@media (prefers-reduced-motion:reduce){.fx-track,.fx-aurora{animation:none}}
+/* Animated pointer tags */
+.ptr{--c:#8CFBB2;position:absolute;z-index:2;pointer-events:none;animation:ftA 8s ease-in-out infinite}
+.ptr.red{--c:#E11D2E;animation:ftB 9.5s ease-in-out infinite}
+.ptr.red b{color:#fff}
+.ptr svg{position:absolute;left:0;top:0;width:18px;height:18px;fill:var(--c);filter:drop-shadow(0 1px 2px rgba(0,0,0,.2))}
+.ptr b{display:block;letter-spacing:0;text-transform:none;margin:13px 0 0 12px;padding:7px 13px;border-radius:12px;background:var(--c);color:#1E1E1E;font-size:14px;font-weight:600;line-height:1.2;white-space:nowrap;box-shadow:0 6px 16px -6px rgba(0,0,0,.25)}
+.ptr.ink{--c:var(--logo-text)}
+.ft-lw{position:relative;display:inline-block}
+.ft-lw .ptr{left:calc(100% - 8px);right:auto;top:calc(100% - 2px);animation:ftC 9s ease-in-out infinite}
+.ft-ow{position:relative;display:inline-block}
+.ft-ow .ptr{left:2px;right:auto;top:calc(100% - 2px);animation:ftC 9s ease-in-out infinite}
+.ptr-m{display:none}
+@media (max-width:560px){.ptr-d{display:none}.ptr-m{display:block}.ptr-m b{font-size:13px;padding:6px 11px}}
+@media (max-width:340px){.ptr-m b{white-space:normal;max-width:128px}}
+.ptr.ink b{color:var(--bg)}
+.ft-socials a{position:relative}
+.ft-socials .ptr{left:calc(100% - 78px);top:calc(100% - 20px)}
+.ft-socials .ptr.red{animation:ftC 9s ease-in-out infinite}
+@keyframes ftC{0%,100%{transform:translate(0,0) rotate(0)}30%{transform:translate(-12px,6px) rotate(-1.5deg)}60%{transform:translate(3px,10px) rotate(1deg)}85%{transform:translate(-7px,-3px) rotate(-.5deg)}}
+@keyframes ftA{0%,100%{transform:translate(0,0) rotate(0)}22%{transform:translate(22px,-8px) rotate(2deg)}48%{transform:translate(10px,16px) rotate(-1.5deg)}74%{transform:translate(-16px,6px) rotate(1deg)}}
+@keyframes ftB{0%,100%{transform:translate(0,0) rotate(0)}28%{transform:translate(-20px,10px) rotate(-2deg)}55%{transform:translate(14px,-12px) rotate(1.5deg)}80%{transform:translate(24px,8px) rotate(-1deg)}}
+.f-giant{display:block;margin-top:40px;text-align:center;white-space:nowrap;user-select:none;pointer-events:none;font-size:14.5vw;line-height:.78;font-weight:900;letter-spacing:-.05em;color:transparent;-webkit-text-stroke:1px color-mix(in oklch,var(--text) 10%,transparent);background:linear-gradient(180deg,color-mix(in oklch,var(--text) 16%,transparent) 0%,transparent 75%);-webkit-background-clip:text;background-clip:text;transform:translateY(10%)}
+@media (max-width:899px){
+  .ft-grid{grid-template-columns:minmax(0,1fr);padding:12px 0 36px}
+  .ft-card{padding:28px 22px}
+  .ft-left{min-height:0;gap:52px}
+  .ft-cols{grid-template-columns:minmax(0,1fr);gap:26px}
+  .ft-cols a{font-size:17px}
+  .ft-cols h4{margin-bottom:4px}
+  .ft-cols ul{gap:6px}
+  .ft-socials a{height:96px}
+  .ft-right .ft-card{flex:none}
+}
+@media (prefers-reduced-motion:reduce){.ptr,.ptr.red,.ft-socials .ptr.red,.ft-lw .ptr,.ft-ow .ptr{animation:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+/* Scroll reveal: blocks slide up 100px and fade in (0.8s, ease-out, 0.08s stagger), like AnimatedContent */
+.rv-on [data-rv]{opacity:0;transform:translate3d(0,100px,0)}
+.rv-on [data-rv].rv-in{opacity:1;transform:none;transition:opacity .8s cubic-bezier(.215,.61,.355,1) var(--rv-d,0s),transform .8s cubic-bezier(.215,.61,.355,1) var(--rv-d,0s)}
+.rv-on [data-rv].rv-now{transition:none!important}
+</style>
+</head>
+<body>
+<header class="vt-header" id="vtHeader">
+  <div class="vt-bar">
+    <a class="pill vt-logo" href="/" aria-label="VersusTrade home">
+      <img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/REAL%20LOGO%20%20VERSUSTRADE.png" alt="" width="26" height="26">
+      <span>VersusTrade</span>
+    </a>
+    <nav class="pill vt-nav" aria-label="Main">
+      <a href="/">Home</a>
+      <a href="/#markets">Buy &amp; sell</a>
+      <a href="/blog/">Blog</a>
+      <a href="/support/">Support</a>
+    </nav>
+    <div class="vt-actions">
+      <a class="pill vt-login" href="/login/">Log in</a>
+      <a class="vt-signup" href="/signup/">Sign up</a>
+      <button class="pill vt-icon" id="vtTheme" type="button" aria-label="Toggle light or dark theme"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="3.5"/><path d="M10 1.5v2M10 16.5v2M1.5 10h2M16.5 10h2M4 4l1.4 1.4M14.6 14.6L16 16M4 16l1.4-1.4M14.6 5.4L16 4"/></svg></button>
+      <button class="pill vt-icon vt-menu" id="vtMenu" type="button" aria-label="Menu" aria-expanded="false" aria-controls="vtSheet"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 6h14M3 14h14"/></svg></button>
+    </div>
+    <div class="vt-sheet" id="vtSheet">
+      <a href="/">Home</a><a href="/#markets">Buy &amp; sell</a><a href="/blog/">Blog</a><a href="/support/">Support</a><a href="/login/">Log in</a>
+    </div>
+  </div>
+</header>
+<main>
+  <div class="art-top">
+    <div class="art-head">
+      <a class="back" href="/blog/">&larr; Back to blog</a>
+      <span class="cat">Basics</span>
+      <h1>Bitcoin vs Ethereum: what&rsquo;s the difference?</h1>
+      <p class="byline">VersusTrade Team &middot; 19 Oct 2026 &middot; 5 min read</p>
+    </div>
+    <div class="hero-cover">
+      <div class="hero-art" id="heroArt" role="img" aria-label="Bitcoin and Ethereum"></div>
+    </div>
+  </div>
+
+  <div class="post-layout">
+  <aside class="toc" id="toc" aria-label="Table of contents">
+    <button class="toc-h" id="tocBtn" type="button" aria-expanded="true" aria-controls="tocList"><span>Table of contents</span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l6-6 6 6"/></svg></button>
+    <ul class="toc-list" id="tocList"></ul>
+  </aside>
+  <article class="prose" id="article">
+    <p class="lead-p">Bitcoin and Ethereum are the two biggest names in crypto, and people often talk about them as if they are the same thing. They aren&rsquo;t. They were built for different jobs, and knowing the difference makes everything else in crypto easier to follow.</p>
+
+    <h2>The short answer</h2>
+    <p><strong>Bitcoin</strong> is digital money. Its main job is to be a secure way to hold and move value without a bank, and many people see it as a kind of digital gold.</p>
+    <p><strong>Ethereum</strong> is a platform. You can send its coin, ETH, like money, but its bigger job is to run apps and &ldquo;smart contracts&rdquo;: small programs that carry out an agreement automatically. Many stablecoins, including versions of USDT, live on it.</p>
+
+    <h2>What Bitcoin is</h2>
+    <p>Bitcoin launched in 2009, created by a person or group who used the name Satoshi Nakamoto. It was designed to do one thing very well: let people send value to each other without a bank in the middle.</p>
+    <ul>
+      <li><strong>A fixed supply.</strong> There will only ever be 21 million bitcoin. That limit is written into the code, which is why people compare it to gold.</li>
+      <li><strong>Slow, steady, simple.</strong> A new block of transactions is added about every 10 minutes. Bitcoin is kept deliberately simple, because simple is harder to break.</li>
+      <li><strong>Mining.</strong> Computers around the world compete to confirm blocks, which uses a lot of electricity. This is called proof of work, and it is what secures the network.</li>
+      <li><strong>Halvings.</strong> About every four years, the reward for adding a block is cut in half. The most recent halving was in April 2024.</li>
+    </ul>
+
+    <h2>What Ethereum is</h2>
+    <p>Ethereum launched in 2015, proposed by Vitalik Buterin and other developers. Where Bitcoin focuses on money, Ethereum was built so that anyone can put programs on the network.</p>
+    <ul>
+      <li><strong>Smart contracts.</strong> These are programs that run on Ethereum exactly as written. They power lending apps, exchanges, games, digital collectibles and stablecoins.</li>
+      <li><strong>ETH and gas.</strong> ETH is Ethereum&rsquo;s coin. You use it to pay &ldquo;gas&rdquo;, the fee for every action on the network.</li>
+      <li><strong>Faster blocks.</strong> A new block arrives about every 12 seconds.</li>
+      <li><strong>Proof of stake.</strong> In September 2022, Ethereum stopped using mining. Instead, people lock up ETH to help confirm transactions. This cut the network&rsquo;s energy use by more than 99%.</li>
+      <li><strong>Regular upgrades.</strong> Ethereum is updated every few months, often to make it cheaper and faster to use.</li>
+    </ul>
+
+    <h2>Side by side</h2>
+    <div class="tbl"><table>
+      <thead><tr><th></th><th>Bitcoin</th><th>Ethereum</th></tr></thead>
+      <tbody>
+        <tr><td>Launched</td><td>2009</td><td>2015</td></tr>
+        <tr><td>Coin</td><td>BTC</td><td>ETH</td></tr>
+        <tr><td>Main job</td><td>Digital money and store of value</td><td>Platform for apps and smart contracts</td></tr>
+        <tr><td>Supply</td><td>Capped at 21 million</td><td>No fixed cap</td></tr>
+        <tr><td>Secured by</td><td>Miners (proof of work)</td><td>Stakers (proof of stake)</td></tr>
+        <tr><td>New block every</td><td>About 10 minutes</td><td>About 12 seconds</td></tr>
+        <tr><td>Fees paid in</td><td>BTC</td><td>ETH (called gas)</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2>Supply: capped or flexible</h2>
+    <p>Bitcoin&rsquo;s 21 million limit never changes, and most of those coins have already been mined. Ethereum has no hard limit. New ETH is created as a reward for people who help run the network, but a part of every fee is permanently destroyed (&ldquo;burned&rdquo;), so the total supply can grow slowly or even shrink, depending on how busy the network is.</p>
+
+    <h2>Speed and fees</h2>
+    <p>Bitcoin is slower by design, so for larger payments people usually wait for a few confirmations, which can take 30 to 60 minutes. Ethereum confirms faster, but its fees swing a lot: when many people are using it, gas gets expensive.</p>
+    <p>To keep costs down, many people use &ldquo;layer-2&rdquo; networks. These are separate networks built on top of Ethereum that bundle lots of transactions together, so each one costs much less.</p>
+
+    <h2>Which one is better?</h2>
+    <p>Neither. They do different things, so the question is really about what you want to do.</p>
+    <ul>
+      <li>If you want a simple, long-term digital asset that is widely seen as crypto&rsquo;s &ldquo;gold&rdquo;, people look to Bitcoin.</li>
+      <li>If you want to use apps, hold stablecoins on the Ethereum network, or follow where new crypto products are built, you will use Ethereum.</li>
+    </ul>
+    <p>Many people hold both. Remember that both can swing sharply in price, in days or even hours. Never put in money you can&rsquo;t afford to lose, and be careful of anyone promising guaranteed profits.</p>
+    <div class="callout"><strong>You don&rsquo;t need a whole coin.</strong> Both can be split into tiny pieces. One bitcoin is 100 million &ldquo;satoshis&rdquo;, so you can start with a very small amount.</div>
+
+    <h2>Where stablecoins like USDT fit in</h2>
+    <p>Stablecoins are crypto that aims to hold a steady price, such as one US dollar. Many of them, including USDT and USDC, can run on Ethereum, and also on other networks such as Tron. Each network is separate, so a coin sent on the wrong one can be lost. We explain this step by step in our guide on <a href="/blog/send-usdt-without-buying-crypto-first/">how to send USDT to someone without buying crypto first</a>.</p>
+
+    <h2>Quick answers</h2>
+    <div class="faq">
+      <h3>Is Ethereum a coin or a token?</h3>
+      <p>ETH is Ethereum&rsquo;s own coin. Other assets built on Ethereum, such as many stablecoins, are called tokens.</p>
+      <h3>Which one is safer?</h3>
+      <p>Both networks are very secure at their core. The bigger risks are price swings, scams, and mistakes like sending to the wrong address or network. Take the same care with either.</p>
+      <h3>Which should a beginner start with?</h3>
+      <p>There is no single right answer, and this isn&rsquo;t financial advice. Many beginners start by learning how to receive, hold and send a small amount before deciding what to buy.</p>
+      <h3>Do I need to understand the technology to use them?</h3>
+      <p>No. You don&rsquo;t need to understand mining or smart contracts to use crypto safely. You do need to understand wallets, networks and how to avoid scams.</p>
+    </div>
+    <h2>Get yours from VersusTrade</h2>
+    <p>Ready to own some Bitcoin or Ethereum? You can get yours from VersusTrade. Chat with us on WhatsApp or on the website, tell us what you want, and a real person will guide you through it step by step. Start small, double-check every address and network, and only use money you can afford to lose.</p>
+  </article>
+  </div>
+
+  <div class="cta">
+    <div class="cta-card">
+      <h2>Ready to get yours?</h2>
+      <p>Get your Bitcoin or Ethereum from VersusTrade. Chat with us and a real person is there to help.</p>
+      <div class="btns">
+        <a class="btn red" href="https://wa.me/2349015508108?text=Hi%20VersusTrade%2C%20I%20want%20to%20get%20Bitcoin%20or%20Ethereum" target="_blank" rel="noopener">Chat on WhatsApp</a>
+        <a class="btn" href="/">Chat on the website</a>
+      </div>
+    </div>
+  </div>
+  <section class="related" aria-labelledby="relH">
+    <div class="rel-top"><h2 id="relH">Continue reading</h2><a href="/blog/">All articles &rarr;</a></div>
+    <div class="rel-grid" id="relGrid"></div>
+  </section>
+  <p class="disc">Risk warning: trading financial instruments and cryptoassets carries a high level of risk and you can lose some or all of your capital. Nothing on this page is financial advice.</p>
+</main>
+<footer class="foot">
+  <div class="fx-aurora" aria-hidden="true"></div><div class="fx-grid" aria-hidden="true"></div>
+  <div class="fx-band" aria-hidden="true"><div class="fx-marquee"><div class="fx-track"><div class="fx-item"><span>Live Markets</span><span class="p">&#10022;</span><span>Buy &amp; Sell Crypto</span><span class="s">&#10022;</span><span>Transparent Rates</span><span class="p">&#10022;</span><span>Learn Before You Trade</span><span class="s">&#10022;</span><span>Real People, Real Support</span><span class="p">&#10022;</span></div><div class="fx-item"><span>Live Markets</span><span class="p">&#10022;</span><span>Buy &amp; Sell Crypto</span><span class="s">&#10022;</span><span>Transparent Rates</span><span class="p">&#10022;</span><span>Learn Before You Trade</span><span class="s">&#10022;</span><span>Real People, Real Support</span><span class="p">&#10022;</span></div></div></div></div>
+  <div class="wrap">
+    <div class="fx-ready">
+      <h3 class="fx-h">Ready to trade?</h3>
+      <div class="fx-links">
+        <a href="/signup/">Create free account <span aria-hidden="true">&rarr;</span></a>
+        <a href="https://api.whatsapp.com/send?phone=2349015508108&amp;text=Hi%20VersusTrade" target="_blank" rel="noopener">Chat on WhatsApp <span aria-hidden="true">&rarr;</span></a>
+      </div>
+    </div>
+    <section class="ft-news">
+      <form class="nl" id="nlForm" novalidate data-slot="newsletter-form">
+        <div class="nl-copy">
+          <h2 class="nl-title">Stay in the loop</h2>
+          <p class="nl-sub">Weekly crypto guides and updates from VersusTrade. No spam.</p>
+        </div>
+        <div class="nl-body">
+          <div class="nl-fields" id="nlFields">
+            <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <div class="nl-row">
+              <input id="nlEmail" name="email" type="email" autocomplete="email" placeholder="Enter your email" aria-label="Email address" aria-describedby="nlHint">
+              <button class="nl-btn" id="nlBtn" type="submit"><svg class="nl-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" hidden><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg><span id="nlLabel">Subscribe</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+            </div>
+            <p class="nl-hint" id="nlHint">Unsubscribe anytime. We never share your email.</p>
+            <p class="nl-err" id="nlErr" role="alert" hidden></p>
+            <div class="nl-fail" id="nlFail" role="alert" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg><span>We couldn&rsquo;t add you to the list. Please try again.</span></div>
+          </div>
+          <div class="nl-ok" id="nlOk" role="status" aria-live="polite" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><p>Almost there. We&rsquo;ve emailed you a confirmation link. Tap it to finish subscribing, and check your spam folder if you don&rsquo;t see it.</p></div>
+        </div>
+      </form>
+    </section>
+    <div class="ft-grid">
+      <section class="ft-card ft-left">
+        <div class="ft-hwrap">
+          <h3 class="ft-h">Stay Connected &mdash;<br><span class="ft-red">Explore <span class="ft-ow">Other<span class="ptr ink ptr-m" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M2 1.5l13 6-5.6 1.8L7.6 15z"/></svg><b>See you on VersusTrade!</b></span></span> <span class="ft-lw">Links<span class="ptr ink ptr-d" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M2 1.5l13 6-5.6 1.8L7.6 15z"/></svg><b>See you on VersusTrade!</b></span></span></span></h3>
+        </div>
+        <div class="ft-cols">
+          <div class="ft-coins" id="ftCoins" aria-hidden="true"></div>
+          <div><h4>Company</h4><ul><li><a href="/support/">Support</a></li><li><a href="/blog/">Blog</a></li><li><a href="https://www.tiktok.com/@versustradehq" target="_blank" rel="noopener">TikTok</a></li></ul></div>
+          <div><h4>Trade</h4><ul><li><a href="/#markets">Buy &amp; sell crypto</a></li><li><a href="/#markets">Sell Gift Cards</a></li><li><a href="/blog/send-usdt-without-buying-crypto-first/">Send USDT guide</a></li></ul></div>
+          <div><h4>Legal</h4><ul><li><a href="/legal/#privacy">Privacy Policy</a></li><li><a href="/legal/#terms">Terms of Use</a></li><li><a href="/legal/#risk">Risk Disclosure</a></li></ul></div>
+        </div>
+      </section>
+      <div class="ft-right">
+        <section class="ft-card"><h3 class="ft-h">Join the<br>community</h3></section>
+        <div class="ft-socials">
+          <a href="https://x.com/VersusTrade_HQ" target="_blank" rel="noopener" aria-label="VersusTrade on X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg></a>
+          <a href="#" aria-label="VersusTrade on Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg></a>
+          <a href="https://www.tiktok.com/@versustradehq" target="_blank" rel="noopener" aria-label="VersusTrade on TikTok"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg><div class="ptr red" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M2 1.5l13 6-5.6 1.8L7.6 15z"/></svg><b>Follow us</b></div></a>
+        </div>
+      </div>
+    </div>
+    <div class="ft-credits"><span>&copy; 2026 VersusTrade. All rights reserved.</span><nav aria-label="Legal"><a href="/legal/#privacy">Privacy</a><a href="/legal/#terms">Terms</a><a href="/legal/#risk">Risk</a></nav><button class="ft-top" id="ftTop" type="button" aria-label="Back to top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></div>
+    <p class="risk">Risk warning: trading financial instruments and cryptoassets carries a high level of risk and you can lose some or all of your capital. Nothing on this site is financial advice.</p>
+  </div>
+  <div class="f-giant" id="fGiant" aria-hidden="true">VERSUSTRADE</div>
+</footer>
+<script src="../posts.js"></script>
+<script>
+// Fallback copy of posts.js, used only if posts.js can't be loaded (e.g. previewing this single file). Keep in sync with posts.js.
+if (typeof POSTS === 'undefined') {
+// Shared by the blog list and every post page. To add a post, add one entry to POSTS (newest first).
+// c = category key from CATS, m = minutes to read, href = post page, img = optional cover image.
+var CATS = {basics:'Basics', trading:'Trading', security:'Security', naira:'Naira & payments', markets:'Markets'};
+var GLYPH = {basics:'\u20BF', trading:'\u2197', security:'\u2713', naira:'\u20A6', markets:'\u039E'};
+// Glass-style cover art: colour mesh + translucent coins and a ring. [bg1, bg2, bg3, coinX, coinY]
+var ART = {
+  basics:['#F7931A','#B8101F','#5B1A8C',200,100], trading:['#7B2FF7','#E11D2E','#1A0B2E',110,100],
+  security:['#26A17B','#0F3D3E','#0A1F2B',190,95], naira:['#2BB673','#0B6B3A','#0E1A14',110,105],
+  markets:['#627EEA','#3B3F9E','#14B8D4',195,100]
+};
+function art(c) {
+  var a = ART[c], x = a[3], y = a[4], sx = x > 150 ? 70 : 230;
+  return '<svg class="art" viewBox="0 0 300 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">' +
+    '<defs><radialGradient id="gA" cx=".3" cy=".25" r=".9"><stop offset="0" stop-color="#fff" stop-opacity=".75"/><stop offset=".5" stop-color="#fff" stop-opacity=".16"/><stop offset="1" stop-color="#fff" stop-opacity=".04"/></radialGradient>' +
+    '<linearGradient id="gB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity=".05"/></linearGradient>' +
+    '<filter id="gF"><feGaussianBlur stdDeviation="14"/></filter></defs>' +
+    '<rect width="300" height="200" fill="' + a[1] + '"/>' +
+    '<circle cx="' + sx + '" cy="40" r="90" fill="' + a[0] + '" filter="url(#gF)"/>' +
+    '<circle cx="' + (300 - sx) + '" cy="190" r="100" fill="' + a[2] + '" filter="url(#gF)"/>' +
+    '<circle cx="' + sx + '" cy="150" r="34" fill="none" stroke="url(#gB)" stroke-width="9" opacity=".55"/>' +
+    '<circle cx="' + sx + '" cy="150" r="34" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="1"/>' +
+    '<circle cx="' + x + '" cy="' + y + '" r="62" fill="url(#gA)" stroke="url(#gB)" stroke-width="2"/>' +
+    '<circle cx="' + x + '" cy="' + y + '" r="48" fill="none" stroke="#fff" stroke-opacity=".35"/>' +
+    '<ellipse cx="' + (x - 20) + '" cy="' + (y - 34) + '" rx="26" ry="9" fill="#fff" opacity=".5" transform="rotate(-28 ' + (x - 20) + ' ' + (y - 34) + ')"/>' +
+    '<text x="' + x + '" y="' + (y + 22) + '" text-anchor="middle" font-size="64" font-weight="800" fill="#fff" fill-opacity=".92" font-family="Inter,Segoe UI,Roboto,sans-serif">' + GLYPH[c] + '</text></svg>';
+}
+var POSTS = [
+  {t:'How to send USDT to someone without buying crypto first', d:'Pay in naira and have USDT go straight to someone else\u2019s wallet. Here is the step-by-step, and the mistakes to avoid.', c:'naira', a:'Support Desk', m:5, date:'20 Oct 2026', href:'/blog/send-usdt-without-buying-crypto-first/', img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/How%20to%20send%20USDT%20to%20someone%20without%20buying%20crypto%20first.png'},
+  {t:'Bitcoin vs Ethereum: what\u2019s the difference?', d:'Both are called crypto, but they do different jobs. Here is what each one is for and how to choose where to start.', c:'basics', a:'VersusTrade Team', m:4, date:'19 Oct 2026', href:'/blog/bitcoin-vs-ethereum/'},
+  {t:'How crypto rates in naira are set', d:'Why the rate you see can differ from the dollar price, and what to compare before you buy or sell.', c:'naira', a:'Support Desk', m:4, date:'16 Oct 2026', href:'#'},
+  {t:'Seven habits that keep your wallet safe', d:'Strong passwords are the start. Learn the habits that stop most account and wallet losses.', c:'security', a:'VersusTrade Team', m:6, date:'13 Oct 2026', href:'#'},
+  {t:'Reading a candlestick chart for the first time', d:'What each candle shows, how to read the wicks, and the three patterns worth learning first.', c:'trading', a:'Market Desk', m:4, date:'10 Oct 2026', href:'#'},
+  {t:'What is a stablecoin, and why does USDT matter?', d:'Stablecoins hold a steady price, which is why traders use them to park money between trades.', c:'basics', a:'VersusTrade Team', m:5, date:'7 Oct 2026', href:'#'},
+  {t:'How to spot a crypto scam before you send money', d:'Fake giveaways, cloned support accounts and \u201Cguaranteed returns\u201D all follow the same script.', c:'security', a:'Support Desk', m:5, date:'4 Oct 2026', href:'#'},
+  {t:'Why prices move when the US Fed speaks', d:'Interest rate news reaches crypto within minutes. Here is why, and how to plan around big announcements.', c:'markets', a:'Market Desk', m:6, date:'1 Oct 2026', href:'#'},
+  {t:'Position sizing: how much to risk per trade', d:'A simple rule for deciding trade size so one bad call does not wipe out your account.', c:'trading', a:'Market Desk', m:4, date:'28 Sep 2026', href:'#'},
+  {t:'Selling crypto for naira: what to check first', d:'Rate, fees, payout time and account name. Run through this list before every sale.', c:'naira', a:'Support Desk', m:5, date:'25 Sep 2026', href:'#'}
+];
+}
+</script>
+<script>
+var $ = function (id) { return document.getElementById(id); };
+
+// Cover art
+(function () { var h = document.getElementById('heroArt'); if (h && typeof art === 'function') h.innerHTML = art('basics'); })();
+
+// Table of contents: built from the article's h2 headings, highlights the section being read
+(function () {
+  var heads = [].slice.call(document.querySelectorAll('#article h2')), list = $('tocList'), links = [];
+  heads.forEach(function (h, i) {
+    if (!h.id) h.id = h.textContent.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'section-' + (i + 1);
+    var li = document.createElement('li'), a = document.createElement('a');
+    a.href = '#' + h.id; a.textContent = h.textContent; li.appendChild(a); list.appendChild(li); links.push(a);
+  });
+  var toc = $('toc'), btn = $('tocBtn');
+  if (!heads.length) { toc.style.display = 'none'; return; }
+  btn.addEventListener('click', function () { var c = toc.classList.toggle('collapsed'); btn.setAttribute('aria-expanded', c ? 'false' : 'true'); });
+  function mark(id) { links.forEach(function (a) { var on = a.getAttribute('href') === '#' + id; a.classList.toggle('on', on); if (on) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); }); }
+  mark(heads[0].id);
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) mark(e.target.id); }); }, { rootMargin: '-96px 0px -70% 0px' });
+    heads.forEach(function (h) { io.observe(h); });
+  }
+})();
+
+// Continue reading: same-category posts first, then the newest others. Set CURRENT to this page's href in POSTS.
+(function () {
+  var CURRENT = '/blog/bitcoin-vs-ethereum/';
+  function esc(x) { return String(x).replace(/[&<>"]/g, function (m) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]; }); }
+  var me = POSTS.filter(function (p) { return p.href === CURRENT; })[0], cat = me && me.c;
+  var rest = POSTS.filter(function (p) { return p.href !== CURRENT; });
+  var list = rest.filter(function (p) { return p.c === cat; }).concat(rest.filter(function (p) { return p.c !== cat; })).slice(0, 3);
+  $('relGrid').innerHTML = list.map(function (p) {
+    return '<a class="rel-card" href="' + esc(p.href) + '"><div class="rel-cover">' +
+      (p.img ? '<img class="art" src="' + esc(p.img) + '" alt="" loading="lazy">' : art(p.c)) +
+      '<div class="rel-pills"><span>' + esc(CATS[p.c]) + '</span><span>' + p.m + ' min read</span></div></div><h3>' + esc(p.t) + '</h3></a>';
+  }).join('');
+})();
+var menuBtn = $('vtMenu'), sheet = $('vtSheet');
+menuBtn.addEventListener('click', function () { var o = sheet.classList.toggle('open'); menuBtn.setAttribute('aria-expanded', o ? 'true' : 'false'); });
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { sheet.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); } });
+// Header backdrop on scroll
+(function () { var h = document.getElementById('vtHeader'); if (!h) return; function f() { h.classList.toggle('scrolled', window.scrollY > 8); } f(); window.addEventListener('scroll', f, { passive: true }); })();
+try { var saved = localStorage.getItem('vt-theme'); if (saved) document.documentElement.setAttribute('data-theme', saved); } catch (x) {}
+$('vtTheme').addEventListener('click', function () {
+  var r = document.documentElement, dark = r.getAttribute('data-theme') === 'dark' || (!r.getAttribute('data-theme') && matchMedia('(prefers-color-scheme:dark)').matches);
+  var next = dark ? 'light' : 'dark'; r.setAttribute('data-theme', next);
+  try { localStorage.setItem('vt-theme', next); } catch (x) {}
+});
+
+// Footer wordmark: scale VERSUSTRADE to the full screen width (also on mobile)
+(function () {
+  var g = document.getElementById('fGiant'); if (!g) return;
+  function fit() {
+    g.style.fontSize = '100px';
+    var w = g.scrollWidth;
+    if (w > 0) g.style.fontSize = (100 * document.documentElement.clientWidth * 0.96 / w) + 'px';
+  }
+  fit(); window.addEventListener('resize', fit); window.addEventListener('load', fit);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+})();
+
+// Newsletter form (ported from the NewsletterForm component). Submits through newsletter.js to /api/subscribe (Resend, double opt-in).
+(function () {
+  var form = document.getElementById('nlForm'); if (!form) return;
+  var $ = function (id) { return document.getElementById(id); };
+  var input = $('nlEmail'), btn = $('nlBtn'), label = $('nlLabel'), spin = btn.querySelector('.nl-spin'), chev = btn.querySelector('svg:not(.nl-spin)');
+  var hint = $('nlHint'), err = $('nlErr'), fail = $('nlFail'), fields = $('nlFields'), ok = $('nlOk');
+  var RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/, busy = false, done = false;
+  function setError(msg) {
+    err.textContent = msg; err.hidden = !msg; hint.hidden = !!msg;
+    input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+    input.setAttribute('aria-describedby', msg ? 'nlErr' : 'nlHint');
+  }
+  function setBusy(b) { busy = b; input.disabled = b; btn.disabled = b; spin.hidden = !b; chev.style.display = b ? 'none' : ''; label.textContent = b ? 'Joining\u2026' : 'Subscribe'; form.setAttribute('aria-busy', b ? 'true' : 'false'); }
+  function subscribe(email) {
+    if (window.VT_NEWSLETTER && typeof window.VT_NEWSLETTER.subscribe === 'function') return window.VT_NEWSLETTER.subscribe(email, { website: (form.elements['website'] || {}).value || '' });
+    return Promise.reject(new Error('newsletter.js is not loaded')); // never pretend it worked
+  }
+  input.addEventListener('input', function () { fail.hidden = true; if (!err.hidden) setError(''); });
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (busy || done) return;
+    var v = input.value.trim();
+    if (!v) { setError('Email is required.'); return; }
+    if (!RE.test(v)) { setError('Enter a valid email address.'); return; }
+    setError(''); fail.hidden = true; setBusy(true);
+    Promise.resolve().then(function () { return subscribe(v); }).then(function () {
+      done = true; fields.hidden = true; ok.hidden = false;
+    }, function () { fail.hidden = false; }).then(function () { setBusy(false); });
+  });
+})();
+
+// Footer: back to top
+(function () { var b = document.getElementById('ftTop'); if (b) b.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); }); })();
+
+// Footer coin animation: loops continuously at 2x speed whenever the footer is on screen.
+(function () {
+  var box = document.getElementById('ftCoins'); if (!box) return;
+  var SPEED = 2, REST = 10, anim = null, visible = false;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  function withLottie(cb) {
+    if (window.lottie) return cb();
+    var sc = document.createElement('script');
+    sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie_light.min.js';
+    sc.onload = cb; document.head.appendChild(sc);
+  }
+  function sync() { if (!anim || reduce) return; if (visible && !document.hidden) anim.play(); else anim.pause(); }
+  function start() {
+    if (anim || !window.VT_COINS) return;
+    withLottie(function () {
+      anim = window.lottie.loadAnimation({ container: box, renderer: 'svg', loop: true, autoplay: false, animationData: window.VT_COINS, rendererSettings: { viewBoxSize: '423 249 523 269' } });
+      anim.setSpeed(SPEED);
+      anim.addEventListener('DOMLoaded', function () { if (reduce) anim.goToAndStop(REST, true); else sync(); });
+    });
+  }
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (es) { es.forEach(function (e) { visible = e.isIntersecting; if (visible) start(); sync(); }); }, { rootMargin: '0px 0px 120px 0px' }).observe(box);
+  } else { visible = true; start(); }
+  document.addEventListener('visibilitychange', sync);
+})();
+</script>
+<script src="../chat-widget.js" defer></script>
+<script src="../coins.js" defer></script>
+<script src="../newsletter.js" defer></script>
+<script>
+// Scroll reveal: each block slides up 100px and fades in (0.8s, ease-out); blocks that appear together are staggered by 0.08s.
+(function () {
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  if (!('IntersectionObserver' in window)) return;
+  var SEL = ['.bh .wrap > *', '.side > *', '.feed > .post', '.pager', '.cnf-card',
+    '.art-head > *', '.hero-cover', '.toc', '.prose > *', '.cta-card', '.rel-top', '.rel-card', '.disc',
+    '.fx-ready', '.ft-news', '.ft-left', '.ft-right > *', '.ft-credits', '.risk'].join(',');
+  var STAGGER = 0.08, MAXD = 0.64, DUR = 800;
+  document.documentElement.classList.add('rv-on');
+  function show(el, d, instant) {
+    el.style.setProperty('--rv-d', d + 's');
+    if (instant) el.classList.add('rv-now');
+    el.classList.add('rv-in');
+    setTimeout(function () { el.removeAttribute('data-rv'); el.classList.remove('rv-in', 'rv-now'); el.style.removeProperty('--rv-d'); }, instant ? 40 : DUR + d * 1000 + 80);
+  }
+  var io = new IntersectionObserver(function (entries) {
+    entries.filter(function (e) { return e.isIntersecting; })
+      .sort(function (a, b) { return (a.boundingClientRect.top - b.boundingClientRect.top) || (a.boundingClientRect.left - b.boundingClientRect.left); })
+      .forEach(function (e, i) { show(e.target, Math.min(i * STAGGER, MAXD)); io.unobserve(e.target); });
+    entries.forEach(function (e) { // scrolled or jumped past it without seeing it: just show it
+      if (!e.isIntersecting && e.boundingClientRect.top < 0 && e.target.hasAttribute('data-rv')) { show(e.target, 0, true); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+  function scan() {
+    [].forEach.call(document.querySelectorAll(SEL), function (el) { if (el.__rv) return; el.__rv = true; el.setAttribute('data-rv', ''); io.observe(el); });
+  }
+  scan();
+  var t; new MutationObserver(function () { clearTimeout(t); t = setTimeout(scan, 30); }).observe(document.body, { childList: true, subtree: true });
+})();
+</script>
+</body>
+</html>

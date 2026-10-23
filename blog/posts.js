@@ -26,7 +26,7 @@ function art(c) {
 }
 var POSTS = [
   {t:'How to send USDT to someone without buying crypto first', d:'Pay in naira and have USDT go straight to someone else\u2019s wallet. Here is the step-by-step, and the mistakes to avoid.', c:'naira', a:'Support Desk', m:5, date:'20 Oct 2026', href:'/blog/send-usdt-without-buying-crypto-first/', img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/How%20to%20send%20USDT%20to%20someone%20without%20buying%20crypto%20first.png'},
-  {t:'Bitcoin vs Ethereum: what\u2019s the difference?', d:'Both are called crypto, but they do different jobs. Here is what each one is for and how to choose where to start.', c:'basics', a:'VersusTrade Team', m:4, date:'19 Oct 2026', href:'#'},
+  {t:'Bitcoin vs Ethereum: what\u2019s the difference?', d:'Both are called crypto, but they do different jobs. Here is what each one is for and how to choose where to start.', c:'basics', a:'VersusTrade Team', m:4, date:'19 Oct 2026', href:'/blog/bitcoin-vs-ethereum/'},
   {t:'How crypto rates in naira are set', d:'Why the rate you see can differ from the dollar price, and what to compare before you buy or sell.', c:'naira', a:'Support Desk', m:4, date:'16 Oct 2026', href:'#'},
   {t:'Seven habits that keep your wallet safe', d:'Strong passwords are the start. Learn the habits that stop most account and wallet losses.', c:'security', a:'VersusTrade Team', m:6, date:'13 Oct 2026', href:'#'},
   {t:'Reading a candlestick chart for the first time', d:'What each candle shows, how to read the wicks, and the three patterns worth learning first.', c:'trading', a:'Market Desk', m:4, date:'10 Oct 2026', href:'#'},

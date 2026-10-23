@@ -13,7 +13,7 @@
 (function () {
   if (window.__vtChat) return; window.__vtChat = true;
   var cfg = window.VT_CHAT || {};
-  var WA = cfg.whatsapp || 'YOURNUMBER';
+  var WA = cfg.whatsapp || '2349015508108';
   var DELAY = typeof cfg.delay === 'number' ? cfg.delay : 1500;
   var ONCE = cfg.once !== false;               // pop out once per browser session
   var LOGO = cfg.logo || 'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/REAL%20LOGO%20%20VERSUSTRADE.png';
