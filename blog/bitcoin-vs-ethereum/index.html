@@ -206,7 +206,6 @@ button{background:none;border:0;cursor:pointer}
   .toc{grid-column:1;grid-row:1;position:static;margin-top:32px;max-height:none}
   .prose{grid-row:2;padding-top:32px}}
 
-/* Continue reading */
 .related{max-width:1056px;margin:0 auto;padding:0 24px 56px}
 .rel-top{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding-top:56px;border-top:1px solid var(--line)}
 .rel-top h2{font-size:26px;font-weight:900;letter-spacing:-.04em}
@@ -239,8 +238,8 @@ button{background:none;border:0;cursor:pointer}
 .ft-right{display:flex;flex-direction:column;gap:12px}
 .ft-right .ft-card{flex:1}
 .ft-socials{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.ft-socials a{height:132px;display:grid;place-items:center;border-radius:20px;background:var(--soft);color:var(--text);transition:transform .2s,color .2s}
-.ft-socials a:hover{transform:translateY(-3px);color:var(--red)}
+.ft-socials a{height:132px;display:grid;place-items:center;border-radius:20px;color:var(--text);background:linear-gradient(145deg,color-mix(in oklch,var(--text) 5%,transparent) 0%,color-mix(in oklch,var(--text) 1.5%,transparent) 100%);border:1px solid color-mix(in oklch,var(--text) 10%,transparent);box-shadow:0 12px 30px -12px rgba(0,0,0,.2),0 10px 30px -10px color-mix(in oklch,var(--bg) 50%,transparent),inset 0 1px 1px color-mix(in oklch,var(--text) 12%,transparent),inset 0 -1px 2px color-mix(in oklch,var(--bg) 80%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);transition:transform .2s,color .2s,border-color .3s,background .3s}
+.ft-socials a:hover{transform:translateY(-3px);color:var(--red);border-color:color-mix(in oklch,var(--red) 55%,transparent);background:linear-gradient(145deg,color-mix(in oklch,var(--text) 8%,transparent) 0%,color-mix(in oklch,var(--text) 2%,transparent) 100%)}
 .ft-socials svg{width:30px;height:30px}
 .ft-credits{display:flex;flex-direction:column;align-items:center;gap:10px;padding:8px 0 0;font-size:14px;color:var(--muted);text-align:center}
 .ft-credits nav{display:flex;gap:20px}
@@ -321,6 +320,8 @@ button{background:none;border:0;cursor:pointer}
   .ft-cols ul{gap:6px}
   .ft-socials a{height:96px}
   .ft-right .ft-card{flex:none}}@media (prefers-reduced-motion:reduce){.ptr,.ptr.red,.ft-socials .ptr.red,.ft-lw .ptr,.ft-ow .ptr{animation:none}}@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+/* Glass containers in the footer (same look as the homepage buttons and the social tiles) */
+.ft-card,.nl{background:linear-gradient(145deg,color-mix(in oklch,var(--text) 5%,transparent) 0%,color-mix(in oklch,var(--text) 1.5%,transparent) 100%);border:1px solid color-mix(in oklch,var(--text) 10%,transparent);box-shadow:0 18px 40px -18px rgba(0,0,0,.22),inset 0 1px 1px color-mix(in oklch,var(--text) 12%,transparent),inset 0 -1px 2px color-mix(in oklch,var(--bg) 80%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
 /* Scroll reveal: blocks slide up 100px and fade in (0.8s, ease-out, 0.08s stagger), like AnimatedContent */
 .rv-on [data-rv]{opacity:0;transform:translate3d(0,100px,0)}
 .rv-on [data-rv].rv-in{opacity:1;transform:none;transition:opacity .8s cubic-bezier(.215,.61,.355,1) var(--rv-d,0s),transform .8s cubic-bezier(.215,.61,.355,1) var(--rv-d,0s)}
@@ -483,7 +484,7 @@ button{background:none;border:0;cursor:pointer}
         </div>
         <div class="ft-cols">
           <div class="ft-coins" id="ftCoins" aria-hidden="true"></div>
-          <div><h4>Company</h4><ul><li><a href="/support/">Support</a></li><li><a href="/blog/">Blog</a></li><li><a href="https://www.tiktok.com/@versustradehq" target="_blank" rel="noopener">TikTok</a></li></ul></div>
+          <div><h4>Company</h4><ul><li><a href="/support/">Support</a></li><li><a href="/faq/">FAQ</a></li><li><a href="/blog/">Blog</a></li><li><a href="https://www.tiktok.com/@versustradehq" target="_blank" rel="noopener">TikTok</a></li></ul></div>
           <div><h4>Trade</h4><ul><li><a href="/#markets">Buy &amp; sell crypto</a></li><li><a href="/#markets">Sell Gift Cards</a></li><li><a href="/blog/send-usdt-without-buying-crypto-first/">Send USDT guide</a></li></ul></div>
           <div><h4>Legal</h4><ul><li><a href="/legal/#privacy">Privacy Policy</a></li><li><a href="/legal/#terms">Terms of Use</a></li><li><a href="/legal/#risk">Risk Disclosure</a></li></ul></div>
         </div>
