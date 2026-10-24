@@ -2880,6 +2880,7 @@ button.vc-attach[aria-expanded="true"]{background:var(--pill);color:var(--text)}
     loginUrl: '/login/',
     simulate: true,
     api: 'https://versustrade-chat.versustradehq.workers.dev', // address of your chat API (see chat-api/README.md). Leave empty to use the built-in demo replies
+    debug: true, // shows a small "Debug:" line in the chat when the AI fails. Set to false when everything works
     giphyKey: '', // paste a Giphy API key here to turn on GIF search
     isLoggedIn: function () { try { return localStorage.getItem('vt_logged_in') === '1'; } catch (e) { return false; } }
   };
@@ -3121,18 +3122,23 @@ button.vc-attach[aria-expanded="true"]{background:var(--pill);color:var(--text)}
     function done() {
       clearTimeout(idle); S.busy = false; if (row) row.remove(); hideTyping();
       var r = parseTags(full);
-      if (!r.text) { fail(); return; }
+      if (!r.text) { fail(new Error('the AI sent an empty reply')); return; }
       add({ role: 'bot', text: r.text, actions: r.actions.concat(extra || []) });
     }
-    function fail() {
+    function fail(err) {
       clearTimeout(idle); S.busy = false; if (row) row.remove(); hideTyping();
+      if (CHAT.debug) {
+        var raw = err && err.message ? err.message : 'empty reply';
+        var why = err && err.name === 'AbortError' ? 'no reply within 30 seconds' : (err instanceof TypeError ? 'could not reach the Worker (site address not allowed, or wrong address)' : raw);
+        add({ role: 'system', text: 'Debug: ' + why + (why === raw ? '' : ' [' + raw + ']') });
+      }
       add({ role: 'bot', text: 'I\u2019m having trouble answering right now. Would you like a representative to help?', actions: [repAct(), waAct(lastTrade ? tradeText(lastTrade) : '')].concat(extra || []) });
     }
     bump();
     var ctx = { loggedIn: CHAT.isLoggedIn(), trade: lastTrade ? { side: lastTrade.side, asset: lastTrade.asset, qty: lastTrade.qty, amount: lastTrade.amount, currency: lastTrade.currency } : null };
     fetch(CHAT.api, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: history(), context: ctx }), signal: ctrl.signal })
       .then(function (res) {
-        if (!res.ok || !res.body) throw new Error('bad response');
+        if (!res.ok || !res.body) throw new Error('HTTP ' + res.status);
         var reader = res.body.getReader(), dec = new TextDecoder(), buf = '';
         function pump() {
           return reader.read().then(function (r) {
