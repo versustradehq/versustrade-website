@@ -2906,6 +2906,7 @@ button.vc-attach[aria-expanded="true"]{background:var(--pill);color:var(--text)}
     whatsapp: '2349015508108',
     loginUrl: '/login/',
     simulate: true,
+    live: { base: 'https://app.chatwoot.com', inbox: 'giwQh1xyoth7swCP7MQxF3Fe' }, // real representatives through Chatwoot. Set to null to use the scripted demo
     api: 'https://versustrade-chat.versustradehq.workers.dev', // address of your chat API (see chat-api/README.md). Leave empty to use the built-in demo replies
     debug: false, // shows a small "Debug:" line in the chat when the AI fails. Set to false when everything works
     isLoggedIn: function () { return !!(window.VTAuth && window.VTAuth.isLoggedIn()); }
@@ -2914,7 +2915,7 @@ button.vc-attach[aria-expanded="true"]{background:var(--pill);color:var(--text)}
   var S = { open: false, view: 'home', mode: 'ai', msgs: [], agentReplied: false, unread: 0 };
   try {
     var saved = JSON.parse(sessionStorage.getItem(KEY) || 'null');
-    if (saved && saved.msgs) { S.msgs = saved.msgs; S.mode = saved.mode === 'pending' ? 'agent' : (saved.mode || 'ai'); S.agentReplied = !!saved.agentReplied; }
+    if (saved && saved.msgs) { S.msgs = saved.msgs; S.mode = (saved.mode === 'pending' && !CHAT.live) ? 'agent' : (saved.mode || 'ai'); S.agentReplied = !!saved.agentReplied; }
   } catch (e) {}
   function save() { try { sessionStorage.setItem(KEY, JSON.stringify({ msgs: S.msgs.slice(-60).map(function (m) { return m.kind === 'voice' ? { role: m.role, kind: m.kind, dur: m.dur, text: m.text } : m; }), mode: S.mode, agentReplied: S.agentReplied })); } catch (e) {} }
 
@@ -2995,7 +2996,7 @@ button.vc-attach[aria-expanded="true"]{background:var(--pill);color:var(--text)}
   function scrollDown() { requestAnimationFrame(function () { log.scrollTop = log.scrollHeight; }); }
   function status() {
     panel.setAttribute('data-mode', S.mode);
-    sub.textContent = S.mode === 'ai' ? 'Customer support \u00B7 replies instantly' : S.mode === 'pending' ? 'Connecting you to the team\u2026' : 'Team \u00B7 online';
+    sub.textContent = S.mode === 'ai' ? 'Customer support \u00B7 replies instantly' : S.mode === 'pending' ? (CHAT.live ? 'Waiting for a team member\u2026' : 'Connecting you to the team\u2026') : 'Team \u00B7 online';
     nameEl.textContent = S.mode === 'agent' ? 'Support team' : 'Betty';
     pfpEl.innerHTML = S.mode === 'agent' ? '<span class="vc-av">' + svg(P.head) + '</span>' : BETTY;
     drawChips();
@@ -3183,14 +3184,75 @@ button.vc-attach[aria-expanded="true"]{background:var(--pill);color:var(--text)}
 
   /* ---------- conversation flow ---------- */
   function botSay(r) { hideTyping(); add({ role: 'bot', text: r.text, actions: r.actions }); }
-  function toTeam(reply) {
-    if (S.mode === 'agent' && !S.agentReplied) { S.agentReplied = true; save(); showTyping(); API.agentReply().then(function () { hideTyping(); add({ role: 'agent', text: reply || 'Thanks, I\u2019m looking into this for you now.' }); }); }
+  // ---------- real representatives (Chatwoot, API inbox) ----------
+  var CW = CHAT.live, cw = { src: null, conv: null, seen: 0, timer: 0, wait: 0 };
+  try { var cs = JSON.parse(localStorage.getItem('vt_cw_v1') || 'null'); if (CW && cs && cs.inbox === CW.inbox) { cw.src = cs.src; cw.conv = cs.conv; cw.seen = cs.seen || 0; } } catch (e) {}
+  function cwSave() { try { localStorage.setItem('vt_cw_v1', JSON.stringify({ inbox: CW.inbox, src: cw.src, conv: cw.conv, seen: cw.seen })); } catch (e) {} }
+  function cwPath(path) { return CW.base.replace(/\/+$/, '') + '/public/api/v1/inboxes/' + encodeURIComponent(CW.inbox) + path; }
+  function cwCall(method, path, body) {
+    return fetch(cwPath(path), { method: method, headers: body ? { 'Content-Type': 'application/json' } : {}, body: body ? JSON.stringify(body) : undefined }).then(function (r) {
+      return r.text().then(function (t) {
+        if (!r.ok) throw new Error('Chatwoot HTTP ' + r.status);
+        try { return t ? JSON.parse(t) : null; } catch (e) { return null; }
+      });
+    });
+  }
+  function cwConv(sfx) { return '/contacts/' + encodeURIComponent(cw.src) + '/conversations/' + cw.conv + (sfx || ''); }
+  function who() { return window.VTAuth && window.VTAuth.user ? window.VTAuth.user() : null; }
+  function transcript() {
+    var u = who(), lines = [];
+    S.msgs.slice(-10).forEach(function (m) {
+      if (m.role === 'user' && !m.kind) lines.push('Customer: ' + m.text);
+      else if (m.role === 'trade') lines.push('Customer sent a trade request: ' + m.trade.side + ' ' + qtyStr(m.trade.qty) + ' ' + m.trade.asset + ' (about ' + money(m.trade.currency, m.trade.amount) + ')');
+      else if (m.role === 'bot') lines.push('Betty (automated): ' + m.text);
+    });
+    return 'The customer asked for a representative from the website chat.\n' +
+      (u && u.email ? 'Signed in on the site as ' + u.email + ' (not yet verified by Chatwoot).\n' : 'Not signed in.\n') +
+      (lastTrade ? 'Latest trade request: ' + lastTrade.side + ' ' + qtyStr(lastTrade.qty) + ' ' + lastTrade.asset + ' (about ' + money(lastTrade.currency, lastTrade.amount) + ')\n' : '') +
+      (lines.length ? '\nRecent chat:\n' + lines.join('\n') : '');
+  }
+  function cwStart() {
+    var u = who(), first = cw.src ? Promise.resolve() : cwCall('POST', '/contacts', u && u.email ? { name: u.email.split('@')[0], email: u.email, identifier: u.id || undefined } : { name: 'Website visitor' }).then(function (c) { cw.src = c.source_id; });
+    return first.then(function () {
+      return cwCall('POST', '/contacts/' + encodeURIComponent(cw.src) + '/conversations', { custom_attributes: { page: String(location.href).slice(0, 200), signed_in: u ? 'yes' : 'no', trade: lastTrade ? lastTrade.side + ' ' + qtyStr(lastTrade.qty) + ' ' + lastTrade.asset : 'none' } });
+    }).then(function (cv) {
+      cw.conv = cv.id; cw.seen = 0; cwSave();
+      return cwCall('POST', cwConv('/messages'), { content: transcript() });
+    }).then(function () { startPolling(); });
+  }
+  function incoming(text) {
+    clearTimeout(cw.wait);
+    if (S.mode !== 'agent') { S.mode = 'agent'; S.agentReplied = true; status(); add({ role: 'system', text: 'A team member joined the chat' }); }
+    add({ role: 'agent', text: text });
+  }
+  function poll() {
+    if (!cw.conv || document.hidden) return;
+    cwCall('GET', cwConv('/messages')).then(function (list) {
+      (list || []).forEach(function (m) {
+        if (!m || !(m.id > cw.seen)) return;
+        cw.seen = m.id;
+        var fromTeam = m.message_type === 1 || m.message_type === 'outgoing';
+        if (fromTeam && m.content && !m.private) incoming(String(m.content));
+      });
+      cwSave();
+    }).catch(function () {});
+  }
+  function startPolling() { if (!cw.timer) { cw.timer = setInterval(poll, 4000); poll(); } }
+  function sendLive(text) {
+    var go = cw.conv ? cwCall('POST', cwConv('/messages'), { content: text }) : cwStart();
+    go.then(function () { setTimeout(poll, 1500); }).catch(function () {
+      add({ role: 'system', text: 'That message couldn\u2019t be sent to the team. Try again, or continue on WhatsApp with the button at the top.' });
+    });
+  }
+  function toTeam(sim, liveText) {
+    if (CW) { if (liveText) sendLive(liveText); else add({ role: 'system', text: 'Files and voice notes can\u2019t be sent to the team in this chat yet. Please use the WhatsApp button at the top for those.' }); return; }
+    if (S.mode === 'agent' && !S.agentReplied) { S.agentReplied = true; save(); showTyping(); API.agentReply().then(function () { hideTyping(); add({ role: 'agent', text: sim || 'Thanks, I\u2019m looking into this for you now.' }); }); }
   }
   function userSay(text) {
     text = (text || '').trim(); if (!text) return;
     if (S.busy) return;
     add({ role: 'user', text: text });
-    if (S.mode === 'ai') { if (CHAT.api) aiRespond(); else { showTyping(); API.aiReply(text).then(botSay); } } else toTeam();
+    if (S.mode === 'ai') { if (CHAT.api) aiRespond(); else { showTyping(); API.aiReply(text).then(botSay); } } else toTeam(null, text);
   }
   function attach(file) {
     if (!file) return;
@@ -3202,13 +3264,28 @@ button.vc-attach[aria-expanded="true"]{background:var(--pill);color:var(--text)}
   function handoff() {
     if (S.mode !== 'ai') return;
     S.mode = 'pending'; status();
-    add({ role: 'system', text: 'Connecting you to a representative\u2026' });
+    add({ role: 'system', text: CW ? 'Contacting the team\u2026' : 'Connecting you to a representative\u2026' });
+    if (CW) {
+      cwStart().then(function () {
+        add({ role: 'system', text: 'The team has been notified. You can keep typing here and they\u2019ll reply as soon as they can.' });
+        clearTimeout(cw.wait);
+        cw.wait = setTimeout(function () {
+          if (S.mode === 'pending') add({ role: 'bot', text: 'Our team hasn\u2019t replied yet. You can keep waiting here, or continue on WhatsApp.', actions: [waAct(lastTrade ? tradeText(lastTrade) : '')] });
+        }, 180000);
+      }).catch(function (err) {
+        S.mode = 'ai'; status();
+        add({ role: 'bot', text: 'I couldn\u2019t reach the team chat right now. You can continue on WhatsApp instead.', actions: [waAct(lastTrade ? tradeText(lastTrade) : '')] });
+        if (CHAT.debug) add({ role: 'system', text: 'Debug: ' + (err && err.message || err) });
+      });
+      return;
+    }
     API.requestHuman().then(function () {
       S.mode = 'agent'; S.agentReplied = false; status();
       add({ role: 'system', text: 'A representative joined the chat' });
       add({ role: 'agent', text: lastTrade ? 'Hello, I can see your ' + lastTrade.side + ' request for ' + qtyStr(lastTrade.qty) + ' ' + lastTrade.asset + '. How can I help?' : 'Hello, you\u2019re now chatting with the VersusTrade team. How can I help?' });
     });
   }
+
   function runCmd(cmd, arg) {
     if (cmd === 'handoff') handoff();
     else if (cmd === 'login') { if (window.VTAuth) window.VTAuth.open(); else window.location.href = CHAT.loginUrl; }
@@ -3223,7 +3300,7 @@ button.vc-attach[aria-expanded="true"]{background:var(--pill);color:var(--text)}
     try { sessionStorage.setItem('vt_pending_trade', JSON.stringify(t)); } catch (e) {}
     open('chat');
     add({ role: 'trade', trade: t });
-    if (S.mode !== 'ai') { toTeam('Got your ' + t.side + ' request. Let me check it and get back to you.'); return; }
+    if (S.mode !== 'ai') { toTeam('Got your ' + t.side + ' request. Let me check it and get back to you.', 'Trade request: ' + t.side + ' ' + qtyStr(t.qty) + ' ' + t.asset + ' (about ' + money(t.currency, t.amount) + ')'); return; }
     if (CHAT.api) { aiRespond(CHAT.isLoggedIn() ? [repAct(), waAct(tradeText(t))] : [loginAct(), repAct(), waAct(tradeText(t))]); return; }
     showTyping();
     pause(1100).then(function () {
@@ -3348,6 +3425,7 @@ button.vc-attach[aria-expanded="true"]{background:var(--pill);color:var(--text)}
   });
 
   S.msgs.forEach(function (m) { if (m.role === 'trade') lastTrade = m.trade; drawMsg(m); });
+  if (CW && cw.conv) startPolling();
   refreshWa(); status(); go('home'); badges();
   window.VTChat = { open: open, close: close, toggle: toggle, sendTrade: sendTrade, config: CHAT };
 })();
@@ -3368,7 +3446,7 @@ button.vc-attach[aria-expanded="true"]{background:var(--pill);color:var(--text)}
     window.dispatchEvent(new CustomEvent('vt-auth', { detail: { loggedIn: li, email: session && session.email, initial: !!initial } }));
   }
   function setSession(d) {
-    session = { access_token: d.access_token, refresh_token: d.refresh_token, expires_at: d.expires_at || (now() + (d.expires_in || 3600)), email: (d.user && d.user.email) || (session && session.email) || '' };
+    session = { access_token: d.access_token, refresh_token: d.refresh_token, expires_at: d.expires_at || (now() + (d.expires_in || 3600)), email: (d.user && d.user.email) || (session && session.email) || '', id: (d.user && d.user.id) || (session && session.id) || '' };
     persist();
   }
   function call(path, body, token) {
@@ -3484,7 +3562,7 @@ button.vc-attach[aria-expanded="true"]{background:var(--pill);color:var(--text)}
     if (a) { e.preventDefault(); open(); }
   });
 
-  window.VTAuth = { open: open, click: open, isLoggedIn: function () { return !!session; }, getToken: getToken, email: function () { return session ? session.email : ''; } };
+  window.VTAuth = { open: open, click: open, isLoggedIn: function () { return !!session; }, getToken: getToken, email: function () { return session ? session.email : ''; }, user: function () { return session ? { id: session.id, email: session.email } : null; } };
   if (session) { announce(true); getToken(); }
 })();
 </script>
