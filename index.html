@@ -2907,7 +2907,7 @@ button.vc-attach[aria-expanded="true"]{background:var(--pill);color:var(--text)}
     loginUrl: '/login/',
     simulate: true,
     api: 'https://versustrade-chat.versustradehq.workers.dev', // address of your chat API (see chat-api/README.md). Leave empty to use the built-in demo replies
-    debug: true, // shows a small "Debug:" line in the chat when the AI fails. Set to false when everything works
+    debug: false, // shows a small "Debug:" line in the chat when the AI fails. Set to false when everything works
     isLoggedIn: function () { return !!(window.VTAuth && window.VTAuth.isLoggedIn()); }
   };
   var KEY = 'vt_chat_v2';
