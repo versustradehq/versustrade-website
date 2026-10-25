@@ -233,8 +233,8 @@ button{background:none;border:0;cursor:pointer}
 .ft-right{display:flex;flex-direction:column;gap:12px}
 .ft-right .ft-card{flex:1}
 .ft-socials{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.ft-socials a{height:132px;display:grid;place-items:center;border-radius:20px;color:var(--text);background:linear-gradient(145deg,color-mix(in oklch,var(--text) 5%,transparent) 0%,color-mix(in oklch,var(--text) 1.5%,transparent) 100%);border:1px solid color-mix(in oklch,var(--text) 10%,transparent);box-shadow:0 12px 30px -12px rgba(0,0,0,.2),0 10px 30px -10px color-mix(in oklch,var(--bg) 50%,transparent),inset 0 1px 1px color-mix(in oklch,var(--text) 12%,transparent),inset 0 -1px 2px color-mix(in oklch,var(--bg) 80%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);transition:transform .2s,color .2s,border-color .3s,background .3s}
-.ft-socials a:hover{transform:translateY(-3px);color:var(--red);border-color:color-mix(in oklch,var(--red) 55%,transparent);background:linear-gradient(145deg,color-mix(in oklch,var(--text) 8%,transparent) 0%,color-mix(in oklch,var(--text) 2%,transparent) 100%)}
+.ft-socials a{height:132px;display:grid;place-items:center;border-radius:20px;background:var(--soft);color:var(--text);transition:transform .2s,color .2s}
+.ft-socials a:hover{transform:translateY(-3px);color:var(--red)}
 .ft-socials svg{width:30px;height:30px}
 .ft-credits{display:flex;flex-direction:column;align-items:center;gap:10px;padding:8px 0 0;font-size:14px;color:var(--muted);text-align:center}
 .ft-credits nav{display:flex;gap:20px}
@@ -347,8 +347,15 @@ button{background:none;border:0;cursor:pointer}
 .s-btn{width:42px;height:42px;flex-shrink:0;display:grid;place-items:center;border-radius:50%;background:var(--red);color:#fff;transition:background .15s,transform .15s}
 .s-btn:hover{background:var(--red-dark);transform:scale(1.06)}
 .s-btn svg{width:18px;height:18px}@media (max-width:899px){.search{padding:7px 7px 7px 24px}.search input{font-size:17px}.s-btn{width:46px;height:46px}}@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
-/* Glass containers in the footer (same look as the homepage buttons and the social tiles) */
-.ft-card,.nl{background:linear-gradient(145deg,color-mix(in oklch,var(--text) 5%,transparent) 0%,color-mix(in oklch,var(--text) 1.5%,transparent) 100%);border:1px solid color-mix(in oklch,var(--text) 10%,transparent);box-shadow:0 18px 40px -18px rgba(0,0,0,.22),inset 0 1px 1px color-mix(in oklch,var(--text) 12%,transparent),inset 0 -1px 2px color-mix(in oklch,var(--bg) 80%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+/* Glass containers in the footer: dark theme only (in light mode the footer stays solid) */
+:root[data-theme="dark"] .ft-card,:root[data-theme="dark"] .nl{background:linear-gradient(145deg,color-mix(in oklch,var(--text) 6%,transparent) 0%,color-mix(in oklch,var(--text) 1.5%,transparent) 100%);border:1px solid color-mix(in oklch,var(--text) 12%,transparent);box-shadow:0 18px 40px -18px rgba(0,0,0,.6),inset 0 1px 1px color-mix(in oklch,var(--text) 14%,transparent),inset 0 -1px 2px color-mix(in oklch,var(--bg) 80%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+:root[data-theme="dark"] .ft-socials a{background:linear-gradient(145deg,color-mix(in oklch,var(--text) 6%,transparent) 0%,color-mix(in oklch,var(--text) 1.5%,transparent) 100%);border:1px solid color-mix(in oklch,var(--text) 12%,transparent);box-shadow:0 12px 30px -12px rgba(0,0,0,.6),inset 0 1px 1px color-mix(in oklch,var(--text) 14%,transparent),inset 0 -1px 2px color-mix(in oklch,var(--bg) 80%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);transition:transform .2s,color .2s,border-color .3s,background .3s}
+:root[data-theme="dark"] .ft-socials a:hover{border-color:color-mix(in oklch,var(--red) 55%,transparent);background:linear-gradient(145deg,color-mix(in oklch,var(--text) 9%,transparent) 0%,color-mix(in oklch,var(--text) 2.5%,transparent) 100%)}
+@media (prefers-color-scheme:dark){
+:root:not([data-theme="light"]) .ft-card,:root:not([data-theme="light"]) .nl{background:linear-gradient(145deg,color-mix(in oklch,var(--text) 6%,transparent) 0%,color-mix(in oklch,var(--text) 1.5%,transparent) 100%);border:1px solid color-mix(in oklch,var(--text) 12%,transparent);box-shadow:0 18px 40px -18px rgba(0,0,0,.6),inset 0 1px 1px color-mix(in oklch,var(--text) 14%,transparent),inset 0 -1px 2px color-mix(in oklch,var(--bg) 80%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+:root:not([data-theme="light"]) .ft-socials a{background:linear-gradient(145deg,color-mix(in oklch,var(--text) 6%,transparent) 0%,color-mix(in oklch,var(--text) 1.5%,transparent) 100%);border:1px solid color-mix(in oklch,var(--text) 12%,transparent);box-shadow:0 12px 30px -12px rgba(0,0,0,.6),inset 0 1px 1px color-mix(in oklch,var(--text) 14%,transparent),inset 0 -1px 2px color-mix(in oklch,var(--bg) 80%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);transition:transform .2s,color .2s,border-color .3s,background .3s}
+:root:not([data-theme="light"]) .ft-socials a:hover{border-color:color-mix(in oklch,var(--red) 55%,transparent);background:linear-gradient(145deg,color-mix(in oklch,var(--text) 9%,transparent) 0%,color-mix(in oklch,var(--text) 2.5%,transparent) 100%)}
+}
 /* Scroll reveal: blocks slide up 100px and fade in (0.8s, ease-out, 0.08s stagger), like AnimatedContent */
 .rv-on [data-rv]{opacity:0;transform:translate3d(0,100px,0)}
 .rv-on [data-rv].rv-in{opacity:1;transform:none;transition:opacity .8s cubic-bezier(.215,.61,.355,1) var(--rv-d,0s),transform .8s cubic-bezier(.215,.61,.355,1) var(--rv-d,0s)}
@@ -494,14 +501,14 @@ function art(c) {
 var POSTS = [
   {t:'How to send USDT to someone without buying crypto first', d:'Pay in naira and have USDT go straight to someone else\u2019s wallet. Here is the step-by-step, and the mistakes to avoid.', c:'naira', a:'Support Desk', m:5, date:'20 Oct 2026', href:'/blog/send-usdt-without-buying-crypto-first/', img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/How%20to%20send%20USDT%20to%20someone%20without%20buying%20crypto%20first.png'},
   {t:'Bitcoin vs Ethereum: what\u2019s the difference?', d:'Both are called crypto, but they do different jobs. Here is what each one is for and how to choose where to start.', c:'basics', a:'VersusTrade Team', m:4, date:'19 Oct 2026', href:'/blog/bitcoin-vs-ethereum/', img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/The%20two%20biggest%20names%20in%20crypto.png'},
-  {t:'How crypto rates in naira are set', d:'Why the rate you see can differ from the dollar price, and what to compare before you buy or sell.', c:'naira', a:'Support Desk', m:4, date:'16 Oct 2026', href:'#'},
-  {t:'Seven habits that keep your wallet safe', d:'Strong passwords are the start. Learn the habits that stop most account and wallet losses.', c:'security', a:'VersusTrade Team', m:6, date:'13 Oct 2026', href:'#'},
+  {t:'How crypto rates in naira are set', d:'Why the rate you see can differ from the dollar price, and what to compare before you buy or sell.', c:'naira', a:'Support Desk', m:4, date:'16 Oct 2026', href:'/blog/how-crypto-rates-in-naira-are-set/'},
+  {t:'Seven habits that keep your wallet safe', d:'Strong passwords are the start. Learn the habits that stop most account and wallet losses.', c:'security', a:'VersusTrade Team', m:4, date:'13 Oct 2026', href:'/blog/seven-habits-that-keep-your-wallet-safe/'},
   {t:'Reading a candlestick chart for the first time', d:'What each candle shows, how to read the wicks, and the three patterns worth learning first.', c:'trading', a:'Market Desk', m:4, date:'10 Oct 2026', href:'#'},
   {t:'What is a stablecoin, and why does USDT matter?', d:'Stablecoins hold a steady price, which is why traders use them to park money between trades.', c:'basics', a:'VersusTrade Team', m:5, date:'7 Oct 2026', href:'#'},
   {t:'How to spot a crypto scam before you send money', d:'Fake giveaways, cloned support accounts and \u201Cguaranteed returns\u201D all follow the same script.', c:'security', a:'Support Desk', m:5, date:'4 Oct 2026', href:'#'},
   {t:'Why prices move when the US Fed speaks', d:'Interest rate news reaches crypto within minutes. Here is why, and how to plan around big announcements.', c:'markets', a:'Market Desk', m:6, date:'1 Oct 2026', href:'#'},
-  {t:'Position sizing: how much to risk per trade', d:'A simple rule for deciding trade size so one bad call does not wipe out your account.', c:'trading', a:'Market Desk', m:4, date:'28 Sep 2026', href:'#'},
-  {t:'Selling crypto for naira: what to check first', d:'Rate, fees, payout time and account name. Run through this list before every sale.', c:'naira', a:'Support Desk', m:5, date:'25 Sep 2026', href:'#'}
+  {t:'Is your USDT real? How to spot fake USDT before you lose money', d:'Fake and “flash” USDT can look completely real in your wallet. Here is how to check a token before you accept it or send anything.', c:'security', a:'Support Desk', m:5, date:'28 Sep 2026', href:'/blog/how-to-spot-fake-usdt/'},
+  {t:'Selling crypto for naira: what to check first', d:'Rate, fees, payout time and account name. Run through this list before every sale.', c:'naira', a:'Support Desk', m:3, date:'25 Sep 2026', href:'/blog/selling-crypto-for-naira-what-to-check-first/'}
 ];
 }
 </script>
