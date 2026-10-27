@@ -501,7 +501,7 @@ html.ac-on [data-ac]>*:not([data-ac-in]){opacity:0}
 .vc button{font-family:inherit}
 .vc :focus-visible{outline:2px solid var(--red);outline-offset:2px}
 .vc-v{display:none;flex:1;min-height:0;flex-direction:column}
-.vc[data-view="home"] .vc-home,.vc[data-view="messages"] .vc-msgs,.vc[data-view="chat"] .vc-chat{display:flex}
+.vc[data-view="home"] .vc-home,.vc[data-view="messages"] .vc-msgs,.vc[data-view="tickets"] .vc-tix,.vc[data-view="chat"] .vc-chat{display:flex}
 .vc-x,.vc-back{width:36px;height:36px;flex:none;display:grid;place-items:center;border:0;border-radius:50%;background:none;color:inherit;cursor:pointer;transition:background .2s}
 .vc-x:hover,.vc-back:hover{background:rgba(127,127,127,.16)}
 .vc-x svg,.vc-back svg{width:20px;height:20px}
@@ -539,6 +539,22 @@ html.ac-on [data-ac]>*:not([data-ac-in]){opacity:0}
 .vc[data-mode="pending"] .vc-who2 svg{color:#E8A317}
 /* messages tab */
 .vc-mbody{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+.vc-recent{flex-direction:column;align-items:stretch;gap:12px}
+.vc-rec-h{font-size:15px;font-weight:700}
+.vc-rrow{display:flex;align-items:center;gap:12px;min-width:0;font-weight:400}
+.vc-rrow .vc-pfp,.vc-rrow .vc-av{width:40px;height:40px;flex:none}
+.vc-rt{flex:1;min-width:0}
+.vc-rt b{display:block;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vc-rt span{display:block;color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vc-ago{flex:none;color:var(--muted);font-size:13px;font-weight:400}
+.vc-tk{border-bottom:1px solid var(--line)}
+.vc-tk .vc-li{border-bottom:0}
+.vc-tkic{width:40px;height:40px;flex:none;display:grid;place-items:center;border-radius:50%;background:var(--soft);color:var(--muted)}
+.vc-tkic svg{width:20px;height:20px}
+.vc-tx{display:none;padding:0 16px 14px 68px}
+.vc-tk[data-open] .vc-tx{display:block}
+.vc-tl{margin:0 0 6px;font-size:13px;line-height:1.45;white-space:pre-wrap;word-break:break-word}
+.vc-tl i{font-style:normal;font-weight:700;color:var(--muted)}
 .vc-empty{margin:auto;padding:24px;text-align:center}
 .vc-empty svg{width:46px;height:46px;margin-bottom:12px}
 .vc-empty b{display:block;font-size:20px;margin-bottom:8px}
@@ -632,6 +648,7 @@ button.vc-attach[aria-expanded="true"]{background:var(--pill);color:var(--text)}
 .vc-tabs button svg{width:26px;height:26px}
 .vc-tabs button[aria-current="page"]{color:var(--text);font-weight:700}
 .vc-tabs button[aria-current="page"] svg{fill:currentColor}
+.vc-tabs button[aria-current="page"] .vc-tkn path+path{stroke:var(--bg)}
 .vc-badge{position:absolute;top:4px;left:calc(50% + 4px);min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:#D7141A;color:#fff;font-size:11px;font-style:normal;font-weight:700;line-height:19px;text-align:center}
 .vc-badge[hidden]{display:none}
 /* launcher button */
@@ -3122,11 +3139,12 @@ html.va-lock{overflow:hidden}
     simulate: true,
     api: 'https://versustrade-chat.versustradehq.workers.dev', // address of your chat API (see chat-api/README.md). Leave empty to use the built-in demo replies
     live: { base: 'https://app.chatwoot.com', inbox: 'giwQh1xyoth7swCP7MQxF3Fe' }, // real representatives through Chatwoot. Set to null to use the scripted demo
-    debug: true, // shows a small "Debug:" line in the chat when the AI fails. Set to false when everything works
+    newThreadAfterHours: 6, // a customer who comes back after this many quiet hours gets a new Chatwoot conversation (so the team is alerted again). 0 = always continue the same one
+    debug: false, // shows a small "Debug:" line in the chat when the AI fails. Set to false when everything works
     isLoggedIn: function () { return !!(window.VTAuth && window.VTAuth.isLoggedIn()); }
   };
   var KEY = 'vt_chat_v3', WEEK = 7 * 24 * 3600 * 1000, MONTH = 30 * 24 * 3600 * 1000;
-  var S = { open: false, view: 'home', mode: 'ai', msgs: [], agentReplied: false, unread: 0, closedAt: 0, uid: null, t0: 0 };
+  var S = { open: false, view: 'home', mode: 'ai', msgs: [], agentReplied: false, unread: 0, closedAt: 0, uid: null, t0: 0, tix: [], tixAt: 0, tixConv: null };
   var sync = { ready: false, off: false, timer: 0 };
   function isCust(m) { return m.role === 'user' || m.role === 'trade' || m.role === 'summary'; }
   // a closed conversation stays readable (and can be rated) for 7 days, then the message box goes away
@@ -3134,11 +3152,13 @@ html.va-lock{overflow:hidden}
   function usable(st) { return !!(st && st.msgs && st.t && Date.now() - st.t < MONTH && (st.closedAt || Date.now() - st.t < WEEK)); }
   try {
     var saved = JSON.parse(localStorage.getItem(KEY) || 'null');
-    if (usable(saved)) { S.msgs = saved.msgs; S.mode = (saved.mode === 'pending' && !CHAT.live) ? 'agent' : (saved.mode || 'ai'); S.agentReplied = !!saved.agentReplied; S.flow = saved.flow || null; S.closedAt = saved.closedAt || 0; S.uid = saved.uid || null; S.t0 = saved.t; }
+    if (usable(saved)) { S.msgs = saved.msgs; S.mode = (saved.mode === 'pending' && !CHAT.live) ? 'agent' : (saved.mode || 'ai'); S.agentReplied = !!saved.agentReplied; S.flow = saved.flow || null; S.closedAt = saved.closedAt || 0; S.uid = saved.uid || null; S.t0 = saved.t; S.tixAt = saved.tixAt || 0; S.tixConv = saved.tixConv || null; }
     else if (saved) localStorage.removeItem(KEY);
+    if (saved && saved.tix) S.tix = saved.tix.filter(function (k) { return k && Date.now() - k.at < 180 * 24 * 3600 * 1000; });
   } catch (e) {}
   function snap() {
     return { msgs: S.msgs.slice(-60).map(function (m) { return m.kind === 'voice' ? { role: m.role, kind: m.kind, dur: m.dur, text: m.text } : m; }), mode: S.mode, agentReplied: S.agentReplied, flow: S.flow || null, closedAt: S.closedAt || 0, uid: S.uid || null,
+      tix: S.tix, tixAt: Math.max(0, (S.tixAt || 0) - Math.max(0, S.msgs.length - 60)), tixConv: S.tixConv || null,
       cw: (CW && cw) ? { src: cw.src, conv: cw.conv, seen: cw.seen } : null, t: Date.now() };
   }
   function save() {
@@ -3151,7 +3171,7 @@ html.va-lock{overflow:hidden}
     if (!sync.ready || sync.off || !S.uid || !window.VTAuth || !window.VTAuth.rest) return;
     clearTimeout(sync.timer);
     sync.timer = setTimeout(function () {
-      if (!S.uid || !S.msgs.some(isCust)) return;
+      if (!S.uid || !(S.msgs.some(isCust) || S.tix.length)) return;
       window.VTAuth.rest('POST', '/chat_state?on_conflict=user_id', { user_id: S.uid, state: snap(), updated_at: new Date().toISOString() }, { Prefer: 'resolution=merge-duplicates,return=minimal' })
         .catch(function (err) { if (err && (err.status === 400 || err.status === 401 || err.status === 403 || err.status === 404)) sync.off = true; });
     }, 2000);
@@ -3169,6 +3189,7 @@ html.va-lock{overflow:hidden}
     clip: '<path d="M20 11.5l-8.2 8.2a5 5 0 0 1-7-7l8.5-8.5a3.3 3.3 0 0 1 4.7 4.7l-8.5 8.5a1.7 1.7 0 0 1-2.4-2.4l7.8-7.8"/>',
     clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
     home: '<path d="M4 11l8-7 8 7v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M9 15c1.7 1.3 4.3 1.3 6 0"/>',
+    ticket: '<path d="M4 6h16a1 1 0 0 1 1 1v3a2 2 0 0 0 0 4v3a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-3a2 2 0 0 0 0-4V7a1 1 0 0 1 1-1z"/><path d="M14 6v2M14 11v2M14 16v2"/>',
     chat: '<path d="M4 5h16v11H11l-4 4v-4H4z"/><path d="M8 9h8M8 12h5"/>',
     emoji: '<circle cx="12" cy="12" r="9"/><path d="M8.5 14c.9 1.4 2.1 2 3.5 2s2.6-.6 3.5-2"/><circle cx="9" cy="10" r=".8" fill="currentColor"/><circle cx="15" cy="10" r=".8" fill="currentColor"/>',
     mic: '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',
@@ -3187,12 +3208,15 @@ html.va-lock{overflow:hidden}
   panel.innerHTML =
     '<div class="vc-v vc-home"><div class="vc-top"><span class="vc-brand">VersusTrade</span>' + AVS +
       '<button type="button" class="vc-x" data-act="close" aria-label="Close chat">' + svg(P.x) + '</button></div>' +
-      '<h2 class="vc-hi">Hi there <span class="vc-wave">\uD83D\uDC4B</span><br>How can we help?</h2>' +
+      '<h2 class="vc-hi">Hi <span id="vcHiName">there</span> <span class="vc-wave">\uD83D\uDC4B</span><br>How can we help?</h2>' +
+      '<button type="button" class="vc-card vc-recent" id="vcRecent" data-act="chat" style="display:none"></button>' +
       '<button type="button" class="vc-card" data-act="chat"><span>Send us a message</span>' + SENDI + '</button>' +
       '<a class="vc-card" id="vcWa" target="_blank" rel="noopener"><span>Chat on WhatsApp</span>' + WA + '</a></div>' +
     '<div class="vc-v vc-msgs"><div class="vc-bar"><span class="vc-bt">Messages</span><button type="button" class="vc-x" data-act="close" aria-label="Close chat">' + svg(P.x) + '</button></div>' +
       '<div class="vc-mbody" id="vcList"></div>' +
       '<button type="button" class="vc-pill" data-act="chat"><span>Send us a message</span>' + SENDI + '</button></div>' +
+    '<div class="vc-v vc-tix"><div class="vc-bar"><span class="vc-bt">Tickets</span><button type="button" class="vc-x" data-act="close" aria-label="Close chat">' + svg(P.x) + '</button></div>' +
+      '<div class="vc-mbody" id="vcTix"></div></div>' +
     '<div class="vc-v vc-chat"><div class="vc-bar"><button type="button" class="vc-back" data-act="messages" aria-label="Back to messages">' + svg(P.back) + '</button><span class="vc-pfp" id="vcPfp"></span>' +
       '<div class="vc-who2"><b id="vcName">Betty</b><span>' + svg(P.clock) + '<span id="vcSub"></span></span></div>' +
       '<button type="button" class="vc-x" data-act="close" aria-label="Close chat">' + svg(P.x) + '</button></div>' +
@@ -3209,7 +3233,8 @@ html.va-lock{overflow:hidden}
       '<div class=\"vc-end\" id=\"vcEnd\"><span>Your conversation has ended</span><button type=\"button\" class=\"vc-act\" id=\"vcNew\">Start a new conversation</button></div>' +
       '<p class="vc-note">Never share your password or seed phrase in chat.</p></div>' +
     '<nav class="vc-tabs" aria-label="Chat sections"><button type="button" data-go="home">' + svg(P.home) + '<span>Home</span></button>' +
-      '<button type="button" data-go="messages">' + svg(P.chat) + '<span>Messages</span><i class="vc-badge" id="vcBadge" hidden></i></button></nav>';
+      '<button type="button" data-go="messages">' + svg(P.chat) + '<span>Messages</span><i class="vc-badge" id="vcBadge" hidden></i></button>' +
+      '<button type="button" data-go="tickets">' + svg(P.ticket, ' class="vc-tkn"') + '<span>Tickets</span></button></nav>';
   document.body.appendChild(panel);
   var $ = function (id) { return panel.querySelector('#' + id); };
   var log = $('vcLog'), chips = $('vcChips'), input = $('vcIn'), send = $('vcSend'), sub = $('vcSub'), wa = $('vcWa'), list = $('vcList'), badge = $('vcBadge');
@@ -3305,9 +3330,11 @@ html.va-lock{overflow:hidden}
     return row;
   }
   function add(m) {
+    if (!m.at) m.at = Date.now();
     S.msgs.push(m); if (S.closedAt && isCust(m)) S.closedAt = 0; var drawn = drawMsg(m); save(); scrollDown();
     mirror(m);
     if (m.role === 'user' || m.role === 'trade' || m.role === 'summary') drawChips();
+    drawRecent();
     if ((m.role === 'bot' || m.role === 'agent' || m.role === 'csat') && !(S.open && S.view === 'chat')) { S.unread++; badges(); }
     if (S.view === 'messages') drawList();
     return drawn;
@@ -3340,6 +3367,77 @@ html.va-lock{overflow:hidden}
     if (S.unread) item.appendChild(el('i', 'vc-dot'));
     item.addEventListener('click', function () { go('chat'); });
     list.appendChild(item);
+  }
+
+  /* ---------- greeting name, "Recent message" card, Tickets ---------- */
+  function ago(t) {
+    if (!t) return '';
+    var sec = Math.max(0, (Date.now() - t) / 1000);
+    if (sec < 60) return 'now'; if (sec < 3600) return Math.floor(sec / 60) + 'm'; if (sec < 86400) return Math.floor(sec / 3600) + 'h';
+    if (sec < 604800) return Math.floor(sec / 86400) + 'd'; if (sec < 2592000) return Math.floor(sec / 604800) + 'w'; return Math.floor(sec / 2592000) + 'mo';
+  }
+  function plain(m) { return m.role === 'trade' ? 'Trade request: ' + tradeLine(m.trade) : m.role === 'summary' ? 'Gift card request: ' + (m.summary && m.summary.text || '') : String(m.text || ''); }
+  function shortText(t, n) { t = String(t || '').replace(/\s+/g, ' ').trim(); n = n || 48; return t.length > n ? t.slice(0, n - 1) + '\u2026' : t; }
+  function isTalk(m) { return m.role === 'user' || m.role === 'bot' || m.role === 'agent' || m.role === 'trade' || m.role === 'summary'; }
+  function mergeTix(a, b) {
+    var seen = {}, out = [];
+    (a || []).concat(b || []).forEach(function (k) { if (!k) return; var key = (k.cid || '') + '|' + k.at; if (!seen[key]) { seen[key] = 1; out.push(k); } });
+    out.sort(function (x, y) { return y.at - x.at; });
+    return out.slice(0, 30);
+  }
+  function drawHi() {
+    var u = who(), n = u && u.email ? u.email.split('@')[0] : '', h = $('vcHiName');
+    if (h) h.textContent = n ? n.charAt(0).toUpperCase() + n.slice(1) : 'there';
+  }
+  // the latest conversation, shown on the home screen
+  function drawRecent() {
+    var card = $('vcRecent'); if (!card) return;
+    var cur = S.msgs.slice(S.tixAt || 0), custs = cur.filter(isCust), last = null, i, title, prev, when, human;
+    for (i = S.msgs.length - 1; i >= 0; i--) { if (isTalk(S.msgs[i])) { last = S.msgs[i]; break; } }
+    if (custs.length && last) {
+      title = shortText(plain(custs[0])); prev = (isCust(last) ? 'You: ' : '') + shortText(plain(last), 60); when = last.at || S.t0; human = S.mode === 'agent';
+    } else if (S.tix.length) {
+      title = S.tix[0].title; prev = 'Resolved'; when = S.tix[0].at; human = true;
+    } else { card.style.display = 'none'; return; }
+    card.innerHTML = '';
+    card.appendChild(el('span', 'vc-rec-h', 'Recent message'));
+    var row = el('span', 'vc-rrow');
+    row.innerHTML = human ? '<span class="vc-av">' + svg(P.head) + '</span>' : '<span class="vc-pfp">' + BETTY.split('bty').join('btyH') + '</span>';
+    var tx = el('span', 'vc-rt'); tx.appendChild(el('b', '', title)); tx.appendChild(el('span', '', prev));
+    row.appendChild(tx); row.appendChild(el('span', 'vc-ago', ago(when)));
+    card.appendChild(row); card.style.display = '';
+  }
+  // a closed conversation becomes a ticket (kept with its messages, so the customer can read it again)
+  function archiveTicket() {
+    var cid = (CW && cw && cw.conv) ? cw.conv : null;
+    if (cid && S.tixConv === cid) return;
+    var slice = S.msgs.slice(S.tixAt || 0).filter(isTalk), first = null;
+    S.tixAt = S.msgs.length; S.tixConv = cid;
+    slice.some(function (m) { if (isCust(m)) { first = m; return true; } });
+    if (!first) return;
+    slice = slice.slice(slice.indexOf(first));
+    S.tix = mergeTix([{ id: cid || Date.now(), cid: cid, title: shortText(plain(first)), at: Date.now(), rated: 0,
+      msgs: slice.filter(function (m) { return !m.kind; }).slice(-40).map(function (m) { return { role: isCust(m) ? 'user' : m.role, text: shortText(plain(m), 400) }; }) }], S.tix);
+  }
+  function drawTix() {
+    var box = $('vcTix'); if (!box) return;
+    box.innerHTML = '';
+    if (!S.tix.length) { box.innerHTML = '<div class="vc-empty">' + svg(P.ticket, ' style="color:var(--text)"') + '<b>No tickets yet</b><p>Resolved conversations will be kept here</p></div>'; return; }
+    S.tix.forEach(function (k) {
+      var wrap = el('div', 'vc-tk'), li = el('button', 'vc-li'); li.type = 'button';
+      li.innerHTML = '<span class="vc-tkic">' + svg(P.ticket) + '</span>';
+      var t = el('span', 'vc-li-t'), b = el('b', '', k.title), reply = '';
+      (k.msgs || []).forEach(function (m) { if (m.role !== 'user') reply = m.text; });
+      t.appendChild(b);
+      t.appendChild(el('span', '', 'Resolved \u00B7 ' + (k.rated ? 'You rated this ' + k.rated + '/5' : shortText(reply, 50) || 'Conversation closed')));
+      li.appendChild(t); li.appendChild(el('span', 'vc-ago', ago(k.at)));
+      var tx = el('div', 'vc-tx');
+      (k.msgs || []).forEach(function (m) {
+        var d = el('p', 'vc-tl'); d.appendChild(el('i', '', (m.role === 'bot' ? 'Betty' : m.role === 'agent' ? 'Support team' : 'You') + ': ')); d.appendChild(document.createTextNode(m.text)); tx.appendChild(d);
+      });
+      li.addEventListener('click', function () { if (wrap.hasAttribute('data-open')) wrap.removeAttribute('data-open'); else wrap.setAttribute('data-open', ''); });
+      wrap.appendChild(li); wrap.appendChild(tx); box.appendChild(wrap);
+    });
   }
 
   /* ---------- API (SIMULATED: swap these for real services) ---------- */
@@ -3456,10 +3554,10 @@ html.va-lock{overflow:hidden}
   function botSay(r) { hideTyping(); add({ role: 'bot', text: r.text, actions: r.actions }); }
   // ---------- real representatives (Chatwoot, API inbox) ----------
   var CW = CHAT.live, cw = { src: null, conv: null, seen: 0, timer: 0, wait: 0 };
-  try { var cs = JSON.parse(localStorage.getItem('vt_cw_v1') || 'null'); if (CW && cs && cs.inbox === CW.inbox) { cw.src = cs.src; cw.conv = cs.conv; cw.seen = cs.seen || 0; cw.linked = cs.linked || null; } } catch (e) {}
+  try { var cs = JSON.parse(localStorage.getItem('vt_cw_v1') || 'null'); if (CW && cs && cs.inbox === CW.inbox) { cw.src = cs.src; cw.conv = cs.conv; cw.seen = cs.seen || 0; cw.linked = cs.linked || null; cw.last = cs.last || 0; cw.prev = cs.prev || null; } } catch (e) {}
   if (CW && !S.msgs.length) { cw.conv = null; cw.seen = 0; } // a fresh chat starts a fresh conversation
   cw.q = Promise.resolve();
-  function cwSave() { try { localStorage.setItem('vt_cw_v1', JSON.stringify({ inbox: CW.inbox, src: cw.src, conv: cw.conv, seen: cw.seen, linked: cw.linked || null })); } catch (e) {} }
+  function cwSave() { try { localStorage.setItem('vt_cw_v1', JSON.stringify({ inbox: CW.inbox, src: cw.src, conv: cw.conv, seen: cw.seen, linked: cw.linked || null, last: cw.last || 0, prev: cw.prev || null })); } catch (e) {} }
   function cwPath(path) { return CW.base.replace(/\/+$/, '') + '/public/api/v1/inboxes/' + encodeURIComponent(CW.inbox) + path; }
   function cwCall(method, path, body) {
     return fetch(cwPath(path), { method: method, headers: body ? { 'Content-Type': 'application/json' } : {}, body: body ? JSON.stringify(body) : undefined }).then(function (r) {
@@ -3490,12 +3588,14 @@ html.va-lock{overflow:hidden}
     return 'New chat from the VersusTrade website.\n' +
       (u && u.email ? 'Signed in on the site as ' + u.email + ' (not yet verified by Chatwoot).\n' : 'Not signed in.\n') +
       (lastTrade ? 'Latest request: ' + (lastTrade.custom ? lastTrade.custom : tradeLine(lastTrade)) + '\n' : '') +
+      (cw.prev ? 'Earlier conversation with this customer: #' + cw.prev + ' (check whether it needs closing).\n' : '') +
       'Page: ' + String(location.href).slice(0, 200) + '\n' +
       'Betty (the automated assistant) is answering the customer until someone from the team replies here.';
   }
   // makes sure a Chatwoot contact and conversation exist (created on the customer's first message)
   function cwOpen() {
-    var check = Promise.resolve();
+    var check = Promise.resolve(), idle = (CHAT.newThreadAfterHours || 0) * 3600 * 1000;
+    if (cw.conv && idle && cw.last && Date.now() - cw.last > idle) { cw.prev = cw.conv; dropConv(); }
     if (cw.conv && cw.checked !== cw.conv) {
       var cid = cw.conv;
       check = cwCall('GET', cwConv('')).then(function (c) {
@@ -3509,21 +3609,30 @@ html.va-lock{overflow:hidden}
     cw.conv = null; cw.seen = 0; cw.closing = false; cw.checked = null; clearInterval(cw.timer); cw.timer = 0; cwSave();
     if (S.mode !== 'ai') { S.mode = 'ai'; S.flow = null; S.agentReplied = false; hideTyping(); status(); }
   }
-  function cwCreate() {
-    var u = who(), first = cw.src ? Promise.resolve() : cwCall('POST', '/contacts', u && u.email ? { name: u.email.split('@')[0], email: u.email, identifier: u.id || undefined } : { name: 'Website visitor' }).then(function (c) { cw.src = c.source_id; if (u && u.id) cw.linked = u.id; });
+  function cwCreate(retry) {
+    var u = who(), anon = { name: 'Website visitor' };
+    var first = cw.src ? Promise.resolve() : cwCall('POST', '/contacts', u && u.email ? { name: u.email.split('@')[0], email: u.email, identifier: u.id || undefined } : anon)
+      .catch(function (err) { if (u && u.email) return cwCall('POST', '/contacts', anon); throw err; })   // never let the sign-in details stop a message getting through
+      .then(function (c) { cw.src = c.source_id; cw.linked = (u && u.id && c.contact && c.contact.email) ? u.id : null; cwSave(); });
     return first.then(function () {
       return cwCall('POST', '/contacts/' + encodeURIComponent(cw.src) + '/conversations', { custom_attributes: { page: String(location.href).slice(0, 200), signed_in: u ? 'yes' : 'no', trade: lastTrade ? (lastTrade.custom ? lastTrade.custom : tradeLine(lastTrade)) : 'none' } });
     }).then(function (cv) {
       cw.conv = cv.id; cw.seen = 0; cwSave();
-      return cwCall('POST', cwConv('/messages'), { content: ctxText() });
-    }).then(function () { startPolling(); });
+      var note = ctxText(); cw.prev = null; cwSave();
+      return cwCall('POST', cwConv('/messages'), { content: note });
+    }).then(function () { startPolling(); }, function (err) {
+      // the saved contact no longer exists in Chatwoot: make a new one and try once more
+      if (!retry && cw.src && err && (err.status === 404 || err.status === 401 || err.status === 422)) { cw.src = null; cw.linked = null; cw.conv = null; cwSave(); return cwCreate(true); }
+      throw err;
+    });
   }
+
   // sends one customer message to Chatwoot; messages are queued so they arrive in order
   function cwPost(text) {
     cw.q = cw.q.then(function () {
       if (cw.closing) endConv();
       return cwOpen().then(function () { return cwCall('POST', cwConv('/messages'), { content: text }); });
-    }).then(function () { setTimeout(poll, 1500); }, function (err) {
+    }).then(function () { cw.last = Date.now(); cwSave(); setTimeout(poll, 1500); }, function (err) {
       try { console.warn('VersusTrade chat: could not send to Chatwoot', err); } catch (e) {}
       if (S.mode !== 'ai') add({ role: 'system', text: 'That message couldn\u2019t be sent to the team. Try again, or continue on WhatsApp with the button at the top.' });
       if (CHAT.debug) add({ role: 'system', text: 'Debug: ' + (err && err.message || err) });
@@ -3565,7 +3674,7 @@ html.va-lock{overflow:hidden}
         if (ct === 'input_csat' || (isTpl && /\brate\b/i.test(content))) { showCsat(m); return; } // Chatwoot's rating request
         if (isAct && /resolved/i.test(content)) { closeConv(); return; }
         var fromTeam = mt === 1 || mt === 'outgoing';
-        if (fromTeam && m.content && !m.private) incoming(content);
+        if (fromTeam && m.content && !m.private) { cw.last = Date.now(); incoming(content); }
       });
       cwSave();
     }).catch(function () {});
@@ -3579,7 +3688,7 @@ html.va-lock{overflow:hidden}
     if (force || S.mode !== 'ai') {
       clearTimeout(cw.wait); S.mode = 'ai'; S.flow = null; S.busy = false; S.agentReplied = false; hideTyping(); status();
       add({ role: 'system', text: 'This conversation has been closed. Send a message any time to start a new one.' });
-      S.closedAt = Date.now(); save();
+      S.closedAt = Date.now(); archiveTicket(); save();
     }
     clearTimeout(cw.closeTimer); cw.closeTimer = setTimeout(endConv, 25000); // give the rating request a moment to arrive
   }
@@ -3589,7 +3698,8 @@ html.va-lock{overflow:hidden}
   }
   function showCsat(m) {
     closeConv(true);
-    if (!S.closedAt) { S.closedAt = Date.now(); save(); }
+    if (!S.closedAt) S.closedAt = Date.now();
+    archiveTicket(); save();
     if (S.msgs.some(function (x) { return x.role === 'csat' && x.mid === m.id; })) return;
     add({ role: 'csat', text: String(m.content || 'How would you rate the service provided by our team?'), cid: cw.conv, src: cw.src, mid: m.id, rated: 0, at: Date.now() });
     clearTimeout(cw.closeTimer); cw.closeTimer = setTimeout(endConv, 2000);
@@ -3599,7 +3709,7 @@ html.va-lock{overflow:hidden}
     var stars = Array.prototype.slice.call(row.querySelectorAll('.vc-star'));
     stars.forEach(function (x, i) { x.disabled = true; x.classList.toggle('on', i < n); });
     cwCall('PATCH', '/contacts/' + encodeURIComponent(m.src) + '/conversations/' + m.cid + '/messages/' + m.mid, { submitted_values: { csat_survey_response: { rating: n } } }).then(function () {
-      m.rated = n; save();
+      m.rated = n; S.tix.forEach(function (k) { if (k.cid && k.cid === m.cid) k.rated = n; }); save();
       row.querySelector('.vc-b').textContent = 'Thanks for rating us ' + n + '/5.';
       var rt = row.querySelector('.vc-rate'); if (rt) rt.remove();
     }, function () {
@@ -3936,12 +4046,14 @@ html.va-lock{overflow:hidden}
   /* ---------- navigation ---------- */
   function go(view) {
     S.view = view; panel.setAttribute('data-view', view);
-    [].forEach.call(panel.querySelectorAll('.vc-tabs button'), function (b) { if (b.dataset.go === (view === 'home' ? 'home' : 'messages')) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+    [].forEach.call(panel.querySelectorAll('.vc-tabs button'), function (b) { if (b.dataset.go === (view === 'home' ? 'home' : view === 'tickets' ? 'tickets' : 'messages')) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
     if (view === 'chat') {
       S.unread = 0; badges();
       status(); if (!S.msgs.length) greet();
       scrollDown(); setTimeout(function () { if (S.open && S.view === 'chat') input.focus({ preventScroll: true }); }, 120);
     } else if (view === 'messages') drawList();
+    else if (view === 'tickets') drawTix();
+    else if (view === 'home') { drawHi(); drawRecent(); }
   }
   function open(view) {
     if (!S.open) {
@@ -3984,15 +4096,15 @@ html.va-lock{overflow:hidden}
     log.innerHTML = '<p class="vc-intro">Betty replies automatically. A team member can join any time.</p>';
     lastTrade = null;
     S.msgs.forEach(function (m) { if (m.role === 'trade') lastTrade = m.trade; else if (m.role === 'summary') lastTrade = { custom: m.summary.text, card: m.summary.title }; drawMsg(m); });
-    refreshWa(); status(); badges(); if (S.view === 'messages') drawList();
+    refreshWa(); status(); badges(); drawHi(); drawRecent(); if (S.view === 'messages') drawList(); if (S.view === 'tickets') drawTix();
     if (CW && cw.conv && !cw.closing) startPolling();
     scrollDown();
   }
   // empty the chat. keepAccount = start a new conversation but stay linked to the same customer
   function resetChat(keepAccount) {
     hideTyping(); clearTimeout(sync.timer);
-    S.msgs = []; S.mode = 'ai'; S.agentReplied = false; S.flow = null; S.closedAt = 0; S.busy = false; lastTrade = null;
-    if (!keepAccount) S.uid = null;
+    S.msgs = []; S.mode = 'ai'; S.agentReplied = false; S.flow = null; S.closedAt = 0; S.busy = false; lastTrade = null; S.tixAt = 0; S.tixConv = null;
+    if (!keepAccount) { S.uid = null; S.tix = []; }
     if (CW) {
       clearTimeout(cw.wait); clearTimeout(cw.closeTimer); clearInterval(cw.timer); cw.timer = 0; cw.conv = null; cw.seen = 0; cw.closing = false;
       if (!keepAccount) { cw.src = null; cw.linked = null; }
@@ -4003,9 +4115,9 @@ html.va-lock{overflow:hidden}
     if (S.view === 'chat') greet(); else save();
   }
   function adopt(st) {
-    S.msgs = st.msgs; S.mode = (st.mode === 'pending' && !CHAT.live) ? 'agent' : (st.mode || 'ai'); S.agentReplied = !!st.agentReplied; S.flow = st.flow || null; S.closedAt = st.closedAt || 0; S.t0 = st.t || 0;
+    S.msgs = st.msgs; S.mode = (st.mode === 'pending' && !CHAT.live) ? 'agent' : (st.mode || 'ai'); S.agentReplied = !!st.agentReplied; S.flow = st.flow || null; S.closedAt = st.closedAt || 0; S.t0 = st.t || 0; S.tixAt = st.tixAt || 0; S.tixConv = st.tixConv || null;
     if (CW && st.cw) { cw.src = st.cw.src || null; cw.conv = st.cw.conv || null; cw.seen = st.cw.seen || 0; cw.closing = false; cwSave(); }
-    redrawAll();
+    S.tix = mergeTix(S.tix, st.tix); redrawAll();
   }
   // tell Chatwoot who this visitor is, so the team sees the customer's email on the conversation
   function linkContact() {
@@ -4016,7 +4128,8 @@ html.va-lock{overflow:hidden}
       .catch(function () { return cwCall('PATCH', path, { name: name, email: u.email }); })
       .then(function () {
         cw.linked = u.id; cwSave();
-        if (cw.conv && !cw.closing) return cwCall('POST', cwConv('/messages'), { content: 'The customer signed in on the website as ' + u.email + '.' });
+        var idle = (CHAT.newThreadAfterHours || 0) * 3600 * 1000, quiet = idle && cw.last && Date.now() - cw.last > idle;
+        if (cw.conv && !cw.closing && !quiet) return cwCall('POST', cwConv('/messages'), { content: 'The customer signed in on the website as ' + u.email + '.' });
       }).catch(function () {});
   }
   function accountSync(u) {
@@ -4026,6 +4139,7 @@ html.va-lock{overflow:hidden}
     var had = S.msgs.some(isCust), adopted = false;
     return A.rest('GET', '/chat_state?select=state&user_id=eq.' + encodeURIComponent(u.id) + '&limit=1').then(function (rows) {
       var st = rows && rows[0] && rows[0].state;
+      if (st && st.tix) S.tix = mergeTix(S.tix, st.tix);
       // use the saved chat if this browser has none, or if it was updated on another device since
       if (usable(st) && st.msgs.length && (!had || (S.uid === u.id && st.t > (S.t0 || 0)))) { adopt(st); adopted = true; }
       S.uid = u.id; sync.ready = true; sync.off = false;
@@ -4041,6 +4155,7 @@ html.va-lock{overflow:hidden}
 
   window.addEventListener('vt-auth', function (e) {
     var d = e.detail || {};
+    drawHi();
     if (!d.loggedIn) { sync.ready = false; if (S.uid) resetChat(); return; }   // logged out: the next person on this device starts clean
     accountSync(who()).then(function (adopted) {
       if (adopted || d.initial || !S.msgs.length) return;
@@ -4054,13 +4169,13 @@ html.va-lock{overflow:hidden}
     if (S.skipPop) { S.skipPop = false; return; }
     if (!S.open) return;
     if (S.view === 'chat') { showPop(null); go('messages'); try { history.pushState({ vtChat: 1 }, ''); } catch (e) {} }
-    else if (S.view === 'messages') { go('home'); try { history.pushState({ vtChat: 1 }, ''); } catch (e) {} }
+    else if (S.view === 'messages' || S.view === 'tickets') { go('home'); try { history.pushState({ vtChat: 1 }, ''); } catch (e) {} }
     else { S.pushed = false; close(); }
   });
 
   S.msgs.forEach(function (m) { if (m.role === 'trade') lastTrade = m.trade; else if (m.role === 'summary') lastTrade = { custom: m.summary.text, card: m.summary.title }; drawMsg(m); });
   if (CW && cw.conv) startPolling();
-  refreshWa(); status(); go('home'); badges();
+  refreshWa(); status(); drawHi(); drawRecent(); go('home'); badges();
   window.VTChat = { open: open, close: close, toggle: toggle, sendTrade: sendTrade, sendGiftCard: sendGiftCard, config: CHAT };
 })();
 </script>
