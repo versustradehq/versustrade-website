@@ -3122,7 +3122,7 @@ html.va-lock{overflow:hidden}
     simulate: true,
     api: 'https://versustrade-chat.versustradehq.workers.dev', // address of your chat API (see chat-api/README.md). Leave empty to use the built-in demo replies
     live: { base: 'https://app.chatwoot.com', inbox: 'giwQh1xyoth7swCP7MQxF3Fe' }, // real representatives through Chatwoot. Set to null to use the scripted demo
-    debug: false, // shows a small "Debug:" line in the chat when the AI fails. Set to false when everything works
+    debug: true, // shows a small "Debug:" line in the chat when the AI fails. Set to false when everything works
     isLoggedIn: function () { return !!(window.VTAuth && window.VTAuth.isLoggedIn()); }
   };
   var KEY = 'vt_chat_v3', WEEK = 7 * 24 * 3600 * 1000, MONTH = 30 * 24 * 3600 * 1000;
@@ -3464,7 +3464,7 @@ html.va-lock{overflow:hidden}
   function cwCall(method, path, body) {
     return fetch(cwPath(path), { method: method, headers: body ? { 'Content-Type': 'application/json' } : {}, body: body ? JSON.stringify(body) : undefined }).then(function (r) {
       return r.text().then(function (t) {
-        if (!r.ok) throw new Error('Chatwoot HTTP ' + r.status);
+        if (!r.ok) { var er = new Error('Chatwoot HTTP ' + r.status + (t ? ' ' + String(t).slice(0, 140) : '')); er.status = r.status; throw er; }
         try { return t ? JSON.parse(t) : null; } catch (e) { return null; }
       });
     });
@@ -3495,7 +3495,21 @@ html.va-lock{overflow:hidden}
   }
   // makes sure a Chatwoot contact and conversation exist (created on the customer's first message)
   function cwOpen() {
-    if (cw.conv) return Promise.resolve();
+    var check = Promise.resolve();
+    if (cw.conv && cw.checked !== cw.conv) {
+      var cid = cw.conv;
+      check = cwCall('GET', cwConv('')).then(function (c) {
+        if (c && c.status === 'resolved') dropConv(); else cw.checked = cid;
+      }, function (err) { if (err && err.status === 404) dropConv(); });
+    }
+    return check.then(function () { return cw.conv ? null : cwCreate(); });
+  }
+  // the stored conversation was resolved (or no longer exists): the next message starts a new one
+  function dropConv() {
+    cw.conv = null; cw.seen = 0; cw.closing = false; cw.checked = null; clearInterval(cw.timer); cw.timer = 0; cwSave();
+    if (S.mode !== 'ai') { S.mode = 'ai'; S.flow = null; S.agentReplied = false; hideTyping(); status(); }
+  }
+  function cwCreate() {
     var u = who(), first = cw.src ? Promise.resolve() : cwCall('POST', '/contacts', u && u.email ? { name: u.email.split('@')[0], email: u.email, identifier: u.id || undefined } : { name: 'Website visitor' }).then(function (c) { cw.src = c.source_id; if (u && u.id) cw.linked = u.id; });
     return first.then(function () {
       return cwCall('POST', '/contacts/' + encodeURIComponent(cw.src) + '/conversations', { custom_attributes: { page: String(location.href).slice(0, 200), signed_in: u ? 'yes' : 'no', trade: lastTrade ? (lastTrade.custom ? lastTrade.custom : tradeLine(lastTrade)) : 'none' } });
@@ -3510,6 +3524,7 @@ html.va-lock{overflow:hidden}
       if (cw.closing) endConv();
       return cwOpen().then(function () { return cwCall('POST', cwConv('/messages'), { content: text }); });
     }).then(function () { setTimeout(poll, 1500); }, function (err) {
+      try { console.warn('VersusTrade chat: could not send to Chatwoot', err); } catch (e) {}
       if (S.mode !== 'ai') add({ role: 'system', text: 'That message couldn\u2019t be sent to the team. Try again, or continue on WhatsApp with the button at the top.' });
       if (CHAT.debug) add({ role: 'system', text: 'Debug: ' + (err && err.message || err) });
     });
