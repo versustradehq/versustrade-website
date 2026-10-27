@@ -604,6 +604,8 @@ html.ac-on [data-ac]>*:not([data-ac-in]){opacity:0}
 .vc-send:hover{background:var(--red-dark)}
 .vc-send:disabled{background:var(--pill);color:var(--muted);cursor:default}
 .vc-send svg{width:20px;height:20px}
+.vc-end{display:none;margin:0 14px 12px;padding:16px 14px;border:1px solid var(--line);border-radius:20px;text-align:center;color:var(--muted);font-size:14px}
+.vc-end .vc-act{display:flex;margin:12px auto 0}
 .vc-note{margin:7px 14px 10px;text-align:center;font-size:11px;color:var(--muted)}
 .vc-chat{position:relative}
 .vc-attach{border:0;background:none}
@@ -3204,6 +3206,7 @@ html.va-lock{overflow:hidden}
       '<button type="submit" class="vc-send" id="vcSend" aria-label="Send" disabled>' + svg(P.sendArrow, ' stroke-width="2.2"') + '</button></div>' +
       '<div class="vc-rec"><button type="button" class="vc-attach" id="vcRecCancel" aria-label="Cancel recording">' + svg(P.trash) + '</button><span class="vc-recdot"></span><span class="vc-rect" id="vcRecTime">0:00</span><span class="vc-recl">Recording\u2026</span>' +
       '<button type="button" class="vc-send" id="vcRecSend" aria-label="Send voice note">' + svg(P.sendArrow, ' stroke-width="2.2"') + '</button></div></form>' +
+      '<div class=\"vc-end\" id=\"vcEnd\"><span>Your conversation has ended</span><button type=\"button\" class=\"vc-act\" id=\"vcNew\">Start a new conversation</button></div>' +
       '<p class="vc-note">Never share your password or seed phrase in chat.</p></div>' +
     '<nav class="vc-tabs" aria-label="Chat sections"><button type="button" data-go="home">' + svg(P.home) + '<span>Home</span></button>' +
       '<button type="button" data-go="messages">' + svg(P.chat) + '<span>Messages</span><i class="vc-badge" id="vcBadge" hidden></i></button></nav>';
@@ -3235,6 +3238,8 @@ html.va-lock{overflow:hidden}
     sub.textContent = S.mode === 'ai' ? 'Customer support \u00B7 replies instantly' : S.mode === 'pending' ? (CHAT.live ? 'Waiting for a team member\u2026' : 'Connecting you to the team\u2026') : 'Team \u00B7 online';
     nameEl.textContent = S.mode === 'agent' ? 'Support team' : 'Betty';
     pfpEl.innerHTML = S.mode === 'agent' ? '<span class="vc-av">' + svg(P.head) + '</span>' : BETTY;
+    var ended = isEnded(), fm = $('vcForm'), nt = panel.querySelector('.vc-note'), en = $('vcEnd');
+    if (fm) fm.style.display = ended ? 'none' : ''; if (nt) nt.style.display = ended ? 'none' : ''; if (en) en.style.display = ended ? 'block' : 'none';
     drawChips();
   }
   function badges() {
@@ -3595,12 +3600,12 @@ html.va-lock{overflow:hidden}
   }
   function userSay(text) {
     text = (text || '').trim(); if (!text) return;
-    if (S.busy) return;
+    if (S.busy || isEnded()) return;
     add({ role: 'user', text: text });
     if (S.mode === 'ai') { if (flowTry(text)) return; if (CHAT.api) aiRespond(); else { showTyping(); API.aiReply(text).then(botSay); } } else toTeam(null, text);
   }
   function attach(file) {
-    if (!file) return;
+    if (!file || isEnded()) return;
     if (file.size > 10 * 1024 * 1024) { add({ role: 'system', text: 'That file is too large (10 MB max).' }); return; }
     // Front end only: the file is not uploaded anywhere yet. Hook your upload here.
     add({ role: 'user', text: 'Attachment: ' + file.name });
@@ -3644,6 +3649,7 @@ html.va-lock{overflow:hidden}
     }
   }
   function sendTrade(t) {
+    if (isEnded()) resetChat(true);
     lastTrade = t; refreshWa();
     try { sessionStorage.setItem('vt_pending_trade', JSON.stringify(t)); } catch (e) {}
     open('chat');
@@ -3659,6 +3665,7 @@ html.va-lock{overflow:hidden}
   }
 
   function sendGiftCard(name) {
+    if (isEnded()) resetChat(true);
     lastTrade = { custom: 'Hi VersusTrade, I want to sell my ' + name + '.', card: name }; refreshWa();
     open('chat');
     add({ role: 'user', text: 'I want to sell my ' + name + '.' });
@@ -3899,6 +3906,7 @@ html.va-lock{overflow:hidden}
     try { mr.stop(); } catch (e) { stream.getTracks().forEach(function (t) { t.stop(); }); }
   }
   function sendVoice(url, secs) {
+    if (isEnded()) return;
     // Front end only: the audio stays in this browser tab. Hook your upload here.
     add({ role: 'user', kind: 'voice', dur: secs, url: url, text: 'Voice note' });
     if (S.mode === 'ai') { showTyping(); pause(900).then(function () { botSay({ text: 'Thanks. I can\u2019t listen to voice notes myself, but a representative can. Want me to connect you?', actions: [repAct()] }); }); } else toTeam('Thanks, I\u2019ll listen to your voice note now.');
@@ -3909,13 +3917,14 @@ html.va-lock{overflow:hidden}
   $('vcRecSend').addEventListener('click', function () { stopRec(true); });
   panel.addEventListener('click', function (e) { if (!pop.hidden && !e.target.closest('#vcPop, .vc-tools')) showPop(null); });
 
+  function greet() { add({ role: 'bot', text: 'Hi! I\u2019m Betty from VersusTrade customer support. Ask me anything about what we do, or pick a coin in the trade box and I\u2019ll take it from there. A representative is available any time you need one.' }); }
   /* ---------- navigation ---------- */
   function go(view) {
     S.view = view; panel.setAttribute('data-view', view);
     [].forEach.call(panel.querySelectorAll('.vc-tabs button'), function (b) { if (b.dataset.go === (view === 'home' ? 'home' : 'messages')) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
     if (view === 'chat') {
       S.unread = 0; badges();
-      if (!S.msgs.length) add({ role: 'bot', text: 'Hi! I\u2019m Betty from VersusTrade customer support. Ask me anything about what we do, or pick a coin in the trade box and I\u2019ll take it from there. A representative is available any time you need one.' });
+      status(); if (!S.msgs.length) greet();
       scrollDown(); setTimeout(function () { if (S.open && S.view === 'chat') input.focus({ preventScroll: true }); }, 120);
     } else if (view === 'messages') drawList();
   }
@@ -3955,11 +3964,74 @@ html.va-lock{overflow:hidden}
   });
 
   // When someone logs in, let them know in the chat so the transaction can continue
+  /* ---------- logged-in customers: chat saved to the account, Chatwoot contact linked ---------- */
+  function redrawAll() {
+    log.innerHTML = '<p class="vc-intro">Betty replies automatically. A team member can join any time.</p>';
+    lastTrade = null;
+    S.msgs.forEach(function (m) { if (m.role === 'trade') lastTrade = m.trade; else if (m.role === 'summary') lastTrade = { custom: m.summary.text, card: m.summary.title }; drawMsg(m); });
+    refreshWa(); status(); badges(); if (S.view === 'messages') drawList();
+    if (CW && cw.conv && !cw.closing) startPolling();
+    scrollDown();
+  }
+  // empty the chat. keepAccount = start a new conversation but stay linked to the same customer
+  function resetChat(keepAccount) {
+    hideTyping(); clearTimeout(sync.timer);
+    S.msgs = []; S.mode = 'ai'; S.agentReplied = false; S.flow = null; S.closedAt = 0; S.busy = false; lastTrade = null;
+    if (!keepAccount) S.uid = null;
+    if (CW) {
+      clearTimeout(cw.wait); clearTimeout(cw.closeTimer); clearInterval(cw.timer); cw.timer = 0; cw.conv = null; cw.seen = 0; cw.closing = false;
+      if (!keepAccount) { cw.src = null; cw.linked = null; }
+      cwSave();
+    }
+    if (!keepAccount) { try { localStorage.removeItem(KEY); } catch (e) {} }
+    redrawAll();
+    if (S.view === 'chat') greet(); else save();
+  }
+  function adopt(st) {
+    S.msgs = st.msgs; S.mode = (st.mode === 'pending' && !CHAT.live) ? 'agent' : (st.mode || 'ai'); S.agentReplied = !!st.agentReplied; S.flow = st.flow || null; S.closedAt = st.closedAt || 0; S.t0 = st.t || 0;
+    if (CW && st.cw) { cw.src = st.cw.src || null; cw.conv = st.cw.conv || null; cw.seen = st.cw.seen || 0; cw.closing = false; cwSave(); }
+    redrawAll();
+  }
+  // tell Chatwoot who this visitor is, so the team sees the customer's email on the conversation
+  function linkContact() {
+    var u = who();
+    if (!CW || !cw.src || !u || !u.email || cw.linked === u.id) return Promise.resolve();
+    var path = '/contacts/' + encodeURIComponent(cw.src), name = u.email.split('@')[0];
+    return cwCall('PATCH', path, { name: name, email: u.email, identifier: u.id })
+      .catch(function () { return cwCall('PATCH', path, { name: name, email: u.email }); })
+      .then(function () {
+        cw.linked = u.id; cwSave();
+        if (cw.conv && !cw.closing) return cwCall('POST', cwConv('/messages'), { content: 'The customer signed in on the website as ' + u.email + '.' });
+      }).catch(function () {});
+  }
+  function accountSync(u) {
+    var A = window.VTAuth;
+    if (!A || !A.rest || !u || !u.id) return Promise.resolve(false);
+    if (S.uid && S.uid !== u.id) resetChat();   // this browser still held another account's chat
+    var had = S.msgs.some(isCust), adopted = false;
+    return A.rest('GET', '/chat_state?select=state&user_id=eq.' + encodeURIComponent(u.id) + '&limit=1').then(function (rows) {
+      var st = rows && rows[0] && rows[0].state;
+      // use the saved chat if this browser has none, or if it was updated on another device since
+      if (usable(st) && st.msgs.length && (!had || (S.uid === u.id && st.t > (S.t0 || 0)))) { adopt(st); adopted = true; }
+      S.uid = u.id; sync.ready = true; sync.off = false;
+      save();
+      return linkContact().then(function () { return adopted; });
+    }).catch(function (err) {
+      if (err && (err.status === 400 || err.status === 401 || err.status === 403 || err.status === 404)) sync.off = true;
+      S.uid = u.id; save();
+      return linkContact().then(function () { return false; });
+    });
+  }
+  $('vcNew').addEventListener('click', function () { resetChat(true); });
+
   window.addEventListener('vt-auth', function (e) {
     var d = e.detail || {};
-    if (d.initial || !d.loggedIn || !S.msgs.length) return;
-    var tr = lastTrade && !lastTrade.custom ? lastTrade : null;
-    add({ role: 'bot', text: tr ? 'You\u2019re logged in as ' + d.email + '. Your request to ' + tr.side + ' ' + qtyStr(tr.qty) + ' ' + tr.asset + (tr.network ? ' on ' + tr.network : '') + ' is still here, and a representative can confirm the payment details with you.' : lastTrade ? 'You\u2019re logged in as ' + d.email + '. Your request is still here, and a representative can confirm the details with you.' : 'You\u2019re logged in as ' + d.email + '. You can continue your transaction here, and your chats are now saved to your account.', actions: lastTrade ? [repAct(), waAct(tradeText(lastTrade))] : [] });
+    if (!d.loggedIn) { sync.ready = false; if (S.uid) resetChat(); return; }   // logged out: the next person on this device starts clean
+    accountSync(who()).then(function (adopted) {
+      if (adopted || d.initial || !S.msgs.length) return;
+      var tr = lastTrade && !lastTrade.custom ? lastTrade : null;
+      add({ role: 'bot', text: tr ? 'You\u2019re logged in as ' + d.email + '. Your request to ' + tr.side + ' ' + qtyStr(tr.qty) + ' ' + tr.asset + (tr.network ? ' on ' + tr.network : '') + ' is still here, and a representative can confirm the payment details with you.' : lastTrade ? 'You\u2019re logged in as ' + d.email + '. Your request is still here, and a representative can confirm the details with you.' : 'You\u2019re logged in as ' + d.email + '. You can continue your transaction here, and your chats are now saved to your account.', actions: lastTrade ? [repAct(), waAct(tradeText(lastTrade))] : [] });
+    });
   });
 
   // Phone Back button: one screen at a time (conversation, messages, home), then it closes the chat
