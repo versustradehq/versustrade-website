@@ -214,6 +214,7 @@ h2{font-size:clamp(28px,4vw,40px);line-height:1.2;font-weight:900;letter-spacing
 .rt-col:first-child{padding-left:0}
 .rt-col+.rt-col{border-left:1px solid var(--rc-line)}
 .rt-col span{font-size:15px;font-weight:700;letter-spacing:.04em;color:var(--rc-text)}
+.rt-col b::after{content:"/$";margin-left:5px;font-size:.38em;font-weight:600;letter-spacing:.02em;color:var(--rc-text);opacity:.75}
 .rt-col b{display:block;margin-top:6px;font-size:clamp(26px,5.5vw,56px);line-height:1.1;font-weight:700;color:var(--rc-num)}
 @media (prefers-reduced-motion:reduce){.rc{transform:none}}
 .rt-text{margin:12px 0 24px;max-width:520px;color:var(--muted);font-size:17px}
@@ -566,6 +567,10 @@ html.ac-on [data-ac]>*:not([data-ac-in]){opacity:0}
 .vc-row.bot .vc-b,.vc-row.agent .vc-b{border-bottom-left-radius:8px}
 .vc-row.agent .vc-b{background:var(--red-tint)}
 .vc-row.user .vc-b{background:#434650;color:#fff;border-bottom-right-radius:8px}
+.vc-rate{display:flex;gap:2px;padding:4px 2px 2px}
+.vc-star{background:none;border:0;padding:0 3px;font-size:28px;line-height:1;cursor:pointer;color:var(--muted);opacity:.5}
+.vc-star.on,.vc-star:hover{color:#F5A623;opacity:1}
+.vc-star:disabled{cursor:default}
 .vc-sys{align-self:center;max-width:92%;padding:4px 11px;border-radius:999px;background:var(--pill);font-size:12px;color:var(--muted);text-align:center}
 .vc-acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .vc-act{display:inline-flex;align-items:center;padding:7px 13px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;transition:border-color .2s}
@@ -916,8 +921,8 @@ html.va-lock{overflow:hidden}
           <div class="rc-body">
             <div class="rc-top"><span class="rc-brand">VersusTrade</span><span class="rc-tag">Live rate</span></div>
             <div class="rt-cols">
-              <div class="rt-col"><span>BUY /$</span><b id="rtBuy">&#8358;1,300</b></div>
-              <div class="rt-col"><span>SELL /$</span><b id="rtSell">&#8358;1,450</b></div>
+              <div class="rt-col"><span>Buy as High as</span><b id="rtBuy">&#8358;1,300</b></div>
+              <div class="rt-col"><span>Sell as High as</span><b id="rtSell">&#8358;1,450</b></div>
             </div>
             <p class="rc-std" id="rtStd">Checking the standard rate&hellip;</p>
           </div>
@@ -3118,13 +3123,37 @@ html.va-lock{overflow:hidden}
     debug: false, // shows a small "Debug:" line in the chat when the AI fails. Set to false when everything works
     isLoggedIn: function () { return !!(window.VTAuth && window.VTAuth.isLoggedIn()); }
   };
-  var KEY = 'vt_chat_v2';
-  var S = { open: false, view: 'home', mode: 'ai', msgs: [], agentReplied: false, unread: 0 };
+  var KEY = 'vt_chat_v3', WEEK = 7 * 24 * 3600 * 1000, MONTH = 30 * 24 * 3600 * 1000;
+  var S = { open: false, view: 'home', mode: 'ai', msgs: [], agentReplied: false, unread: 0, closedAt: 0, uid: null, t0: 0 };
+  var sync = { ready: false, off: false, timer: 0 };
+  function isCust(m) { return m.role === 'user' || m.role === 'trade' || m.role === 'summary'; }
+  // a closed conversation stays readable (and can be rated) for 7 days, then the message box goes away
+  function isEnded() { return !!S.closedAt && Date.now() - S.closedAt > WEEK; }
+  function usable(st) { return !!(st && st.msgs && st.t && Date.now() - st.t < MONTH && (st.closedAt || Date.now() - st.t < WEEK)); }
   try {
-    var saved = JSON.parse(sessionStorage.getItem(KEY) || 'null');
-    if (saved && saved.msgs) { S.msgs = saved.msgs; S.mode = (saved.mode === 'pending' && !CHAT.live) ? 'agent' : (saved.mode || 'ai'); S.agentReplied = !!saved.agentReplied; S.flow = saved.flow || null; }
+    var saved = JSON.parse(localStorage.getItem(KEY) || 'null');
+    if (usable(saved)) { S.msgs = saved.msgs; S.mode = (saved.mode === 'pending' && !CHAT.live) ? 'agent' : (saved.mode || 'ai'); S.agentReplied = !!saved.agentReplied; S.flow = saved.flow || null; S.closedAt = saved.closedAt || 0; S.uid = saved.uid || null; S.t0 = saved.t; }
+    else if (saved) localStorage.removeItem(KEY);
   } catch (e) {}
-  function save() { try { sessionStorage.setItem(KEY, JSON.stringify({ msgs: S.msgs.slice(-60).map(function (m) { return m.kind === 'voice' ? { role: m.role, kind: m.kind, dur: m.dur, text: m.text } : m; }), mode: S.mode, agentReplied: S.agentReplied, flow: S.flow || null })); } catch (e) {} }
+  function snap() {
+    return { msgs: S.msgs.slice(-60).map(function (m) { return m.kind === 'voice' ? { role: m.role, kind: m.kind, dur: m.dur, text: m.text } : m; }), mode: S.mode, agentReplied: S.agentReplied, flow: S.flow || null, closedAt: S.closedAt || 0, uid: S.uid || null,
+      cw: (CW && cw) ? { src: cw.src, conv: cw.conv, seen: cw.seen } : null, t: Date.now() };
+  }
+  function save() {
+    var sn = snap(); S.t0 = sn.t;
+    try { localStorage.setItem(KEY, JSON.stringify(sn)); } catch (e) {}
+    pushRemote();
+  }
+  // logged-in customers: the chat is also kept in their account (table chat_state)
+  function pushRemote() {
+    if (!sync.ready || sync.off || !S.uid || !window.VTAuth || !window.VTAuth.rest) return;
+    clearTimeout(sync.timer);
+    sync.timer = setTimeout(function () {
+      if (!S.uid || !S.msgs.some(isCust)) return;
+      window.VTAuth.rest('POST', '/chat_state?on_conflict=user_id', { user_id: S.uid, state: snap(), updated_at: new Date().toISOString() }, { Prefer: 'resolution=merge-duplicates,return=minimal' })
+        .catch(function (err) { if (err && (err.status === 400 || err.status === 401 || err.status === 403 || err.status === 404)) sync.off = true; });
+    }, 2000);
+  }
 
   function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
   function svg(path, extra) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"' + (extra || '') + '>' + path + '</svg>'; }
@@ -3217,8 +3246,27 @@ html.va-lock{overflow:hidden}
   /* ---------- rendering ---------- */
   function drawMsg(m) {
     if (m.role === 'system') { var sy = el('div', 'vc-sys', m.text); log.appendChild(sy); return sy; }
+    if (m.role === 'csat') {
+      var cr = el('div', 'vc-row bot'), cwho = el('div', 'vc-who'); cwho.appendChild(el('span', '', 'Support team')); cr.appendChild(cwho);
+      var lapsed = !m.rated && m.at && Date.now() - m.at > WEEK;
+      cr.appendChild(el('div', 'vc-b', m.rated ? 'Thanks for rating us ' + m.rated + '/5.' : lapsed ? 'Rating for this conversation is no longer available.' : m.text));
+      if (!m.rated && !lapsed) {
+        var rt = el('div', 'vc-rate'), sts = [];
+        [1, 2, 3, 4, 5].forEach(function (n) {
+          var k = el('button', 'vc-star', '\u2605'); k.type = 'button'; k.setAttribute('aria-label', n + ' out of 5'); sts.push(k);
+          k.addEventListener('mouseenter', function () { sts.forEach(function (x, i) { x.classList.toggle('on', i < n); }); });
+          k.addEventListener('click', function () { rateChat(m, n, cr); });
+          rt.appendChild(k);
+        });
+        rt.addEventListener('mouseleave', function () { sts.forEach(function (x) { if (!x.disabled) x.classList.remove('on'); }); });
+        cr.appendChild(rt);
+      }
+      log.appendChild(cr); return cr;
+    }
     var row = el('div', 'vc-row ' + (m.role === 'trade' || m.role === 'summary' ? 'user' : m.role));
-    if (m.role === 'bot' || m.role === 'agent') {
+    row.setAttribute('data-r', m.role);
+    var prevRow = log.lastElementChild, sameRun = !!(prevRow && prevRow.getAttribute('data-r') === m.role);
+    if ((m.role === 'bot' || m.role === 'agent') && !sameRun) {
       var who = el('div', 'vc-who'); who.appendChild(el('span', '', m.role === 'agent' ? 'Support team' : 'Betty'));
       if (m.role === 'agent') who.appendChild(el('span', 'vc-tag', 'Representative')); row.appendChild(who);
     }
@@ -3252,10 +3300,10 @@ html.va-lock{overflow:hidden}
     return row;
   }
   function add(m) {
-    S.msgs.push(m); var drawn = drawMsg(m); save(); scrollDown();
+    S.msgs.push(m); if (S.closedAt && isCust(m)) S.closedAt = 0; var drawn = drawMsg(m); save(); scrollDown();
     mirror(m);
     if (m.role === 'user' || m.role === 'trade' || m.role === 'summary') drawChips();
-    if ((m.role === 'bot' || m.role === 'agent') && !(S.open && S.view === 'chat')) { S.unread++; badges(); }
+    if ((m.role === 'bot' || m.role === 'agent' || m.role === 'csat') && !(S.open && S.view === 'chat')) { S.unread++; badges(); }
     if (S.view === 'messages') drawList();
     return drawn;
   }
@@ -3360,6 +3408,7 @@ html.va-lock{overflow:hidden}
     function done() {
       clearTimeout(idle); S.busy = false; if (row) row.remove(); hideTyping();
       var r = parseTags(full);
+      if (/\[\[HANDOFF\]\]/.test(full)) { add({ role: 'bot', text: 'One moment...' }); handoff(); return; } // Betty is not sure: the team takes over
       if (!r.text) { fail(new Error('the AI sent an empty reply')); return; }
       add({ role: 'bot', text: r.text, actions: r.actions.concat(extra || []) });
     }
@@ -3370,6 +3419,7 @@ html.va-lock{overflow:hidden}
         var why = err && err.name === 'AbortError' ? 'no reply within 30 seconds' : (err instanceof TypeError ? 'could not reach the Worker (site address not allowed, or wrong address)' : raw);
         add({ role: 'system', text: 'Debug: ' + why + (why === raw ? '' : ' [' + raw + ']') });
       }
+      if (CW) { add({ role: 'bot', text: 'One moment...' }); handoff(); return; }
       add({ role: 'bot', text: 'I\u2019m having trouble answering right now. Would you like a representative to help?', actions: [repAct(), waAct(lastTrade ? tradeText(lastTrade) : '')].concat(extra || []) });
     }
     bump();
@@ -3401,10 +3451,10 @@ html.va-lock{overflow:hidden}
   function botSay(r) { hideTyping(); add({ role: 'bot', text: r.text, actions: r.actions }); }
   // ---------- real representatives (Chatwoot, API inbox) ----------
   var CW = CHAT.live, cw = { src: null, conv: null, seen: 0, timer: 0, wait: 0 };
-  try { var cs = JSON.parse(localStorage.getItem('vt_cw_v1') || 'null'); if (CW && cs && cs.inbox === CW.inbox) { cw.src = cs.src; cw.conv = cs.conv; cw.seen = cs.seen || 0; } } catch (e) {}
+  try { var cs = JSON.parse(localStorage.getItem('vt_cw_v1') || 'null'); if (CW && cs && cs.inbox === CW.inbox) { cw.src = cs.src; cw.conv = cs.conv; cw.seen = cs.seen || 0; cw.linked = cs.linked || null; } } catch (e) {}
   if (CW && !S.msgs.length) { cw.conv = null; cw.seen = 0; } // a fresh chat starts a fresh conversation
   cw.q = Promise.resolve();
-  function cwSave() { try { localStorage.setItem('vt_cw_v1', JSON.stringify({ inbox: CW.inbox, src: cw.src, conv: cw.conv, seen: cw.seen })); } catch (e) {} }
+  function cwSave() { try { localStorage.setItem('vt_cw_v1', JSON.stringify({ inbox: CW.inbox, src: cw.src, conv: cw.conv, seen: cw.seen, linked: cw.linked || null })); } catch (e) {} }
   function cwPath(path) { return CW.base.replace(/\/+$/, '') + '/public/api/v1/inboxes/' + encodeURIComponent(CW.inbox) + path; }
   function cwCall(method, path, body) {
     return fetch(cwPath(path), { method: method, headers: body ? { 'Content-Type': 'application/json' } : {}, body: body ? JSON.stringify(body) : undefined }).then(function (r) {
@@ -3441,7 +3491,7 @@ html.va-lock{overflow:hidden}
   // makes sure a Chatwoot contact and conversation exist (created on the customer's first message)
   function cwOpen() {
     if (cw.conv) return Promise.resolve();
-    var u = who(), first = cw.src ? Promise.resolve() : cwCall('POST', '/contacts', u && u.email ? { name: u.email.split('@')[0], email: u.email, identifier: u.id || undefined } : { name: 'Website visitor' }).then(function (c) { cw.src = c.source_id; });
+    var u = who(), first = cw.src ? Promise.resolve() : cwCall('POST', '/contacts', u && u.email ? { name: u.email.split('@')[0], email: u.email, identifier: u.id || undefined } : { name: 'Website visitor' }).then(function (c) { cw.src = c.source_id; if (u && u.id) cw.linked = u.id; });
     return first.then(function () {
       return cwCall('POST', '/contacts/' + encodeURIComponent(cw.src) + '/conversations', { custom_attributes: { page: String(location.href).slice(0, 200), signed_in: u ? 'yes' : 'no', trade: lastTrade ? (lastTrade.custom ? lastTrade.custom : tradeLine(lastTrade)) : 'none' } });
     }).then(function (cv) {
@@ -3452,6 +3502,7 @@ html.va-lock{overflow:hidden}
   // sends one customer message to Chatwoot; messages are queued so they arrive in order
   function cwPost(text) {
     cw.q = cw.q.then(function () {
+      if (cw.closing) endConv();
       return cwOpen().then(function () { return cwCall('POST', cwConv('/messages'), { content: text }); });
     }).then(function () { setTimeout(poll, 1500); }, function (err) {
       if (S.mode !== 'ai') add({ role: 'system', text: 'That message couldn\u2019t be sent to the team. Try again, or continue on WhatsApp with the button at the top.' });
@@ -3478,20 +3529,63 @@ html.va-lock{overflow:hidden}
   }
   function incoming(text) {
     clearTimeout(cw.wait);
-    if (S.mode !== 'agent') { S.mode = 'agent'; S.agentReplied = true; S.flow = null; S.busy = false; hideTyping(); status(); add({ role: 'system', text: 'A team member joined the chat' }); }
+    if (S.mode !== 'agent') { S.mode = 'agent'; S.agentReplied = true; S.flow = null; S.busy = false; hideTyping(); status(); add({ role: 'system', text: 'Mr Reliable joined the chat' }); }
     add({ role: 'agent', text: text });
   }
   function poll() {
     if (!cw.conv || document.hidden) return;
+    var cid = cw.conv;
     cwCall('GET', cwConv('/messages')).then(function (list) {
+      if (cw.conv !== cid) return;
       (list || []).forEach(function (m) {
         if (!m || !(m.id > cw.seen)) return;
         cw.seen = m.id;
-        var fromTeam = m.message_type === 1 || m.message_type === 'outgoing';
-        if (fromTeam && m.content && !m.private) incoming(String(m.content));
+        var ct = String(m.content_type || ''), mt = m.message_type, content = String(m.content || '');
+        var isTpl = mt === 3 || mt === 'template', isAct = mt === 2 || mt === 'activity';
+        if (ct === 'input_csat' || (isTpl && /\brate\b/i.test(content))) { showCsat(m); return; } // Chatwoot's rating request
+        if (isAct && /resolved/i.test(content)) { closeConv(); return; }
+        var fromTeam = mt === 1 || mt === 'outgoing';
+        if (fromTeam && m.content && !m.private) incoming(content);
       });
       cwSave();
     }).catch(function () {});
+    // the conversation itself: when the team clicks Resolve, close the chat on the website too
+    cwCall('GET', cwConv('')).then(function (c) { if (c && c.status === 'resolved' && cw.conv === cid) closeConv(); }).catch(function () {});
+  }
+  // the team resolved the conversation in Chatwoot
+  function closeConv(force) {
+    if (cw.closing) return;
+    cw.closing = true;
+    if (force || S.mode !== 'ai') {
+      clearTimeout(cw.wait); S.mode = 'ai'; S.flow = null; S.busy = false; S.agentReplied = false; hideTyping(); status();
+      add({ role: 'system', text: 'This conversation has been closed. Send a message any time to start a new one.' });
+      S.closedAt = Date.now(); save();
+    }
+    clearTimeout(cw.closeTimer); cw.closeTimer = setTimeout(endConv, 25000); // give the rating request a moment to arrive
+  }
+  function endConv() {
+    clearTimeout(cw.closeTimer); clearInterval(cw.timer); cw.timer = 0;
+    cw.conv = null; cw.seen = 0; cw.closing = false; cwSave();
+  }
+  function showCsat(m) {
+    closeConv(true);
+    if (!S.closedAt) { S.closedAt = Date.now(); save(); }
+    if (S.msgs.some(function (x) { return x.role === 'csat' && x.mid === m.id; })) return;
+    add({ role: 'csat', text: String(m.content || 'How would you rate the service provided by our team?'), cid: cw.conv, src: cw.src, mid: m.id, rated: 0, at: Date.now() });
+    clearTimeout(cw.closeTimer); cw.closeTimer = setTimeout(endConv, 2000);
+  }
+  function rateChat(m, n, row) {
+    if (m.at && Date.now() - m.at > WEEK) { add({ role: 'system', text: 'Ratings can only be left within 7 days of a conversation closing.' }); return; }
+    var stars = Array.prototype.slice.call(row.querySelectorAll('.vc-star'));
+    stars.forEach(function (x, i) { x.disabled = true; x.classList.toggle('on', i < n); });
+    cwCall('PATCH', '/contacts/' + encodeURIComponent(m.src) + '/conversations/' + m.cid + '/messages/' + m.mid, { submitted_values: { csat_survey_response: { rating: n } } }).then(function () {
+      m.rated = n; save();
+      row.querySelector('.vc-b').textContent = 'Thanks for rating us ' + n + '/5.';
+      var rt = row.querySelector('.vc-rate'); if (rt) rt.remove();
+    }, function () {
+      stars.forEach(function (x) { x.disabled = false; x.classList.remove('on'); });
+      add({ role: 'system', text: 'Your rating couldn\u2019t be sent. Please try again.' });
+    });
   }
   function startPolling() { if (!cw.timer) { cw.timer = setInterval(poll, 4000); poll(); } }
   function sendLive(text) { cwPost(text); }
@@ -3516,16 +3610,17 @@ html.va-lock{overflow:hidden}
     if (S.mode !== 'ai') return;
     S.flow = null; save();
     S.mode = 'pending'; status();
-    add({ role: 'system', text: CW ? 'Contacting the team\u2026' : 'Connecting you to a representative\u2026' });
+    if (CW) showTyping(); else add({ role: 'bot', text: 'Connecting you to a representative\u2026' });
     if (CW) {
       cwStart().then(function () {
-        add({ role: 'system', text: 'The team has been notified. You can keep typing here and they\u2019ll reply as soon as they can.' });
+        hideTyping();
+        add({ role: 'bot', text: 'The team has been notified. You can keep typing here and they\u2019ll reply as soon as they can.' });
         clearTimeout(cw.wait);
         cw.wait = setTimeout(function () {
           if (S.mode === 'pending') add({ role: 'bot', text: 'Our team hasn\u2019t replied yet. You can keep waiting here, or continue on WhatsApp.', actions: [waAct(lastTrade ? tradeText(lastTrade) : '')] });
         }, 180000);
       }).catch(function (err) {
-        S.mode = 'ai'; status();
+        hideTyping(); S.mode = 'ai'; status();
         add({ role: 'bot', text: 'I couldn\u2019t reach the team chat right now. You can continue on WhatsApp instead.', actions: [waAct(lastTrade ? tradeText(lastTrade) : '')] });
         if (CHAT.debug) add({ role: 'system', text: 'Debug: ' + (err && err.message || err) });
       });
@@ -4148,7 +4243,24 @@ html.va-lock{overflow:hidden}
     });
   })();
 
+  // database access as the signed-in customer (protected by row level security in Supabase)
+  function rest(method, path, body, extra) {
+    return getToken().then(function (tok) {
+      if (!tok) throw new Error('nosession');
+      var h = { apikey: SB.key, Authorization: 'Bearer ' + tok };
+      if (body) h['Content-Type'] = 'application/json';
+      if (extra) for (var k in extra) h[k] = extra[k];
+      return fetch(SB.url + '/rest/v1' + path, { method: method, headers: h, body: body ? JSON.stringify(body) : undefined }).then(function (r) {
+        return r.text().then(function (t) {
+          var j = null; try { j = t ? JSON.parse(t) : null; } catch (e) {}
+          if (!r.ok) { var err = new Error((j && (j.message || j.hint)) || ('HTTP ' + r.status)); err.status = r.status; throw err; }
+          return j;
+        });
+      });
+    });
+  }
   window.VTAuth = {
+    rest: rest,
     open: open, click: function () { if (session) window.location.href = '/dashboard/'; else open(); },
     isLoggedIn: function () { return !!session; },
     getToken: getToken,
