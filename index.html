@@ -342,7 +342,6 @@ main{position:relative;z-index:1;background:var(--bg)}
 .tm-big input::placeholder{color:color-mix(in oklch,var(--text) 25%,transparent)}
 .tm-sub{display:flex;align-items:center;justify-content:center;gap:10px;font-weight:700;font-size:17px;color:var(--muted)}
 .tm-swapbtn{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--text)}
-.tm-rate{margin:20px 0 28px;text-align:center;font-size:12px;color:var(--muted);min-height:18px}
 #tmTrade .tm-go{margin-top:auto}
 .tm-go:disabled{opacity:.45;cursor:not-allowed}
 .tm-sheet{position:absolute;inset:0;z-index:30;background:var(--bg);padding:20px 20px 14px;overflow:hidden;display:flex;flex-direction:column}
@@ -862,7 +861,6 @@ html.va-lock{overflow:hidden}
               <span id="tmEst">0 BTC</span>
             </div>
             <button type="button" class="tm-netrow" id="tmNetBtn" aria-haspopup="dialog" aria-expanded="false"><span class="tm-netk">Network</span><span class="tm-netv"><b id="tmNetLbl">Bitcoin</b><small id="tmNetName"></small></span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M5 8l5 5 5-5"/></svg></button>
-            <p class="tm-rate" id="tmRate"></p>
             <button type="button" class="tm-go" id="tmGo" disabled>Continue with Bitcoin</button>
             <div class="tm-sheet" id="tmSheet" role="dialog" aria-label="Select asset" hidden>
               <div class="tm-pane" id="tmAPane">
@@ -924,7 +922,7 @@ html.va-lock{overflow:hidden}
             <p class="rc-std" id="rtStd">Checking the standard rate&hellip;</p>
           </div>
         </div>
-        <p class="rt-note">Rates are set by VersusTrade and can change. Check before you trade.</p>
+        <p class="rt-note">Rates are set by VersusTrade and can change. Check before you trade. <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener" style="text-decoration:underline">Rates By Exchange Rate API</a></p>
         </div>
         <div>
           <h2>How to use our site</h2>
@@ -1545,7 +1543,6 @@ html.va-lock{overflow:hidden}
     $('tmUnit').textContent = st.base; $('tmUnit').hidden = fiatP;
     var v = val(), qty = pf > 0 ? (fiatP ? v / pf : v) : 0, fiat = fiatP ? v : v * pf;
     $('tmEst').textContent = pf > 0 ? (fiatP ? fn(qty, qd()) + ' ' + st.base : SYM[st.ccy] + fn(fiat, 2)) : (net === 'failed' ? 'Live prices unavailable' : 'Loading prices\u2026');
-    $('tmRate').textContent = pf > 0 ? '1 ' + st.base + ' \u2248 ' + cf(pf, st.ccy) + (st.ccy === 'NGN' ? ' \u00B7 Rate ' + SYM.NGN + fn(rate(), 0) + ' per $1' : '') : '';
     var go = $('tmGo');
     go.textContent = 'Continue with ' + (NAME[st.base] || st.base) + (many && st.net !== (NAME[st.base] || st.base) ? ' (' + st.net + ')' : '');
     go.className = 'tm-go' + (buy ? '' : ' sell');
@@ -3256,6 +3253,8 @@ html.va-lock{overflow:hidden}
   }
   function add(m) {
     S.msgs.push(m); var drawn = drawMsg(m); save(); scrollDown();
+    mirror(m);
+    if (m.role === 'user' || m.role === 'trade' || m.role === 'summary') drawChips();
     if ((m.role === 'bot' || m.role === 'agent') && !(S.open && S.view === 'chat')) { S.unread++; badges(); }
     if (S.view === 'messages') drawList();
     return drawn;
@@ -3265,6 +3264,7 @@ html.va-lock{overflow:hidden}
   function drawChips() {
     chips.innerHTML = '';
     if (S.mode !== 'ai') return;
+    if (S.msgs.some(function (m) { return m.role === 'user' || m.role === 'trade' || m.role === 'summary'; })) return; // customer has started talking
     ['What do you do?', 'Buy or sell crypto', 'Sell gift cards', 'Talk to a representative'].forEach(function (q) {
       var c = el('button', 'vc-chip', q); c.type = 'button';
       c.addEventListener('click', function () { if (q === 'Talk to a representative') runCmd('handoff'); else userSay(q); });
@@ -3402,6 +3402,8 @@ html.va-lock{overflow:hidden}
   // ---------- real representatives (Chatwoot, API inbox) ----------
   var CW = CHAT.live, cw = { src: null, conv: null, seen: 0, timer: 0, wait: 0 };
   try { var cs = JSON.parse(localStorage.getItem('vt_cw_v1') || 'null'); if (CW && cs && cs.inbox === CW.inbox) { cw.src = cs.src; cw.conv = cs.conv; cw.seen = cs.seen || 0; } } catch (e) {}
+  if (CW && !S.msgs.length) { cw.conv = null; cw.seen = 0; } // a fresh chat starts a fresh conversation
+  cw.q = Promise.resolve();
   function cwSave() { try { localStorage.setItem('vt_cw_v1', JSON.stringify({ inbox: CW.inbox, src: cw.src, conv: cw.conv, seen: cw.seen })); } catch (e) {} }
   function cwPath(path) { return CW.base.replace(/\/+$/, '') + '/public/api/v1/inboxes/' + encodeURIComponent(CW.inbox) + path; }
   function cwCall(method, path, body) {
@@ -3428,18 +3430,55 @@ html.va-lock{overflow:hidden}
       (lastTrade ? 'Latest request: ' + (lastTrade.custom ? lastTrade.custom : tradeLine(lastTrade)) + '\n' : '') +
       (lines.length ? '\nRecent chat:\n' + lines.join('\n') : '');
   }
-  function cwStart() {
+  function ctxText() {
+    var u = who();
+    return 'New chat from the VersusTrade website.\n' +
+      (u && u.email ? 'Signed in on the site as ' + u.email + ' (not yet verified by Chatwoot).\n' : 'Not signed in.\n') +
+      (lastTrade ? 'Latest request: ' + (lastTrade.custom ? lastTrade.custom : tradeLine(lastTrade)) + '\n' : '') +
+      'Page: ' + String(location.href).slice(0, 200) + '\n' +
+      'Betty (the automated assistant) is answering the customer until someone from the team replies here.';
+  }
+  // makes sure a Chatwoot contact and conversation exist (created on the customer's first message)
+  function cwOpen() {
+    if (cw.conv) return Promise.resolve();
     var u = who(), first = cw.src ? Promise.resolve() : cwCall('POST', '/contacts', u && u.email ? { name: u.email.split('@')[0], email: u.email, identifier: u.id || undefined } : { name: 'Website visitor' }).then(function (c) { cw.src = c.source_id; });
     return first.then(function () {
       return cwCall('POST', '/contacts/' + encodeURIComponent(cw.src) + '/conversations', { custom_attributes: { page: String(location.href).slice(0, 200), signed_in: u ? 'yes' : 'no', trade: lastTrade ? (lastTrade.custom ? lastTrade.custom : tradeLine(lastTrade)) : 'none' } });
     }).then(function (cv) {
       cw.conv = cv.id; cw.seen = 0; cwSave();
-      return cwCall('POST', cwConv('/messages'), { content: transcript() });
+      return cwCall('POST', cwConv('/messages'), { content: ctxText() });
     }).then(function () { startPolling(); });
+  }
+  // sends one customer message to Chatwoot; messages are queued so they arrive in order
+  function cwPost(text) {
+    cw.q = cw.q.then(function () {
+      return cwOpen().then(function () { return cwCall('POST', cwConv('/messages'), { content: text }); });
+    }).then(function () { setTimeout(poll, 1500); }, function (err) {
+      if (S.mode !== 'ai') add({ role: 'system', text: 'That message couldn\u2019t be sent to the team. Try again, or continue on WhatsApp with the button at the top.' });
+      if (CHAT.debug) add({ role: 'system', text: 'Debug: ' + (err && err.message || err) });
+    });
+    return cw.q;
+  }
+  // called for every message the customer sends, whether Betty or a team member answers it
+  function mirror(m) {
+    if (!CW) return;
+    var t = '';
+    if (m.role === 'user' && !m.kind) t = m.text;
+    else if (m.role === 'trade') t = 'Trade request: ' + tradeLine(m.trade);
+    else if (m.role === 'summary') t = 'Gift card request: ' + (m.summary && m.summary.text || '');
+    if (t) cwPost(t);
+  }
+  // "Talk to a representative": same conversation, plus a note asking the team to take over
+  function cwStart() {
+    var p = cw.q.then(function () { return cwOpen(); }).then(function () {
+      return cwCall('POST', cwConv('/messages'), { content: 'The customer asked to speak with a representative. Please reply here.' });
+    }).then(function () { startPolling(); });
+    cw.q = p.catch(function () {});
+    return p;
   }
   function incoming(text) {
     clearTimeout(cw.wait);
-    if (S.mode !== 'agent') { S.mode = 'agent'; S.agentReplied = true; status(); add({ role: 'system', text: 'A team member joined the chat' }); }
+    if (S.mode !== 'agent') { S.mode = 'agent'; S.agentReplied = true; S.flow = null; S.busy = false; hideTyping(); status(); add({ role: 'system', text: 'A team member joined the chat' }); }
     add({ role: 'agent', text: text });
   }
   function poll() {
@@ -3455,14 +3494,9 @@ html.va-lock{overflow:hidden}
     }).catch(function () {});
   }
   function startPolling() { if (!cw.timer) { cw.timer = setInterval(poll, 4000); poll(); } }
-  function sendLive(text) {
-    var go = cw.conv ? cwCall('POST', cwConv('/messages'), { content: text }) : cwStart();
-    go.then(function () { setTimeout(poll, 1500); }).catch(function () {
-      add({ role: 'system', text: 'That message couldn\u2019t be sent to the team. Try again, or continue on WhatsApp with the button at the top.' });
-    });
-  }
+  function sendLive(text) { cwPost(text); }
   function toTeam(sim, liveText) {
-    if (CW) { if (liveText) sendLive(liveText); else add({ role: 'system', text: 'Files and voice notes can\u2019t be sent to the team in this chat yet. Please use the WhatsApp button at the top for those.' }); return; }
+    if (CW) { if (!liveText) add({ role: 'system', text: 'Files and voice notes can\u2019t be sent to the team in this chat yet. Please use the WhatsApp button at the top for those.' }); return; }
     if (S.mode === 'agent' && !S.agentReplied) { S.agentReplied = true; save(); showTyping(); API.agentReply().then(function () { hideTyping(); add({ role: 'agent', text: sim || 'Thanks, I\u2019m looking into this for you now.' }); }); }
   }
   function userSay(text) {
@@ -4115,13 +4149,21 @@ html.va-lock{overflow:hidden}
   })();
 
   window.VTAuth = {
-    open: open, click: open,
+    open: open, click: function () { if (session) window.location.href = '/dashboard/'; else open(); },
     isLoggedIn: function () { return !!session; },
     getToken: getToken,
     email: function () { return session ? session.email : ''; },
     user: function () { return session ? { id: session.id, email: session.email } : null; }
   };
   if (session) { announce(true); getToken(); }
+  // links such as /?login=1 (from the dashboard when signed out) and /?account=1 (change password)
+  (function fromQuery() {
+    var q = String(location.search || '');
+    if (q.indexOf('login=1') < 0 && q.indexOf('account=1') < 0) return;
+    try { history.replaceState(null, '', location.pathname + location.hash); } catch (e) {}
+    if (q.indexOf('login=1') > -1 && session) return;
+    setTimeout(open, 350);
+  })();
 })();
 </script>
 
