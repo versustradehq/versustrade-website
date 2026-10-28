@@ -296,11 +296,13 @@ dt{color:var(--muted)}dd{margin:0;font-weight:600;text-align:right;overflow-wrap
 .vt-home svg{width:17px;height:17px}
 .vt-out{border:1px solid var(--text);font-weight:700}.vt-out:hover{background:var(--pill)}
 @media(max-width:760px){.vt-out{display:none}}@media(max-width:640px){.vt-home{padding:0 8px}.vt-home svg{display:none}}
-.dp{background:linear-gradient(100deg,#0a0a0a 0%,#1d0a0f 45%,#6b0716 100%);color:#fff;border-radius:0 0 32px 32px;padding:18px 0 30px;position:relative;z-index:5;box-shadow:0 20px 40px -24px rgba(0,0,0,.45)}
+.dp{background:linear-gradient(100deg,#0a0a0a 0%,#1d0a0f 45%,#6b0716 100%);color:#fff;border-radius:0 0 32px 32px;padding:calc(18px + env(safe-area-inset-top,0px)) 0 30px;position:relative;z-index:5;box-shadow:0 20px 40px -24px rgba(0,0,0,.45)}
 .dp-top{display:flex;align-items:center;gap:10px}
 .rb{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.12);display:grid;place-items:center;color:#fff;font-weight:700;font-size:13px;position:relative;flex:none;transition:background .15s}
 .rb:hover{background:rgba(255,255,255,.22)}.rb svg{width:19px;height:19px}
 .uname2{font-weight:700;margin-right:auto;white-space:nowrap}
+.aacts{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+button.betty{font:inherit;color:#fff;cursor:pointer}
 .betty{position:absolute;left:50%;transform:translateX(-50%);display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border-radius:999px;font-weight:700;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16)}
 .betty:hover{background:rgba(255,255,255,.14)}.betty svg{width:17px;height:17px;color:#ffb3bb}
 .betty span{background:linear-gradient(90deg,#ffd0d5,#ff8a95);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -365,18 +367,20 @@ dt{color:var(--muted)}dd{margin:0;font-weight:600;text-align:right;overflow-wrap
 @keyframes pillPop{0%,84%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,255,255,.6)}89%{transform:scale(1.08)}94%{transform:scale(1)}100%{transform:scale(1);box-shadow:0 0 0 14px rgba(255,255,255,0)}}
 @keyframes pillShine{0%,84%{left:-70%}98%,100%{left:130%}}
 }
-.dp{padding-top:calc(18px + env(safe-area-inset-top,0px))}
-@media(max-width:640px){.betty{padding:8px 12px;font-size:14px;gap:0;white-space:nowrap}.betty svg{display:none}.dp-top{gap:8px}}
+
 </style>
 </head>
 <body>
+
+
 
 <section class="dp" id="top"><div class="w">
   <div class="dp-top">
     <a class="rb av2" id="avatar" href="#account" aria-label="Your account">MR</a>
     <span class="uname2" id="uname"></span>
     <button class="rb" id="srch" type="button" aria-label="Search trades"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>
-    <a class="betty" id="betty" href="/#support" aria-label="Talk with Betty, our AI assistant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg>Talk with <span>Betty</span></a>
+    <button class="betty" id="betty" type="button" aria-label="Talk with Betty, our AI assistant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg>Talk with <span>Betty</span></button>
+    <button class="rb" id="vtTheme" type="button" aria-label="Switch between light and dark mode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
     <button class="rb" id="eye" type="button" aria-label="Hide or show amounts" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
     <div class="bellw"><button class="rb" id="bell" type="button" aria-label="Notifications" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8M10 21a2 2 0 0 0 4 0"/></svg><span class="badge" id="badge">3</span></button>
       <div class="pop" id="pop" role="dialog" aria-label="Notifications"></div></div>
@@ -432,64 +436,14 @@ dt{color:var(--muted)}dd{margin:0;font-weight:600;text-align:right;overflow-wrap
           <div><dt>Verification</dt><dd class="kyc" id="aKyc">–</dd></div>
           <div><dt>Member since</dt><dd id="aSince">–</dd></div>
         </dl>
-        <a class="bt sm" id="logout" href="/login/" style="width:100%;margin-top:14px">Log out</a>
+        <div class="aacts"><a class="bt sm" href="/">Back to website</a><a class="bt red sm" id="logout" href="/">Log out</a></div>
       </div>
       <div class="card help" id="help"><h2>Need help with a trade?</h2><p>Quote your trade reference and a real person will pick it up.</p>
         <a class="bt red" href="https://api.whatsapp.com/send?phone=2349015508108&text=Hi%20VersusTrade" target="_blank" rel="noopener">Chat on WhatsApp</a></div>
     </aside>
   </div>
 </div></main>
-<footer class="foot">
-  <div class="fx-aurora" aria-hidden="true"></div><div class="fx-grid" aria-hidden="true"></div>
-  <div class="fx-band" aria-hidden="true"><div class="fx-marquee"><div class="fx-track"><div class="fx-item"><span>Live Markets</span><span class="p">&#10022;</span><span>Buy &amp; Sell Crypto</span><span class="s">&#10022;</span><span>Transparent Rates</span><span class="p">&#10022;</span><span>Reliable as Always</span><span class="s">&#10022;</span><span>Real People, Real Support</span><span class="p">&#10022;</span></div><div class="fx-item"><span>Live Markets</span><span class="p">&#10022;</span><span>Buy &amp; Sell Crypto</span><span class="s">&#10022;</span><span>Transparent Rates</span><span class="p">&#10022;</span><span>Reliable as Always</span><span class="s">&#10022;</span><span>Real People, Real Support</span><span class="p">&#10022;</span></div></div></div></div>
-  <div class="wrap">
-    <section class="ft-news">
-      <form class="nl" id="nlForm" novalidate data-slot="newsletter-form">
-        <div class="nl-copy">
-          <h2 class="nl-title">Stay in the loop</h2>
-          <p class="nl-sub">Weekly crypto guides and updates from VersusTrade. No spam.</p>
-        </div>
-        <div class="nl-body">
-          <div class="nl-fields" id="nlFields">
-            <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-            <div class="nl-row">
-              <input id="nlEmail" name="email" type="email" autocomplete="email" placeholder="Enter your email" aria-label="Email address" aria-describedby="nlHint">
-              <button class="nl-btn" id="nlBtn" type="submit"><svg class="nl-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" hidden><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg><span id="nlLabel">Subscribe</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
-            </div>
-            <p class="nl-hint" id="nlHint">Unsubscribe anytime. We never share your email.</p>
-            <p class="nl-err" id="nlErr" role="alert" hidden></p>
-            <div class="nl-fail" id="nlFail" role="alert" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg><span>We couldn&rsquo;t add you to the list. Please try again.</span></div>
-          </div>
-          <div class="nl-ok" id="nlOk" role="status" aria-live="polite" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><p>Almost there. We&rsquo;ve emailed you a confirmation link. Tap it to finish subscribing, and check your spam folder if you don&rsquo;t see it.</p></div>
-        </div>
-      </form>
-    </section>
-    <div class="ft-grid">
-      <section class="ft-card ft-left">
-        <div class="ft-hwrap">
-          <h3 class="ft-h">Stay Connected &mdash;<br><span class="ft-red">Explore <span class="ft-ow">Other<span class="ptr ink ptr-m" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M2 1.5l13 6-5.6 1.8L7.6 15z"/></svg><b>See you on VersusTrade!</b></span></span> <span class="ft-lw">Links<span class="ptr ink ptr-d" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M2 1.5l13 6-5.6 1.8L7.6 15z"/></svg><b>See you on VersusTrade!</b></span></span></span></h3>
-        </div>
-        <div class="ft-cols">
-          <div class="ft-coins" id="ftCoins" aria-hidden="true"></div>
-          <div><h4>Company</h4><ul><li><a href="/#support">Support</a></li><li><a href="/faq/">FAQ</a></li><li><a href="/blog/">Blog</a></li><li><a href="https://www.tiktok.com/@versustradehq" target="_blank" rel="noopener">TikTok</a></li></ul></div>
-          <div><h4>Trade</h4><ul><li><a href="/#markets">Buy &amp; sell crypto</a></li><li><a href="/#giftcards">Sell Gift Cards</a></li><li><a href="/#rates">Our rates</a></li><li><a href="/blog/send-usdt-without-buying-crypto-first/">Send USDT guide</a></li></ul></div>
-          <div><h4>Legal</h4><ul><li><a href="/legal/#privacy">Privacy Policy</a></li><li><a href="/legal/#terms">Terms of Use</a></li><li><a href="/legal/#risk">Risk Disclosure</a></li></ul></div>
-        </div>
-      </section>
-      <div class="ft-right">
-        <section class="ft-card"><h3 class="ft-h">Join the<br>community</h3></section>
-        <div class="ft-socials">
-          <a href="https://x.com/VersusTrade_HQ" target="_blank" rel="noopener" aria-label="VersusTrade on X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg></a>
-          <a href="#" aria-label="VersusTrade on Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg></a>
-          <a href="https://www.tiktok.com/@versustradehq" target="_blank" rel="noopener" aria-label="VersusTrade on TikTok"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg><div class="ptr red" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M2 1.5l13 6-5.6 1.8L7.6 15z"/></svg><b>Follow us</b></div></a>
-        </div>
-      </div>
-    </div>
-    <div class="ft-credits"><span>&copy; 2026 VersusTrade. All rights reserved.</span><nav aria-label="Legal"><a href="/legal/#privacy">Privacy</a><a href="/legal/#terms">Terms</a><a href="/legal/#risk">Risk</a></nav><div class="ft-ctrls"><button class="ft-top" id="vtTheme" type="button" aria-label="Toggle light or dark theme"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="3.5"/><path d="M10 1.5v2M10 16.5v2M1.5 10h2M16.5 10h2M4 4l1.4 1.4M14.6 14.6L16 16M4 16l1.4-1.4M14.6 5.4L16 4"/></svg></button><button class="ft-top" id="ftTop" type="button" aria-label="Back to top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></div></div>
-    <p class="risk">Risk warning: trading financial instruments and cryptoassets carries a high level of risk and you can lose some or all of your capital. Nothing on this site is financial advice.</p>
-  </div>
-  <div class="f-giant" id="fGiant" aria-hidden="true">VERSUSTRADE</div>
-</footer>
+
 
 <dialog class="dlg" id="nameDlg" aria-labelledby="nameT"><form id="nameForm" novalidate>
   <h2 id="nameT">Edit your name</h2><p>This is the name shown on your dashboard.</p>
@@ -498,28 +452,67 @@ dt{color:var(--muted)}dd{margin:0;font-weight:600;text-align:right;overflow-wrap
   <div class="dact"><button class="bt sm" type="button" id="nameX">Cancel</button><button class="bt red sm" type="submit">Save</button></div>
 </form></dialog>
 <script>
-/* Replace USER and TRADES with data from your server after login (for example fetch('/api/me') and fetch('/api/trades')).
-   Check the session on the server too: a browser-side check alone can be bypassed. */
+/* Your real trades are read from the Supabase table `trades` with the customer's own login (row level security decides what they may see). */
 var USER={name:'Mr Reliable',email:'reliable@example.com',phone:'+234 801 234 5678',kyc:'Verified',since:'Mar 2026'};
-var TRADES=[
-{id:'VT-20481',side:'buy',asset:'BTC',name:'Bitcoin',ngn:1850000,qty:'0.0124 BTC',date:'2026-10-24',status:'wait'},
-{id:'VT-20455',side:'sell',asset:'USDT',name:'Tether',ngn:725000,qty:'500 USDT',date:'2026-10-23',status:'done'},
-{id:'VT-20398',side:'sell',asset:'Amazon card',name:'Gift card',ngn:210000,qty:'$150',date:'2026-10-21',status:'done'},
-{id:'VT-20311',side:'buy',asset:'ETH',name:'Ethereum',ngn:960000,qty:'0.21 ETH',date:'2026-10-19',status:'done'},
-{id:'VT-20270',side:'sell',asset:'BTC',name:'Bitcoin',ngn:2400000,qty:'0.031 BTC',date:'2026-10-16',status:'fail'},
-{id:'VT-20214',side:'buy',asset:'USDT',name:'Tether',ngn:435000,qty:'300 USDT',date:'2026-10-12',status:'done'},
-{id:'VT-20150',side:'sell',asset:'Steam card',name:'Gift card',ngn:98000,qty:'$70',date:'2026-10-09',status:'done'}
-];
+/* The login session is shared with the website (same browser storage), so the name saved here shows in the chat and everywhere else. */
+var SB={url:'https://axldgaxsdgeycinxqbem.supabase.co',key:'sb_publishable_eU9t7DqMTbeAOIdsXhcYmg_wwvmwm3j'},SKEY='vt_auth_session',sess=null,sstore=null;
+function readSess(){try{var v=localStorage.getItem(SKEY);if(v){sstore=localStorage;return JSON.parse(v)}v=sessionStorage.getItem(SKEY);if(v){sstore=sessionStorage;return JSON.parse(v)}}catch(e){}return null}
+function saveSess(){try{if(sess&&sstore)sstore.setItem(SKEY,JSON.stringify(sess))}catch(e){}}
+function metaName(u){var m=u&&u.user_metadata;return String((m&&(m.name||m.full_name||m.username))||'').trim()}
+function authCall(method,path,body,tok){var h={apikey:SB.key};if(body)h['Content-Type']='application/json';if(tok)h.Authorization='Bearer '+tok;
+  return fetch(SB.url+'/auth/v1'+path,{method:method,headers:h,body:body?JSON.stringify(body):undefined}).then(function(r){return r.text().then(function(t){var j={};try{j=t?JSON.parse(t):{}}catch(e){}return{ok:r.ok,status:r.status,d:j}})})}
+function goodToken(){
+  if(!sess)return Promise.resolve(null);
+  if(sess.expires_at-60>Math.floor(Date.now()/1000))return Promise.resolve(sess.access_token);
+  return authCall('POST','/token?grant_type=refresh_token',{refresh_token:sess.refresh_token}).then(function(x){
+    if(!x.ok||!x.d.access_token)return null;
+    sess.access_token=x.d.access_token;sess.refresh_token=x.d.refresh_token||sess.refresh_token;sess.expires_at=x.d.expires_at||(Math.floor(Date.now()/1000)+(x.d.expires_in||3600));
+    if(x.d.user){sess.email=x.d.user.email||sess.email;sess.id=x.d.user.id||sess.id;sess.name=metaName(x.d.user)||sess.name||''}
+    saveSess();return sess.access_token});
+}
+function prefixName(e){var n=String(e||'').split('@')[0];return n?n.charAt(0).toUpperCase()+n.slice(1):''}
+sess=readSess();
+var TRADES=[],loaded=false,loadErr='',lastLoad=0,seenWait=-1;
 var LABEL={done:'Success',wait:'Processing',fail:'Declined'},PER=5,page=1,filt='all',stat='all',term='';
 var $=function(i){return document.getElementById(i)};
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function ngn(n){return '\u20A6'+Math.round(n).toLocaleString('en-US')}
 function dt(d){return new Date(d+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}
+
+var COIN={BTC:'Bitcoin',ETH:'Ethereum',USDT:'Tether',USDC:'USD Coin',BNB:'BNB',SOL:'Solana',XRP:'XRP',TRX:'TRON',LTC:'Litecoin',DOGE:'Dogecoin',ADA:'Cardano',TON:'Toncoin',MATIC:'Polygon',DAI:'Dai'};
+function pad(n){return n<10?'0'+n:''+n}
+function ymd(x){var d=new Date(x);if(isNaN(d))return String(x||'').slice(0,10);return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
+function shape(r){var a=String(r.asset||'').trim(),gift=/card|voucher|gift/i.test(a)||/gift/i.test(r.name||'');
+  return{id:r.reference||String(r.id||'').slice(0,8),side:r.side==='buy'?'buy':'sell',asset:a||'Asset',name:gift?'Gift card':(COIN[a.toUpperCase()]||r.name||a),ngn:Number(r.amount_ngn)||0,
+    qty:[r.quantity,r.network?'('+r.network+')':''].filter(Boolean).join(' '),date:ymd(r.created_at),status:r.status==='completed'?'done':r.status==='declined'?'fail':'wait'}}
+function emptyMsg(filtered){
+  if(!loaded)return'<div class="empty">Loading your trades\u2026</div>';
+  if(loadErr==='login')return'<div class="empty">Log in to see your trades. <a href="/?login=1">Log in</a></div>';
+  if(loadErr==='expired')return'<div class="empty">Your session ended. <a href="/?login=1">Log in again</a></div>';
+  if(loadErr==='error'&&!TRADES.length)return'<div class="empty">We could not load your trades just now. Tap the refresh arrow to try again.</div>';
+  if(filtered)return'<div class="empty">No trades match your search.</div>';
+  return'<div class="empty">No trades yet. Start one with Buy &amp; sell crypto above, or message us in the chat.</div>'}
+function waitCount(){return TRADES.filter(function(t){return t.status==='wait'}).length}
+function computeSV(){var d=TRADES.filter(function(t){return t.status==='done'});
+  SV.sTot[0]=d.reduce(function(a,t){return a+t.ngn},0);SV.sDone[0]=d.length;SV.sWait[0]=waitCount();SV.sFail[0]=TRADES.filter(function(t){return t.status==='fail'}).length}
+function drawNotes(){
+  var N=TRADES.slice(0,3).map(function(t){var w=t.side==='buy'?'purchase':'sale';
+    return t.status==='done'?['Trade '+t.id+' completed','Your '+t.asset+' '+w+' is complete.']:t.status==='fail'?['Trade '+t.id+' declined','Contact support if this looks wrong.']:['Trade '+t.id+' is processing','Your '+t.asset+' '+w+' is being confirmed.']});
+  $('pop').innerHTML=N.length?N.map(function(n){return'<p><b>'+esc(n[0])+'</b><small>'+esc(n[1])+'</small></p>'}).join(''):'<p><b>No notifications yet</b><small>Updates on your trades will show here.</small></p>';
+  var w=waitCount();if(w!==seenWait){$('badge').textContent=w;$('badge').style.display=w?'':'none'}}
+function setUpd(){if(!lastLoad)return;var m=Math.floor((Date.now()-lastLoad)/60000);$('upd').textContent=m<1?'Updated just now':m<60?'Updated '+m+'m ago':'Updated '+Math.floor(m/60)+'h ago'}
+function loadTrades(quiet){
+  if(!sess){loadErr='login';loaded=true;draw();return Promise.resolve()}
+  var q='select=id,reference,side,asset,name,network,amount_ngn,quantity,status,created_at&user_id=eq.'+encodeURIComponent(sess.id||'')+'&order=created_at.desc&limit=200';   /* the internal note column is never requested */
+  return goodToken().then(function(tok){if(!tok)throw new Error('expired');return fetch(SB.url+'/rest/v1/trades?'+q,{headers:{apikey:SB.key,Authorization:'Bearer '+tok}})})
+   .then(function(r){if(r.status===401||r.status===403)throw new Error('expired');if(!r.ok)throw new Error('error');return r.json()})
+   .then(function(rows){TRADES=(rows||[]).map(shape);loaded=true;loadErr='';lastLoad=Date.now();computeSV();drawNotes();draw();['sTot','sDone','sWait','sFail'].forEach(function(id){ramp(id,quiet)});setUpd()})
+   .catch(function(e){loaded=true;loadErr=e&&e.message==='expired'?'expired':'error';draw()})}
 function list(){return TRADES.filter(function(t){return(filt==='all'||t.side===filt)&&(stat==='all'||t.status===stat)&&(t.asset+' '+t.name+' '+t.id).toLowerCase().indexOf(term)>-1})}
 function draw(){
   var l=list(),pages=Math.max(1,Math.ceil(l.length/PER));page=Math.min(page,pages);
   var s=l.slice((page-1)*PER,page*PER);
-  $('rows').innerHTML=s.length?s.map(function(t){var ic=t.name==='Gift card'?'':'<img src="https://assets.coincap.io/assets/icons/'+esc(t.asset.toLowerCase())+'@2x.png" alt="" loading="lazy" onerror="this.remove()">';return '<div class="tr"><div class="co"><span class="av">'+esc(t.asset.charAt(0))+ic+'</span><span style="min-width:0"><b><span class="'+t.side+'">'+(t.side==='buy'?'Buy':'Sell')+'</span> '+esc(t.asset)+'</b><small>'+esc(t.id)+'</small></span></div><div class="r"><span class="am amt">'+ngn(t.ngn)+'</span><small>'+esc(t.qty)+'</small></div><span class="hd3">'+dt(t.date)+'</span><span><span class="pill '+t.status+'"><span>'+LABEL[t.status]+'</span></span></span></div>'}).join(''):'<div class="empty">No trades found. Start one with Buy &amp; sell crypto above.</div>';
+  $('rows').innerHTML=s.length?s.map(function(t){var ic=t.name==='Gift card'?'':'<img src="https://assets.coincap.io/assets/icons/'+esc(t.asset.toLowerCase())+'@2x.png" alt="" loading="lazy" onerror="this.remove()">';return '<div class="tr"><div class="co"><span class="av">'+esc(t.asset.charAt(0))+ic+'</span><span style="min-width:0"><b><span class="'+t.side+'">'+(t.side==='buy'?'Buy':'Sell')+'</span> '+esc(t.asset)+'</b><small>'+esc(t.id)+'</small></span></div><div class="r"><span class="am amt">'+ngn(t.ngn)+'</span><small>'+esc(t.qty)+'</small></div><span class="hd3">'+dt(t.date)+'</span><span><span class="pill '+t.status+'"><span>'+LABEL[t.status]+'</span></span></span></div>'}).join(''):emptyMsg(TRADES.length>0);
   $('pgi').textContent='Page '+page+' of '+pages;$('prev').disabled=page<=1;$('next').disabled=page>=pages;
 }
 $('tabs').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;filt=b.dataset.f;page=1;[].forEach.call($('tabs').children,function(x){x.setAttribute('aria-selected',x===b)});draw()});
@@ -527,8 +520,17 @@ $('chips').addEventListener('click',function(e){var b=e.target.closest('button')
 $('q').addEventListener('input',function(){term=this.value.trim().toLowerCase();page=1;draw()});
 $('prev').onclick=function(){page--;draw()};$('next').onclick=function(){page++;draw()};
 try{var sn=localStorage.getItem('vt-username');if(sn)USER.name=sn}catch(e){}
+if(sess){if(sess.email)USER.email=sess.email;if(sess.name)USER.name=sess.name;else if(!sn&&sess.email)USER.name=prefixName(sess.email)}
 function setName(n){USER.name=n;$('uname').textContent=n;$('avatar').textContent=n.split(/\s+/).filter(Boolean).map(function(w){return w.charAt(0)}).join('').slice(0,2).toUpperCase();$('aName').textContent=n}
 setName(USER.name);
+/* ask the server for the latest saved name (it may have been changed on another device) */
+if(sess)goodToken().then(function(tok){if(!tok)return;return authCall('GET','/user',null,tok)}).then(function(r){
+  if(!r||!r.ok)return;var nm=metaName(r.d);
+  if(r.d.phone){USER.phone=r.d.phone;$('aPhone').textContent=r.d.phone}
+  if(r.d.created_at){var cd=new Date(r.d.created_at);if(!isNaN(cd)){USER.since=cd.toLocaleDateString('en-GB',{month:'short',year:'numeric'});$('aSince').textContent=USER.since}}
+  if(nm&&nm!==USER.name){setName(nm);sess.name=nm;saveSess();try{localStorage.setItem('vt-username',nm)}catch(x){}}
+  else if(!nm&&sn&&sn===USER.name){authCall('PUT','/user',{data:{name:sn}},sess.access_token).then(function(){sess.name=sn;saveSess()})}
+}).catch(function(){});
 var dlg=$('nameDlg');
 $('editName').onclick=function(){$('nameIn').value=USER.name;$('nameErr').textContent='';if(dlg.showModal)dlg.showModal();else dlg.setAttribute('open','');$('nameIn').focus();$('nameIn').select()};
 function closeDlg(){if(dlg.close)dlg.close();else dlg.removeAttribute('open')}
@@ -536,26 +538,35 @@ $('nameX').onclick=closeDlg;
 dlg.addEventListener('click',function(e){if(e.target===dlg)closeDlg()});
 $('nameForm').addEventListener('submit',function(e){e.preventDefault();var v=$('nameIn').value.replace(/\s+/g,' ').trim();
   if(v.length<2){$('nameErr').textContent='Enter at least 2 characters.';return}
-  setName(v);try{localStorage.setItem('vt-username',v)}catch(x){}
-  /* Save to your server too, for example: fetch('/api/me',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:v})}) */
-  closeDlg()});$('aMail').textContent=USER.email;$('aPhone').textContent=USER.phone;$('aKyc').textContent=USER.kyc;$('aSince').textContent=USER.since;
-var done=TRADES.filter(function(t){return t.status==='done'});
-var SV={sTot:[done.reduce(function(a,t){return a+t.ngn},0),ngn],sDone:[done.length,String],sWait:[TRADES.filter(function(t){return t.status==='wait'}).length,String],sFail:[TRADES.filter(function(t){return t.status==='fail'}).length,String]};
-function ramp(id){var v=SV[id],el=$(id),T=v[0],f=v[1];el.textContent=f(T);
+  var btn=$('nameForm').querySelector('button[type=submit]');
+  function done(){setName(v);try{localStorage.setItem('vt-username',v)}catch(x){}try{window.dispatchEvent(new CustomEvent('vt-profile',{detail:{name:v}}))}catch(x){}closeDlg()}
+  if(!sess){done();return}
+  if(btn)btn.disabled=true;$('nameErr').textContent='';
+  goodToken().then(function(tok){if(!tok)throw new Error('Please log in again to change your name.');return authCall('PUT','/user',{data:{name:v}},tok)})
+   .then(function(r){if(!r.ok)throw new Error('Could not save your name. Please try again.');sess.name=v;saveSess();done()})
+   .catch(function(err){$('nameErr').textContent=err.message||'Could not save your name. Please try again.'})
+   .then(function(){if(btn)btn.disabled=false})});if(sess){USER.phone='\u2013';USER.kyc='\u2013';USER.since='\u2013'}
+$('aMail').textContent=USER.email;$('aPhone').textContent=USER.phone;$('aKyc').textContent=USER.kyc;$('aSince').textContent=USER.since;
+var SV={sTot:[0,ngn],sDone:[0,String],sWait:[0,String],sFail:[0,String]};
+function ramp(id,quiet){var v=SV[id],el=$(id),T=v[0],f=v[1];el.textContent=f(T);if(quiet||el.dataset.ramped)return;el.dataset.ramped='1';
   if(matchMedia('(prefers-reduced-motion: reduce)').matches||!('IntersectionObserver' in window))return;
   var io=new IntersectionObserver(function(en){if(!en[0].isIntersecting)return;io.disconnect();var t0=performance.now(),D=1600;
     (function tick(n){var p=Math.min(1,(n-t0)/D),e=1-Math.pow(1-p,3);el.textContent=f(Math.round(T*e));if(p<1)requestAnimationFrame(tick)})(t0)},{threshold:.4});
   el.textContent=f(0);io.observe(el)}
-['sTot','sDone','sWait','sFail'].forEach(ramp);
-var NOTES=[['Trade VT-20481 is processing','Your Bitcoin purchase is being confirmed.'],['Trade VT-20455 completed','Your USDT payout was sent.'],['Trade VT-20270 declined','Contact support if this looks wrong.']];
-$('pop').innerHTML=NOTES.map(function(n){return '<p><b>'+esc(n[0])+'</b><small>'+esc(n[1])+'</small></p>'}).join('');
-$('bell').onclick=function(e){e.stopPropagation();var on=$('pop').classList.toggle('on');this.setAttribute('aria-expanded',on);if(on)$('badge').style.display='none'};
+$('bell').onclick=function(e){e.stopPropagation();var on=$('pop').classList.toggle('on');this.setAttribute('aria-expanded',on);if(on){$('badge').style.display='none';seenWait=waitCount()}};
 document.addEventListener('click',function(e){if(!e.target.closest('.bellw')){$('pop').classList.remove('on');$('bell').setAttribute('aria-expanded','false')}});
 $('eye').onclick=function(){var h=document.body.classList.toggle('hide');this.setAttribute('aria-pressed',h);try{localStorage.setItem('vt-hide',h?'1':'0')}catch(e){}};
 try{if(localStorage.getItem('vt-hide')==='1'){document.body.classList.add('hide');$('eye').setAttribute('aria-pressed','true')}}catch(e){}
-$('refresh').onclick=function(){var b=this;b.classList.remove('spin');void b.offsetWidth;b.classList.add('spin');$('upd').textContent='Updated just now';ramp('sTot')};
+$('refresh').onclick=function(){var b=this;b.classList.remove('spin');void b.offsetWidth;b.classList.add('spin');loadTrades(true)};
+
+/* light / dark switch */
+$('vtTheme').onclick=function(){var r=document.documentElement,dark=r.getAttribute('data-theme')==='dark'||(!r.getAttribute('data-theme')&&matchMedia('(prefers-color-scheme:dark)').matches),next=dark?'light':'dark';r.setAttribute('data-theme',next);try{localStorage.setItem('vt-theme',next)}catch(e){}};
+/* Talk with Betty opens the chat */
+$('betty').onclick=function(){if(window.VTChat)window.VTChat.open('chat');else location.href='/?chat=1'};
 $('srch').onclick=function(){$('trades').scrollIntoView({behavior:'smooth'});setTimeout(function(){$('q').focus()},450)};
-draw();
+$('badge').style.display='none';draw();loadTrades(false);
+setInterval(function(){if(!document.hidden)loadTrades(true);setUpd()},30000);
+document.addEventListener('visibilitychange',function(){if(!document.hidden)loadTrades(true)});
 </script>
 <script>
 // Pointer highlight: draws the box and pointer around the hero tagline when it comes into view
@@ -568,81 +579,7 @@ draw();
 })();
 
 </script>
-<script>
-// Footer wordmark: scale VERSUSTRADE to the full screen width (also on mobile)
-(function () {
-  var g = document.getElementById('fGiant'); if (!g) return;
-  function fit() {
-    g.style.fontSize = '100px';
-    var w = g.scrollWidth;
-    if (w > 0) g.style.fontSize = (100 * document.documentElement.clientWidth * 0.96 / w) + 'px';
-  }
-  fit(); window.addEventListener('resize', fit); window.addEventListener('load', fit);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
-})();
-
-// Newsletter form (ported from the NewsletterForm component). Submits through newsletter.js to /api/subscribe (Resend, double opt-in).
-(function () {
-  var form = document.getElementById('nlForm'); if (!form) return;
-  var $ = function (id) { return document.getElementById(id); };
-  var input = $('nlEmail'), btn = $('nlBtn'), label = $('nlLabel'), spin = btn.querySelector('.nl-spin'), chev = btn.querySelector('svg:not(.nl-spin)');
-  var hint = $('nlHint'), err = $('nlErr'), fail = $('nlFail'), fields = $('nlFields'), ok = $('nlOk');
-  var RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/, busy = false, done = false;
-  function setError(msg) {
-    err.textContent = msg; err.hidden = !msg; hint.hidden = !!msg;
-    input.setAttribute('aria-invalid', msg ? 'true' : 'false');
-    input.setAttribute('aria-describedby', msg ? 'nlErr' : 'nlHint');
-  }
-  function setBusy(b) { busy = b; input.disabled = b; btn.disabled = b; spin.hidden = !b; chev.style.display = b ? 'none' : ''; label.textContent = b ? 'Joining\u2026' : 'Subscribe'; form.setAttribute('aria-busy', b ? 'true' : 'false'); }
-  function subscribe(email) {
-    if (window.VT_NEWSLETTER && typeof window.VT_NEWSLETTER.subscribe === 'function') return window.VT_NEWSLETTER.subscribe(email, { website: (form.elements['website'] || {}).value || '' });
-    return Promise.reject(new Error('newsletter.js is not loaded')); // never pretend it worked
-  }
-  input.addEventListener('input', function () { fail.hidden = true; if (!err.hidden) setError(''); });
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    if (busy || done) return;
-    var v = input.value.trim();
-    if (!v) { setError('Email is required.'); return; }
-    if (!RE.test(v)) { setError('Enter a valid email address.'); return; }
-    setError(''); fail.hidden = true; setBusy(true);
-    Promise.resolve().then(function () { return subscribe(v); }).then(function () {
-      done = true; fields.hidden = true; ok.hidden = false;
-    }, function () { fail.hidden = false; }).then(function () { setBusy(false); });
-  });
-})();
-
-// Footer: back to top
-(function () { var b = document.getElementById('ftTop'); if (b) b.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); }); })();
-
-// Footer coin animation: loops continuously at 2x speed whenever the footer is on screen.
-(function () {
-  var box = document.getElementById('ftCoins'); if (!box) return;
-  var SPEED = 2, REST = 10, anim = null, visible = false;
-  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-  function withLottie(cb) {
-    if (window.lottie) return cb();
-    var sc = document.createElement('script');
-    sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie_light.min.js';
-    sc.onload = cb; document.head.appendChild(sc);
-  }
-  function sync() { if (!anim || reduce) return; if (visible && !document.hidden) anim.play(); else anim.pause(); }
-  function start() {
-    if (anim || !window.VT_COINS) return;
-    withLottie(function () {
-      anim = window.lottie.loadAnimation({ container: box, renderer: 'svg', loop: true, autoplay: false, animationData: window.VT_COINS, rendererSettings: { viewBoxSize: '423 249 523 269' } });
-      anim.setSpeed(SPEED);
-      anim.addEventListener('DOMLoaded', function () { if (reduce) anim.goToAndStop(REST, true); else sync(); });
-    });
-  }
-  if ('IntersectionObserver' in window) {
-    new IntersectionObserver(function (es) { es.forEach(function (e) { visible = e.isIntersecting; if (visible) start(); sync(); }); }, { rootMargin: '0px 0px 120px 0px' }).observe(box);
-  } else { visible = true; start(); }
-  document.addEventListener('visibilitychange', sync);
-})();
-
-</script>
-<script>var lo=document.getElementById("logout");if(lo)lo.addEventListener("click",function(){try{localStorage.removeItem("vt_logged_in")}catch(e){}});</script>
+<script>document.addEventListener("click",function(e){if(!e.target.closest||!e.target.closest("#logout"))return;try{localStorage.removeItem("vt_logged_in")}catch(x){}var t=sess&&sess.access_token;try{localStorage.removeItem("vt_auth_session");sessionStorage.removeItem("vt_auth_session")}catch(x){}try{if(t)fetch(SB.url+"/auth/v1/logout",{method:"POST",keepalive:true,headers:{apikey:SB.key,Authorization:"Bearer "+t}})}catch(x){}});</script>
 <script>
 (function(){
   var root=document.getElementById('bn'),stage=document.getElementById('swStage');if(!root||!stage)return;
@@ -676,24 +613,41 @@ draw();
     if(busy)raf=requestAnimationFrame(frame);else{last=0;deck.forEach(function(c){if(c.top&&c.phase==='rest')c.top=0})}
   }
   function wake(){if(!raf)raf=requestAnimationFrame(frame)}
-  var shown=false;
-  function paused(){return N<2||over||!inView||shown||document.visibilityState==='hidden'}
+  function paused(){return N<2||over||!inView||document.visibilityState==='hidden'}
   function schedule(){clearTimeout(timer);timer=0;if(paused())return;timer=setTimeout(function(){timer=0;shift()},cfg.delay)}
   function shift(){
     if(N<2)return;var t=performance.now(),front=deck[order[0]];
     order=order.slice(1).concat(front.i);
     order.forEach(function(ix,p){var c=deck[ix];if(c.pos===p)return;c.from=c.pos;c.pos=p;c.hold=t+p*50/cfg.speed});
-    front.phase='exit';front.top=++layers;front.hold=0;shown=true;wake();schedule();
+    front.phase='exit';front.top=++layers;front.hold=0;wake();schedule();
   }
   root.addEventListener('pointerenter',function(e){if(e.pointerType==='touch')return;over=true;schedule()});
   root.addEventListener('pointerleave',function(e){if(e.pointerType==='touch')return;over=false;schedule()});
   root.addEventListener('click',function(e){var sl=e.target.closest('.sw-slot');if(!sl||e.target.closest('a,button'))return;var i=slots.indexOf(sl);if(order.indexOf(i)>0)shift()});
   root.addEventListener('keydown',function(e){if(/^Arrow(Right|Down|Left|Up)$/.test(e.key)){e.preventDefault();shift()}});
   document.addEventListener('visibilitychange',schedule);
-  if('IntersectionObserver' in window)new IntersectionObserver(function(en){var v=en[en.length-1].isIntersecting;if(v&&!inView)shown=false;inView=v;schedule()},{threshold:.6}).observe(root);
+  if('IntersectionObserver' in window)new IntersectionObserver(function(en){inView=en[en.length-1].isIntersecting;schedule()}).observe(root);
   window.addEventListener('resize',function(){deck.forEach(write)});
   deck.forEach(write);schedule();
 })();
 </script>
+<script>
+/* The chat widget reads the login through window.VTAuth. On this page it is backed by the same saved login the dashboard already uses. */
+window.VTAuth={
+  user:function(){return sess?{id:sess.id,email:sess.email,name:sess.name||''}:null},
+  isLoggedIn:function(){return !!sess},
+  rest:function(method,path,body,extra){
+    return goodToken().then(function(tok){
+      if(!tok)throw new Error('nosession');
+      var h={apikey:SB.key,Authorization:'Bearer '+tok};if(body)h['Content-Type']='application/json';if(extra)for(var k in extra)h[k]=extra[k];
+      return fetch(SB.url+'/rest/v1'+path,{method:method,headers:h,body:body?JSON.stringify(body):undefined}).then(function(r){return r.text().then(function(t){var j=null;try{j=t?JSON.parse(t):null}catch(e){}if(!r.ok){var er=new Error((j&&(j.message||j.hint))||('HTTP '+r.status));er.status=r.status;throw er}return j})})})},
+  open:function(){location.href='/?login=1'},
+  click:function(){location.href='/?login=1'}
+};
+</script>
+<script src="/chat.js"></script>
+<script>window.dispatchEvent(new CustomEvent('vt-auth',{detail:{loggedIn:!!sess,email:sess&&sess.email,initial:true}}));
+/* the chat sits at the bottom of the screen here (there is no round chat button on this page) */
+(function(){var st=document.createElement('style');st.textContent='.vc{bottom:calc(20px + env(safe-area-inset-bottom,0px))}';document.head.appendChild(st)})();</script>
 </body>
 </html>
