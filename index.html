@@ -790,6 +790,110 @@ html.va-lock{overflow:hidden}
 .va :focus-visible{outline:2px solid var(--red);outline-offset:2px}
 @media (max-width:480px){.va{padding:0}.va-card{min-height:100dvh;margin:0;padding:56px 22px 28px;border:0;border-radius:0}}
 @media (prefers-reduced-motion:reduce){.va,.va-card{transition:none}}
+
+
+/* Footer: card layout (10x-style) + VERSUSTRADE wordmark */
+.foot{position:relative;overflow:hidden;background:var(--bg)}
+.foot .wrap{position:relative;z-index:1}
+.ft-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:12px;padding:12px 0 40px}
+.ft-card{background:var(--soft);border-radius:20px;padding:44px 48px}
+.ft-left{display:flex;flex-direction:column;justify-content:space-between;gap:72px;min-height:470px}
+.ft-h{font-size:clamp(30px,3vw,40px);line-height:1.06;font-weight:700;letter-spacing:-.035em}
+.ft-red{color:var(--red)}
+.ft-hwrap{position:relative;display:block}
+.ft-cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px}
+.ft-cols h4{font-size:16px;font-weight:600;margin-bottom:8px}
+.ft-cols ul{list-style:none;display:grid;gap:8px}
+.ft-cols a{font-size:16px;font-weight:500;color:var(--muted);transition:color .15s}
+.ft-cols a:hover{color:var(--text)}
+.ft-right{display:flex;flex-direction:column;gap:12px}
+.ft-right .ft-card{flex:1}
+.ft-socials{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.ft-socials a{height:132px;display:grid;place-items:center;border-radius:20px;background:var(--soft);color:var(--text);transition:transform .2s,color .2s}
+.ft-socials a:hover{transform:translateY(-3px);color:var(--red)}
+.ft-socials svg{width:30px;height:30px}
+.ft-credits{display:flex;flex-direction:column;align-items:center;gap:10px;padding:8px 0 0;font-size:14px;color:var(--muted);text-align:center}
+.ft-credits nav{display:flex;gap:20px}
+.ft-credits a:hover{color:var(--text)}
+.risk{margin:12px auto 0;max-width:720px;text-align:center;font-size:13px;color:var(--muted)}
+/* Newsletter (ported from the NewsletterForm component) */
+.ft-news{margin-top:56px}
+.nl{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:24px 56px;align-items:center;padding:40px 48px;border-radius:24px;background:var(--soft)}
+.nl-title{font-size:24px;font-weight:600;letter-spacing:-.02em;line-height:1.2}
+.nl-sub{margin-top:12px;font-size:14px;line-height:1.7;color:var(--muted)}
+.nl-row{display:flex;gap:8px}
+.nl-row input{flex:1;min-width:0;height:44px;min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:6px;background:var(--bg);font-size:14px;outline:0;transition:border-color .15s}
+.nl-row input::placeholder{color:var(--muted)}
+.nl-row input:focus{border-color:var(--text)}
+.nl-row input[aria-invalid="true"]{border-color:#fda4af}
+.nl-row input:disabled{background:var(--soft)}
+.nl-btn{flex-shrink:0;height:44px;padding:0 24px;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:6px;background:var(--text);color:var(--bg);font-size:14px;font-weight:600;white-space:nowrap;transition:opacity .15s}
+.nl-btn:hover{opacity:.85}
+.nl-btn:disabled{opacity:.6;cursor:not-allowed}
+.nl-btn svg{width:15px;height:15px;flex-shrink:0}
+.nl-btn .nl-spin{width:16px;height:16px;animation:nlSpin .8s linear infinite}
+@keyframes nlSpin{to{transform:rotate(360deg)}}
+.nl-hint,.nl-err{margin-top:8px;font-size:12px}
+.nl-hint{color:var(--muted)}
+.nl-err{margin-top:6px;color:color-mix(in srgb,#e11d48 85%,var(--text))}
+.nl-fail,.nl-ok{margin-top:12px;display:flex;align-items:flex-start;gap:10px;padding:12px 14px;font-size:14px;line-height:1.5}
+.nl-fail{border-left:2px solid #f43f5e;background:color-mix(in srgb,#f43f5e 10%,transparent);color:color-mix(in srgb,#e11d48 80%,var(--text))}
+.nl-ok{margin-top:0;border-left:2px solid #10b981;background:color-mix(in srgb,#10b981 12%,transparent);color:color-mix(in srgb,#059669 70%,var(--text))}
+.nl-fail svg,.nl-ok svg{width:16px;height:16px;flex-shrink:0;margin-top:2px}
+.nl [hidden]{display:none!important}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none}@media (max-width:899px){.ft-news{margin-top:32px}.nl{grid-template-columns:minmax(0,1fr);padding:28px 22px;gap:20px}}@media (max-width:700px){.nl-row{flex-direction:column}.nl-row input{flex:none;width:100%}.nl-btn{width:100%}}@media (prefers-reduced-motion:reduce){.nl-btn .nl-spin{animation:none}}
+/* Footer coin animation (phones only) */
+.ft-cols{position:relative}
+.ft-coins{display:none}@media (max-width:899px){.ft-coins{display:block;position:absolute;right:0;top:50%;transform:translateY(-50%);width:clamp(104px,34vw,170px);aspect-ratio:523/269;pointer-events:none}.ft-coins svg{display:block;width:100%;height:100%}}
+/* Footer extras (from the homepage footer): glow, grid, scrolling banner, back-to-top */
+.fx-aurora{position:absolute;left:50%;top:46%;width:80vw;height:60%;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0;transform:translate(-50%,-50%);animation:fxBreathe 8s ease-in-out infinite alternate;background:radial-gradient(circle at 50% 50%,color-mix(in oklch,var(--red) 20%,transparent) 0%,color-mix(in oklch,var(--red-dark) 14%,transparent) 40%,transparent 70%)}
+.fx-grid{position:absolute;inset:0;z-index:0;pointer-events:none;background-size:60px 60px;background-image:linear-gradient(to right,color-mix(in oklch,var(--text) 4%,transparent) 1px,transparent 1px),linear-gradient(to bottom,color-mix(in oklch,var(--text) 4%,transparent) 1px,transparent 1px);-webkit-mask-image:linear-gradient(to bottom,transparent,#000 25%,#000 75%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 25%,#000 75%,transparent)}
+.fx-band{position:relative;z-index:1;padding:44px 0 12px;overflow:hidden}
+.fx-marquee{overflow:hidden;padding:15px 0;border-top:1px solid color-mix(in oklch,var(--line) 70%,transparent);border-bottom:1px solid color-mix(in oklch,var(--line) 70%,transparent);background:color-mix(in srgb,var(--bg) 60%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);transform:rotate(-1.2deg) scale(1.04);-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.fx-track{display:flex;width:max-content;animation:fxMarquee 40s linear infinite;font-size:12px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
+.fx-item{display:flex;align-items:center;gap:48px;padding:0 24px;white-space:nowrap}
+.fx-item .p{color:color-mix(in srgb,var(--red) 70%,transparent)}
+.fx-item .s{color:color-mix(in srgb,var(--text) 45%,transparent)}
+.fx-band + .wrap .ft-news{margin-top:36px}
+.ft-credits{position:relative}
+.ft-top{width:44px;height:44px;display:grid;place-items:center;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--muted);transition:color .15s,border-color .15s}
+.ft-top:hover{color:var(--red);border-color:var(--red)}
+.ft-top svg{width:18px;height:18px;transition:transform .3s}
+.ft-top:hover svg{transform:translateY(-3px)}.ft-ctrls{display:flex;justify-content:center;gap:12px;margin-top:4px}
+@media (min-width:900px){.ft-ctrls{position:absolute;right:0;top:50%;transform:translateY(-50%);margin-top:0}}
+@keyframes fxBreathe{0%{transform:translate(-50%,-50%) scale(1);opacity:.6}100%{transform:translate(-50%,-50%) scale(1.1);opacity:1}}
+@keyframes fxMarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}@media (max-width:899px){.fx-band{padding-top:32px}.fx-track{font-size:11px}}@media (prefers-reduced-motion:reduce){.fx-track,.fx-aurora{animation:none}}
+/* Animated pointer tags */
+.ptr{--c:#8CFBB2;position:absolute;z-index:2;pointer-events:none;animation:ftA 8s ease-in-out infinite}
+.ptr.red{--c:#E11D2E;animation:ftB 9.5s ease-in-out infinite}
+.ptr.red b{color:#fff}
+.ptr svg{position:absolute;left:0;top:0;width:18px;height:18px;fill:var(--c);filter:drop-shadow(0 1px 2px rgba(0,0,0,.2))}
+.ptr b{display:block;letter-spacing:0;text-transform:none;margin:13px 0 0 12px;padding:7px 13px;border-radius:12px;background:var(--c);color:#1E1E1E;font-size:14px;font-weight:600;line-height:1.2;white-space:nowrap;box-shadow:0 6px 16px -6px rgba(0,0,0,.25)}
+.ptr.ink{--c:var(--logo-text)}
+.ft-lw{position:relative;display:inline-block}
+.ft-lw .ptr{left:calc(100% - 8px);right:auto;top:calc(100% - 2px);animation:ftC 9s ease-in-out infinite}
+.ft-ow{position:relative;display:inline-block}
+.ft-ow .ptr{left:2px;right:auto;top:calc(100% - 2px);animation:ftC 9s ease-in-out infinite}
+.ptr-m{display:none}@media (max-width:560px){.ptr-d{display:none}.ptr-m{display:block}.ptr-m b{font-size:13px;padding:6px 11px}}@media (max-width:340px){.ptr-m b{white-space:normal;max-width:128px}}
+.ptr.ink b{color:var(--bg)}
+.ft-socials a{position:relative}
+.ft-socials .ptr{left:calc(100% - 78px);top:calc(100% - 20px)}
+.ft-socials .ptr.red{animation:ftC 9s ease-in-out infinite}
+@keyframes ftC{0%,100%{transform:translate(0,0) rotate(0)}30%{transform:translate(-12px,6px) rotate(-1.5deg)}60%{transform:translate(3px,10px) rotate(1deg)}85%{transform:translate(-7px,-3px) rotate(-.5deg)}}
+@keyframes ftA{0%,100%{transform:translate(0,0) rotate(0)}22%{transform:translate(22px,-8px) rotate(2deg)}48%{transform:translate(10px,16px) rotate(-1.5deg)}74%{transform:translate(-16px,6px) rotate(1deg)}}
+@keyframes ftB{0%,100%{transform:translate(0,0) rotate(0)}28%{transform:translate(-20px,10px) rotate(-2deg)}55%{transform:translate(14px,-12px) rotate(1.5deg)}80%{transform:translate(24px,8px) rotate(-1deg)}}
+.f-giant{display:block;margin-top:40px;text-align:center;white-space:nowrap;user-select:none;pointer-events:none;font-size:14.5vw;line-height:.78;font-weight:900;letter-spacing:-.05em;color:transparent;-webkit-text-stroke:1px color-mix(in oklch,var(--text) 10%,transparent);background:linear-gradient(180deg,color-mix(in oklch,var(--text) 16%,transparent) 0%,transparent 75%);-webkit-background-clip:text;background-clip:text;transform:translateY(10%)}@media (max-width:899px){.ft-grid{grid-template-columns:minmax(0,1fr);padding:12px 0 36px}
+  .ft-card{padding:28px 22px}
+  .ft-left{min-height:0;gap:52px}
+  .ft-cols{grid-template-columns:minmax(0,1fr);gap:26px}
+  .ft-cols a{font-size:17px}
+  .ft-cols h4{margin-bottom:4px}
+  .ft-cols ul{gap:6px}
+  .ft-socials a{height:96px}
+  .ft-right .ft-card{flex:none}}@media (prefers-reduced-motion:reduce){.ptr,.ptr.red,.ft-socials .ptr.red,.ft-lw .ptr,.ft-ow .ptr{animation:none}}
+:root{--logo-text:#000}:root[data-theme="dark"]{--logo-text:#fff}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--logo-text:#fff}}
+/* room above the footer's bottom row for the flying button to rest in */
+.foot .ft-credits{margin-top:56px}
 </style>
 </head>
 <body>
@@ -1013,55 +1117,57 @@ html.va-lock{overflow:hidden}
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
 </a>
 
-<div class="cf-wrap" id="cfWrap">
-<footer class="cf" id="cf">
-  <div class="cf-aurora" aria-hidden="true"></div>
-  <div class="cf-grid" aria-hidden="true"></div>
-  <div class="cf-giant" id="cfGiant" aria-hidden="true">VersusTrade</div>
-
-  <div class="cf-marquee" aria-hidden="true">
-    <div class="cf-track">
-      <div class="cf-item"><span>Live Markets</span><span class="p">&#10022;</span><span>Buy &amp; Sell Crypto</span><span class="s">&#10022;</span><span>Transparent Rates</span><span class="p">&#10022;</span><span>Learn Before You Trade</span><span class="s">&#10022;</span><span>Real People, Real Support</span><span class="p">&#10022;</span></div>
-      <div class="cf-item"><span>Live Markets</span><span class="p">&#10022;</span><span>Buy &amp; Sell Crypto</span><span class="s">&#10022;</span><span>Transparent Rates</span><span class="p">&#10022;</span><span>Learn Before You Trade</span><span class="s">&#10022;</span><span>Real People, Real Support</span><span class="p">&#10022;</span></div>
-    </div>
-  </div>
-
-  <div class="cf-center">
-    <div class="cf-inner" id="cfInner">
-      <h2 class="cf-h2" id="cfHeading">Ready to trade?</h2>
-      <div class="cf-links" id="cfLinks">
-        <div class="cf-row">
-          <a class="cf-pill cf-mag lg red" href="/signup/">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>
-            Create free account
-          </a>
-          <a class="cf-pill cf-mag lg" href="https://api.whatsapp.com/send?phone=2349015508108&amp;text=Hi%20VersusTrade" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-            Chat on WhatsApp
-          </a>
+<div id="cfWrap">
+<footer class="foot">
+  <div class="fx-aurora" aria-hidden="true"></div><div class="fx-grid" aria-hidden="true"></div>
+  <div class="fx-band" aria-hidden="true"><div class="fx-marquee"><div class="fx-track"><div class="fx-item"><span>Live Markets</span><span class="p">&#10022;</span><span>Buy &amp; Sell Crypto</span><span class="s">&#10022;</span><span>Transparent Rates</span><span class="p">&#10022;</span><span>Reliable as Always</span><span class="s">&#10022;</span><span>Real People, Real Support</span><span class="p">&#10022;</span></div><div class="fx-item"><span>Live Markets</span><span class="p">&#10022;</span><span>Buy &amp; Sell Crypto</span><span class="s">&#10022;</span><span>Transparent Rates</span><span class="p">&#10022;</span><span>Reliable as Always</span><span class="s">&#10022;</span><span>Real People, Real Support</span><span class="p">&#10022;</span></div></div></div></div>
+  <div class="wrap">
+    <section class="ft-news">
+      <form class="nl" id="nlForm" novalidate data-slot="newsletter-form">
+        <div class="nl-copy">
+          <h2 class="nl-title">Stay in the loop</h2>
+          <p class="nl-sub">Weekly crypto guides and updates from VersusTrade. No spam.</p>
         </div>
-        <div class="cf-row cf-sec">
-          <a class="cf-pill cf-mag" href="/legal/#terms">Terms of Use</a>
-          <a class="cf-pill cf-mag" href="/privacy/">Privacy Policy</a>
-          <a class="cf-pill cf-mag" href="/legal/#risk">Risk Disclosure</a>
-          <a class="cf-pill cf-mag" href="/blog/">Blog</a>
-          <a class="cf-pill cf-mag" href="/support/">Support</a>
-          <a class="cf-pill cf-mag" href="/login/">Log in</a>
+        <div class="nl-body">
+          <div class="nl-fields" id="nlFields">
+            <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <div class="nl-row">
+              <input id="nlEmail" name="email" type="email" autocomplete="email" placeholder="Enter your email" aria-label="Email address" aria-describedby="nlHint">
+              <button class="nl-btn" id="nlBtn" type="submit"><svg class="nl-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" hidden><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg><span id="nlLabel">Subscribe</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+            </div>
+            <p class="nl-hint" id="nlHint">Unsubscribe anytime. We never share your email.</p>
+            <p class="nl-err" id="nlErr" role="alert" hidden></p>
+            <div class="nl-fail" id="nlFail" role="alert" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg><span>We couldn&rsquo;t add you to the list. Please try again.</span></div>
+          </div>
+          <div class="nl-ok" id="nlOk" role="status" aria-live="polite" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><p>Almost there. We&rsquo;ve emailed you a confirmation link. Tap it to finish subscribing, and check your spam folder if you don&rsquo;t see it.</p></div>
         </div>
-        <p class="cf-risk">Risk warning: trading financial instruments and cryptoassets carries a high level of risk and you can lose some or all of your capital. Nothing on this site is financial advice.</p>
+      </form>
+    </section>
+    <div class="ft-grid">
+      <section class="ft-card ft-left">
+        <div class="ft-hwrap">
+          <h3 class="ft-h">Stay Connected &mdash;<br><span class="ft-red">Explore <span class="ft-ow">Other<span class="ptr ink ptr-m" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M2 1.5l13 6-5.6 1.8L7.6 15z"/></svg><b>See you on VersusTrade!</b></span></span> <span class="ft-lw">Links<span class="ptr ink ptr-d" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M2 1.5l13 6-5.6 1.8L7.6 15z"/></svg><b>See you on VersusTrade!</b></span></span></span></h3>
+        </div>
+        <div class="ft-cols">
+          <div class="ft-coins" id="ftCoins" aria-hidden="true"></div>
+          <div><h4>Company</h4><ul><li><a href="/#support">Support</a></li><li><a href="/faq/">FAQ</a></li><li><a href="/blog/">Blog</a></li><li><a href="https://www.tiktok.com/@versustradehq" target="_blank" rel="noopener">TikTok</a></li></ul></div>
+          <div><h4>Trade</h4><ul><li><a href="/#markets">Buy &amp; sell crypto</a></li><li><a href="/#giftcards">Sell Gift Cards</a></li><li><a href="/#rates">Our rates</a></li><li><a href="/blog/send-usdt-without-buying-crypto-first/">Send USDT guide</a></li></ul></div>
+          <div><h4>Legal</h4><ul><li><a href="/legal/#privacy">Privacy Policy</a></li><li><a href="/legal/#terms">Terms of Use</a></li><li><a href="/legal/#risk">Risk Disclosure</a></li></ul></div>
+        </div>
+      </section>
+      <div class="ft-right">
+        <section class="ft-card"><h3 class="ft-h">Join the<br>community</h3></section>
+        <div class="ft-socials">
+          <a href="https://x.com/VersusTrade_HQ" target="_blank" rel="noopener" aria-label="VersusTrade on X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg></a>
+          <a href="#" aria-label="VersusTrade on Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg></a>
+          <a href="https://www.tiktok.com/@versustradehq" target="_blank" rel="noopener" aria-label="VersusTrade on TikTok"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg><div class="ptr red" aria-hidden="true"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M2 1.5l13 6-5.6 1.8L7.6 15z"/></svg><b>Follow us</b></div></a>
+        </div>
       </div>
     </div>
+    <div class="ft-credits" id="cfBottom"><span>&copy; 2026 VersusTrade. All rights reserved.</span><nav aria-label="Legal"><a href="/legal/#privacy">Privacy</a><a href="/legal/#terms">Terms</a><a href="/legal/#risk">Risk</a></nav><div class="ft-ctrls"><button class="ft-top" id="vtTheme" type="button" aria-label="Toggle light or dark theme"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="3.5"/><path d="M10 1.5v2M10 16.5v2M1.5 10h2M16.5 10h2M4 4l1.4 1.4M14.6 14.6L16 16M4 16l1.4-1.4M14.6 5.4L16 4"/></svg></button><button class="ft-top" id="cfTop" type="button" aria-label="Back to top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></div></div>
+    <p class="risk">Risk warning: trading financial instruments and cryptoassets carries a high level of risk and you can lose some or all of your capital. Nothing on this site is financial advice.</p>
   </div>
-
-  <div class="cf-bottom" id="cfBottom">
-    <div class="cf-copy">&copy; 2026 VersusTrade. All rights reserved.</div>
-    <div class="cf-ctrls">
-      <button type="button" class="cf-pill cf-mag cf-top cf-theme" id="vtTheme" aria-label="Toggle light or dark theme"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="3.5"/><path d="M10 1.500v2M10 16.500v2M1.500 10h2M16.500 10h2M4 4l1.400 1.400M14.600 14.600L16 16M4 16l1.400-1.400M14.600 5.400L16 4"/></svg></button>
-      <button type="button" class="cf-pill cf-mag cf-top" id="cfTop" aria-label="Back to top">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
-      </button>
-    </div>
-  </div>
+  <div class="f-giant" id="fGiant" aria-hidden="true">VERSUSTRADE</div>
 </footer>
 </div>
 
@@ -2299,94 +2405,8 @@ html.va-lock{overflow:hidden}
   else start();
 })();
 </script>
-<script>
-// Cinematic footer: the footer is fixed behind the page and clipped to the last screen,
-// so it is uncovered as you scroll. Scroll progress drives the big text and the content reveal.
-// If the content does not fit the screen height, the footer becomes a normal one at the bottom.
-(function () {
-  var wrap = document.getElementById('cfWrap'), cf = document.getElementById('cf');
-  var inner = document.getElementById('cfInner'), bottom = document.getElementById('cfBottom');
-  var giant = document.getElementById('cfGiant'), heading = document.getElementById('cfHeading'), links = document.getElementById('cfLinks');
-  if (!wrap || !cf) return;
-  var reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-  var tgt = [1, 1, 1], cur = [1, 1, 1], busy = false;
-  function clamp(x) { return x < 0 ? 0 : x > 1 ? 1 : x; }
-  function e3(t) { return 1 - Math.pow(1 - t, 3); }
-  function e1(t) { return 1 - Math.pow(1 - t, 2); }
 
-  function measure() {
-    if (wrap.classList.contains('cf-static')) { tgt = [1, 1, 1]; return; }
-    var vh = window.innerHeight, top = wrap.getBoundingClientRect().top;
-    var p1 = clamp((.8 * vh - top) / (.8 * vh)), p2 = clamp((.4 * vh - top) / (.4 * vh));
-    tgt = [e1(p1), e3(clamp(p2 * .65 / .5)), e3(clamp((p2 * .65 - .15) / .5))];
-  }
-  function paint() {
-    giant.style.setProperty('--gy', ((1 - cur[0]) * 10).toFixed(2) + 'vh');
-    giant.style.setProperty('--gs', (.8 + .2 * cur[0]).toFixed(3));
-    giant.style.setProperty('--go', cur[0].toFixed(3));
-    heading.style.setProperty('--hy', ((1 - cur[1]) * 50).toFixed(1) + 'px');
-    heading.style.setProperty('--ho', cur[1].toFixed(3));
-    links.style.setProperty('--ly', ((1 - cur[2]) * 50).toFixed(1) + 'px');
-    links.style.setProperty('--lo', cur[2].toFixed(3));
-  }
-  function step() {
-    var moving = false;
-    for (var i = 0; i < 3; i++) {
-      var d = tgt[i] - cur[i];
-      if (Math.abs(d) > .002) { cur[i] += d * .16; moving = true; } else cur[i] = tgt[i];
-    }
-    paint();
-    if (moving) requestAnimationFrame(step); else busy = false;
-  }
-  function update() {
-    measure();
-    if (reduce) { cur = tgt.slice(); paint(); return; }
-    if (!busy) { busy = true; requestAnimationFrame(step); }
-  }
-  function layout() {
-    wrap.classList.remove('cf-static');
-    var need = parseFloat(getComputedStyle(cf).paddingTop) + inner.offsetHeight + bottom.offsetHeight + 24;
-    if (need > cf.clientHeight) wrap.classList.add('cf-static');
-    measure(); cur = tgt.slice(); paint();
-  }
-  layout();
-  window.addEventListener('load', layout);
-  window.addEventListener('resize', layout);
-  window.addEventListener('scroll', update, { passive: true });
 
-  document.getElementById('cfTop').addEventListener('click', function () { if (window.vtFlyToTop && window.vtFlyToTop()) return; window.scrollTo({ top: 0, behavior: 'smooth' }); });
-
-  // Magnetic buttons (mouse only)
-  if (!reduce && window.matchMedia('(hover:hover) and (pointer:fine)').matches) {
-    document.querySelectorAll('.cf-mag').forEach(function (el) {
-      el.addEventListener('mousemove', function (e) {
-        var r = el.getBoundingClientRect(), x = e.clientX - r.left - r.width / 2, y = e.clientY - r.top - r.height / 2;
-        el.style.transition = 'transform .4s cubic-bezier(.22,.61,.36,1), background .4s, border-color .4s, color .4s';
-        el.style.transform = 'translate(' + x * .4 + 'px,' + y * .4 + 'px) rotateX(' + (-y * .15) + 'deg) rotateY(' + (x * .15) + 'deg) scale(1.05)';
-      });
-      el.addEventListener('mouseleave', function () {
-        el.style.transition = 'transform 1.2s cubic-bezier(.34,1.56,.64,1), background .4s, border-color .4s, color .4s';
-        el.style.transform = '';
-      });
-    });
-  }
-})();
-</script>
-<script>
-// Fit the giant footer wordmark to the screen width so it is never cropped
-(function () {
-  var g = document.getElementById('cfGiant'); if (!g) return;
-  function fit() {
-    g.style.fontSize = '100px';
-    var w = g.offsetWidth;
-    if (w > 0) g.style.fontSize = (100 * document.documentElement.clientWidth * 0.94 / w) + 'px';
-  }
-  fit();
-  window.addEventListener('resize', fit);
-  window.addEventListener('load', fit);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
-})();
-</script>
 <script>
 // Pointer highlight: draws the box and pointer around the hero tagline when it comes into view
 (function () {
@@ -3210,11 +3230,11 @@ html.va-lock{overflow:hidden}
       '<button type="button" class="vc-x" data-act="close" aria-label="Close chat">' + svg(P.x) + '</button></div>' +
       '<h2 class="vc-hi">Hi <span id="vcHiName">there</span> <span class="vc-wave">\uD83D\uDC4B</span><br>How can we help?</h2>' +
       '<button type="button" class="vc-card vc-recent" id="vcRecent" data-act="chat" style="display:none"></button>' +
-      '<button type="button" class="vc-card" data-act="chat"><span>Send us a message</span>' + SENDI + '</button>' +
+      '<button type="button" class="vc-card" data-act="new"><span>Send us a message</span>' + SENDI + '</button>' +
       '<a class="vc-card" id="vcWa" target="_blank" rel="noopener"><span>Chat on WhatsApp</span>' + WA + '</a></div>' +
     '<div class="vc-v vc-msgs"><div class="vc-bar"><span class="vc-bt">Messages</span><button type="button" class="vc-x" data-act="close" aria-label="Close chat">' + svg(P.x) + '</button></div>' +
       '<div class="vc-mbody" id="vcList"></div>' +
-      '<button type="button" class="vc-pill" data-act="chat"><span>Send us a message</span>' + SENDI + '</button></div>' +
+      '<button type="button" class="vc-pill" data-act="new"><span>Send us a message</span>' + SENDI + '</button></div>' +
     '<div class="vc-v vc-tix"><div class="vc-bar"><span class="vc-bt">Tickets</span><button type="button" class="vc-x" data-act="close" aria-label="Close chat">' + svg(P.x) + '</button></div>' +
       '<div class="vc-mbody" id="vcTix"></div></div>' +
     '<div class="vc-v vc-chat"><div class="vc-bar"><button type="button" class="vc-back" data-act="messages" aria-label="Back to messages">' + svg(P.back) + '</button><span class="vc-pfp" id="vcPfp"></span>' +
@@ -3386,8 +3406,8 @@ html.va-lock{overflow:hidden}
     return out.slice(0, 30);
   }
   function drawHi() {
-    var u = who(), n = u && u.email ? u.email.split('@')[0] : '', h = $('vcHiName');
-    if (h) h.textContent = n ? n.charAt(0).toUpperCase() + n.slice(1) : 'there';
+    var u = who(), n = shownName(u), h = $('vcHiName');
+    if (h) h.textContent = n || 'there';
   }
   // the latest conversation, shown on the home screen
   function drawRecent() {
@@ -3419,6 +3439,12 @@ html.va-lock{overflow:hidden}
     S.tix = mergeTix([{ id: cid || Date.now(), cid: cid, title: shortText(plain(first)), at: Date.now(), rated: 0,
       msgs: slice.filter(function (m) { return !m.kind; }).slice(-40).map(function (m) { return { role: isCust(m) ? 'user' : m.role, text: shortText(plain(m), 400) }; }) }], S.tix);
   }
+  function rateTicket(k, n, stars) {
+    stars.forEach(function (x, i) { x.disabled = true; x.classList.toggle('on', i < n); });
+    cwCall('PATCH', '/contacts/' + encodeURIComponent(k.src) + '/conversations/' + k.cid + '/messages/' + k.mid, { submitted_values: { csat_survey_response: { rating: n } } }).then(function () {
+      k.rated = n; S.msgs.forEach(function (m) { if (m.role === 'csat' && m.mid === k.mid) m.rated = n; }); save(); drawTix(); drawRecent();
+    }, function () { stars.forEach(function (x) { x.disabled = false; x.classList.remove('on'); }); });
+  }
   function drawTix() {
     var box = $('vcTix'); if (!box) return;
     box.innerHTML = '';
@@ -3432,6 +3458,19 @@ html.va-lock{overflow:hidden}
       t.appendChild(el('span', '', 'Resolved \u00B7 ' + (k.rated ? 'You rated this ' + k.rated + '/5' : shortText(reply, 50) || 'Conversation closed')));
       li.appendChild(t); li.appendChild(el('span', 'vc-ago', ago(k.at)));
       var tx = el('div', 'vc-tx');
+      if (!k.rated && k.mid && Date.now() - k.at < WEEK) {
+        var rr = el('div', 'vc-tl', ''), rs = [];
+        rr.appendChild(el('i', '', 'Rate this conversation'));
+        var rt2 = el('div', 'vc-rate');
+        [1, 2, 3, 4, 5].forEach(function (n) {
+          var b2 = el('button', 'vc-star', '\u2605'); b2.type = 'button'; b2.setAttribute('aria-label', n + ' out of 5'); rs.push(b2);
+          b2.addEventListener('mouseenter', function () { rs.forEach(function (x, i) { x.classList.toggle('on', i < n); }); });
+          b2.addEventListener('click', function (ev) { ev.stopPropagation(); rateTicket(k, n, rs); });
+          rt2.appendChild(b2);
+        });
+        rt2.addEventListener('mouseleave', function () { rs.forEach(function (x) { if (!x.disabled) x.classList.remove('on'); }); });
+        rr.appendChild(rt2); tx.appendChild(rr);
+      }
       (k.msgs || []).forEach(function (m) {
         var d = el('p', 'vc-tl'); d.appendChild(el('i', '', (m.role === 'bot' ? 'Betty' : m.role === 'agent' ? 'Support team' : 'You') + ': ')); d.appendChild(document.createTextNode(m.text)); tx.appendChild(d);
       });
@@ -3554,10 +3593,10 @@ html.va-lock{overflow:hidden}
   function botSay(r) { hideTyping(); add({ role: 'bot', text: r.text, actions: r.actions }); }
   // ---------- real representatives (Chatwoot, API inbox) ----------
   var CW = CHAT.live, cw = { src: null, conv: null, seen: 0, timer: 0, wait: 0 };
-  try { var cs = JSON.parse(localStorage.getItem('vt_cw_v1') || 'null'); if (CW && cs && cs.inbox === CW.inbox) { cw.src = cs.src; cw.conv = cs.conv; cw.seen = cs.seen || 0; cw.linked = cs.linked || null; cw.last = cs.last || 0; cw.prev = cs.prev || null; } } catch (e) {}
+  try { var cs = JSON.parse(localStorage.getItem('vt_cw_v1') || 'null'); if (CW && cs && cs.inbox === CW.inbox) { cw.src = cs.src; cw.conv = cs.conv; cw.seen = cs.seen || 0; cw.linked = cs.linked || null; cw.linkedName = cs.linkedName || null; cw.last = cs.last || 0; cw.prev = cs.prev || null; } } catch (e) {}
   if (CW && !S.msgs.length) { cw.conv = null; cw.seen = 0; } // a fresh chat starts a fresh conversation
   cw.q = Promise.resolve();
-  function cwSave() { try { localStorage.setItem('vt_cw_v1', JSON.stringify({ inbox: CW.inbox, src: cw.src, conv: cw.conv, seen: cw.seen, linked: cw.linked || null, last: cw.last || 0, prev: cw.prev || null })); } catch (e) {} }
+  function cwSave() { try { localStorage.setItem('vt_cw_v1', JSON.stringify({ inbox: CW.inbox, src: cw.src, conv: cw.conv, seen: cw.seen, linked: cw.linked || null, linkedName: cw.linkedName || null, last: cw.last || 0, prev: cw.prev || null })); } catch (e) {} }
   function cwPath(path) { return CW.base.replace(/\/+$/, '') + '/public/api/v1/inboxes/' + encodeURIComponent(CW.inbox) + path; }
   function cwCall(method, path, body) {
     return fetch(cwPath(path), { method: method, headers: body ? { 'Content-Type': 'application/json' } : {}, body: body ? JSON.stringify(body) : undefined }).then(function (r) {
@@ -3569,6 +3608,8 @@ html.va-lock{overflow:hidden}
   }
   function cwConv(sfx) { return '/contacts/' + encodeURIComponent(cw.src) + '/conversations/' + cw.conv + (sfx || ''); }
   function who() { return window.VTAuth && window.VTAuth.user ? window.VTAuth.user() : null; }
+  // the name the customer chose on the dashboard, or the first part of their email
+  function shownName(u) { if (!u) return ''; if (u.name) return u.name; var n = u.email ? u.email.split('@')[0] : ''; return n ? n.charAt(0).toUpperCase() + n.slice(1) : ''; }
   function tradeLine(t) { return t.side + ' ' + qtyStr(t.qty) + ' ' + t.asset + (t.network ? ' on ' + t.network : '') + ' (about ' + money(t.currency, t.amount) + ')'; }
   function transcript() {
     var u = who(), lines = [];
@@ -3586,7 +3627,7 @@ html.va-lock{overflow:hidden}
   function ctxText() {
     var u = who();
     return 'New chat from the VersusTrade website.\n' +
-      (u && u.email ? 'Signed in on the site as ' + u.email + ' (not yet verified by Chatwoot).\n' : 'Not signed in.\n') +
+      (u && u.email ? 'Signed in on the site as ' + (u.name ? u.name + ' (' + u.email + ')' : u.email) + ' (not yet verified by Chatwoot).\n' : 'Not signed in.\n') +
       (lastTrade ? 'Latest request: ' + (lastTrade.custom ? lastTrade.custom : tradeLine(lastTrade)) + '\n' : '') +
       (cw.prev ? 'Earlier conversation with this customer: #' + cw.prev + ' (check whether it needs closing).\n' : '') +
       'Page: ' + String(location.href).slice(0, 200) + '\n' +
@@ -3611,9 +3652,9 @@ html.va-lock{overflow:hidden}
   }
   function cwCreate(retry) {
     var u = who(), anon = { name: 'Website visitor' };
-    var first = cw.src ? Promise.resolve() : cwCall('POST', '/contacts', u && u.email ? { name: u.email.split('@')[0], email: u.email, identifier: u.id || undefined } : anon)
+    var first = cw.src ? Promise.resolve() : cwCall('POST', '/contacts', u && u.email ? { name: shownName(u), email: u.email, identifier: u.id || undefined } : anon)
       .catch(function (err) { if (u && u.email) return cwCall('POST', '/contacts', anon); throw err; })   // never let the sign-in details stop a message getting through
-      .then(function (c) { cw.src = c.source_id; cw.linked = (u && u.id && c.contact && c.contact.email) ? u.id : null; cwSave(); });
+      .then(function (c) { cw.src = c.source_id; cw.linked = (u && u.id && (c.email || (c.contact && c.contact.email))) ? u.id : null; cw.linkedName = cw.linked ? shownName(u) : null; cwSave(); });
     return first.then(function () {
       return cwCall('POST', '/contacts/' + encodeURIComponent(cw.src) + '/conversations', { custom_attributes: { page: String(location.href).slice(0, 200), signed_in: u ? 'yes' : 'no', trade: lastTrade ? (lastTrade.custom ? lastTrade.custom : tradeLine(lastTrade)) : 'none' } });
     }).then(function (cv) {
@@ -3685,6 +3726,7 @@ html.va-lock{overflow:hidden}
   function closeConv(force) {
     if (cw.closing) return;
     cw.closing = true;
+    if (!(force || S.mode !== 'ai') && !S.closedAt) { S.closedAt = Date.now(); archiveTicket(); save(); }   // resolved while the customer was only chatting with Betty
     if (force || S.mode !== 'ai') {
       clearTimeout(cw.wait); S.mode = 'ai'; S.flow = null; S.busy = false; S.agentReplied = false; hideTyping(); status();
       add({ role: 'system', text: 'This conversation has been closed. Send a message any time to start a new one.' });
@@ -3702,6 +3744,7 @@ html.va-lock{overflow:hidden}
     archiveTicket(); save();
     if (S.msgs.some(function (x) { return x.role === 'csat' && x.mid === m.id; })) return;
     add({ role: 'csat', text: String(m.content || 'How would you rate the service provided by our team?'), cid: cw.conv, src: cw.src, mid: m.id, rated: 0, at: Date.now() });
+    S.tix.forEach(function (k) { if (k.cid && k.cid === cw.conv) { k.mid = m.id; k.src = cw.src; } }); save();
     clearTimeout(cw.closeTimer); cw.closeTimer = setTimeout(endConv, 2000);
   }
   function rateChat(m, n, row) {
@@ -3774,7 +3817,7 @@ html.va-lock{overflow:hidden}
     }
   }
   function sendTrade(t) {
-    if (isEnded()) resetChat(true);
+    if (S.closedAt) resetChat(true);
     lastTrade = t; refreshWa();
     try { sessionStorage.setItem('vt_pending_trade', JSON.stringify(t)); } catch (e) {}
     open('chat');
@@ -3790,7 +3833,7 @@ html.va-lock{overflow:hidden}
   }
 
   function sendGiftCard(name) {
-    if (isEnded()) resetChat(true);
+    if (S.closedAt) resetChat(true);
     lastTrade = { custom: 'Hi VersusTrade, I want to sell my ' + name + '.', card: name }; refreshWa();
     open('chat');
     add({ role: 'user', text: 'I want to sell my ' + name + '.' });
@@ -4078,7 +4121,7 @@ html.va-lock{overflow:hidden}
 
   panel.addEventListener('click', function (e) {
     var a = e.target.closest('[data-act]'), g = e.target.closest('[data-go]');
-    if (a) { var k = a.dataset.act; if (k === 'close') close(); else go(k === 'chat' ? 'chat' : 'messages'); }
+    if (a) { var k = a.dataset.act; if (k === 'close') close(); else if (k === 'new') { if (S.closedAt) resetChat(true); go('chat'); } else go(k === 'chat' ? 'chat' : 'messages'); }
     else if (g) go(g.dataset.go);
   });
   document.addEventListener('keydown', function (e) { if (S.open && e.key === 'Escape') { if (!pop.hidden) { showPop(null); return; } close(); if (fab) fab.focus(); } });
@@ -4107,7 +4150,7 @@ html.va-lock{overflow:hidden}
     if (!keepAccount) { S.uid = null; S.tix = []; }
     if (CW) {
       clearTimeout(cw.wait); clearTimeout(cw.closeTimer); clearInterval(cw.timer); cw.timer = 0; cw.conv = null; cw.seen = 0; cw.closing = false;
-      if (!keepAccount) { cw.src = null; cw.linked = null; }
+      if (!keepAccount) { cw.src = null; cw.linked = null; cw.linkedName = null; }
       cwSave();
     }
     if (!keepAccount) { try { localStorage.removeItem(KEY); } catch (e) {} }
@@ -4122,14 +4165,15 @@ html.va-lock{overflow:hidden}
   // tell Chatwoot who this visitor is, so the team sees the customer's email on the conversation
   function linkContact() {
     var u = who();
-    if (!CW || !cw.src || !u || !u.email || cw.linked === u.id) return Promise.resolve();
-    var path = '/contacts/' + encodeURIComponent(cw.src), name = u.email.split('@')[0];
+    var name = shownName(u);
+    if (!CW || !cw.src || !u || !u.email || (cw.linked === u.id && cw.linkedName === name)) return Promise.resolve();
+    var path = '/contacts/' + encodeURIComponent(cw.src), renamed = cw.linked === u.id;
     return cwCall('PATCH', path, { name: name, email: u.email, identifier: u.id })
       .catch(function () { return cwCall('PATCH', path, { name: name, email: u.email }); })
       .then(function () {
-        cw.linked = u.id; cwSave();
+        cw.linked = u.id; cw.linkedName = name; cwSave();
         var idle = (CHAT.newThreadAfterHours || 0) * 3600 * 1000, quiet = idle && cw.last && Date.now() - cw.last > idle;
-        if (cw.conv && !cw.closing && !quiet) return cwCall('POST', cwConv('/messages'), { content: 'The customer signed in on the website as ' + u.email + '.' });
+        if (cw.conv && !cw.closing && !quiet) return cwCall('POST', cwConv('/messages'), { content: renamed ? 'The customer changed their name to ' + name + '.' : 'The customer signed in on the website as ' + name + ' (' + u.email + ').' });
       }).catch(function () {});
   }
   function accountSync(u) {
@@ -4152,6 +4196,7 @@ html.va-lock{overflow:hidden}
     });
   }
   $('vcNew').addEventListener('click', function () { resetChat(true); });
+  window.addEventListener('vt-profile', function () { drawHi(); linkContact(); });
 
   window.addEventListener('vt-auth', function (e) {
     var d = e.detail || {};
@@ -4186,7 +4231,7 @@ html.va-lock{overflow:hidden}
   var GOOGLE = false; // set to true after Google sign-in is set up in Supabase (client ID and secret)
   var LOGO = 'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/REAL%20LOGO%20%20VERSUSTRADE.png';
   var STORE = 'vt_auth_session';
-  var session = null, remember = false;
+  var session = null, remember = true; // signed in by default on this device (the "keep me signed in" box starts ticked), so other pages and tabs stay logged in
   function readStore() {
     try {
       var v = localStorage.getItem(STORE); if (v) { remember = true; return JSON.parse(v); }
@@ -4207,15 +4252,23 @@ html.va-lock{overflow:hidden}
     if (window.VTNav) window.VTNav.setLabel(li ? 'Account' : 'Log in');
     window.dispatchEvent(new CustomEvent('vt-auth', { detail: { loggedIn: li, email: session && session.email, initial: !!initial } }));
   }
+  window.addEventListener('storage', function (e) {
+    if (e.key !== STORE) return;
+    var prev = session; session = readStore();
+    if (!session !== !prev) announce();
+    else if (session && prev && session.name !== prev.name) window.dispatchEvent(new CustomEvent('vt-profile', { detail: { name: session.name } }));
+  });
   function setSession(d) {
     session = {
       access_token: d.access_token, refresh_token: d.refresh_token,
       expires_at: d.expires_at || (now() + (d.expires_in || 3600)),
       email: (d.user && d.user.email) || (session && session.email) || '',
-      id: (d.user && d.user.id) || (session && session.id) || ''
+      id: (d.user && d.user.id) || (session && session.id) || '',
+      name: nameOf(d.user) || (session && session.name) || ''
     };
     persist();
   }
+  function nameOf(u) { var m = u && u.user_metadata; return String((m && (m.name || m.full_name || m.username)) || '').trim(); }
   function call(path, o) {
     o = o || {};
     var h = { apikey: SB.key };
@@ -4233,7 +4286,10 @@ html.va-lock{overflow:hidden}
       refreshing = call('/token?grant_type=refresh_token', { body: { refresh_token: session.refresh_token } }).then(function (r) {
         refreshing = null;
         if (r.ok && r.data.access_token) { setSession(r.data); return session.access_token; }
-        if (r.status >= 400 && r.status < 500) { session = null; persist(); announce(); }
+        // another page or tab may have just renewed the login (each renewal replaces the refresh token): use theirs instead of logging out
+        var latest = readStore();
+        if (latest && latest.refresh_token && latest.refresh_token !== session.refresh_token) { session = latest; if (session.expires_at - 60 > now()) return session.access_token; }
+        if (r.status >= 400 && r.status < 500 && r.status !== 429) { session = null; persist(); announce(); }
         return null;
       }, function () { refreshing = null; return null; });
     }
@@ -4467,7 +4523,18 @@ html.va-lock{overflow:hidden}
     isLoggedIn: function () { return !!session; },
     getToken: getToken,
     email: function () { return session ? session.email : ''; },
-    user: function () { return session ? { id: session.id, email: session.email } : null; }
+    user: function () { return session ? { id: session.id, email: session.email, name: session.name || '' } : null; },
+    // saves the display name to the account (used by the dashboard); other pages and tabs pick it up
+    setName: function (n) {
+      n = String(n || '').replace(/\s+/g, ' ').trim().slice(0, 40);
+      return getToken().then(function (tok) {
+        if (!tok) throw new Error('Please log in again.');
+        return call('/user', { method: 'PUT', token: tok, body: { data: { name: n } } });
+      }).then(function (r) {
+        if (!r.ok) throw new Error('Could not save your name.');
+        session.name = n; persist(); window.dispatchEvent(new CustomEvent('vt-profile', { detail: { name: n } })); return n;
+      });
+    }
   };
   if (session) { announce(true); getToken(); }
   // links such as /?login=1 (from the dashboard when signed out) and /?account=1 (change password)
@@ -6125,7 +6192,7 @@ function createSim(gl) {
     if (getComputedStyle(bar).flexDirection === 'column') return Math.max(8, Math.round(vh - br.top + 12));
     return Math.max(8, Math.round(vh - (ur.top + ur.height / 2) - dims.h / 2 - POD_H));
   }
-  function footerShown() { return cfWrap.getBoundingClientRect().top < window.innerHeight * 0.15; }
+  function footerShown() { var d = document.documentElement; return window.scrollY + window.innerHeight >= d.scrollHeight - 160; }
   function sync() {
     if (!busy) stage.style.bottom = floorPx() + 'px'; // never move the ground mid-flight
     stage.classList.toggle('on', busy || footerShown());
@@ -6268,5 +6335,87 @@ function createSim(gl) {
   window.addEventListener('hashchange', fromHash); fromHash();
 })();
 </script>
+<script>
+/* if the logo picture cannot load, show a simple mark instead of a broken image */
+(function(){function fix(img){var m=img.parentNode;if(!m||m.getAttribute('data-fb'))return;m.setAttribute('data-fb','1');m.innerHTML='<b style="font-weight:800;font-size:17px;line-height:1;color:#E11D2E;display:grid;place-items:center;width:100%;height:100%">V</b>'}
+[].forEach.call(document.querySelectorAll('.vt-mark img'),function(img){if(img.complete&&img.naturalWidth===0)fix(img);img.addEventListener('error',function(){fix(img)})})})();
+</script>
+<script>
+// Footer (from the blog page): wordmark fit, newsletter form, coin animation, back to top.
+// Footer wordmark: scale VERSUSTRADE to the full screen width (also on mobile)
+(function () {
+  var g = document.getElementById('fGiant'); if (!g) return;
+  function fit() {
+    g.style.fontSize = '100px';
+    var w = g.scrollWidth;
+    if (w > 0) g.style.fontSize = (100 * document.documentElement.clientWidth * 0.96 / w) + 'px';
+  }
+  fit(); window.addEventListener('resize', fit); window.addEventListener('load', fit);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+})();
+
+// Newsletter form (ported from the NewsletterForm component). Submits through newsletter.js to /api/subscribe (Resend, double opt-in).
+(function () {
+  var form = document.getElementById('nlForm'); if (!form) return;
+  var $ = function (id) { return document.getElementById(id); };
+  var input = $('nlEmail'), btn = $('nlBtn'), label = $('nlLabel'), spin = btn.querySelector('.nl-spin'), chev = btn.querySelector('svg:not(.nl-spin)');
+  var hint = $('nlHint'), err = $('nlErr'), fail = $('nlFail'), fields = $('nlFields'), ok = $('nlOk');
+  var RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/, busy = false, done = false;
+  function setError(msg) {
+    err.textContent = msg; err.hidden = !msg; hint.hidden = !!msg;
+    input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+    input.setAttribute('aria-describedby', msg ? 'nlErr' : 'nlHint');
+  }
+  function setBusy(b) { busy = b; input.disabled = b; btn.disabled = b; spin.hidden = !b; chev.style.display = b ? 'none' : ''; label.textContent = b ? 'Joining\u2026' : 'Subscribe'; form.setAttribute('aria-busy', b ? 'true' : 'false'); }
+  function subscribe(email) {
+    if (window.VT_NEWSLETTER && typeof window.VT_NEWSLETTER.subscribe === 'function') return window.VT_NEWSLETTER.subscribe(email, { website: (form.elements['website'] || {}).value || '' });
+    return Promise.reject(new Error('newsletter.js is not loaded')); // never pretend it worked
+  }
+  input.addEventListener('input', function () { fail.hidden = true; if (!err.hidden) setError(''); });
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (busy || done) return;
+    var v = input.value.trim();
+    if (!v) { setError('Email is required.'); return; }
+    if (!RE.test(v)) { setError('Enter a valid email address.'); return; }
+    setError(''); fail.hidden = true; setBusy(true);
+    Promise.resolve().then(function () { return subscribe(v); }).then(function () {
+      done = true; fields.hidden = true; ok.hidden = false;
+    }, function () { fail.hidden = false; }).then(function () { setBusy(false); });
+  });
+})();
+
+// Footer coin animation: loops continuously at 2x speed whenever the footer is on screen.
+(function () {
+  var box = document.getElementById('ftCoins'); if (!box) return;
+  var SPEED = 2, REST = 10, anim = null, visible = false;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  function withLottie(cb) {
+    if (window.lottie) return cb();
+    var sc = document.createElement('script');
+    sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie_light.min.js';
+    sc.onload = cb; document.head.appendChild(sc);
+  }
+  function sync() { if (!anim || reduce) return; if (visible && !document.hidden) anim.play(); else anim.pause(); }
+  function start() {
+    if (anim || !window.VT_COINS) return;
+    withLottie(function () {
+      anim = window.lottie.loadAnimation({ container: box, renderer: 'svg', loop: true, autoplay: false, animationData: window.VT_COINS, rendererSettings: { viewBoxSize: '423 249 523 269' } });
+      anim.setSpeed(SPEED);
+      anim.addEventListener('DOMLoaded', function () { if (reduce) anim.goToAndStop(REST, true); else sync(); });
+    });
+  }
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (es) { es.forEach(function (e) { visible = e.isIntersecting; if (visible) start(); sync(); }); }, { rootMargin: '0px 0px 120px 0px' }).observe(box);
+  } else { visible = true; start(); }
+  document.addEventListener('visibilitychange', sync);
+})();
+
+// Back to top: the flying button launches with the arrow (falls back to a normal smooth scroll)
+(function () { var b = document.getElementById('cfTop'); if (b) b.addEventListener('click', function () { if (window.vtFlyToTop && window.vtFlyToTop()) return; window.scrollTo({ top: 0, behavior: 'smooth' }); }); })();
+</script>
+<!-- Footer animation and newsletter: add these two files next to this page (same files the blog uses) -->
+<script src="coins.js" defer></script>
+<script src="newsletter.js" defer></script>
 </body>
 </html>
