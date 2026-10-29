@@ -332,6 +332,8 @@ button.betty{font:inherit;color:#fff;cursor:pointer}
 .bn.gone{display:none}
 .main{padding-top:48px}
 @media(max-width:760px){.uname2{display:none}.betty{position:static;transform:none;margin:0 auto;padding:8px 14px}}
+.betty{white-space:nowrap}
+@media(max-width:560px){.dp-top{flex-wrap:wrap;row-gap:12px}.dp-top .betty{order:9;flex:1 1 100%;justify-content:center;margin:0;padding:10px 14px}.dp-top #srch{margin-left:auto}}
 @media(max-width:640px){.dp{border-radius:0 0 26px 26px;padding-top:14px}.dp-bal{margin-top:22px}.acts{gap:12px}.act i{width:50px;height:50px}.ov{gap:10px}.oc{padding:14px}.oc b{font-size:22px}.bn{flex-wrap:wrap;padding:18px 48px 18px 18px}.main{padding-top:36px}}
 .oc i{border-radius:50%}.oc i svg{width:22px;height:22px}
 @media(prefers-reduced-motion:no-preference){.oc i.wt svg{animation:ocs 2.4s linear infinite}@keyframes ocs{to{transform:rotate(360deg)}}}
@@ -636,6 +638,17 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)load
 window.VTAuth={
   user:function(){return sess?{id:sess.id,email:sess.email,name:sess.name||''}:null},
   isLoggedIn:function(){return !!sess},
+  getToken:function(){return goodToken()},
+  upload:function(blob,ext,type){
+    return goodToken().then(function(tok){
+      if(!tok||!sess)throw new Error('Please log in again to send pictures.');
+      var path=sess.id+'/'+Date.now().toString(36)+Math.random().toString(36).slice(2,8)+(ext||'');
+      return fetch(SB.url+'/storage/v1/object/chat-uploads/'+path,{method:'POST',headers:{apikey:SB.key,Authorization:'Bearer '+tok,'Content-Type':type||blob.type||'application/octet-stream','x-upsert':'false'},body:blob}).then(function(r){
+        if(!r.ok)throw new Error(r.status===404?'Picture storage is not set up yet (run supabase-chat-uploads.sql).':'The picture could not be uploaded ('+r.status+').');
+        return fetch(SB.url+'/storage/v1/object/sign/chat-uploads/'+path,{method:'POST',headers:{apikey:SB.key,Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({expiresIn:2592000})})
+      }).then(function(r){if(!r.ok)throw new Error('The picture link could not be created ('+r.status+').');return r.json()}).then(function(d){return SB.url+'/storage/v1'+d.signedURL})})},
+
+  email:function(){return sess?sess.email:''},
   rest:function(method,path,body,extra){
     return goodToken().then(function(tok){
       if(!tok)throw new Error('nosession');
