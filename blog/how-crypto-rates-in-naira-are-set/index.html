@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>How crypto rates in naira are set | VersusTrade</title>
+<meta property="og:image" content="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/Crypto%20Rates.png">
 <meta name="description" content="The same dollar can cost different amounts of naira depending on where you look. Here is how the naira rate for crypto is put together, and how to tell if a rate is fair.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -160,8 +161,7 @@ button{background:none;border:0;cursor:pointer}
 .art-head h1{max-width:760px;margin-top:10px;font-size:clamp(32px,5.4vw,48px);line-height:1.1;font-weight:900;letter-spacing:-.05em}
 .byline{margin-top:20px;font-size:14px;color:var(--muted)}
 .hero-cover{max-width:1056px;margin:0 auto;padding:0 24px}
-.hero-art{position:relative;aspect-ratio:2.2;border-radius:16px;overflow:hidden}
-.hero-art svg.art{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hero-img{display:block;width:100%;height:auto;border-radius:16px}
 .tbl{margin-top:24px;overflow-x:auto;border:1px solid var(--line);border-radius:16px}
 .tbl table{width:100%;border-collapse:collapse;font-size:15px;line-height:1.5}
 .tbl th,.tbl td{padding:12px 16px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
@@ -359,7 +359,7 @@ button{background:none;border:0;cursor:pointer}
       <p class="byline">Support Desk &middot; 16 Oct 2026 &middot; 4 min read</p>
     </div>
     <div class="hero-cover">
-      <div class="hero-art" id="heroArt" role="img" aria-label="How crypto rates in naira are set cover"></div>
+      <img class="hero-img" src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/Crypto%20Rates.png" alt="How crypto rates in naira are set" width="1600" height="900">
     </div>
   </div>
 
@@ -527,8 +527,8 @@ function art(c) {
 var POSTS = [
   {t:'How to send USDT to someone without buying crypto first', d:'Pay in naira and have USDT go straight to someone else\u2019s wallet. Here is the step-by-step, and the mistakes to avoid.', c:'naira', a:'Support Desk', m:5, date:'20 Oct 2026', href:'/blog/send-usdt-without-buying-crypto-first/', img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/How%20to%20send%20USDT%20to%20someone%20without%20buying%20crypto%20first.png'},
   {t:'Bitcoin vs Ethereum: what\u2019s the difference?', d:'Both are called crypto, but they do different jobs. Here is what each one is for and how to choose where to start.', c:'basics', a:'VersusTrade Team', m:4, date:'19 Oct 2026', href:'/blog/bitcoin-vs-ethereum/', img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/The%20two%20biggest%20names%20in%20crypto.png'},
-  {t:'How crypto rates in naira are set', d:'Why the rate you see can differ from the dollar price, and what to compare before you buy or sell.', c:'naira', a:'Support Desk', m:4, date:'16 Oct 2026', href:'/blog/how-crypto-rates-in-naira-are-set/'},
-  {t:'Seven habits that keep your wallet safe', d:'Strong passwords are the start. Learn the habits that stop most account and wallet losses.', c:'security', a:'VersusTrade Team', m:4, date:'13 Oct 2026', href:'/blog/seven-habits-that-keep-your-wallet-safe/'},
+  {t:'How crypto rates in naira are set', d:'Why the rate you see can differ from the dollar price, and what to compare before you buy or sell.', c:'naira', a:'Support Desk', m:4, date:'16 Oct 2026', href:'/blog/how-crypto-rates-in-naira-are-set/', img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/Crypto%20Rates.png'},
+  {t:'Seven habits that keep your wallet safe', d:'Strong passwords are the start. Learn the habits that stop most account and wallet losses.', c:'security', a:'VersusTrade Team', m:4, date:'13 Oct 2026', href:'/blog/seven-habits-that-keep-your-wallet-safe/', img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/Keeping%20Wallet%20Safe.png'},
   {t:'Reading a candlestick chart for the first time', d:'What each candle shows, how to read the wicks, and the three patterns worth learning first.', c:'trading', a:'Market Desk', m:4, date:'10 Oct 2026', href:'#'},
   {t:'What is a stablecoin, and why does USDT matter?', d:'Stablecoins hold a steady price, which is why traders use them to park money between trades.', c:'basics', a:'VersusTrade Team', m:5, date:'7 Oct 2026', href:'#'},
   {t:'How to spot a crypto scam before you send money', d:'Fake giveaways, cloned support accounts and \u201Cguaranteed returns\u201D all follow the same script.', c:'security', a:'Support Desk', m:5, date:'4 Oct 2026', href:'#'},
@@ -536,13 +536,13 @@ var POSTS = [
   {t:'Is your USDT real? How to spot fake USDT before you lose money', d:'Fake and “flash” USDT can look completely real in your wallet. Here is how to check a token before you accept it or send anything.', c:'security', a:'Support Desk', m:5, date:'28 Sep 2026', href:'/blog/how-to-spot-fake-usdt/', img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/HOW%20TO%20SPOT%20FAKE%20USDT.png'},
   {t:'Selling crypto for naira: what to check first', d:'Rate, fees, payout time and account name. Run through this list before every sale.', c:'naira', a:'Support Desk', m:3, date:'25 Sep 2026', href:'/blog/selling-crypto-for-naira-what-to-check-first/'}
 ];
+
+// Posts that have a thumbnail (img) are listed first on the blog home page; within each group the order above (newest first) is kept.
+POSTS = POSTS.map(function (p, i) { return [p, i]; }).sort(function (a, b) { return (b[0].img ? 1 : 0) - (a[0].img ? 1 : 0) || a[1] - b[1]; }).map(function (x) { return x[0]; });
 }
 </script>
 <script>
 var $ = function (id) { return document.getElementById(id); };
-
-// Cover art
-(function () { var h = document.getElementById('heroArt'); if (h && typeof art === 'function') h.innerHTML = art('naira'); })();
 
 // Table of contents: built from the article's h2 headings, highlights the section being read
 (function () {
