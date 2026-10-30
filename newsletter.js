@@ -2,7 +2,7 @@
    Put this file next to your pages (same place the footer expects it). */
 (function () {
   // address of the Supabase function "newsletter"
-  var BASE = 'https://axldgaxsdgeycinxqbem.supabase.co/functions/v1/newsletter';
+var BASE = 'https://axldgaxsdgeycinxqbem.supabase.co/functions/v1/super-endpoint';
   function post(path, body) {
     return fetch(BASE + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).then(function (r) {
       return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) { var e = new Error('HTTP ' + r.status); e.status = r.status; e.data = d; throw e; } return d; });
