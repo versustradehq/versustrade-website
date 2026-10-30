@@ -3022,20 +3022,33 @@ html.va-lock{overflow:hidden}
     if (!session !== !prev) announce();
     else if (session && prev && session.name !== prev.name) window.dispatchEvent(new CustomEvent('vt-profile', { detail: { name: session.name } }));
   });
-  function setSession(d) {
-    session = {
-      access_token: d.access_token, refresh_token: d.refresh_token,
-      expires_at: d.expires_at || (now() + (d.expires_in || 3600)),
-      email: (d.user && d.user.email) || (session && session.email) || '',
-      id: (d.user && d.user.id) || (session && session.id) || '',
-      name: nameOf(d.user) || (session && session.name) || '',
-      profileDone: d.user ? hasProfile(d.user) : !!(session && session.profileDone),
-      created: (d.user && d.user.created_at && Date.parse(d.user.created_at)) || (session && session.created) || 0
-    };
-    persist();
-  }
-  function hasProfile(u) { var m = u && u.user_metadata; return !!(m && m.dob && m.phone && (m.full_name || m.name)); }
-  function nameOf(u) { var m = u && u.user_metadata; return String((m && (m.name || m.full_name || m.username)) || '').trim(); }
+ function setSession(d) {
+  var user = d.user || null;
+  var previous = session;
+
+  session = {
+    access_token: d.access_token || (previous && previous.access_token) || '',
+    refresh_token: d.refresh_token || (previous && previous.refresh_token) || '',
+    expires_at: d.expires_at || (now() + (d.expires_in || 3600)),
+    email: (user && user.email) || (previous && previous.email) || '',
+    id: (user && user.id) || (previous && previous.id) || '',
+    name: user ? nameOf(user) : ((previous && previous.name) || ''),
+    profileDone: user ? hasProfile(user) : !!(previous && previous.profileDone),
+    created: (user && user.created_at && Date.parse(user.created_at)) || (previous && previous.created) || 0
+  };
+
+  persist();
+}
+
+function hasProfile(u) {
+  var m = u && u.user_metadata;
+  return !!(m && m.dob && m.phone && (m.full_name || m.name));
+}
+
+function nameOf(u) {
+  var m = u && u.user_metadata;
+  return String((m && (m.name || m.full_name || m.username)) || '').trim();
+}
   function call(path, o) {
     o = o || {};
     var h = { apikey: SB.key };
