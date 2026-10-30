@@ -322,10 +322,14 @@ button:disabled {
         var s = r && r.status;
 
         if (s === 'confirmed') {
-          done(
-            'Your subscription has been confirmed. Welcome to VersusTrade!',
-            ''
-          );
+         done(
+  'Your subscription has been confirmed. Welcome to VersusTrade!',
+  ''
+);
+
+setTimeout(function () {
+  window.location.href = 'https://versustrade.co/';
+}, 2500);
         } else if (s === 'already' && conf) {
           done(
             'Already confirmed',
