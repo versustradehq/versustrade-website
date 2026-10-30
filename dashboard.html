@@ -528,7 +528,7 @@ setName(USER.name);
 /* ask the server for the latest saved name (it may have been changed on another device) */
 if(sess)goodToken().then(function(tok){if(!tok)return;return authCall('GET','/user',null,tok)}).then(function(r){
   if(!r||!r.ok)return;var nm=metaName(r.d);
-  if(r.d.phone){USER.phone=r.d.phone;$('aPhone').textContent=r.d.phone}
+  var ph=(r.d.user_metadata&&r.d.user_metadata.phone)||r.d.phone;if(ph){USER.phone=ph;$('aPhone').textContent=ph}
   if(r.d.created_at){var cd=new Date(r.d.created_at);if(!isNaN(cd)){USER.since=cd.toLocaleDateString('en-GB',{month:'short',year:'numeric'});$('aSince').textContent=USER.since}}
   if(nm&&nm!==USER.name){setName(nm);sess.name=nm;saveSess();try{localStorage.setItem('vt-username',nm)}catch(x){}}
   else if(!nm&&sn&&sn===USER.name){authCall('PUT','/user',{data:{name:sn}},sess.access_token).then(function(){sess.name=sn;saveSess()})}
