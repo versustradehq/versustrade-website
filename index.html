@@ -3014,6 +3014,7 @@ html.va-lock{overflow:hidden}
     var li = !!session;
     if (window.VTNav) window.VTNav.setLabel(li ? 'Account' : 'Log in');
     window.dispatchEvent(new CustomEvent('vt-auth', { detail: { loggedIn: li, email: session && session.email, initial: !!initial } }));
+    if (li) askProfile();
   }
   window.addEventListener('storage', function (e) {
     if (e.key !== STORE) return;
@@ -3027,10 +3028,13 @@ html.va-lock{overflow:hidden}
       expires_at: d.expires_at || (now() + (d.expires_in || 3600)),
       email: (d.user && d.user.email) || (session && session.email) || '',
       id: (d.user && d.user.id) || (session && session.id) || '',
-      name: nameOf(d.user) || (session && session.name) || ''
+      name: nameOf(d.user) || (session && session.name) || '',
+      profileDone: d.user ? hasProfile(d.user) : !!(session && session.profileDone),
+      created: (d.user && d.user.created_at && Date.parse(d.user.created_at)) || (session && session.created) || 0
     };
     persist();
   }
+  function hasProfile(u) { var m = u && u.user_metadata; return !!(m && m.dob && m.phone && (m.full_name || m.name)); }
   function nameOf(u) { var m = u && u.user_metadata; return String((m && (m.name || m.full_name || m.username)) || '').trim(); }
   function call(path, o) {
     o = o || {};
@@ -3071,11 +3075,40 @@ html.va-lock{overflow:hidden}
   root.innerHTML = '<div class="va-card"><button type="button" class="va-x" id="vaClose" aria-label="Close">' + ICON.x + '</button><div id="vaBody"></div></div>';
   document.body.appendChild(root);
   var body = root.querySelector('#vaBody');
-  var st = { tab: 'login', email: '', mode: 'email', afterNewPass: false }, timer = 0, busy = false, lastFocus = null;
+  var st = { tab: 'login', email: '', name: '', phone: '', dob: '', mode: 'email', afterNewPass: false }, timer = 0, busy = false, lastFocus = null;
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function $(sel) { return body.querySelector(sel); }
   function setErr(msg) { var e = $('.va-err'); if (!e) return; e.textContent = msg || ''; e.hidden = !msg; }
+  var MIN_AGE = 18; // youngest age allowed to sign up (set 0 to switch the age check off)
+  function checkName(v) {
+    v = String(v || '').replace(/\s+/g, ' ').trim();
+    if (!v) return 'Please enter your full name.';
+    if (v.length > 80 || !/[A-Za-z\u00C0-\u024F]/.test(v)) return 'Please enter your full name.';
+    if (v.split(' ').length < 2) return 'Please enter your first and last name.';
+    return '';
+  }
+  function normPhone(raw) {
+    var t = String(raw || '').trim().replace(/[\s().\-]/g, '');
+    if (/^00/.test(t)) t = '+' + t.slice(2);
+    if (!/^\+?\d+$/.test(t)) return '';
+    if (t.charAt(0) === '+') { var d = t.slice(1); return d.length >= 8 && d.length <= 15 && d.charAt(0) !== '0' ? '+' + d : ''; }
+    if (/^0\d{10}$/.test(t)) return '+234' + t.slice(1);
+    if (/^234\d{10}$/.test(t)) return '+' + t;
+    if (/^[789]\d{9}$/.test(t)) return '+234' + t;
+    return '';
+  }
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+  function ymd(d) { return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
+  function maxDob() { var d = new Date(); d.setFullYear(d.getFullYear() - MIN_AGE); return ymd(d); }
+  function checkDob(v) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(v || ''));
+    if (!m) return 'Please enter your date of birth.';
+    var y = +m[1], mo = +m[2], da = +m[3], d = new Date(y, mo - 1, da);
+    if (d.getFullYear() !== y || d.getMonth() !== mo - 1 || d.getDate() !== da || y < 1900 || d > new Date()) return 'Please enter a valid date of birth.';
+    if (MIN_AGE && v > maxDob()) return 'You must be ' + MIN_AGE + ' or older to create an account.';
+    return '';
+  }
   function validEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
   function lower(r) { return String((r.data && (r.data.msg || r.data.error_description || r.data.message || r.data.error_code)) || '').toLowerCase(); }
   function friendly(r, ctx) {
@@ -3093,6 +3126,9 @@ html.va-lock{overflow:hidden}
   function pwField(id, ac, ph) {
     return '<div class="va-pw"><input class="va-in" id="' + id + '" type="password" autocomplete="' + ac + '" placeholder="' + ph + '"><button type="button" class="va-eye" data-eye="' + id + '" aria-label="Show password">' + ICON.eye + '</button></div>';
   }
+  function fieldName() { return '<label class="va-lab" for="vaName">Full name</label><input class="va-in" id="vaName" type="text" autocomplete="name" maxlength="80" placeholder="Enter your full name">'; }
+  function fieldPhone() { return '<label class="va-lab" for="vaPhone">Phone number</label><input class="va-in" id="vaPhone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="e.g. 0801 234 5678">'; }
+  function fieldDob() { return '<label class="va-lab" for="vaDob">Date of birth</label><input class="va-in" id="vaDob" type="date" autocomplete="bday" min="1900-01-01" max="' + maxDob() + '">'; }
   function wireEyes() {
     [].forEach.call(body.querySelectorAll('[data-eye]'), function (b) {
       b.addEventListener('click', function () {
@@ -3112,7 +3148,9 @@ html.va-lock{overflow:hidden}
       body.innerHTML = head(login ? 'Log in to your account' : 'Create an account', login ? 'Welcome back! Please enter your details.' : 'Enter your details to get started.', true) +
         '<div class="va-tabs" role="tablist"><button type="button" role="tab" class="va-tab' + (login ? '' : ' on') + '" data-tab="signup" aria-selected="' + !login + '">Sign up</button><button type="button" role="tab" class="va-tab' + (login ? ' on' : '') + '" data-tab="login" aria-selected="' + login + '">Log in</button></div>' +
         '<form class="va-form" id="vaForm" novalidate><div class="va-err" hidden></div>' +
+        (login ? '' : fieldName()) +
         '<label class="va-lab" for="vaEmail">Email</label><input class="va-in" id="vaEmail" type="email" inputmode="email" autocomplete="email" placeholder="Enter your email">' +
+        (login ? '' : fieldPhone() + fieldDob()) +
         '<label class="va-lab" for="vaPass">Password</label>' + pwField('vaPass', login ? 'current-password' : 'new-password', login ? 'Enter your password' : 'Create a password') +
         (login ? '' : '<p class="va-hint">Must be at least 8 characters.</p>') +
         '<div class="va-opts"><label class="va-chk"><input type="checkbox" id="vaKeep"><span>Keep me signed in</span></label>' + (login ? '<button type="button" class="va-a" id="vaForgot">Forgot password</button>' : '') + '</div>' +
@@ -3121,8 +3159,9 @@ html.va-lock{overflow:hidden}
         (GOOGLE ? '<button type="button" class="va-btn alt" id="vaGoogle">' + ICON.google + 'Continue with Google</button>' : '') +
         '<p class="va-foot">' + (login ? 'Don\u2019t have an account? <button type="button" class="va-a" data-tab="signup">Sign up</button>' : 'Already have an account? <button type="button" class="va-a" data-tab="login">Log in</button>') + '</p>';
       var em = $('#vaEmail'), keep = $('#vaKeep'); em.value = st.email; keep.checked = remember;
-      [].forEach.call(body.querySelectorAll('[data-tab]'), function (t) { t.addEventListener('click', function () { st.email = em.value.trim(); st.tab = t.getAttribute('data-tab'); view('main'); }); });
-      $('#vaForm').addEventListener('submit', function (e) { e.preventDefault(); keep.checked ? remember = true : remember = false; (login ? doLogin : doSignup)(em.value.trim(), $('#vaPass').value); });
+      if (!login) { $('#vaName').value = st.name; $('#vaPhone').value = st.phone; $('#vaDob').value = st.dob; }
+      [].forEach.call(body.querySelectorAll('[data-tab]'), function (t) { t.addEventListener('click', function () { st.email = em.value.trim(); if (!login) { st.name = $('#vaName').value; st.phone = $('#vaPhone').value; st.dob = $('#vaDob').value; } st.tab = t.getAttribute('data-tab'); view('main'); }); });
+      $('#vaForm').addEventListener('submit', function (e) { e.preventDefault(); keep.checked ? remember = true : remember = false; if (login) doLogin(em.value.trim(), $('#vaPass').value); else doSignup(em.value.trim(), $('#vaPass').value, { name: $('#vaName').value, phone: $('#vaPhone').value, dob: $('#vaDob').value }); });
       if (login) {
         $('#vaForgot').addEventListener('click', function () { remember = keep.checked; startCode(em.value.trim(), true); });
         $('#vaCodeLogin').addEventListener('click', function () { remember = keep.checked; startCode(em.value.trim(), false); });
@@ -3148,6 +3187,14 @@ html.va-lock{overflow:hidden}
       $('#vaF3').addEventListener('submit', function (e) { e.preventDefault(); savePassword($('#vaNew').value); });
       $('#vaSkip').addEventListener('click', function () { close(); });
       wireEyes(); setTimeout(function () { $('#vaNew').focus(); }, 60);
+    } else if (name === 'profile') {
+      body.innerHTML = head('Complete your details', 'Just a few quick details to finish setting up your account.', true) +
+        '<form class="va-form" id="vaPf" novalidate><div class="va-err" hidden></div>' + fieldName() + fieldPhone() + fieldDob() +
+        '<button type="submit" class="va-btn" id="vaPfGo">Continue</button></form><button type="button" class="va-btn alt" id="vaPfSkip">Skip for now</button>';
+      $('#vaName').value = (session && session.name) || '';
+      $('#vaPf').addEventListener('submit', function (e) { e.preventDefault(); saveProfile({ name: $('#vaName').value, phone: $('#vaPhone').value, dob: $('#vaDob').value }); });
+      $('#vaPfSkip').addEventListener('click', function () { try { localStorage.setItem('vt_profile_skip:' + (session && session.id), String(Date.now())); } catch (e) {} close(); });
+      setTimeout(function () { ($('#vaName').value ? $('#vaPhone') : $('#vaName')).focus(); }, 60);
     } else {
       body.innerHTML = head('You\u2019re signed in', 'Signed in as <b>' + esc(session ? session.email : '') + '</b>. Your chats with VersusTrade are saved to this account.', true) +
         '<button type="button" class="va-btn alt" id="vaChange">Change password</button><button type="button" class="va-btn alt" id="vaOut">Log out</button>';
@@ -3176,12 +3223,18 @@ html.va-lock{overflow:hidden}
       setErr(friendly(r, 'login'));
     }, function () { busy = false; unlock(b); setErr(NET); });
   }
-  function doSignup(email, password) {
+  function doSignup(email, password, x) {
     if (busy) return;
+    x = x || {};
+    var nm = String(x.name || '').replace(/\s+/g, ' ').trim(), ph = normPhone(x.phone), eName = checkName(nm), eDob = checkDob(x.dob);
+    st.name = nm; st.phone = x.phone || ''; st.dob = x.dob || '';
+    if (eName) { setErr(eName); return; }
     if (!validEmail(email)) { setErr('Please enter a valid email address.'); return; }
+    if (!ph) { setErr('Please enter a valid phone number, for example 0801 234 5678.'); return; }
+    if (eDob) { setErr(eDob); return; }
     if (password.length < 8) { setErr('Your password must be at least 8 characters.'); return; }
     busy = true; st.email = email.toLowerCase(); var b = $('#vaGo'); lock(b, 'Creating account\u2026'); setErr('');
-    call('/signup', { body: { email: st.email, password: password } }).then(function (r) {
+    call('/signup', { body: { email: st.email, password: password, data: { full_name: nm, name: nm, dob: x.dob, phone: ph } } }).then(function (r) {
       busy = false;
       if (r.ok && r.data.access_token) { setSession(r.data); announce(); close(); return; }
       if (r.ok) { st.mode = 'signup'; st.afterNewPass = false; view('code'); return; }
@@ -3211,6 +3264,37 @@ html.va-lock{overflow:hidden}
       if (r.ok && r.data.access_token) { setSession(r.data); announce(); if (st.afterNewPass) view('newpass'); else close(); return; }
       unlock(vb); setErr(friendly(r, 'code'));
     }, function () { busy = false; unlock(vb); setErr(NET); });
+  }
+  function needsProfile() {
+    if (!session || session.profileDone) return false;
+    if (!session.created || Date.now() - session.created > 24 * 3600 * 1000) return false;   // only brand-new accounts
+    try { var k = Number(localStorage.getItem('vt_profile_skip:' + session.id)); if (k && Date.now() - k < 24 * 3600 * 1000) return false; } catch (e) {}
+    return true;
+  }
+  function askProfile() {
+    if (!needsProfile()) return;
+    setTimeout(function () {
+      if (!needsProfile() || root.hasAttribute('data-open')) return;
+      lastFocus = document.activeElement; view('profile'); root.setAttribute('data-open', ''); document.documentElement.classList.add('va-lock');
+    }, 700);
+  }
+  function saveProfile(x) {
+    if (busy) return;
+    var nm = String(x.name || '').replace(/\s+/g, ' ').trim(), ph = normPhone(x.phone), e1 = checkName(nm), e2 = checkDob(x.dob);
+    if (e1) { setErr(e1); return; }
+    if (!ph) { setErr('Please enter a valid phone number, for example 0801 234 5678.'); return; }
+    if (e2) { setErr(e2); return; }
+    busy = true; var b = $('#vaPfGo'); lock(b, 'Saving\u2026'); setErr('');
+    getToken().then(function (tok) {
+      if (!tok) { busy = false; unlock(b); setErr('Your session expired. Please log in again.'); return; }
+      var data = { full_name: nm, dob: x.dob, phone: ph }; if (!session.name) data.name = nm;
+      return call('/user', { method: 'PUT', token: tok, body: { data: data } }).then(function (r) {
+        busy = false;
+        if (!r.ok) { unlock(b); setErr(friendly(r, 'profile')); return; }
+        session.profileDone = true; if (!session.name) session.name = nm; persist();
+        window.dispatchEvent(new CustomEvent('vt-profile', { detail: { name: session.name } })); close();
+      });
+    }, function () { busy = false; unlock(b); setErr(NET); });
   }
   function savePassword(pw) {
     if (busy) return;
