@@ -8,18 +8,20 @@ var ART = {
   security:['#26A17B','#0F3D3E','#0A1F2B',190,95], naira:['#2BB673','#0B6B3A','#0E1A14',110,105],
   markets:['#627EEA','#3B3F9E','#14B8D4',195,100]
 };
+var artCount = 0; // gives every SVG its own gradient/filter ids
 function art(c) {
+  var u = ++artCount, gA = 'gA' + u, gB = 'gB' + u, gF = 'gF' + u;
   var a = ART[c], x = a[3], y = a[4], sx = x > 150 ? 70 : 230;
   return '<svg class="art" viewBox="0 0 300 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">' +
-    '<defs><radialGradient id="gA" cx=".3" cy=".25" r=".9"><stop offset="0" stop-color="#fff" stop-opacity=".75"/><stop offset=".5" stop-color="#fff" stop-opacity=".16"/><stop offset="1" stop-color="#fff" stop-opacity=".04"/></radialGradient>' +
-    '<linearGradient id="gB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity=".05"/></linearGradient>' +
-    '<filter id="gF"><feGaussianBlur stdDeviation="14"/></filter></defs>' +
+    '<defs><radialGradient id="' + gA + '" cx=".3" cy=".25" r=".9"><stop offset="0" stop-color="#fff" stop-opacity=".75"/><stop offset=".5" stop-color="#fff" stop-opacity=".16"/><stop offset="1" stop-color="#fff" stop-opacity=".04"/></radialGradient>' +
+    '<linearGradient id="' + gB + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity=".05"/></linearGradient>' +
+    '<filter id="' + gF + '"><feGaussianBlur stdDeviation="14"/></filter></defs>' +
     '<rect width="300" height="200" fill="' + a[1] + '"/>' +
-    '<circle cx="' + sx + '" cy="40" r="90" fill="' + a[0] + '" filter="url(#gF)"/>' +
-    '<circle cx="' + (300 - sx) + '" cy="190" r="100" fill="' + a[2] + '" filter="url(#gF)"/>' +
-    '<circle cx="' + sx + '" cy="150" r="34" fill="none" stroke="url(#gB)" stroke-width="9" opacity=".55"/>' +
+    '<circle cx="' + sx + '" cy="40" r="90" fill="' + a[0] + '" filter="url(#' + gF + ')"/>' +
+    '<circle cx="' + (300 - sx) + '" cy="190" r="100" fill="' + a[2] + '" filter="url(#' + gF + ')"/>' +
+    '<circle cx="' + sx + '" cy="150" r="34" fill="none" stroke="url(#' + gB + ')" stroke-width="9" opacity=".55"/>' +
     '<circle cx="' + sx + '" cy="150" r="34" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="1"/>' +
-    '<circle cx="' + x + '" cy="' + y + '" r="62" fill="url(#gA)" stroke="url(#gB)" stroke-width="2"/>' +
+    '<circle cx="' + x + '" cy="' + y + '" r="62" fill="url(#' + gA + ')" stroke="url(#' + gB + ')" stroke-width="2"/>' +
     '<circle cx="' + x + '" cy="' + y + '" r="48" fill="none" stroke="#fff" stroke-opacity=".35"/>' +
     '<ellipse cx="' + (x - 20) + '" cy="' + (y - 34) + '" rx="26" ry="9" fill="#fff" opacity=".5" transform="rotate(-28 ' + (x - 20) + ' ' + (y - 34) + ')"/>' +
     '<text x="' + x + '" y="' + (y + 22) + '" text-anchor="middle" font-size="64" font-weight="800" fill="#fff" fill-opacity=".92" font-family="Inter,Segoe UI,Roboto,sans-serif">' + GLYPH[c] + '</text></svg>';
