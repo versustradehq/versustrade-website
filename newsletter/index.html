@@ -386,12 +386,19 @@ setTimeout(function () {
       N.subscribe(v, {
         website: $('sForm').elements['website'].value,
         source: 'newsletter-page'
-      }).then(function () {
-        done(
-          'Check your inbox',
-          'We sent a confirmation link to ' + v + '. Tap it to finish joining.'
-        );
-      }, function (x) {
+     }).then(function (r) {
+  if (r && r.status === 'already_subscribed') {
+    done(
+      'You’re already subscribed!',
+      'This email is already receiving VersusTrade newsletter updates.'
+    );
+  } else {
+    done(
+      'Check your inbox',
+      'We sent a confirmation link to ' + v + '. Tap it to finish joining.'
+    );
+  }
+}, function (x) {
         b.disabled = false;
         b.textContent = 'Subscribe';
 
