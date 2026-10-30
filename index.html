@@ -3311,24 +3311,70 @@ function askProfile() {
     document.documentElement.classList.add('va-lock');
   }, 700);
 }
-  function saveProfile(x) {
-    if (busy) return;
-    var nm = String(x.name || '').replace(/\s+/g, ' ').trim(), ph = normPhone(x.phone), e1 = checkName(nm), e2 = checkDob(x.dob);
-    if (e1) { setErr(e1); return; }
-    if (!ph) { setErr('Please enter a valid phone number, for example 0801 234 5678.'); return; }
-    if (e2) { setErr(e2); return; }
-    busy = true; var b = $('#vaPfGo'); lock(b, 'Saving\u2026'); setErr('');
-    getToken().then(function (tok) {
-      if (!tok) { busy = false; unlock(b); setErr('Your session expired. Please log in again.'); return; }
-      var data = { full_name: nm, dob: x.dob, phone: ph }; if (!session.name) data.name = nm;
-      return call('/user', { method: 'PUT', token: tok, body: { data: data } }).then(function (r) {
-        busy = false;
-        if (!r.ok) { unlock(b); setErr(friendly(r, 'profile')); return; }
-        session.profileDone = true; if (!session.name) session.name = nm; persist();
-        window.dispatchEvent(new CustomEvent('vt-profile', { detail: { name: session.name } })); close();
-      });
-    }, function () { busy = false; unlock(b); setErr(NET); });
+ function saveProfile(x) {
+  if (busy) return;
+
+  var nm = String(x.name || '').replace(/\s+/g, ' ').trim();
+  var ph = normPhone(x.phone);
+  var e1 = checkName(nm);
+  var e2 = checkDob(x.dob);
+
+  if (e1) { setErr(e1); return; }
+  if (!ph) {
+    setErr('Please enter a valid phone number, for example 0801 234 5678.');
+    return;
   }
+  if (e2) { setErr(e2); return; }
+
+  busy = true;
+  var b = $('#vaPfGo');
+  lock(b, 'Saving\u2026');
+  setErr('');
+
+  getToken().then(function (tok) {
+    if (!tok) {
+      busy = false;
+      unlock(b);
+      setErr('Your session expired. Please log in again.');
+      return;
+    }
+
+    var data = {
+      full_name: nm,
+      name: nm,
+      dob: x.dob,
+      phone: ph
+    };
+
+    return call('/user', {
+      method: 'PUT',
+      token: tok,
+      body: { data: data }
+    }).then(function (r) {
+      busy = false;
+
+      if (!r.ok) {
+        unlock(b);
+        setErr(friendly(r, 'profile'));
+        return;
+      }
+
+      session.name = nm;
+      session.profileDone = true;
+      persist();
+
+      window.dispatchEvent(new CustomEvent('vt-profile', {
+        detail: { name: session.name }
+      }));
+
+      close();
+    });
+  }).catch(function () {
+    busy = false;
+    unlock(b);
+    setErr(NET);
+  });
+}
   function savePassword(pw) {
     if (busy) return;
     if (pw.length < 8) { setErr('Your password must be at least 8 characters.'); return; }
