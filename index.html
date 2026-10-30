@@ -3265,19 +3265,23 @@ html.va-lock{overflow:hidden}
       unlock(vb); setErr(friendly(r, 'code'));
     }, function () { busy = false; unlock(vb); setErr(NET); });
   }
-  function needsProfile() {
-    if (!session || session.profileDone) return false;
-    if (!session.created || Date.now() - session.created > 24 * 3600 * 1000) return false;   // only brand-new accounts
-    try { var k = Number(localStorage.getItem('vt_profile_skip:' + session.id)); if (k && Date.now() - k < 24 * 3600 * 1000) return false; } catch (e) {}
-    return true;
-  }
-  function askProfile() {
-    if (!needsProfile()) return;
-    setTimeout(function () {
-      if (!needsProfile() || root.hasAttribute('data-open')) return;
-      lastFocus = document.activeElement; view('profile'); root.setAttribute('data-open', ''); document.documentElement.classList.add('va-lock');
-    }, 700);
-  }
+ function needsProfile() {
+  if (!session || session.profileDone) return false;
+  return true;
+}
+
+function askProfile() {
+  if (!needsProfile()) return;
+
+  setTimeout(function () {
+    if (!needsProfile() || root.hasAttribute('data-open')) return;
+
+    lastFocus = document.activeElement;
+    view('profile');
+    root.setAttribute('data-open', '');
+    document.documentElement.classList.add('va-lock');
+  }, 700);
+}
   function saveProfile(x) {
     if (busy) return;
     var nm = String(x.name || '').replace(/\s+/g, ' ').trim(), ph = normPhone(x.phone), e1 = checkName(nm), e2 = checkDob(x.dob);
