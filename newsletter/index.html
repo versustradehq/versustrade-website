@@ -1,0 +1,407 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Newsletter | VersusTrade</title>
+
+<script>
+try {
+  var t = localStorage.getItem('vt-theme');
+  if (t) document.documentElement.setAttribute('data-theme', t);
+} catch(e) {}
+</script>
+
+<style>
+:root {
+  --bg:#fff;
+  --soft:#FAFAFA;
+  --text:#1A1A1A;
+  --muted:#6B6B6B;
+  --line:#E4E4E7;
+  --red:#E11D2E;
+  --red-dark:#B8101F;
+  --ok:#0B8A4B;
+  --ok-tint:#E5F6EC;
+  color-scheme:light;
+}
+
+:root[data-theme="dark"] {
+  --bg:#121212;
+  --soft:#171717;
+  --text:#F5F5F5;
+  --muted:#A3A3A3;
+  --line:#2A2A2A;
+  --ok:#4CD28A;
+  --ok-tint:#10281C;
+  color-scheme:dark;
+}
+
+@media (prefers-color-scheme:dark) {
+  :root:not([data-theme="light"]) {
+    --bg:#121212;
+    --soft:#171717;
+    --text:#F5F5F5;
+    --muted:#A3A3A3;
+    --line:#2A2A2A;
+    --ok:#4CD28A;
+    --ok-tint:#10281C;
+    color-scheme:dark;
+  }
+}
+
+* {
+  box-sizing:border-box;
+  margin:0;
+}
+
+body {
+  min-height:100vh;
+  min-height:100dvh;
+  display:grid;
+  place-items:center;
+  padding:24px 16px;
+  background:var(--soft);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Roboto,sans-serif;
+  line-height:1.5;
+}
+
+.card {
+  width:100%;
+  max-width:460px;
+  background:var(--bg);
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:36px 28px;
+  text-align:center;
+}
+
+.logo {
+  display:block;
+  width:64px;
+  height:64px;
+  object-fit:contain;
+  margin:0 auto 18px;
+}
+
+h1 {
+  font-size:26px;
+  letter-spacing:-.02em;
+  line-height:1.2;
+  margin-bottom:10px;
+}
+
+p {
+  color:var(--muted);
+  font-size:16px;
+}
+
+form {
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-top:22px;
+  text-align:left;
+}
+
+input[type=email] {
+  height:48px;
+  padding:0 14px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--bg);
+  color:var(--text);
+  font:inherit;
+  font-size:16px;
+}
+
+input[type=email]:focus {
+  outline:2px solid var(--red);
+  border-color:var(--red);
+}
+
+.hp {
+  position:absolute;
+  left:-9999px;
+  width:1px;
+  height:1px;
+  opacity:0;
+}
+
+button,.btn {
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
+  gap:8px;
+  height:48px;
+  padding:0 22px;
+  border:0;
+  border-radius:12px;
+  background:var(--red);
+  color:#fff;
+  font:inherit;
+  font-weight:700;
+  font-size:16px;
+  cursor:pointer;
+  text-decoration:none;
+}
+
+button:hover:not(:disabled) {
+  background:var(--red-dark);
+}
+
+button:disabled {
+  opacity:.6;
+  cursor:default;
+}
+
+.msg {
+  margin-top:12px;
+  padding:10px 12px;
+  border-radius:10px;
+  font-size:14px;
+  text-align:left;
+}
+
+.msg.err {
+  background:rgba(225,29,46,.1);
+  color:var(--red);
+}
+
+.tick {
+  display:inline-grid;
+  place-items:center;
+  width:56px;
+  height:56px;
+  border-radius:50%;
+  background:var(--ok-tint);
+  color:var(--ok);
+  margin-bottom:16px;
+}
+
+.tick svg {
+  width:28px;
+  height:28px;
+}
+
+.alt {
+  margin-top:14px;
+  display:inline-block;
+  color:var(--muted);
+  font-size:14px;
+}
+
+[hidden] {
+  display:none!important;
+}
+</style>
+</head>
+
+<body>
+
+<main class="card" id="card" aria-live="polite">
+
+  <div id="vSubscribe">
+    <img
+      class="logo"
+      src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/REAL%20LOGO%20%20VERSUSTRADE.png"
+      alt="VersusTrade logo"
+    >
+
+    <h1>Stay in the loop</h1>
+    <p>Weekly crypto guides and updates from VersusTrade. No spam.</p>
+
+    <form id="sForm" novalidate>
+      <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+      <input
+        id="sEmail"
+        name="email"
+        type="email"
+        inputmode="email"
+        autocomplete="email"
+        placeholder="Enter your email"
+        aria-label="Email address"
+      >
+
+      <button type="submit" id="sBtn">Subscribe</button>
+      <div class="msg err" id="sErr" hidden></div>
+    </form>
+  </div>
+
+  <div id="vAction" hidden>
+    <img
+      class="logo"
+      src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/REAL%20LOGO%20%20VERSUSTRADE.png"
+      alt="VersusTrade logo"
+    >
+
+    <h1 id="aTitle"></h1>
+    <p id="aText"></p>
+
+    <form id="aForm" novalidate>
+      <button type="submit" id="aBtn"></button>
+      <div class="msg err" id="aErr" hidden></div>
+    </form>
+  </div>
+
+  <div id="vDone" hidden>
+    <div class="tick">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M20 6 9 17l-5-5"/>
+      </svg>
+    </div>
+
+    <h1 id="dTitle"></h1>
+    <p id="dText"></p>
+  </div>
+
+  <a class="alt" href="/">Back to VersusTrade</a>
+
+</main>
+
+<script src="/newsletter.js"></script>
+
+<script>
+(function () {
+  var $ = function (id) {
+    return document.getElementById(id);
+  };
+
+  var q = new URLSearchParams(location.search);
+  var N = window.VT_NEWSLETTER;
+
+  function show(id) {
+    ['vSubscribe', 'vAction', 'vDone'].forEach(function (x) {
+      $(x).hidden = x !== id;
+    });
+  }
+
+  function done(title, text) {
+    $('dTitle').textContent = title;
+    $('dText').textContent = text;
+    show('vDone');
+  }
+
+  var RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function err(el, msg) {
+    el.textContent = msg;
+    el.hidden = !msg;
+  }
+
+  // Confirmation and unsubscribe links.
+  function action(kind, token) {
+    var conf = kind === 'confirm';
+
+    $('aTitle').textContent = conf
+      ? 'Confirm your subscription'
+      : 'Unsubscribe from the newsletter?';
+
+    $('aText').textContent = conf
+      ? 'Tap the button to finish joining.'
+      : 'You will stop receiving our newsletter emails.';
+
+    $('aBtn').textContent = conf
+      ? 'Confirm subscription'
+      : 'Unsubscribe';
+
+    show('vAction');
+
+    $('aForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      var b = $('aBtn');
+      b.disabled = true;
+      err($('aErr'), '');
+
+      (conf ? N.confirm(token) : N.unsubscribe(token)).then(function (r) {
+        var s = r && r.status;
+
+        if (s === 'confirmed') {
+          done(
+            'Your subscription has been confirmed. Welcome to VersusTrade!',
+            ''
+          );
+        } else if (s === 'already' && conf) {
+          done(
+            'Already confirmed',
+            'This email is already subscribed. Nothing more to do.'
+          );
+        } else if (s === 'unsubscribed') {
+          done(
+            'You’ve been unsubscribed',
+            'You will no longer receive our newsletter.'
+          );
+        } else if (s === 'already') {
+          done(
+            'Already unsubscribed',
+            'This email is not receiving our newsletter.'
+          );
+        } else if (s === 'expired') {
+          done(
+            'This link has expired',
+            'Please subscribe again to get a fresh confirmation email.'
+          );
+        } else {
+          done(
+            'This link is not valid',
+            conf
+              ? 'Please subscribe again to get a fresh confirmation email.'
+              : 'It may already have been used.'
+          );
+        }
+      }, function () {
+        b.disabled = false;
+        err($('aErr'), 'We could not reach the server. Please try again.');
+      });
+    });
+  }
+
+  if (q.get('confirm')) {
+    action('confirm', q.get('confirm'));
+  } else if (q.get('unsubscribe')) {
+    action('unsubscribe', q.get('unsubscribe'));
+  } else {
+    $('sForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      var v = $('sEmail').value.trim();
+      var b = $('sBtn');
+
+      if (!v) return err($('sErr'), 'Email is required.');
+      if (!RE.test(v)) return err($('sErr'), 'Enter a valid email address.');
+
+      err($('sErr'), '');
+      b.disabled = true;
+      b.textContent = 'Joining…';
+
+      N.subscribe(v, {
+        website: $('sForm').elements['website'].value,
+        source: 'newsletter-page'
+      }).then(function () {
+        done(
+          'Check your inbox',
+          'We sent a confirmation link to ' + v + '. Tap it to finish joining.'
+        );
+      }, function (x) {
+        b.disabled = false;
+        b.textContent = 'Subscribe';
+
+        err(
+          $('sErr'),
+          x && x.status === 429
+            ? 'Too many tries. Please wait a while and try again.'
+            : 'We couldn’t add you just now. Please try again.'
+        );
+      });
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
