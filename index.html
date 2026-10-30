@@ -3188,19 +3188,35 @@ html.va-lock{overflow:hidden}
       $('#vaSkip').addEventListener('click', function () { close(); });
       wireEyes(); setTimeout(function () { $('#vaNew').focus(); }, 60);
     } else if (name === 'profile') {
-      body.innerHTML = head('Complete your details', 'Just a few quick details to finish setting up your account.', true) +
-        '<form class="va-form" id="vaPf" novalidate><div class="va-err" hidden></div>' + fieldName() + fieldPhone() + fieldDob() +
-        '<button type="submit" class="va-btn" id="vaPfGo">Continue</button></form><button type="button" class="va-btn alt" id="vaPfSkip">Skip for now</button>';
-      $('#vaName').value = (session && session.name) || '';
-      $('#vaPf').addEventListener('submit', function (e) { e.preventDefault(); saveProfile({ name: $('#vaName').value, phone: $('#vaPhone').value, dob: $('#vaDob').value }); });
-      $('#vaPfSkip').addEventListener('click', function () { try { localStorage.setItem('vt_profile_skip:' + (session && session.id), String(Date.now())); } catch (e) {} close(); });
-      setTimeout(function () { ($('#vaName').value ? $('#vaPhone') : $('#vaName')).focus(); }, 60);
-    } else {
-      body.innerHTML = head('You\u2019re signed in', 'Signed in as <b>' + esc(session ? session.email : '') + '</b>. Your chats with VersusTrade are saved to this account.', true) +
-        '<button type="button" class="va-btn alt" id="vaChange">Change password</button><button type="button" class="va-btn alt" id="vaOut">Log out</button>';
-      $('#vaChange').addEventListener('click', function () { st.afterNewPass = false; view('newpass'); });
-      $('#vaOut').addEventListener('click', logout);
-    }
+  body.innerHTML = head('Complete your details', 'Just a few quick details to finish setting up your account.', true) +
+    '<form class="va-form" id="vaPf" novalidate><div class="va-err" hidden></div>' + fieldName() + fieldPhone() + fieldDob() +
+    '<button type="submit" class="va-btn" id="vaPfGo">Continue</button></form>';
+
+  $('#vaName').value = (session && session.name) || '';
+
+  $('#vaPf').addEventListener('submit', function (e) {
+    e.preventDefault();
+    saveProfile({
+      name: $('#vaName').value,
+      phone: $('#vaPhone').value,
+      dob: $('#vaDob').value
+    });
+  });
+
+  setTimeout(function () {
+    ($('#vaName').value ? $('#vaPhone') : $('#vaName')).focus();
+  }, 60);
+} else {
+  body.innerHTML = head('You\u2019re signed in', 'Signed in as <b>' + esc(session ? session.email : '') + '</b>. Your chats with VersusTrade are saved to this account.', true) +
+    '<button type="button" class="va-btn alt" id="vaChange">Change password</button><button type="button" class="va-btn alt" id="vaOut">Log out</button>';
+
+  $('#vaChange').addEventListener('click', function () {
+    st.afterNewPass = false;
+    view('newpass');
+  });
+
+  $('#vaOut').addEventListener('click', logout);
+}
   }
   function cooldown(sec) {
     var b = $('#vaResend'); if (!b) return; var left = sec;
