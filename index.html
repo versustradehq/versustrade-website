@@ -3033,6 +3033,8 @@ html.va-lock{overflow:hidden}
     email: (user && user.email) || (previous && previous.email) || '',
     id: (user && user.id) || (previous && previous.id) || '',
     name: user ? nameOf(user) : ((previous && previous.name) || ''),
+    phone: (user && user.user_metadata && user.user_metadata.phone) || (previous && previous.phone) || '',
+    dob: (user && user.user_metadata && user.user_metadata.dob) || (previous && previous.dob) || '',
     profileDone: user ? hasProfile(user) : !!(previous && previous.profileDone),
     created: (user && user.created_at && Date.parse(user.created_at)) || (previous && previous.created) || 0
   };
@@ -3206,6 +3208,8 @@ function nameOf(u) {
     '<button type="submit" class="va-btn" id="vaPfGo">Continue</button></form>';
 
   $('#vaName').value = (session && session.name) || '';
+  $('#vaPhone').value = (session && session.phone) || '';
+  $('#vaDob').value = (session && session.dob) || '';
 
   $('#vaPf').addEventListener('submit', function (e) {
     e.preventDefault();
@@ -3360,6 +3364,8 @@ function askProfile() {
       }
 
       session.name = nm;
+      session.phone = ph;
+      session.dob = x.dob;
       session.profileDone = true;
       persist();
 
@@ -3395,11 +3401,27 @@ function askProfile() {
   }
   function open() {
     lastFocus = document.activeElement;
-    if (session) view('account'); else view('main');
-    root.setAttribute('data-open', ''); document.documentElement.classList.add('va-lock');
+    if (needsProfile()) view('profile');
+    else if (session) view('account');
+    else view('main');
+    root.setAttribute('data-open', '');
+    document.documentElement.classList.add('va-lock');
   }
   function close() {
-    root.removeAttribute('data-open'); document.documentElement.classList.remove('va-lock'); clearInterval(timer);
+    if (needsProfile()) {
+      if (!root.hasAttribute('data-open') || !body.querySelector('#vaPf')) {
+        lastFocus = document.activeElement;
+        view('profile');
+        root.setAttribute('data-open', '');
+        document.documentElement.classList.add('va-lock');
+      } else {
+        setErr('Please complete your details to continue.');
+      }
+      return;
+    }
+    root.removeAttribute('data-open');
+    document.documentElement.classList.remove('va-lock');
+    clearInterval(timer);
     if (lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch (e) {} }
   }
   root.addEventListener('mousedown', function (e) { if (e.target === root) close(); });
