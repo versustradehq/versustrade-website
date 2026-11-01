@@ -545,7 +545,7 @@ position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom,0px));tran
 #v-trade .rc-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;transform:scaleX(-1);filter:url(#rcDistort) grayscale(1) blur(var(--blur));opacity:.45;mix-blend-mode:multiply}
 #v-trade .rc-noise{position:absolute;inset:0;z-index:-1;opacity:.14;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 #v-trade .rc.sweeping .rc-metal{transition:none}
-#v-trade .rc-glare{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at var(--mx,25%) var(--my,15%),rgba(255,255,255,calc(.85*var(--glare))),transparent 45%)}
+#v-trade .rc-glare{position:absolute;inset:0;pointer-events:none;opacity:1;background:radial-gradient(ellipse at var(--mx,25%) var(--my,15%),rgba(255,255,255,calc(.95*var(--glare))) 0%,rgba(255,255,255,calc(.35*var(--glare))) 24%,transparent 58%),linear-gradient(125deg,transparent 28%,rgba(255,255,255,.22) 43%,rgba(255,255,255,.04) 54%,transparent 68%);mix-blend-mode:screen}
 #v-trade .rc-body{position:relative;z-index:1;min-height:240px;padding:28px 32px;display:flex;flex-direction:column;justify-content:space-between;gap:24px}
 #v-trade .rc-top{display:flex;justify-content:space-between;align-items:center}
 #v-trade .rc-brand{font-weight:800;letter-spacing:-.01em;font-size:18px;color:var(--rc-text)}
