@@ -1,0 +1,12 @@
+
+/*
+  Cache-Control: no-cache, must-revalidate
+
+/chat.js
+  Cache-Control: no-cache, must-revalidate
+
+/coins.js
+  Cache-Control: no-cache, must-revalidate
+
+/newsletter.js
+  Cache-Control: no-cache, must-revalidate
