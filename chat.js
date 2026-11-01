@@ -96,7 +96,7 @@
       '<div class="vc-mbody" id="vcTix"></div></div>' +
     '<div class="vc-v vc-chat"><div class="vc-bar"><button type="button" class="vc-back" data-act="messages" aria-label="Back to messages">' + svg(P.back) + '</button><span class="vc-pfp" id="vcPfp"></span>' +
       '<div class="vc-who2"><b id="vcName">Betty</b><span>' + svg(P.clock) + '<span id="vcSub"></span></span></div>' +
-      '<button type="button" class="vc-x" data-act="close" aria-label="Close chat">' + svg(P.x) + '</button></div>' +
+      '<button type="button" class="vc-x" data-act="home" aria-label="Back to chat home">' + svg(P.x) + '</button></div>' +
       '<div class="vc-log" id="vcLog" role="log" aria-live="polite"><p class="vc-intro">Betty replies automatically. A team member can join any time.</p></div>' +
       '<div class="vc-chips" id="vcChips"></div>' +
       '<div class="vc-pop" id="vcPop" hidden></div>' +
@@ -130,6 +130,7 @@
   function money(cur, n) { return (cur === 'NGN' ? '\u20A6' : '$') + Number(n).toLocaleString('en-US', { maximumFractionDigits: 2 }); }
   function qtyStr(n) { return Number(n).toFixed(8).replace(/\.?0+$/, ''); }
   function waLink(text) { return 'https://api.whatsapp.com/send?phone=' + CHAT.whatsapp + '&text=' + encodeURIComponent(text || 'Hi VersusTrade'); }
+  function telegramLink(text) { return 'https://t.me/+2349015508108?text=' + encodeURIComponent(text || 'Hi VersusTrade'); }
   function tradeText(t) { if (t.custom) return t.custom; return 'Hi VersusTrade, I want to ' + t.side + ' ' + qtyStr(t.qty) + ' ' + t.asset + (t.network ? ' on ' + t.network : '') + ' (about ' + money(t.currency, t.amount) + ').'; }
   var lastTrade = null;
   function refreshWa() { wa.href = waLink(lastTrade ? tradeText(lastTrade) : 'Hi VersusTrade'); }
@@ -201,9 +202,10 @@
       (m.files || []).forEach(function (f) { var a = el('a', 'vc-file', '\uD83D\uDCCE ' + f.name); a.href = f.url; a.target = '_blank'; a.rel = 'noopener'; b.appendChild(a); });
     }
     row.appendChild(b);
-    if (m.actions && m.actions.length) {
+    if (m.actions && m.actions.some(function (a) { return !!a; })) {
       var acts = el('div', 'vc-acts');
       m.actions.forEach(function (a) {
+        if (!a) return;
         var n;
         if (a.href) { n = el('a', 'vc-act' + (a.primary ? ' primary' : ''), a.label); n.href = a.href; if (a.external) { n.target = '_blank'; n.rel = 'noopener'; } }
         else { n = el('button', 'vc-act' + (a.primary ? ' primary' : ''), a.label); n.type = 'button'; n.addEventListener('click', function () { runCmd(a.cmd, a.arg, a.label); }); }
@@ -230,9 +232,9 @@
     chips.innerHTML = '';
     if (S.mode !== 'ai') return;
     if (S.msgs.some(function (m) { return m.role === 'user' || m.role === 'trade' || m.role === 'summary'; })) return; // customer has started talking
-    ['What do you do?', 'Buy or sell crypto', 'Sell gift cards', 'Talk to a representative'].forEach(function (q) {
+    ['What do you do?', 'Buy or sell crypto', 'Sell gift cards'].forEach(function (q) {
       var c = el('button', 'vc-chip', q); c.type = 'button';
-      c.addEventListener('click', function () { if (q === 'Talk to a representative') runCmd('handoff'); else userSay(q); });
+      c.addEventListener('click', function () { userSay(q); });
       chips.appendChild(c);
     });
   }
@@ -351,8 +353,9 @@
     agentReply: function () { return pause(1600); }
   };
   function loginAct() { return { label: 'Log in to continue', cmd: 'login', primary: true }; }
-  function repAct() { return { label: 'Talk to a representative', cmd: 'handoff' }; }
+  function repAct() { return null; } // Representatives are notified through Chatwoot when the customer sends their first message.
   function waAct(text) { return { label: 'Continue on WhatsApp', href: waLink(text), external: true }; }
+  function telegramAct(text) { return { label: 'Continue on Telegram', href: telegramLink(text), external: true }; }
   function mockAI(text) {
     var q = text.toLowerCase();
     if (/^(hi|hello|hey|good (morning|afternoon|evening))\b/.test(q)) return { text: 'Hello! I\u2019m Betty from VersusTrade customer support. I can explain what we do, how trading works and where to find rates, or connect you with a representative. What would you like to know?' };
@@ -739,12 +742,12 @@
     open('chat');
     add({ role: 'trade', trade: t });
     if (S.mode !== 'ai') { toTeam('Got your ' + t.side + ' request. Let me check it and get back to you.', 'Trade request: ' + tradeLine(t)); return; }
-    if (CHAT.api) { aiRespond(CHAT.isLoggedIn() ? [repAct(), waAct(tradeText(t))] : [loginAct(), repAct(), waAct(tradeText(t))]); return; }
+    if (CHAT.api) { aiRespond(CHAT.isLoggedIn() ? [waAct(tradeText(t)), telegramAct(tradeText(t))] : [loginAct(), waAct(tradeText(t)), telegramAct(tradeText(t))]); return; }
     showTyping();
     pause(1100).then(function () {
       var word = t.side === 'buy' ? 'buy' : 'sell';
-      if (CHAT.isLoggedIn()) botSay({ text: 'Thanks, I\u2019ve received your request to ' + word + ' ' + qtyStr(t.qty) + ' ' + t.asset + (t.network ? ' on ' + t.network : '') + '. I\u2019ll prepare the order and a representative will confirm the payment details with you.', actions: [repAct(), waAct(tradeText(t))] });
-      else botSay({ text: 'I\u2019ve received your request to ' + word + ' ' + qtyStr(t.qty) + ' ' + t.asset + (t.network ? ' on ' + t.network : '') + ' (about ' + money(t.currency, t.amount) + '). To continue this transaction with me, please log in first. You can also finish it with a representative or on WhatsApp.', actions: [loginAct(), repAct(), waAct(tradeText(t))] });
+      if (CHAT.isLoggedIn()) botSay({ text: 'Thanks, I\u2019ve received your request to ' + word + ' ' + qtyStr(t.qty) + ' ' + t.asset + (t.network ? ' on ' + t.network : '') + '. Our team will confirm the payment details with you.', actions: [waAct(tradeText(t)), telegramAct(tradeText(t))] });
+      else botSay({ text: 'I\u2019ve received your request to ' + word + ' ' + qtyStr(t.qty) + ' ' + t.asset + (t.network ? ' on ' + t.network : '') + ' (about ' + money(t.currency, t.amount) + '). To continue this transaction with me, please log in first. You can also continue through either channel below.', actions: [loginAct(), waAct(tradeText(t)), telegramAct(tradeText(t))] });
     });
   }
 
@@ -864,12 +867,12 @@
     if (!qd || !(qd.qty > 0)) {
       var txt = 'Hi VersusTrade, I want to ' + d.side + ' ' + d.asset + ' on ' + d.network + ' (' + d.value + ' ' + (cryp ? d.asset : ccy) + ').';
       lastTrade = { custom: txt, card: null }; refreshWa();
-      return ask('I couldn\u2019t load live prices just now, so I can\u2019t show an estimate. I\u2019ve noted that you want to ' + d.side + ' ' + d.asset + ' on ' + d.network + '. A representative will confirm the exact amount with you.', acts.concat([repAct(), waAct(txt)]));
+      return ask('I couldn\u2019t load live prices just now, so I can\u2019t show an estimate. I\u2019ve noted your request, and our team will confirm the exact amount with you.', acts.concat([waAct(txt), telegramAct(txt)]));
     }
     var trade = { side: d.side, asset: d.asset, name: v.name(d.asset), currency: ccy, network: d.network, amount: qd.fiat, qty: qd.qty };
     lastTrade = trade; refreshWa(); add({ role: 'trade', trade: trade });
     var more = [ch('Change amount', 'c:edit=value')]; if (v.nets(d.asset).length > 1) more.push(ch('Change network', 'c:edit=network'));
-    ask('Here\u2019s your request. It is an estimate, and a representative confirms the final amount before you pay. Make sure your wallet or exchange supports ' + d.network + '.', acts.concat([repAct(), waAct(tradeText(trade))]).concat(more));
+    ask('Here\u2019s your request. It is an estimate, and our team will confirm the final amount before you pay. Make sure your wallet or exchange supports ' + d.network + '.', acts.concat([waAct(tradeText(trade)), telegramAct(tradeText(trade))]).concat(more));
   }
 
   function ccyOf(q) { return /\$|\busd\b|dollar|bucks/.test(q) ? 'USD' : /\u00A3|\bgbp\b|pound/.test(q) ? 'GBP' : /\u20AC|\beur\b|euro/.test(q) ? 'EUR' : /\bcad\b|canadian/.test(q) ? 'CAD' : /\baud\b|australian/.test(q) ? 'AUD' : null; }
@@ -906,7 +909,7 @@
     var text = 'I want to sell my ' + d.card + ' (' + d.gkind.toLowerCase() + ', ' + val + ', bought in ' + d.country + ').';
     S.flow = null; lastTrade = { custom: 'Hi VersusTrade, ' + text, card: d.card }; refreshWa();
     add({ role: 'summary', summary: { tag: 'sell', title: d.card, rows: [['Type', d.gkind], ['Value', val], ['Country', d.country]], text: text } });
-    ask('Thanks, I\u2019ve noted that. A representative confirms the card details and the rate with you, then arranges your payment. Please have the card code or receipt ready.', (CHAT.isLoggedIn() ? [] : [loginAct()]).concat([repAct(), waAct(lastTrade.custom)]));
+    ask('Thanks, I\u2019ve noted all your gift card details. Our team will confirm the card and rate with you, then arrange your payment. Please have the card code or receipt ready.', (CHAT.isLoggedIn() ? [] : [loginAct()]).concat([waAct(lastTrade.custom), telegramAct(lastTrade.custom)]));
   }
 
   function flowNext() { var f = S.flow; if (!f) return; save(); if (f.type === 'crypto') nextCrypto(f); else nextGift(f); }
@@ -1037,7 +1040,7 @@
 
   panel.addEventListener('click', function (e) {
     var a = e.target.closest('[data-act]'), g = e.target.closest('[data-go]');
-    if (a) { var k = a.dataset.act; if (k === 'close') close(); else if (k === 'new') { if (S.closedAt) resetChat(true); go('chat'); } else go(k === 'chat' ? 'chat' : 'messages'); }
+    if (a) { var k = a.dataset.act; if (k === 'close') close(); else if (k === 'home') go('home'); else if (k === 'new') { if (S.closedAt) resetChat(true); go('chat'); } else go(k === 'chat' ? 'chat' : 'messages'); }
     else if (g) go(g.dataset.go);
   });
   document.addEventListener('keydown', function (e) { if (S.open && e.key === 'Escape') { if (!pop.hidden) { showPop(null); return; } close(); if (fab) fab.focus(); } });
