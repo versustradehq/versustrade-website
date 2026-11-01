@@ -362,16 +362,16 @@
   function mockAI(text) {
     var q = text.toLowerCase();
     if (/^(hi|hello|hey|good (morning|afternoon|evening))\b/.test(q)) return { text: 'Hello! I\u2019m Betty from VersusTrade customer support. I can explain what we do, how trading works and where to find rates, or connect you with a representative. What would you like to know?' };
-    if (/(human|agent|representative|person|someone|support team)/.test(q)) return { text: 'Of course. I\u2019ll connect you with a representative.', actions: [repAct()] };
+    if (/(human|agent|representative|person|someone|support team)/.test(q)) return { text: 'One moment please...', handoff: true };
     if (/(what do you do|what is versus|who are you|about|services)/.test(q)) return { text: 'VersusTrade helps you buy and sell crypto and sell gift cards. You can check live market prices and start a trade from the homepage, and real people are available in chat or on WhatsApp whenever you need them.' };
     if (/(gift ?card)/.test(q)) return { text: 'You can sell gift cards with us. Choose the card you want to sell and I’ll collect the details for you.', actions: [{ label: 'Choose a gift card', cmd: 'giftcards', primary: true }] };
     if (/(rate|price|how much|worth|naira|dollar)/.test(q)) return { text: 'Our rates are set by VersusTrade and can change, so always check the live rate and the trade box before you trade. I can take you there.', actions: [{ label: 'See live rates', cmd: 'scroll', arg: 'rates' }, { label: 'Open trade box', cmd: 'scroll', arg: 'markets' }] };
-    if (/(fee|charge|commission|limit|minimum|maximum|how long|time)/.test(q)) return { text: 'I don\u2019t want to guess on fees, limits or timing. A representative can give you exact figures for your trade.', actions: [repAct()] };
+    if (/(fee|charge|commission|limit|minimum|maximum|how long|time)/.test(q)) return { text: 'One moment please...', handoff: true };
     if (/(log ?in|sign ?up|account|register|password|verify|kyc)/.test(q)) return { text: CHAT.isLoggedIn() ? 'You\u2019re logged in, so you can continue a transaction here whenever you\u2019re ready.' : 'You can chat with me and the team without an account, but to continue a transaction with the assistant you\u2019ll need to log in.', actions: CHAT.isLoggedIn() ? [] : [loginAct()] };
     if (/(buy|sell|trade|exchange|swap|btc|bitcoin|eth|usdt|coin|crypto|transaction|pay)/.test(q)) return { text: 'Choose Buy or Sell, pick a coin, enter an amount and press Continue. The details land in this chat and I\u2019ll take you through the next steps. To complete a transaction here you\u2019ll need to log in.', actions: [{ label: 'Open trade box', cmd: 'scroll', arg: 'markets', primary: true }].concat(CHAT.isLoggedIn() ? [] : [loginAct()]) };
     if (/(safe|trust|scam|legit|secure)/.test(q)) return { text: 'We keep our rates clear, our process simple and our team within reach. For your safety, never share your password or seed phrase with anyone, including us.' };
     if (/(thank|thanks|bye|ok(ay)?)\b/.test(q)) return { text: 'You\u2019re welcome! I\u2019m here if you need anything else.' };
-    return { text: 'I\u2019m not sure I can answer that accurately. Would you like a representative to help?', actions: [repAct()] };
+    return { text: 'One moment please...', handoff: true };
   }
 
   /* ---------- real AI (streams from CHAT.api) ---------- */
@@ -421,7 +421,7 @@
     function done() {
       clearTimeout(idle); S.busy = false; if (row) row.remove(); hideTyping();
       var r = parseTags(full);
-      if (/\[\[HANDOFF\]\]/.test(full)) { add({ role: 'bot', text: 'One moment...' }); handoff(); return; } // Betty is not sure: the team takes over
+      if (/\[\[HANDOFF\]\]/.test(full)) { add({ role: 'bot', text: 'One moment please...' }); handoff(); return; } // Betty is not sure: the team takes over
       if (!r.text) { fail(new Error('the AI sent an empty reply')); return; }
       add({ role: 'bot', text: r.text, actions: r.actions.concat(extra || []) });
     }
@@ -432,7 +432,7 @@
         var why = err && err.name === 'AbortError' ? 'no reply within 30 seconds' : (err instanceof TypeError ? 'could not reach the Worker (site address not allowed, or wrong address)' : raw);
         add({ role: 'system', text: 'Debug: ' + why + (why === raw ? '' : ' [' + raw + ']') });
       }
-      if (CW) { add({ role: 'bot', text: 'One moment...' }); handoff(); return; }
+      if (CW) { add({ role: 'bot', text: 'One moment please...' }); handoff(); return; }
       add({ role: 'bot', text: 'I\u2019m having trouble answering right now. Would you like a representative to help?', actions: [repAct(), waAct(lastTrade ? tradeText(lastTrade) : '')].concat(extra || []) });
     }
     bump();
@@ -461,7 +461,7 @@
   }
 
   /* ---------- conversation flow ---------- */
-  function botSay(r) { hideTyping(); add({ role: 'bot', text: r.text, actions: r.actions }); }
+  function botSay(r) { hideTyping(); if (r && r.handoff) { add({ role: 'bot', text: 'One moment please...' }); handoff(); return; } add({ role: 'bot', text: r.text, actions: r.actions }); }
   // ---------- real representatives (Chatwoot, API inbox) ----------
   var CW = CHAT.live, cw = { src: null, conv: null, seen: 0, timer: 0, wait: 0 };
   try { var cs = JSON.parse(localStorage.getItem('vt_cw_v1') || 'null'); if (CW && cs && cs.inbox === CW.inbox) { cw.src = cs.src; cw.conv = cs.conv; cw.seen = cs.seen || 0; cw.linked = cs.linked || null; cw.linkedName = cs.linkedName || null; cw.last = cs.last || 0; cw.prev = cs.prev || null; } } catch (e) {}
@@ -691,7 +691,7 @@
     }).then(function (url) {
       m.url = url; m.up = 0; save(); repaintMedia(m);
       cwPost(m.kind === 'image' ? '\uD83D\uDCF7 Picture from the customer\n![picture](' + url + ')\n' + url : '\uD83D\uDCCE File from the customer: ' + m.name + '\n' + url);
-      if (S.mode === 'ai') { showTyping(); pause(700).then(function () { botSay({ text: 'One moment...' }); handoff(); }); }
+      if (S.mode === 'ai') { showTyping(); pause(700).then(function () { botSay({ text: 'One moment please...' }); handoff(); }); }
     }).catch(function (err) {
       if (!S.msgs.some(function (x) { return x === m; })) { add({ role: 'system', text: (err && err.message) || 'That picture could not be prepared.' }); return; }
       m.up = 0; m.err = 1; save(); repaintMedia(m);
@@ -1041,9 +1041,10 @@
   }
   function toggle() { S.open ? close() : open('home'); }
 
+  function startOrResumeChat() { if (S.closedAt || isEnded()) resetChat(true); go('chat'); }
   panel.addEventListener('click', function (e) {
     var a = e.target.closest('[data-act]'), g = e.target.closest('[data-go]');
-    if (a) { var k = a.dataset.act; if (k === 'close') close(); else if (k === 'chat-home') { if (/^\/dashboard(?:\/|$)/.test(location.pathname)) go('home'); else close(); } else if (k === 'new') { if (S.closedAt) resetChat(true); go('chat'); } else go(k === 'chat' ? 'chat' : 'messages'); }
+    if (a) { var k = a.dataset.act; if (k === 'close') close(); else if (k === 'chat-home') { if (/^\/dashboard(?:\/|$)/.test(location.pathname)) go('home'); else close(); } else if (k === 'new' || k === 'chat') startOrResumeChat(); else go('messages'); }
     else if (g) go(g.dataset.go);
   });
   document.addEventListener('keydown', function (e) { if (S.open && e.key === 'Escape') { if (!pop.hidden) { showPop(null); return; } close(); if (fab) fab.focus(); } });
