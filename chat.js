@@ -914,7 +914,7 @@
     var text = 'I want to sell my ' + d.card + ' (' + d.gkind.toLowerCase() + ', ' + val + ', bought in ' + d.country + ').';
     S.flow = null; lastTrade = { custom: 'Hi VersusTrade, ' + text, card: d.card }; refreshWa();
     add({ role: 'summary', summary: { tag: 'sell', title: d.card, rows: [['Type', d.gkind], ['Value', val], ['Country', d.country]], text: text } });
-    ask('Thanks, I\u2019ve noted all your gift card details. Our team will confirm the card and rate with you, then arrange your payment. Please have the card code or receipt ready.', (CHAT.isLoggedIn() ? [] : [loginAct()]).concat([waAct(lastTrade.custom), telegramAct(lastTrade.custom)]));
+    ask('Thanks, I\u2019ve noted all your gift card details. Our team will confirm the card and rate with you, and process everything', (CHAT.isLoggedIn() ? [] : [loginAct()]).concat([waAct(lastTrade.custom), telegramAct(lastTrade.custom)]));
   }
 
   function flowNext() { var f = S.flow; if (!f) return; save(); if (f.type === 'crypto') nextCrypto(f); else nextGift(f); }
