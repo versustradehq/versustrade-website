@@ -1147,16 +1147,16 @@ window.VTCircularGallery=function(container,opts){
             </div>
             <div class="tm-top">
               <div class="tm-ccywrap">
-                <button type="button" class="tm-pillbtn" id="tmCcyBtn" aria-haspopup="listbox" aria-expanded="false"><span id="tmCcyLabel">NGN</span> <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M5 8l5 5 5-5"/></svg></button>
+                <button type="button" class="tm-pillbtn" id="tmCcyBtn" aria-haspopup="listbox" aria-expanded="false"><span id="tmCcyLabel">USD</span> <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M5 8l5 5 5-5"/></svg></button>
                 <div class="tm-menu" id="tmCcyMenu" role="listbox" hidden>
-                  <button type="button" role="option" data-c="NGN" aria-selected="true">NGN <small>Nigerian naira</small></button>
-                  <button type="button" role="option" data-c="USD" aria-selected="false">USD <small>US dollar</small></button>
+                  <button type="button" role="option" data-c="NGN" aria-selected="false">NGN <small>Nigerian naira</small></button>
+                  <button type="button" role="option" data-c="USD" aria-selected="true">USD <small>US dollar</small></button>
                 </div>
               </div>
               <button type="button" class="tm-pillbtn tm-assetbtn" id="tmAssetBtn" aria-haspopup="dialog" aria-expanded="false">Buy BTC <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M5 8l5 5 5-5"/></svg></button>
             </div>
             <div class="tm-big">
-              <span class="tm-sym" id="tmSym">&#8358;</span>
+              <span class="tm-sym" id="tmSym">$</span>
               <input id="tmAmt" type="text" inputmode="decimal" placeholder="0" aria-label="Amount" autocomplete="off" maxlength="16">
               <span class="tm-measure" id="tmMeasure" aria-hidden="true"></span>
               <span class="tm-unit" id="tmUnit" hidden>BTC</span>
@@ -1443,7 +1443,7 @@ draw();
   var API = 'https://data-api.binance.vision';
   var WSU = 'wss://data-stream.binance.vision/stream?streams=!miniTicker@arr';
   var T = {}, S = {}, P = {};
-  var st = { mode: 'buy', base: 'BTC', net: 'Bitcoin', ccy: 'NGN', prim: 'fiat', aq: '', filter: 'trending', query: '' };
+  var st = { mode: 'buy', base: 'BTC', net: 'Bitcoin', ccy: 'USD', prim: 'fiat', aq: '', filter: 'trending', query: '' };
   var $ = function (id) { return document.getElementById(id); };
 
   // ---- AnimatedList: vanilla JS port of the AnimatedList component (animation "pop") ----
