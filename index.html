@@ -3209,7 +3209,7 @@ function nameOf(u) {
           if (i === digits.length && digits.length < 6) { slot.innerHTML = '<span class="va-code-caret"></span>'; slot.classList.toggle('filled', false); }
         });
       }
-      code.addEventListener('input', function () { code.value = code.value.replace(/\\D/g, '').slice(0, 6); vb.disabled = code.value.length !== 6; paintCodeSlots(); setErr(''); });
+      code.addEventListener('input', function () { code.value = code.value.replace(/\D/g, '').slice(0, 6); vb.disabled = code.value.length !== 6; paintCodeSlots(); setErr(''); });
       $('#vaCodeSlots').addEventListener('click', function () { code.focus(); });
       paintCodeSlots();
       $('#vaF2').addEventListener('submit', function (e) { e.preventDefault(); if (code.value.length === 6) verify(code.value); });
