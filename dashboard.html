@@ -625,7 +625,7 @@ position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom,0px));tran
 .av-identity{min-width:0;flex:1}.av-identity b{display:block;font-size:18px;font-weight:800;overflow-wrap:anywhere}.av-identity small{display:block;font-size:13px;color:rgba(255,255,255,.72);overflow-wrap:anywhere}
 button.av-big{border:0;cursor:pointer;font-family:inherit;transition:transform .15s}button.av-big:active{transform:scale(.95)}
 button.av-big:focus-visible{outline:2px solid var(--red);outline-offset:3px}
-.avm-pop{color:var(--text);display:none;position:absolute;left:0;top:50%;transform:translateY(-50%);width:min(280px,calc(100vw - 48px));background:var(--bg);border:1px solid var(--line);border-radius:20px;box-shadow:0 24px 48px -20px rgba(0,0,0,.45);overflow:hidden;z-index:40}
+.avm-pop{box-sizing:border-box;color:var(--text);display:none;position:absolute;left:0;top:calc(100% + 12px);transform:none;width:min(320px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow-y:auto;overscroll-behavior:contain;background:var(--bg);border:1px solid var(--line);border-radius:20px;box-shadow:0 24px 48px -20px rgba(0,0,0,.45);z-index:40}
 .avm-pop.on{display:block}
 .avm-pop .mi{padding:14px 18px;font-size:15px}
 .av-hero b{display:block;font-size:20px;font-weight:900;letter-spacing:-.02em}.av-hero small{display:block;color:var(--muted)}
