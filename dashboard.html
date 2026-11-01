@@ -304,7 +304,7 @@ dt{color:var(--muted)}dd{margin:0;font-weight:600;text-align:right;overflow-wrap
 .betty{position:absolute;left:50%;transform:translateX(-50%);display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border-radius:999px;font-weight:700;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16)}
 .betty:hover{background:rgba(255,255,255,.14)}.betty svg{width:17px;height:17px;color:#ffb3bb}
 .betty span{background:linear-gradient(90deg,#ffd0d5,#ff8a95);-webkit-background-clip:text;background-clip:text;color:transparent}
-.dp-top .bellw{margin-right:auto;margin-left:0}
+.dp-top .bellw{margin-left:auto;margin-right:0}
 .badge{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;padding:0 4px;border-radius:9px;background:var(--red);font-size:11px;display:grid;place-items:center}
 .bellw{position:relative}
 .pop{display:none;position:absolute;right:0;top:50px;width:min(330px,calc(100vw - 32px));background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:20px;box-shadow:0 24px 48px -20px rgba(0,0,0,.4);padding:8px;z-index:40}
@@ -625,7 +625,7 @@ position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom,0px));tran
 .av-identity{min-width:0;flex:1}.av-identity b{display:block;font-size:18px;font-weight:800;overflow-wrap:anywhere}.av-identity small{display:block;font-size:13px;color:rgba(255,255,255,.72);overflow-wrap:anywhere}
 button.av-big{border:0;cursor:default;font-family:inherit;transition:transform .15s}button.av-big:active{transform:scale(.95)}
 button.av-big:focus-visible{outline:2px solid var(--red);outline-offset:3px}
-.avm-pop{color:var(--text);display:none;position:absolute;left:0;top:calc(100% + 10px);width:min(260px,calc(100vw - 48px));background:var(--bg);border:1px solid var(--line);border-radius:20px;box-shadow:0 24px 48px -20px rgba(0,0,0,.45);overflow:hidden;z-index:40}
+.avm-pop{color:var(--text);display:none;position:absolute;left:0;top:50%;transform:translateY(-50%);width:min(280px,calc(100vw - 48px));background:var(--bg);border:1px solid var(--line);border-radius:20px;box-shadow:0 24px 48px -20px rgba(0,0,0,.45);overflow:hidden;z-index:40}
 .avm-pop.on{display:block}
 .avm-pop .mi{padding:14px 18px;font-size:15px}
 .av-hero b{display:block;font-size:20px;font-weight:900;letter-spacing:-.02em}.av-hero small{display:block;color:var(--muted)}
