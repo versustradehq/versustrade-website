@@ -693,8 +693,8 @@ html.va-lock{overflow:hidden}
 @media (max-width:480px){.va{padding:0}.va-card{min-height:100dvh;margin:0;padding:56px 22px 28px;border:0;border-radius:0}}
 @media (prefers-reduced-motion:reduce){.va,.va-card{transition:none}}
 #v-chat{padding:0}
-#v-chat .vc{position:relative;inset:auto;right:auto;bottom:auto;z-index:1;width:100%;max-width:none;margin:0;height:min(720px,calc(100dvh - 128px));opacity:1;visibility:visible;pointer-events:auto;transform:none;transition:none;background:transparent;border:0;border-radius:0;box-shadow:none}
-@media(max-width:560px){#v-chat{padding:0}#v-chat .vc{max-width:none;height:calc(100dvh - 104px - env(safe-area-inset-bottom,0px));border-radius:0;border:0;background:transparent;box-shadow:none}}
+#v-chat .vc{position:relative;inset:auto;right:auto;bottom:auto;z-index:1;width:100%;max-width:none;margin:0;height:min(720px,calc(100dvh - 104px));opacity:1;visibility:visible;pointer-events:auto;transform:none;transition:none;background:transparent;border:0;border-radius:0;box-shadow:none}
+@media(max-width:560px){#v-chat{padding:0}#v-chat .vc{max-width:none;height:calc(100dvh - 88px - env(safe-area-inset-bottom,0px));border-radius:0;border:0;background:transparent;box-shadow:none}}
 .chat-host:empty:after{content:"Loading chat\2026";display:block;padding:48px 16px;text-align:center;color:var(--muted)}
 .dock-badge{position:absolute;top:-5px;right:-5px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:var(--red);color:#fff;font-size:11px;font-weight:800;line-height:19px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.3)}.dock-badge[hidden]{display:none}
 .vt-toast{position:fixed;left:50%;bottom:calc(104px + env(safe-area-inset-bottom,0px));transform:translate(-50%,8px);z-index:300;max-width:calc(100vw - 32px);padding:11px 18px;border-radius:999px;background:#1A1A1A;color:#fff;font-weight:600;font-size:14px;text-align:center;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none}.vt-toast.on{opacity:1;transform:translate(-50%,0)}
@@ -2632,7 +2632,7 @@ draw();
     try{history.replaceState(null,'','#'+n)}catch(e){}
     requestAnimationFrame(function(){window.dispatchEvent(new Event('resize'))});
     if(n==='rates')drawRates();
-    if(n==='chat'){if(chatUp())VTChat.open('chat');else if(window.__vtChatLoaded===undefined)pendingChat=true;else toast('Chat isn\u2019t available right now. Please try again in a moment.')}
+    if(n==='chat'){if(chatUp())VTChat.open('home');else if(window.__vtChatLoaded===undefined)pendingChat=true;else toast('Chat isn\u2019t available right now. Please try again in a moment.')}
     else if(chatUp())VTChat.close();
   }
   var pendingChat=false;
