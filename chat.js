@@ -96,7 +96,7 @@
       '<div class="vc-mbody" id="vcTix"></div></div>' +
     '<div class="vc-v vc-chat"><div class="vc-bar"><button type="button" class="vc-back" data-act="messages" aria-label="Back to messages">' + svg(P.back) + '</button><span class="vc-pfp" id="vcPfp"></span>' +
       '<div class="vc-who2"><b id="vcName">Betty</b><span>' + svg(P.clock) + '<span id="vcSub"></span></span></div>' +
-      '<button type="button" class="vc-x" data-act="home" aria-label="Back to chat home">' + svg(P.x) + '</button></div>' +
+      '<button type="button" class="vc-x" data-act="chat-home" aria-label="Back to chat home">' + svg(P.x) + '</button></div>' +
       '<div class="vc-log" id="vcLog" role="log" aria-live="polite"><p class="vc-intro">Betty replies automatically. A team member can join any time.</p></div>' +
       '<div class="vc-chips" id="vcChips"></div>' +
       '<div class="vc-pop" id="vcPop" hidden></div>' +
@@ -1040,7 +1040,7 @@
 
   panel.addEventListener('click', function (e) {
     var a = e.target.closest('[data-act]'), g = e.target.closest('[data-go]');
-    if (a) { var k = a.dataset.act; if (k === 'close') close(); else if (k === 'home') go('home'); else if (k === 'new') { if (S.closedAt) resetChat(true); go('chat'); } else go(k === 'chat' ? 'chat' : 'messages'); }
+    if (a) { var k = a.dataset.act; if (k === 'close') close(); else if (k === 'chat-home') { if (/^\/dashboard(?:\/|$)/.test(location.pathname)) go('home'); else close(); } else if (k === 'new') { if (S.closedAt) resetChat(true); go('chat'); } else go(k === 'chat' ? 'chat' : 'messages'); }
     else if (g) go(g.dataset.go);
   });
   document.addEventListener('keydown', function (e) { if (S.open && e.key === 'Escape') { if (!pop.hidden) { showPop(null); return; } close(); if (fab) fab.focus(); } });
