@@ -2632,7 +2632,7 @@ draw();
     try{history.replaceState(null,'','#'+n)}catch(e){}
     requestAnimationFrame(function(){window.dispatchEvent(new Event('resize'))});
     if(n==='rates')drawRates();
-    if(n==='chat'){if(chatUp())VTChat.open('home');else if(window.__vtChatLoaded===undefined)pendingChat=true;else toast('Chat isn\u2019t available right now. Please try again in a moment.')}
+    if(n==='chat'){if(chatUp()){var p=document.getElementById('vtChat');VTChat.open(keep&&p?(p.getAttribute('data-view')||'home'):'home')}else if(window.__vtChatLoaded===undefined)pendingChat=true;else toast('Chat isn\u2019t available right now. Please try again in a moment.')}
     else if(chatUp())VTChat.close();
   }
   var pendingChat=false;
