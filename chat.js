@@ -376,7 +376,7 @@
     HANDOFF: function () { return [repAct()]; },
     RATES: function () { return [{ label: 'See live rates', cmd: 'scroll', arg: 'rates' }]; },
     TRADE: function () { return [{ label: 'Open trade box', cmd: 'scroll', arg: 'markets', primary: true }]; },
-    GIFT: function () { return [repAct(), waAct('Hi VersusTrade, I want to sell a gift card')]; }
+    GIFT: function () { return []; }
   };
   function visible(text) { return text.replace(/\[\[[A-Z]+\]\]/g, '').replace(/\[\[?[A-Z]*\]?$/, '').replace(/[ \t]+$/, '').replace(/^\s+/, ''); }
   function parseTags(text) {
@@ -1124,7 +1124,7 @@
     accountSync(who()).then(function (adopted) {
       if (adopted || d.initial || !S.msgs.length) return;
       var tr = lastTrade && !lastTrade.custom ? lastTrade : null;
-      add({ role: 'bot', text: tr ? 'You\u2019re logged in as ' + d.email + '. Your request to ' + tr.side + ' ' + qtyStr(tr.qty) + ' ' + tr.asset + (tr.network ? ' on ' + tr.network : '') + ' is still here, and a representative can confirm the payment details with you.' : lastTrade ? 'You\u2019re logged in as ' + d.email + '. Your request is still here, and a representative can confirm the details with you.' : 'You\u2019re logged in as ' + d.email + '. You can continue your transaction here, and your chats are now saved to your account.', actions: lastTrade ? [repAct(), waAct(tradeText(lastTrade))] : [] });
+      add({ role: 'bot', text: tr ? 'You\u2019re logged in as ' + d.email + '. Your request to ' + tr.side + ' ' + qtyStr(tr.qty) + ' ' + tr.asset + (tr.network ? ' on ' + tr.network : '') + ' is still here, and a representative can confirm the payment details with you.' : lastTrade ? 'You\u2019re logged in as ' + d.email + '. Your request is still here, and a representative can confirm the details with you.' : 'You\u2019re logged in as ' + d.email + '. You can continue your transaction here, and your chats are now saved to your account.', actions: lastTrade ? [waAct(tradeText(lastTrade)), telegramAct(tradeText(lastTrade))] : [] });
     });
   });
 
