@@ -593,7 +593,18 @@ html.va-lock{overflow:hidden}
 .va .va-in{display:block;width:100%;height:46px;margin:0 0 18px;padding:0 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);font:inherit;font-size:16px;box-shadow:0 1px 2px rgba(0,0,0,.06);outline:none;transition:border-color .15s,box-shadow .15s}
 .va .va-in::placeholder{color:var(--muted);opacity:.8}
 .va .va-in:focus{border-color:var(--red);box-shadow:0 0 0 4px var(--red-tint)}
-.va .va-code{text-align:center;font-size:26px;font-weight:700;letter-spacing:.35em;padding-left:.35em}
+.va-code-entry{position:relative;width:100%;margin:2px 0 20px;outline:none}
+.va-code-slots{display:flex;justify-content:center;gap:8px}
+.va-code-slot{position:relative;display:grid;place-items:center;width:44px;height:48px;flex:0 1 44px;max-width:44px;border:1px solid #3f3f46;border-radius:12px;background:#27272a;color:#f5f5f5;font-size:21px;font-weight:700;line-height:1;transition:border-color .18s,box-shadow .18s,transform .2s cubic-bezier(.22,1,.36,1);overflow:hidden}
+.va-code-slot.filled{animation:va-code-pop .22s cubic-bezier(.22,1,.36,1)}
+.va-code-slot.active{border-color:#f5f5f5;box-shadow:0 0 0 2px rgba(245,245,245,.12)}
+.va-code-slot.error{border-color:#ff3b30;box-shadow:0 0 0 2px rgba(255,59,48,.12)}
+.va-code-slot .va-code-caret{width:2px;height:22px;border-radius:2px;background:#f5f5f5;animation:va-code-blink 1s steps(2,start) infinite}
+.va-code-native{position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;border:0;opacity:.015;cursor:text;font-size:16px;color:transparent;background:transparent;caret-color:transparent;outline:0}
+.va-code-native::selection{background:transparent}
+@keyframes va-code-pop{0%{transform:translateY(5px) scale(.88);opacity:.5}100%{transform:translateY(0) scale(1);opacity:1}}
+@keyframes va-code-blink{to{opacity:0}}
+@media(max-width:390px){.va-code-slots{gap:6px}.va-code-slot{height:44px;max-width:42px;font-size:19px;border-radius:10px}}
 .va-pw{position:relative}
 .va-pw .va-in{padding-right:46px}
 .va .va-eye{position:absolute;top:0;right:0;width:46px;height:46px;display:grid;place-items:center;border:0;background:none;color:var(--muted);cursor:pointer}
@@ -3185,12 +3196,23 @@ function nameOf(u) {
       wireEyes(); setTimeout(function () { (em.value ? $('#vaPass') : em).focus(); }, 60);
     } else if (name === 'code') {
       body.innerHTML = head('Check your email', 'We sent a code to <b>' + esc(st.email) + '</b>. Enter it below.' + (st.mode === 'signup' ? ' If you already have an account, go back and use Log in.' : ''), false) +
-        '<form class="va-form" id="vaF2" novalidate><div class="va-err" hidden></div><input class="va-in va-code" id="vaCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="\u2022\u2022\u2022\u2022\u2022\u2022" aria-label="Code from your email">' +
-        '<button type="submit" class="va-btn" id="vaVerify" disabled>Verify</button></form>' +
+        '<form class="va-form" id="vaF2" novalidate><div class="va-err" hidden></div><div class="va-code-entry"><div class="va-code-slots" id="vaCodeSlots" aria-hidden="true"><span class="va-code-slot"></span><span class="va-code-slot"></span><span class="va-code-slot"></span><span class="va-code-slot"></span><span class="va-code-slot"></span><span class="va-code-slot"></span></div><input class="va-code-native" id="vaCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" aria-label="Six-digit code from your email" autocapitalize="off" spellcheck="false"></div><button type="submit" class="va-btn" id="vaVerify" disabled>Verify</button></form>' +
         '<div class="va-row"><button type="button" class="va-a" id="vaResend" disabled>Resend code</button><button type="button" class="va-a" id="vaBack">Back</button></div>';
-      var code = $('#vaCode'), vb = $('#vaVerify');
-      code.addEventListener('input', function () { code.value = code.value.replace(/\D/g, '').slice(0, 8); vb.disabled = code.value.length < 6; });
-      $('#vaF2').addEventListener('submit', function (e) { e.preventDefault(); if (code.value.length >= 6) verify(code.value); });
+      var code = $('#vaCode'), vb = $('#vaVerify'), slots = Array.prototype.slice.call($('#vaCodeSlots').children);
+      function paintCodeSlots() {
+        var digits = code.value.split('');
+        slots.forEach(function (slot, i) {
+          slot.textContent = digits[i] || '';
+          slot.classList.toggle('filled', !!digits[i]);
+          slot.classList.toggle('active', i === digits.length && digits.length < 6);
+          slot.classList.toggle('error', !!$('.va-err') && !$('.va-err').hidden);
+          if (i === digits.length && digits.length < 6) { slot.innerHTML = '<span class="va-code-caret"></span>'; slot.classList.toggle('filled', false); }
+        });
+      }
+      code.addEventListener('input', function () { code.value = code.value.replace(/\\D/g, '').slice(0, 6); vb.disabled = code.value.length !== 6; paintCodeSlots(); setErr(''); });
+      $('#vaCodeSlots').addEventListener('click', function () { code.focus(); });
+      paintCodeSlots();
+      $('#vaF2').addEventListener('submit', function (e) { e.preventDefault(); if (code.value.length === 6) verify(code.value); });
       $('#vaBack').addEventListener('click', function () { view('main'); });
       $('#vaResend').addEventListener('click', resend);
       cooldown(60); setTimeout(function () { code.focus(); }, 60);
