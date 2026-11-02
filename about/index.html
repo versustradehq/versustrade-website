@@ -791,6 +791,20 @@ html{overflow-x:clip}
 .ab-story p{max-width:none}
 .ab-small{text-align:center;margin-left:auto;margin-right:auto}
 </style>
+
+<style id="vt-android-tap-fix">
+/* Prevent Android Chrome from showing its blue tap/selection overlay on controls. */
+button, a, [role="button"], [role="tab"], [role="menuitem"], label, input[type="button"], input[type="submit"], input[type="reset"] {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * {
+  -webkit-user-select: none;
+  user-select: none;
+}
+</style>
 </head>
 <body>
 <header class="vt-header" id="vtHeader">
