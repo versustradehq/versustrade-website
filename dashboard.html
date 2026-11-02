@@ -1425,9 +1425,11 @@ function mapTransaction(t){
 }
 var tradesLoading=false;
 function loadCustomerTrades(){
-  if(tradesLoading||!window.VTAuth||!VTAuth.user||!VTAuth.user())return;
+  var currentUser=window.VTAuth&&VTAuth.user&&VTAuth.user();
+  if(tradesLoading||!currentUser||!currentUser.id)return;
   tradesLoading=true;
-  VTAuth.rest('GET','/transactions?select=reference,transaction_type,status,asset,network,crypto_amount,card_brand,card_region,card_value,card_currency,fiat_currency,fiat_amount,payout_amount,payout_currency,created_at&archived_at=is.null&order=created_at.desc&limit=200').then(function(rows){
+  var customerFilter=encodeURIComponent('eq.'+currentUser.id);
+  VTAuth.rest('GET','/transactions?select=reference,transaction_type,status,asset,network,crypto_amount,card_brand,card_region,card_value,card_currency,fiat_currency,fiat_amount,payout_amount,payout_currency,created_at&customer_id='+customerFilter+'&archived_at=is.null&order=created_at.desc&limit=200').then(function(rows){
     TRADES=(Array.isArray(rows)?rows:[]).map(mapTransaction);
     page=1;draw();updateStats();
   }).catch(function(err){
