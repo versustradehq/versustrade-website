@@ -58,8 +58,8 @@ a{color:inherit;text-decoration:none}button{font:inherit;color:inherit;cursor:po
 .st{text-align:center;padding:4px 12px}.st+.st{border-left:1px solid rgba(255,255,255,.18)}
 .st b{display:block;font-size:clamp(22px,4.4vw,48px);font-weight:800;letter-spacing:-.02em;line-height:1.15;font-variant-numeric:tabular-nums}
 .st span{font-size:clamp(12px,1.6vw,17px);opacity:.85}
-.main{padding:56px 0 64px}
-.grid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:32px;align-items:start}
+.main{padding:32px 0 8px}
+.grid{display:grid;grid-template-columns:minmax(0,1fr);gap:0;align-items:start}
 .h{font-size:22px;font-weight:900;letter-spacing:-.04em;margin:0 0 16px}
 .card{border:1px solid var(--line);border-radius:24px;background:var(--bg);padding:20px}
 .seg{display:flex;background:var(--pill);border-radius:999px;padding:3px}
@@ -377,7 +377,7 @@ body.hide .r .amt{text-align:right}
 .acct h2{margin:0;font-size:18px;font-weight:900;letter-spacing:-.03em}
 .acct dl div:first-child{border-top:0}
 
-body{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
+body{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
 .dock{--dock-base:50px;--dock-thickness:68px;--dock-pad:9px;--dock-gap:10px;--dock-round:.5;
 --dock-panel:#fff;--dock-panel-edge:rgba(24,24,27,.09);--dock-panel-highlight:#fff;--dock-panel-shadow:0 22px 44px -22px rgba(24,24,27,.32),0 6px 16px -10px rgba(24,24,27,.18);
 --dock-tile:linear-gradient(180deg,#fff,#f4f4f6);--dock-tile-edge:rgba(24,24,27,.09);--dock-tile-highlight:#fff;--dock-tile-shadow:0 4px 10px -5px rgba(24,24,27,.28);
@@ -1270,11 +1270,7 @@ window.VTCircularGallery=function(container,opts){
       </div>
     </section>
 
-    <aside class="side" id="account">
-      
-      <div class="card help" id="help"><h2>Need help with a trade?</h2><p>Quote your trade reference and a real person will pick it up.</p>
-        <button type="button" class="bt red" data-go="chat">Chat with Betty</button></div>
-    </aside>
+
   </div>
 </div></main>
 </div>
