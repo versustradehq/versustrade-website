@@ -940,7 +940,7 @@
           if (a > 0) {
             d.value = a;
             var sub = (d.subcategory || '').toLowerCase();
-            d.ccy = isVisa || sub.indexOf('usa') === 0 ? 'USD' : sub.indexOf('canada') === 0 ? 'CAD' : sub.indexOf('australia') === 0 ? 'AUD' : sub.indexOf('uk ') === 0 ? 'GBP' : sub.indexOf('germany') === 0 ? 'EUR' : ccyOf(q);
+            d.ccy = sub.indexOf('usa') === 0 ? 'USD' : sub.indexOf('canada') === 0 ? 'CAD' : sub.indexOf('australia') === 0 ? 'AUD' : sub.indexOf('uk ') === 0 ? 'GBP' : /^(germany|austria|belgium|finland|france|greece|ireland|italy|luxembourg|netherlands|portugal|spain)/.test(sub) ? 'EUR' : sub.indexOf('denmark') === 0 ? 'DKK' : sub.indexOf('norway') === 0 ? 'NOK' : sub.indexOf('swedish') === 0 ? 'SEK' : sub.indexOf('nzd') === 0 ? 'NZD' : sub.indexOf('singapore') === 0 ? 'SGD' : sub.indexOf('switzerland') === 0 ? 'CHF' : sub.indexOf('uae') === 0 ? 'AED' : sub.indexOf('brazil') === 0 ? 'BRL' : sub.indexOf('mexico') === 0 ? 'MXN' : sub.indexOf('poland') === 0 ? 'PLN' : ccyOf(q);
             got = true;
           }
         }
@@ -961,7 +961,7 @@
   }
 
   function nextGift(f) {
-    var d = f.d, cards = (window.VTGiftCards && window.VTGiftCards.cards) || [], isVisa = /visa/i.test(d.card || ''), isAmazon = /amazon/i.test(d.card || ''), isStructured = isVisa || isAmazon;
+    var d = f.d, cards = (window.VTGiftCards && window.VTGiftCards.cards) || [], isVisa = /visa/i.test(d.card || ''), isAmazon = /amazon/i.test(d.card || ''), isApple = /apple|itunes/i.test(d.card || ''), isStructured = isVisa || isAmazon || isApple;
     if (!d.card) { f.step = 'card'; return ask('Which gift card would you like to sell?', cards.map(function (c) { return ch(c.n.replace(' Gift Card', ''), 'g:card=' + c.n); }).concat([ch('Other card', 'g:card=?'), CANCEL])); }
     if (isStructured) {
       if (!d.gkind) { f.step = 'gkind'; return ask('Is your ' + (isVisa ? 'Visa' : isAmazon ? 'Amazon' : 'Apple/iTunes') + ' gift card Physical or E-code?', [ch('Physical', 'g:gkind=Physical'), ch('E-code', 'g:gkind=E-code'), CANCEL]); }
@@ -982,7 +982,7 @@
 
   function finishGift(f) {
     var d = f.d, val = (GSYM[d.ccy] || '') + Number(d.value).toLocaleString('en-US') + (GSYM[d.ccy] ? '' : ' ' + d.ccy);
-    var isStructured = /visa|amazon/i.test(d.card || '');
+    var isStructured = /visa|amazon|apple|itunes/i.test(d.card || '');
     var text = isStructured ? 'I want to sell my ' + d.card + ' (' + d.gkind + ', ' + d.subcategory + ', ' + val + ').' : 'I want to sell my ' + d.card + ' (' + d.gkind.toLowerCase() + ', ' + val + ', bought in ' + d.country + ').';
     S.flow = null; lastTrade = { custom: 'Hi VersusTrade, ' + text, card: d.card, giftType: d.gkind, subcategory: d.subcategory || null }; refreshWa();
     var rows = [['Type', d.gkind]];
