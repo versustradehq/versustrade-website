@@ -923,7 +923,7 @@
     var d = f.d, got = false, i, a, m;
     if (f.step === 'cardtext' && !d.card && raw.trim().length > 1 && raw.length < 40) { d.card = cap(raw.trim()); return true; }
     if (!d.card) for (i = 0; i < GK.length; i++) if (GK[i][0].test(q)) { d.card = GK[i][1]; got = true; break; }
-    var isVisa = /visa/i.test(d.card || ''), isAmazon = /amazon/i.test(d.card || ''), isApple = /apple|itunes/i.test(d.card || ''), isSteam = /steam/i.test(d.card || ''), isRazer = /razer/i.test(d.card || ''), isSephora = /sephora/i.test(d.card || ''), isTarget = /target/i.test(d.card || ''), isWalmart = /walmart/i.test(d.card || ''), isPlayStation = /playstation/i.test(d.card || ''), isStructured = isVisa || isAmazon || isApple || isSteam || isRazer || isSephora || isTarget || isWalmart || isPlayStation;
+    var isVisa = /visa/i.test(d.card || ''), isAmazon = /amazon/i.test(d.card || ''), isApple = /apple|itunes/i.test(d.card || ''), isSteam = /steam/i.test(d.card || ''), isRazer = /razer/i.test(d.card || ''), isSephora = /sephora/i.test(d.card || ''), isTarget = /target/i.test(d.card || ''), isWalmart = /walmart/i.test(d.card || ''), isPlayStation = /playstation/i.test(d.card || ''), isXbox = /xbox/i.test(d.card || ''), isStructured = isVisa || isAmazon || isApple || isSteam || isRazer || isSephora || isTarget || isWalmart || isPlayStation || isXbox;
     if (isStructured) {
       if (!d.gkind) {
         if (/\bphysical\b|plastic|actual card/.test(q)) { d.gkind = 'Physical'; got = true; }
@@ -961,10 +961,10 @@
   }
 
   function nextGift(f) {
-    var d = f.d, cards = (window.VTGiftCards && window.VTGiftCards.cards) || [], isVisa = /visa/i.test(d.card || ''), isAmazon = /amazon/i.test(d.card || ''), isApple = /apple|itunes/i.test(d.card || ''), isSteam = /steam/i.test(d.card || ''), isRazer = /razer/i.test(d.card || ''), isSephora = /sephora/i.test(d.card || ''), isTarget = /target/i.test(d.card || ''), isWalmart = /walmart/i.test(d.card || ''), isPlayStation = /playstation/i.test(d.card || ''), isStructured = isVisa || isAmazon || isApple || isSteam || isRazer || isSephora || isTarget || isWalmart || isPlayStation;
+    var d = f.d, cards = (window.VTGiftCards && window.VTGiftCards.cards) || [], isVisa = /visa/i.test(d.card || ''), isAmazon = /amazon/i.test(d.card || ''), isApple = /apple|itunes/i.test(d.card || ''), isSteam = /steam/i.test(d.card || ''), isRazer = /razer/i.test(d.card || ''), isSephora = /sephora/i.test(d.card || ''), isTarget = /target/i.test(d.card || ''), isWalmart = /walmart/i.test(d.card || ''), isPlayStation = /playstation/i.test(d.card || ''), isXbox = /xbox/i.test(d.card || ''), isStructured = isVisa || isAmazon || isApple || isSteam || isRazer || isSephora || isTarget || isWalmart || isPlayStation || isXbox;
     if (!d.card) { f.step = 'card'; return ask('Which gift card would you like to sell?', cards.map(function (c) { return ch(c.n.replace(' Gift Card', ''), 'g:card=' + c.n); }).concat([ch('Other card', 'g:card=?'), CANCEL])); }
     if (isStructured) {
-      if (!d.gkind) { f.step = 'gkind'; return ask('Is your ' + (isVisa ? 'Visa' : isAmazon ? 'Amazon' : isApple ? 'Apple/iTunes' : isSteam ? 'Steam' : isRazer ? 'Razer Gold' : 'Sephora') + ' gift card Physical or E-code?', [ch('Physical', 'g:gkind=Physical'), ch('E-code', 'g:gkind=E-code'), CANCEL]); }
+      if (!d.gkind) { f.step = 'gkind'; return ask('Is your ' + (isVisa ? 'Visa' : isAmazon ? 'Amazon' : isApple ? 'Apple/iTunes' : isSteam ? 'Steam' : isRazer ? 'Razer Gold' : isSephora ? 'Sephora' : isTarget ? 'Target' : isWalmart ? 'Walmart' : isPlayStation ? 'PlayStation' : 'Xbox') + ' gift card Physical or E-code?', [ch('Physical', 'g:gkind=Physical'), ch('E-code', 'g:gkind=E-code'), CANCEL]); }
       if (!d.subcategory && !(isTarget && d.gkind === 'E-code')) {
         f.step = 'subcategory';
         var subs = window.VTVisaPicker && window.VTVisaPicker.getSubcategories ? window.VTVisaPicker.getSubcategories(d.card, d.gkind) : [];
@@ -982,7 +982,7 @@
 
   function finishGift(f) {
     var d = f.d, val = (GSYM[d.ccy] || '') + Number(d.value).toLocaleString('en-US') + (GSYM[d.ccy] ? '' : ' ' + d.ccy);
-    var isStructured = /visa|amazon|apple|itunes|steam|razer|sephora|target|walmart|playstation/i.test(d.card || '');
+    var isStructured = /visa|amazon|apple|itunes|steam|razer|sephora|target|walmart|playstation|xbox/i.test(d.card || '');
     var text = isStructured ? 'I want to sell my ' + d.card + ' (' + d.gkind + (d.subcategory ? ', ' + d.subcategory : '') + ', ' + val + ').' : 'I want to sell my ' + d.card + ' (' + d.gkind.toLowerCase() + ', ' + val + ', bought in ' + d.country + ').';
     S.flow = null; lastTrade = { custom: 'Hi VersusTrade, ' + text, card: d.card, giftType: d.gkind, subcategory: d.subcategory || null }; refreshWa();
     var rows = [['Type', d.gkind]];
