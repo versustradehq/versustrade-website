@@ -1255,27 +1255,49 @@ window.VTCircularGallery=function(container,opts){
 <script>
 /* Replace USER and TRADES with data from your server after login (for example fetch('/api/me') and fetch('/api/trades')).
    Check the session on the server too: a browser-side check alone can be bypassed. */
-var USER={name:'Mr Reliable',email:'reliable@example.com',phone:'+234 801 234 5678',kyc:'Verified',since:'Mar 2026'};
-var TRADES=[
-{id:'VT-20481',side:'buy',asset:'BTC',name:'Bitcoin',ngn:1850000,qty:'0.0124 BTC',date:'2026-10-24',status:'wait'},
-{id:'VT-20455',side:'sell',asset:'USDT',name:'Tether',ngn:725000,qty:'500 USDT',date:'2026-10-23',status:'done'},
-{id:'VT-20398',side:'sell',asset:'Amazon card',name:'Gift card',ngn:210000,qty:'$150',date:'2026-10-21',status:'done'},
-{id:'VT-20311',side:'buy',asset:'ETH',name:'Ethereum',ngn:960000,qty:'0.21 ETH',date:'2026-10-19',status:'done'},
-{id:'VT-20270',side:'sell',asset:'BTC',name:'Bitcoin',ngn:2400000,qty:'0.031 BTC',date:'2026-10-16',status:'fail'},
-{id:'VT-20214',side:'buy',asset:'USDT',name:'Tether',ngn:435000,qty:'300 USDT',date:'2026-10-12',status:'done'},
-{id:'VT-20150',side:'sell',asset:'Steam card',name:'Gift card',ngn:98000,qty:'$70',date:'2026-10-09',status:'done'}
-];
+var USER={name:'',email:'',phone:'',kyc:'Verified',since:''};
+var TRADES=[];
 var LABEL={done:'Success',wait:'Processing',fail:'Declined'},PER=5,page=1,filt='all',stat='all',term='';
 var $=function(i){return document.getElementById(i)};
-function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
-function ngn(n){return '\u20A6'+Math.round(n).toLocaleString('en-US')}
-function dt(d){return new Date(d+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function ngn(n){return '\u20A6'+Math.round(Number(n)||0).toLocaleString('en-US')}
+function dt(d){var x=new Date(d);return isNaN(x.getTime())?'—':x.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}
 function list(){return TRADES.filter(function(t){return(filt==='all'||t.side===filt)&&(stat==='all'||t.status===stat)&&(t.asset+' '+t.name+' '+t.id).toLowerCase().indexOf(term)>-1})}
 function draw(){
   var l=list(),pages=Math.max(1,Math.ceil(l.length/PER));page=Math.min(page,pages);
   var s=l.slice((page-1)*PER,page*PER);
   $('rows').innerHTML=s.length?s.map(function(t){var ic=t.name==='Gift card'?'':'<img src="https://assets.coincap.io/assets/icons/'+esc(t.asset.toLowerCase())+'@2x.png" alt="" loading="lazy" onerror="this.remove()">';return '<div class="tr"><div class="co"><span class="av">'+esc(t.asset.charAt(0))+ic+'</span><span style="min-width:0"><b><span class="'+t.side+'">'+(t.side==='buy'?'Buy':'Sell')+'</span> '+esc(t.asset)+'</b><small>'+esc(t.id)+'</small></span></div><div class="r"><span class="am amt">'+ngn(t.ngn)+'</span><small class="amt">'+esc(t.qty)+'</small></div><span class="hd3">'+dt(t.date)+'</span><span><span class="pill '+t.status+'"><span>'+LABEL[t.status]+'</span></span></span></div>'}).join(''):'<div class="empty">No trades found. Start one with Buy &amp; sell crypto above.</div>';
   $('pgi').textContent='Page '+page+' of '+pages;$('prev').disabled=page<=1;$('next').disabled=page>=pages;
+}
+function updateStats(){
+  var done=TRADES.filter(function(t){return t.status==='done'}),wait=TRADES.filter(function(t){return t.status==='wait'}),fail=TRADES.filter(function(t){return t.status==='fail'});
+  $('sTot').textContent=ngn(done.reduce(function(a,t){return a+(Number(t.ngn)||0)},0));
+  $('sDone').textContent=String(done.length);$('sWait').textContent=String(wait.length);$('sFail').textContent=String(fail.length);
+}
+function mapTransaction(t){
+  var gift=t.transaction_type==='GIFT_CARD_SELL',side=t.transaction_type==='CRYPTO_BUY'?'buy':'sell';
+  var asset=gift?(t.card_brand||'Gift card'):(t.asset||'Crypto');
+  var qty=gift?((t.card_currency||'')+' '+(t.card_value==null?'':t.card_value)).trim():((t.crypto_amount==null?'':t.crypto_amount)+' '+(t.asset||'')).trim();
+  var amount=null;
+  if(t.payout_currency==='NGN'&&t.payout_amount!=null)amount=t.payout_amount;
+  else if(t.fiat_currency==='NGN'&&t.fiat_amount!=null)amount=t.fiat_amount;
+  else if(t.payout_amount!=null)amount=t.payout_amount;
+  else amount=t.fiat_amount;
+  var status=t.status==='VT-DONE'?'done':t.status==='VT-DEC'?'fail':'wait';
+  return {id:t.reference,side:side,asset:asset,name:gift?'Gift card':asset,ngn:Number(amount)||0,qty:qty||'—',date:t.created_at||'',status:status};
+}
+var tradesLoading=false;
+function loadCustomerTrades(){
+  if(tradesLoading||!window.VTAuth||!VTAuth.user||!VTAuth.user())return;
+  tradesLoading=true;
+  VTAuth.rest('GET','/transactions?select=reference,transaction_type,status,asset,network,crypto_amount,card_brand,card_region,card_value,card_currency,fiat_currency,fiat_amount,payout_amount,payout_currency,created_at&archived_at=is.null&order=created_at.desc&limit=200').then(function(rows){
+    TRADES=(Array.isArray(rows)?rows:[]).map(mapTransaction);
+    page=1;draw();updateStats();
+  }).catch(function(err){
+    TRADES=[];draw();updateStats();
+    $('rows').innerHTML='<div class="empty">We could not load your trade history. Please refresh the page or sign in again.</div>';
+    console.error('VersusTrade customer transactions:',err);
+  }).then(function(){tradesLoading=false});
 }
 $('tabs').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;filt=b.dataset.f;page=1;[].forEach.call($('tabs').children,function(x){x.setAttribute('aria-selected',x===b)});draw()});
 $('chips').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;stat=b.dataset.s;page=1;[].forEach.call($('chips').children,function(x){x.setAttribute('aria-pressed',x===b)});draw()});
@@ -1293,17 +1315,9 @@ $('nameForm').addEventListener('submit',function(e){e.preventDefault();var v=$('
   if(v.length<2){$('nameErr').textContent='Enter at least 2 characters.';return}
   var done=function(){setName(v);try{localStorage.setItem('vt-username',v)}catch(x){}closeDlg()};
   if(window.VTAuth&&VTAuth.user&&VTAuth.user()&&VTAuth.setName){VTAuth.setName(v).then(done,function(err){$('nameErr').textContent=(err&&err.message)||'Could not save your name.'})}else done()});$('aMail').textContent=USER.email;$('aPhone').textContent=USER.phone;$('aSince').textContent=USER.since;
-var done=TRADES.filter(function(t){return t.status==='done'});
-var SV={sTot:[done.reduce(function(a,t){return a+t.ngn},0),ngn],sDone:[done.length,String],sWait:[TRADES.filter(function(t){return t.status==='wait'}).length,String],sFail:[TRADES.filter(function(t){return t.status==='fail'}).length,String]};
-function ramp(id){var v=SV[id],el=$(id),T=v[0],f=v[1];el.textContent=f(T);
-  if(matchMedia('(prefers-reduced-motion: reduce)').matches||!('IntersectionObserver' in window))return;
-  var io=new IntersectionObserver(function(en){if(!en[0].isIntersecting)return;io.disconnect();var t0=performance.now(),D=1600;
-    (function tick(n){var p=Math.min(1,(n-t0)/D),e=1-Math.pow(1-p,3);el.textContent=f(Math.round(T*e));if(p<1)requestAnimationFrame(tick)})(t0)},{threshold:.4});
-  el.textContent=f(0);io.observe(el)}
-['sTot','sDone','sWait','sFail'].forEach(ramp);
-var NOTES=[['Trade VT-20481 is processing','Your Bitcoin purchase is being confirmed.'],['Trade VT-20455 completed','Your USDT payout was sent.'],['Trade VT-20270 declined','Contact support if this looks wrong.']];
-$('pop').innerHTML=NOTES.map(function(n){return '<p><b>'+esc(n[0])+'</b><small>'+esc(n[1])+'</small></p>'}).join('');
-$('bell').onclick=function(e){e.stopPropagation();var on=$('pop').classList.toggle('on');this.setAttribute('aria-expanded',on);if(on)$('badge').style.display='none'};
+$('pop').innerHTML='<p><b>No new notifications</b><small>Your trade updates will appear here.</small></p>';
+$('badge').style.display='none';
+$('bell').onclick=function(e){e.stopPropagation();var on=$('pop').classList.toggle('on');this.setAttribute('aria-expanded',on)};
 document.addEventListener('click',function(e){if(!e.target.closest('.bellw')){$('pop').classList.remove('on');$('bell').setAttribute('aria-expanded','false')}});
 var EYEON=$('eye').innerHTML,EYEOFF='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18M10.6 5.1A10.9 10.9 0 0 1 12 5c6.5 0 10 7 10 7a17.7 17.7 0 0 1-3.2 4.2M6.6 6.7C3.9 8.6 2 12 2 12s3.5 7 10 7c1.8 0 3.4-.5 4.7-1.2M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>';
 function eyeUI(h){$('eye').innerHTML=h?EYEOFF:EYEON;$('eye').setAttribute('aria-pressed',h)}
