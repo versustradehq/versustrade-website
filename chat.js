@@ -940,7 +940,7 @@
           if (a > 0) {
             d.value = a;
             var sub = (d.subcategory || '').toLowerCase();
-            d.ccy = sub.indexOf('usa') === 0 ? 'USD' : sub.indexOf('canada') === 0 ? 'CAD' : sub.indexOf('australia') === 0 ? 'AUD' : sub.indexOf('uk ') === 0 ? 'GBP' : /^(germany|austria|belgium|finland|france|greece|ireland|italy|luxembourg|netherlands|portugal|spain)/.test(sub) ? 'EUR' : sub.indexOf('denmark') === 0 ? 'DKK' : sub.indexOf('norway') === 0 ? 'NOK' : sub.indexOf('swedish') === 0 ? 'SEK' : sub.indexOf('nzd') === 0 ? 'NZD' : sub.indexOf('singapore') === 0 ? 'SGD' : sub.indexOf('switzerland') === 0 ? 'CHF' : sub.indexOf('uae') === 0 ? 'AED' : sub.indexOf('brazil') === 0 ? 'BRL' : sub.indexOf('mexico') === 0 ? 'MXN' : sub.indexOf('poland') === 0 ? 'PLN' : ccyOf(q);
+            d.ccy = /\(\$\)|^\$|usa/.test(sub) ? 'USD' : /\(£\)|^£|uk /.test(sub) ? 'GBP' : /\(€|^€|euro|germany|austria|belgium|finland|france|greece|ireland|italy|luxembourg|netherlands|portugal|spain/.test(sub) ? 'EUR' : /canada|\bCAD\b/.test(sub) ? 'CAD' : /australia|\bA\$\b/.test(sub) ? 'AUD' : /denmark/.test(sub) ? 'DKK' : /norway/.test(sub) ? 'NOK' : /swedish/.test(sub) ? 'SEK' : /\bNZD\b/.test(sub) ? 'NZD' : /singapore/.test(sub) ? 'SGD' : /CHF|switzerland/.test(sub) ? 'CHF' : /uae/.test(sub) ? 'AED' : /brazil/.test(sub) ? 'BRL' : /mexico/.test(sub) ? 'MXN' : /poland/.test(sub) ? 'PLN' : /malaysian/.test(sub) ? 'MYR' : ccyOf(q);
             got = true;
           }
         }
