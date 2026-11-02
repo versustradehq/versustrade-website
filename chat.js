@@ -949,23 +949,24 @@
   }
 
   function nextGift(f) {
-    var d = f.d, cards = (window.VTGiftCards && window.VTGiftCards.cards) || [], isVisa = /visa/i.test(d.card || '');
-    if (!d.card) {
-      f.step = 'card';
-      return ask('Which gift card would you like to sell?', cards.map(function (c) { return ch(c.n.replace(' Gift Card', ''), 'g:card=' + c.n); }).concat([ch('Other card', 'g:card=?'), CANCEL]));
-    }
-    if (isVisa) {
-      if (!d.gkind) { f.step = 'gkind'; return ask('Is your Visa gift card Physical or E-code?', [ch('Physical', 'g:gkind=Physical'), ch('E-code', 'g:gkind=E-code'), CANCEL]); }
+    var d = f.d, cards = (window.VTGiftCards && window.VTGiftCards.cards) || [], isVisa = /visa/i.test(d.card || ''), isAmazon = /amazon/i.test(d.card || ''), isStructured = isVisa || isAmazon;
+    if (!d.card) { f.step = 'card'; return ask('Which gift card would you like to sell?', cards.map(function (c) { return ch(c.n.replace(' Gift Card', ''), 'g:card=' + c.n); }).concat([ch('Other card', 'g:card=?'), CANCEL])); }
+    if (isStructured) {
+      if (!d.gkind) { f.step = 'gkind'; return ask('Is your ' + (isVisa ? 'Visa' : 'Amazon') + ' gift card Physical or E-code?', [ch('Physical', 'g:gkind=Physical'), ch('E-code', 'g:gkind=E-code'), CANCEL]); }
       if (!d.subcategory) {
         f.step = 'subcategory';
-        var subs = d.gkind === 'Physical' ? [
-          'Canada Visa Gift Card (100-299)','Canada Visa Gift Card (300 and above)','Canada Visa Gift Card (50-99)',
-          'USA Visa 4034/4358 (100-299)','USA Visa 4034/4358 (300 and above)','USA Visa 4034/4358 (50-99)'
-        ] : ['USA Visa E-code (100-299)','USA Visa E-code (300 and above)'];
+        var subs = isVisa
+          ? (d.gkind === 'Physical' ? ['Canada Visa Gift Card (100-299)','Canada Visa Gift Card (300 and above)','Canada Visa Gift Card (50-99)','USA Visa 4034/4358 (100-299)','USA Visa 4034/4358 (300 and above)','USA Visa 4034/4358 (50-99)'] : ['USA Visa E-code (100-299)','USA Visa E-code (300 and above)'])
+          : (d.gkind === 'Physical' ? [
+            'Australia Amazon No Receipt (25 and above )','Australia Amazon With Receipt (25 and above )','Canada Amazon No Receipt (25 and above )','Canada Amazon With Receipt (25 and above )',
+            'Germany Amazon No Receipt (10-100 )','Germany Amazon With Receipt (10-100 )','UK Amazon No Receipt (10-100 )','UK Amazon With Receipt (10-100 )',
+            'USA Amazon (10-24)','USA Amazon (25-49)','USA Amazon Cash Receipt (101-200)','USA Amazon Cash Receipt (201-499)','USA Amazon Cash Receipt (50-100)',
+            'USA Amazon Cash Receipt Single (500)','USA Amazon Credit/No Receipt (101-200)','USA Amazon Credit/No Receipt (201-500)','USA Amazon Credit/No Receipt (50-100)',
+            'USA Amazon Debit Receipt (101 - 200)','USA Amazon Debit Receipt (201 - 499)','USA Amazon Debit Receipt (50-100)','USA Amazon Debit Receipt Single (500)'
+          ] : ['Australia Amazon Ecode (25 and above )','Canada Amazon Ecode (25 and above )','Germany Amazon Ecode (25 and above )','UK Amazon Ecode (10 and above )','USA Amazon Ecode (25 and above )']);
         return ask('Select Gift card Subcategory:', subs.map(function (s) { return ch(s, 'g:subcategory=' + s); }).concat([CANCEL]));
       }
-      if (!d.value) { f.step = 'value'; return ask('What amount is on your ' + d.subcategory + '? For example, 100 or $100.', [CANCEL]); }
-      if (!d.ccy) { f.step = 'ccy'; return ask('What currency is the card amount in?', [ch('US dollars ($)', 'g:ccy=USD'), CANCEL]); }
+      if (!d.value) { f.step = 'value'; return ask('What amount is on your ' + d.subcategory + '? For example, 25 or 100.', [CANCEL]); }
       finishGift(f); return;
     }
     if (!d.gkind) { f.step = 'gkind'; return ask('Is your ' + d.card + ' a physical card, an e-code, or do you only have the receipt?', [ch('Physical card', 'g:gkind=Physical card'), ch('E-code', 'g:gkind=E-code'), ch('Receipt only', 'g:gkind=Receipt only'), CANCEL]); }
@@ -977,15 +978,13 @@
 
   function finishGift(f) {
     var d = f.d, val = (GSYM[d.ccy] || '') + Number(d.value).toLocaleString('en-US') + (GSYM[d.ccy] ? '' : ' ' + d.ccy);
-    var isVisa = /visa/i.test(d.card || '');
-    var text = isVisa
-      ? 'I want to sell my ' + d.card + ' (' + d.gkind + ', ' + d.subcategory + ', ' + val + ').'
-      : 'I want to sell my ' + d.card + ' (' + d.gkind.toLowerCase() + ', ' + val + ', bought in ' + d.country + ').';
+    var isStructured = /visa|amazon/i.test(d.card || '');
+    var text = isStructured ? 'I want to sell my ' + d.card + ' (' + d.gkind + ', ' + d.subcategory + ', ' + val + ').' : 'I want to sell my ' + d.card + ' (' + d.gkind.toLowerCase() + ', ' + val + ', bought in ' + d.country + ').';
     S.flow = null; lastTrade = { custom: 'Hi VersusTrade, ' + text, card: d.card, giftType: d.gkind, subcategory: d.subcategory || null }; refreshWa();
     var rows = [['Type', d.gkind]];
-    if (isVisa) rows.push(['Subcategory', d.subcategory]);
+    if (isStructured) rows.push(['Subcategory', d.subcategory]);
     rows.push(['Amount', val]);
-    if (!isVisa) rows.push(['Country', d.country]);
+    if (!isStructured) rows.push(['Country', d.country]);
     add({ role: 'summary', summary: { tag: 'sell', title: d.card, rows: rows, text: text } });
     ask('Thanks, I\u2019ve noted all your gift card details. Our team will confirm the card and rate with you, and process everything.', (CHAT.isLoggedIn() ? [] : [loginAct()]).concat([waAct(lastTrade.custom), telegramAct(lastTrade.custom)]));
   }
