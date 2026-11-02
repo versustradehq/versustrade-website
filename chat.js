@@ -794,7 +794,7 @@
     details = details || null;
     var d = { card: name };
     if (details) { d.gkind = details.type; d.subcategory = details.subcategory; }
-    var detailText = details ? ' (' + details.type + ', ' + details.subcategory + ')' : '';
+    var detailText = details ? ' (' + details.type + (details.subcategory ? ', ' + details.subcategory : '') + ')' : '';
     var requestText = 'I want to sell my ' + name + detailText + '.';
     lastTrade = { custom: 'Hi VersusTrade, ' + requestText, card: name, giftType: details && details.type, subcategory: details && details.subcategory }; refreshWa();
     open('chat');
@@ -970,7 +970,7 @@
         var subs = window.VTVisaPicker && window.VTVisaPicker.getSubcategories ? window.VTVisaPicker.getSubcategories(d.card, d.gkind) : [];
         return ask('Select Gift card Subcategory:', subs.map(function (s) { return ch(s, 'g:subcategory=' + s); }).concat([CANCEL]));
       }
-      if (!d.value) { f.step = 'value'; return ask('What amount is on your ' + d.subcategory + '? For example, 25 or 100.', [CANCEL]); }
+      if (!d.value) { f.step = 'value'; return ask('What amount is on your ' + (d.subcategory || d.card) + '? For example, 25 or 100.', [CANCEL]); }
       finishGift(f); return;
     }
     if (!d.gkind) { f.step = 'gkind'; return ask('Is your ' + d.card + ' a physical card, an e-code, or do you only have the receipt?', [ch('Physical card', 'g:gkind=Physical card'), ch('E-code', 'g:gkind=E-code'), ch('Receipt only', 'g:gkind=Receipt only'), CANCEL]); }
@@ -983,10 +983,10 @@
   function finishGift(f) {
     var d = f.d, val = (GSYM[d.ccy] || '') + Number(d.value).toLocaleString('en-US') + (GSYM[d.ccy] ? '' : ' ' + d.ccy);
     var isStructured = /visa|amazon|apple|itunes|steam|razer|sephora|target|walmart|playstation/i.test(d.card || '');
-    var text = isStructured ? 'I want to sell my ' + d.card + ' (' + d.gkind + ', ' + d.subcategory + ', ' + val + ').' : 'I want to sell my ' + d.card + ' (' + d.gkind.toLowerCase() + ', ' + val + ', bought in ' + d.country + ').';
+    var text = isStructured ? 'I want to sell my ' + d.card + ' (' + d.gkind + (d.subcategory ? ', ' + d.subcategory : '') + ', ' + val + ').' : 'I want to sell my ' + d.card + ' (' + d.gkind.toLowerCase() + ', ' + val + ', bought in ' + d.country + ').';
     S.flow = null; lastTrade = { custom: 'Hi VersusTrade, ' + text, card: d.card, giftType: d.gkind, subcategory: d.subcategory || null }; refreshWa();
     var rows = [['Type', d.gkind]];
-    if (isStructured) rows.push(['Subcategory', d.subcategory]);
+    if (isStructured && d.subcategory) rows.push(['Subcategory', d.subcategory]);
     rows.push(['Amount', val]);
     if (!isStructured) rows.push(['Country', d.country]);
     add({ role: 'summary', summary: { tag: 'sell', title: d.card, rows: rows, text: text } });
