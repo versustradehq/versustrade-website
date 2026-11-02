@@ -109,6 +109,10 @@
       physical: ['($) Green Razer Gift Card USA (10 and above)','($) USA Razer Gold Gift Card','(£) UK Razer Gold Gift Card (10 and above)','(€) Euro Razer Gold Gift Card (10 and above)','Australian Razer Gold Gift Card','Brazilian Razer Gold Gift Card (10 and above)','Canada Razer Gold Gift Card','Malaysian Razergold (25 and above)','Mexican Razer Gold Gift Card','NZD Razer Gold Gift Card (10 and above)','Singapore Razer Gold Gift Card (10 and above)'],
       ecode: ['($) Green Razer Gift Card USA (10 and above)','($) USA Razer Gold Gift Card','(£) UK Razer Gold Gift Card (10 and above)','(€) Euro Razer Gold Gift Card (10 and above)','Australian Razer Gold Gift Card','Brazilian Razer Gold Gift Card ( 10 and above)','Canada Razer Gold Gift Card','Malaysian Razergold (25 and above)','Mexican Razer Gold Gift Card','NZD Razer Gold Gift Card (10 and above)','Singapore Razer Gold Gift Card (10 and above)']
     },
+    'eBay Gift Card': {
+      physical: ['Canada Ebay Gift Card (100 and above)','USA eBay Gift Card (100)','USA eBay Gift Card (101 and Above)','USA eBay Gift Card (25-49)','USA eBay Gift Card (50-99)'],
+      ecode: ['Canada Ebay Gift Card (100 and above)','USA eBay Gift Card (100)','USA eBay Gift Card (101 and Above)','USA eBay Gift Card (25-49)','USA eBay Gift Card (50-99)']
+    },
     'Sephora Gift Card': {
       physical: ['CAD Sephora Physical (100-299)','CAD Sephora Physical (300 and above)','USA Sephora Physical - 6347 6330 (100-299)','USA Sephora Physical - 6347 6330 (300 and above)','USA Sephora Physical (50-99)','USA Sephora Physical 6318 6348 6320 6340 6353 6346 (300 above)','USA Sephora Physical- 6318 6348 6320 6340 6346 6353 (100-299)'],
       ecode: ['USA Sephora Ecode (100 and above)','USA Sephora Ecode (50-99)']
