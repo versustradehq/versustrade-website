@@ -233,6 +233,7 @@ tbody tr:hover{background:var(--panel2)}
       <button class="nav active" data-view="register"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg> Register transaction</button>
       <button class="nav" data-view="overview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg> Overview</button>
       <button class="nav" data-view="transactions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg> Transactions</button>
+      <button class="nav" data-view="archives"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h18v4H3z"/><path d="M5 8v12h14V8"/><path d="M10 12h4"/></svg> Archives</button>
       <button class="nav" data-view="history"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg> Activity history</button>
     <div class="side-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg><span>Admin access is verified against your Supabase administrator account.</span></div>
   </aside>
@@ -257,6 +258,10 @@ tbody tr:hover{background:var(--panel2)}
       <section id="transactions" class="section">
         <div class="page-head"><div><div class="eyebrow">Records</div><h1>Transactions</h1><div class="sub">Search and review customer transactions.</div></div><button class="primary" data-goto="register">＋ Register</button></div>
         <div class="panel"><div class="panel-head"><h2>All transactions</h2><div class="toolbar"><input id="searchInput" class="field search" placeholder="Search reference, name or email" aria-label="Search transactions"><select id="statusFilter" class="select" style="width:auto" aria-label="Filter by status"><option value="">All statuses</option><option value="VT-PRO">Processing</option><option value="VT-DONE">Completed</option><option value="VT-DEC">Declined</option></select></div></div><div id="allTable"></div></div>
+      </section>
+      <section id="archives" class="section">
+        <div class="page-head"><div><div class="eyebrow">Stored records</div><h1>Archives</h1><div class="sub">Restore archived transactions or permanently delete them.</div></div><button class="ghost" id="archivesRefresh">Refresh</button></div>
+        <div class="panel"><div class="panel-head"><h2>Archived transactions</h2></div><div id="archiveTable"></div></div>
       </section>
       <section id="register" class="section active">
         <div class="page-head"><div><div class="eyebrow">New record</div><h1>Register transaction</h1><div class="sub">Record a transaction completed or handled by your team.</div></div></div>
@@ -288,8 +293,8 @@ tbody tr:hover{background:var(--panel2)}
         </div></div>
       </section>
       <section id="history" class="section">
-        <div class="page-head"><div><div class="eyebrow">Audit log</div><h1>Activity history</h1><div class="sub">Trace transaction creation and status changes.</div></div><button class="ghost" id="historyRefresh">Refresh</button></div>
-        <div class="panel"><div class="panel-head"><h2>Transaction events</h2><input id="historyRef" class="field search" placeholder="Enter transaction reference" aria-label="Transaction reference"></div><div class="panel-body"><div id="eventList" class="empty">Enter a transaction reference to view its history.</div><div id="historyMessage" class="message"></div></div></div>
+        <div class="page-head"><div><div class="eyebrow">Audit log</div><h1>Activity history</h1><div class="sub">A global record of transaction creation, status changes, archives, restores and deletions.</div></div><button class="ghost" id="historyRefresh">Refresh</button></div>
+        <div class="panel"><div class="panel-head"><h2>Recent activity</h2></div><div id="activityList"></div></div>
       </section>
     </main>
   </div>
@@ -297,7 +302,7 @@ tbody tr:hover{background:var(--panel2)}
 <div id="detailOverlay" class="hidden">
   <div class="panel" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
     <div class="panel-head"><h2 id="detailTitle">Transaction details</h2><button class="icon-btn" id="detailClose" aria-label="Close">✕</button></div>
-    <div class="panel-body"><div id="detailBody"></div><div class="toolbar" style="margin-top:18px"><label class="muted" for="detailStatus">Update status</label><select id="detailStatus" class="select" style="max-width:190px"><option value="VT-PRO">Processing</option><option value="VT-DONE">Completed</option><option value="VT-DEC">Declined</option></select><button id="detailUpdate" class="primary">Save status</button></div><div id="detailMessage" class="message" role="status"></div><div style="margin-top:22px"><h3 style="font-size:14px">Audit history</h3><div id="detailEvents" class="events"></div></div></div>
+    <div class="panel-body"><div id="detailBody"></div><div class="toolbar" style="margin-top:18px"><label class="muted" for="detailStatus">Update status</label><select id="detailStatus" class="select" style="max-width:190px"><option value="VT-PRO">Processing</option><option value="VT-DONE">Completed</option><option value="VT-DEC">Declined</option></select><button id="detailUpdate" class="primary">Save status</button><button id="detailArchive" class="ghost">Archive transaction</button></div><div id="detailMessage" class="message" role="status"></div><div style="margin-top:22px"><h3 style="font-size:14px">Audit history</h3><div id="detailEvents" class="events"></div></div></div>
   </div>
 </div>
 <script>
@@ -306,7 +311,7 @@ tbody tr:hover{background:var(--panel2)}
 var API='https://versustrade-admin-api.versustradehq.workers.dev';
 var SB='https://axldgaxsdgeycinxqbem.supabase.co';
 var KEY='sb_publishable_eU9t7DqMTbeAOIdsXhcYmg_wwvmwm3j';
-var STORE='vt_auth_session', CUST_STORE='vt_admin_customers', session=null, transactions=[], selected=null, pageSize=50, lastFocus=null;
+var STORE='vt_auth_session', CUST_STORE='vt_admin_customers', session=null, transactions=[], archiveTransactions=[], selected=null, pageSize=50, lastFocus=null;
 var $=function(id){return document.getElementById(id)};
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function readSession(){try{return JSON.parse(localStorage.getItem(STORE)||sessionStorage.getItem(STORE)||'null')}catch(e){return null}}
@@ -469,11 +474,42 @@ function paint(){
   renderTable('recentTable',transactions.slice(0,6));
   renderTable('allTable',filtered(),pageSize);
 }
-function load(){
-  $('recentTable').innerHTML=skeleton();$('allTable').innerHTML=skeleton();
-  return api('/admin/transactions/list',{limit:200}).then(function(d){transactions=d.transactions||[];paint()}).catch(function(e){$('recentTable').innerHTML='<div class="empty">'+esc(e.message)+'</div>';$('allTable').innerHTML='<div class="empty">'+esc(e.message)+'</div>'});
+function renderArchives(){
+  var rows=archiveTransactions;
+  if(!rows.length){$('archiveTable').innerHTML='<div class="empty">No archived transactions.</div>';return}
+  var html='<div class="table-wrap"><table><thead><tr><th>Reference</th><th>Customer</th><th class="hide-sm">Type</th><th>Amount</th><th>Status</th><th class="hide-sm">Archived</th><th>Actions</th></tr></thead><tbody>';
+  rows.forEach(function(t){
+    var amount=t.transaction_type==='GIFT_CARD_SELL'?money(t.card_value,t.card_currency):money(t.crypto_amount,t.asset);
+    html+='<tr><td><span class="ref">'+esc(t.reference)+'</span></td><td>'+custCell(t)+'</td><td class="hide-sm"><span class="type">'+esc(typeLabel(t.transaction_type))+'</span></td><td>'+esc(amount)+'</td><td><span class="status '+statusClass(t.status)+'">'+esc(statusLabel(t.status))+'</span></td><td class="hide-sm">'+esc(fmtDate(t.archived_at))+'</td><td><div class="toolbar"><button class="row-action" data-archive-open="'+esc(t.reference)+'">Open</button><button class="row-action" data-restore="'+esc(t.reference)+'">Restore</button><button class="row-action" data-delete="'+esc(t.reference)+'">Delete</button></div></td></tr>';
+  });
+  html+='</tbody></table></div>';
+  $('archiveTable').innerHTML=html;
+  Array.prototype.forEach.call($('archiveTable').querySelectorAll('[data-archive-open]'),function(b){b.addEventListener('click',function(){openDetail(b.dataset.archiveOpen)})});
+  Array.prototype.forEach.call($('archiveTable').querySelectorAll('[data-restore]'),function(b){b.addEventListener('click',function(){restoreTransaction(b.dataset.restore)})});
+  Array.prototype.forEach.call($('archiveTable').querySelectorAll('[data-delete]'),function(b){b.addEventListener('click',function(){deleteTransaction(b.dataset.delete)})});
 }
-function showView(id){$('app').classList.remove('nav-open');document.querySelectorAll('.section').forEach(function(s){s.classList.toggle('active',s.id===id)});document.querySelectorAll('.nav[data-view]').forEach(function(n){n.classList.toggle('active',n.dataset.view===id)});if(id==='history')$('historyRef').focus()}
+function renderActivity(){
+  api('/admin/activity',{limit:300}).then(function(d){
+    var rows=d.activity||[];
+    if(!rows.length){$('activityList').innerHTML='<div class="empty">No activity recorded yet.</div>';return}
+    var html='<div class="table-wrap"><table><thead><tr><th>Reference</th><th>Activity</th><th class="hide-sm">Details</th><th>Date</th><th class="hide-sm">Admin</th></tr></thead><tbody>';
+    rows.forEach(function(x){
+      var labels={CREATED:'Transaction created',TRANSACTION_CREATED:'Transaction created',STATUS_CHANGED:'Status changed',STATUS_CHANGE:'Status changed',UPDATED:'Transaction updated',ARCHIVED:'Transaction archived',RESTORED:'Transaction restored',DELETED:'Transaction permanently deleted'};
+      var detail=x.event_type==='STATUS_CHANGED'?(statusLabel(x.previous_status||'')+' → '+statusLabel(x.new_status||'')):(x.details&&x.details.status?'Status: '+statusLabel(x.details.status):'—');
+      var known=transactions.some(function(t){return t.reference===x.reference})||archiveTransactions.some(function(t){return t.reference===x.reference});
+      html+='<tr><td>'+(known?'<button class="copy" data-activity-ref="'+esc(x.reference)+'">'+esc(x.reference)+'</button>': '<span class="ref">'+esc(x.reference||'—')+'</span>')+'</td><td><span class="type">'+esc(labels[x.event_type]||String(x.event_type||'Activity').replace(/_/g,' '))+'</span></td><td class="hide-sm">'+esc(detail)+'</td><td>'+esc(fmtDate(x.created_at))+'</td><td class="hide-sm">'+esc(x.actor_user_id||'System')+'</td></tr>';
+    });
+    html+='</tbody></table></div>';$('activityList').innerHTML=html;
+    Array.prototype.forEach.call($('activityList').querySelectorAll('[data-activity-ref]'),function(b){b.addEventListener('click',function(){openDetail(b.dataset.activityRef)})});
+  }).catch(function(e){$('activityList').innerHTML='<div class="empty">'+esc(e.message)+'</div>'});
+}
+function load(){
+  $('recentTable').innerHTML=skeleton();$('allTable').innerHTML=skeleton();$('archiveTable').innerHTML=skeleton();
+  var active=api('/admin/transactions/list',{limit:500}).then(function(d){transactions=d.transactions||[];paint()}).catch(function(e){$('recentTable').innerHTML='<div class="empty">'+esc(e.message)+'</div>';$('allTable').innerHTML='<div class="empty">'+esc(e.message)+'</div>'});
+  var archived=api('/admin/transactions/list',{limit:500,archived:true}).then(function(d){archiveTransactions=d.transactions||[];renderArchives()}).catch(function(e){$('archiveTable').innerHTML='<div class="empty">'+esc(e.message)+'</div>'});
+  return Promise.all([active,archived]).then(function(){renderActivity()});
+}
+function showView(id){$('app').classList.remove('nav-open');document.querySelectorAll('.section').forEach(function(s){s.classList.toggle('active',s.id===id)});document.querySelectorAll('.nav[data-view]').forEach(function(n){n.classList.toggle('active',n.dataset.view===id)});if(id==='history')renderActivity();if(id==='archives')renderArchives()}
 document.querySelectorAll('[data-view]').forEach(function(b){b.addEventListener('click',function(){showView(b.dataset.view)})});
 document.querySelectorAll('[data-goto]').forEach(function(b){b.addEventListener('click',function(){showView(b.dataset.goto)})});
 $('refreshBtn').addEventListener('click',load);
@@ -580,10 +616,10 @@ $('registerForm').addEventListener('submit',function(e){
 
 // DETAIL MODAL
 function openDetail(ref){
-  selected=transactions.find(function(t){return t.reference===ref});if(!selected)return;
+  selected=transactions.find(function(t){return t.reference===ref})||archiveTransactions.find(function(t){return t.reference===ref});if(!selected)return;
   lastFocus=document.activeElement;
   var c=custInfo(selected);
-  $('detailTitle').textContent=selected.reference;$('detailStatus').value=selected.status;$('detailMessage').textContent='';$('detailMessage').className='message';
+  $('detailTitle').textContent=selected.reference;$('detailStatus').value=selected.status;$('detailMessage').textContent='';$('detailMessage').className='message';$('detailArchive').classList.toggle('hidden',!!selected.archived_at);$('detailStatus').disabled=!!selected.archived_at;$('detailUpdate').disabled=!!selected.archived_at;
   var pairs=[['Customer',c.name?(c.name+(c.email?' · '+c.email:'')):selected.customer_id],['Customer ID',selected.customer_id],['Type',typeLabel(selected.transaction_type)],['Asset / card',selected.asset||selected.card_brand,selected.transaction_type==='GIFT_CARD_SELL'?cardIco(selected.card_brand):coinIco(selected.asset)],['Network / region',selected.network||selected.card_region,selected.transaction_type==='GIFT_CARD_SELL'?flagIco(selected.card_region):netIco(selected.network)],['Amount',selected.transaction_type==='GIFT_CARD_SELL'?money(selected.card_value,selected.card_currency):money(selected.crypto_amount,selected.asset)],['Fiat amount',money(selected.fiat_amount,selected.fiat_currency)],['Payout',selected.transaction_type==='CRYPTO_BUY'?'—':money(selected.payout_amount,'NGN')],['Created',fmtDate(selected.created_at)],['Customer note',selected.customer_note]];
   $('detailBody').innerHTML='<div class="detail-list">'+pairs.map(function(p){return '<div class="detail-item"><small>'+esc(p[0])+'</small><strong class="amt">'+(p[2]?smIco(p[2]):'')+esc(p[1]||'—')+'</strong></div>'}).join('')+'</div>';
   $('detailOverlay').classList.remove('hidden');$('detailClose').focus();
@@ -615,10 +651,24 @@ $('detailUpdate').addEventListener('click',function(){
   }).catch(function(e){msg.className='message error';msg.textContent=e.message}).then(function(){btn.disabled=false});
 });
 
-// HISTORY
-function historySearch(){var ref=$('historyRef').value.trim();if(!ref){$('historyMessage').textContent='Enter a transaction reference.';return}$('historyMessage').textContent='';loadEvents(ref,'eventList')}
-$('historyRefresh').addEventListener('click',historySearch);
-$('historyRef').addEventListener('keydown',function(e){if(e.key==='Enter')historySearch()});
+// ARCHIVE ACTIONS
+function restoreTransaction(ref){
+  if(!confirm('Restore '+ref+' to the active Transactions list?'))return;
+  api('/admin/transactions/restore',{reference:ref}).then(function(){return load()}).catch(function(e){alert(e.message)});
+}
+function deleteTransaction(ref){
+  if(!confirm('Permanently delete '+ref+'? This cannot be undone. Its deletion record will remain in Activity History.'))return;
+  api('/admin/transactions/delete',{reference:ref}).then(function(){return load()}).catch(function(e){alert(e.message)});
+}
+$('detailArchive').addEventListener('click',function(){
+  if(!selected||selected.archived_at)return;
+  var ref=selected.reference;
+  if(!confirm('Move '+ref+' to Archives? You can restore it later.'))return;
+  this.disabled=true;
+  api('/admin/transactions/archive',{reference:ref}).then(function(){closeDetail();return load()}).catch(function(e){$('detailMessage').className='message error';$('detailMessage').textContent=e.message}).then(function(){$('detailArchive').disabled=false});
+});
+$('archivesRefresh').addEventListener('click',load);
+$('historyRefresh').addEventListener('click',renderActivity);
 
 // LOGO PICKERS: same logo sources as the homepage (CoinCap coin icons, R2 gift card logos)
 var R2='https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/';
