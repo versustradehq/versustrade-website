@@ -260,6 +260,20 @@ tbody tr:hover{background:var(--panel2)}
 .vt-filter-group{border-radius:14px!important}
 .vt-filter-date,.vt-filter-custom input,.vt-filter-foot button{border-radius:10px}
 </style>
+
+<style id="vt-android-tap-fix">
+/* Prevent Android Chrome from showing its blue tap/selection overlay on controls. */
+button, a, [role="button"], [role="tab"], [role="menuitem"], label, input[type="button"], input[type="submit"], input[type="reset"] {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * {
+  -webkit-user-select: none;
+  user-select: none;
+}
+</style>
 </head>
 <body>
 <div id="gate" class="access hidden">
