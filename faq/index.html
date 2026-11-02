@@ -293,6 +293,12 @@ mark{padding:0 3px;border-radius:4px;background:color-mix(in srgb,var(--red) 20%
 @media (max-width:899px){.search{padding:7px 7px 7px 24px}.search input{font-size:17px}.s-btn{width:46px;height:46px}.fq-hero{padding:40px 0 40px}.fq-q{padding:18px 18px;font-size:16px}.fq-a-in{padding:0 18px 20px}.fq-body{padding:28px 16px 16px}}
 @media (prefers-reduced-motion:reduce){.fq-a-wrap,.fq-ico,.fq-item{transition:none}.fq-a{transition:none}}
 </style>
+
+<style id="vt-android-tap-fix">
+/* Prevent Android Chrome's blue tap highlight and text-selection toolbar on controls. */
+button, a, [role="button"], [role="tab"], [role="menuitem"], label, input[type="button"], input[type="submit"], input[type="reset"] { -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-user-select: none; user-select: none; }
+</style>
 </head>
 <body>
 <header class="vt-header" id="vtHeader">
