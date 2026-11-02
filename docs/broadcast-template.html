@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>VersusTrade update</title>
+
+<style id="vt-android-tap-fix">
+/* Prevent Android Chrome's blue tap highlight and text-selection toolbar on controls. */
+button, a, [role="button"], [role="tab"], [role="menuitem"], label, input[type="button"], input[type="submit"], input[type="reset"] { -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-user-select: none; user-select: none; }
+</style>
 </head>
 <!--
   Starter design for a VersusTrade newsletter. Paste it into a Resend Broadcast (Broadcasts > Create broadcast > HTML),
