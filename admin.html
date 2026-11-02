@@ -198,10 +198,10 @@ tbody tr:last-child td{border-bottom:0}
               <div id="customerSearchMessage" class="message">Type at least 2 characters to find a customer.</div>
             </div>
             <div class="form-field"><label>Transaction type *</label><select class="select" name="transaction_type" id="transactionType" required><option value="CRYPTO_BUY">Crypto Buy</option><option value="CRYPTO_SELL">Crypto Sell</option><option value="GIFT_CARD_SELL">Gift Card Sell</option></select></div>
-            <div class="form-field crypto-field"><label>Asset</label><input class="field" name="asset" placeholder="e.g. USDT"></div>
-            <div class="form-field crypto-field"><label>Network</label><input class="field" name="network" placeholder="e.g. TRC20"></div>
+            <div class="form-field crypto-field"><label>Asset</label><select class="select" name="asset" id="assetSelect"><option value="USDT">USDT · Tether</option><option value="BTC">BTC · Bitcoin</option><option value="ETH">ETH · Ethereum</option><option value="BNB">BNB</option><option value="SOL">SOL · Solana</option><option value="XRP">XRP</option><option value="TRX">TRX · Tron</option><option value="DOGE">DOGE · Dogecoin</option><option value="LTC">LTC · Litecoin</option><option value="TON">TON</option><option value="ADA">ADA · Cardano</option><option value="AVAX">AVAX · Avalanche</option><option value="LINK">LINK · Chainlink</option><option value="DOT">DOT · Polkadot</option><option value="SHIB">SHIB · Shiba Inu</option><option value="BCH">BCH · Bitcoin Cash</option><option value="NEAR">NEAR</option><option value="ATOM">ATOM · Cosmos</option><option value="UNI">UNI · Uniswap</option><option value="XLM">XLM · Stellar</option><option value="APT">APT · Aptos</option><option value="USDC">USDC · USD Coin</option></select></div>
+            <div class="form-field crypto-field"><label>Network</label><select class="select" name="network" id="networkSelect"></select></div>
             <div class="form-field crypto-field"><label>Crypto amount</label><input class="field" name="crypto_amount" type="number" min="0" step="any"></div>
-            <div class="form-field gift-field hidden"><label>Card brand</label><input class="field" name="card_brand" placeholder="e.g. Amazon"></div>
+            <div class="form-field gift-field hidden"><label>Card brand</label><select class="select" name="card_brand"><option value="">Select gift card</option><option>Visa Gift Card</option><option>Amazon Gift Card</option><option>Apple / iTunes Gift Card</option><option>Google Play Gift Card</option><option>Steam Gift Card</option><option>Razer Gold</option><option>Sephora Gift Card</option><option>Target Gift Card</option><option>Walmart Gift Card</option><option>PlayStation Gift Card</option><option>Xbox Gift Card</option><option>eBay Gift Card</option></select></div>
             <div class="form-field gift-field hidden"><label>Card region</label><input class="field" name="card_region" placeholder="e.g. US"></div>
             <div class="form-field gift-field hidden"><label>Card value</label><input class="field" name="card_value" type="number" min="0" step="any"></div>
             <div class="form-field gift-field hidden"><label>Card currency</label><input class="field" name="card_currency" placeholder="e.g. USD"></div>
@@ -320,6 +320,25 @@ function showView(id){document.querySelectorAll('.section').forEach(function(s){
 document.querySelectorAll('[data-view]').forEach(function(b){b.addEventListener('click',function(){showView(b.dataset.view)})});
 document.querySelectorAll('[data-goto]').forEach(function(b){b.addEventListener('click',function(){showView(b.dataset.goto)})});
 $('refreshBtn').addEventListener('click',load);$('searchInput').addEventListener('input',paint);$('statusFilter').addEventListener('change',paint);
+var ADMIN_NETS = {
+  USDT: ['TRC20','BEP20','ERC20','Solana','Polygon','Arbitrum One','Optimism','TON'],
+  USDC: ['ERC20','BEP20','Solana','Polygon','Arbitrum One','Base','Optimism','Avalanche C-Chain'],
+  BTC: ['Bitcoin','BEP20'],
+  ETH: ['ERC20','Arbitrum One','Optimism','Base','BEP20'],
+  BNB: ['BEP20','ERC20'],
+  TRX: ['TRC20','BEP20'],
+  LINK: ['ERC20','BEP20'],
+  SHIB: ['ERC20','BEP20'],
+  UNI: ['ERC20','BEP20']
+};
+var ADMIN_DEFAULT_NET = {BTC:'Bitcoin',ETH:'Ethereum',BNB:'BNB Chain',SOL:'Solana',XRP:'XRPL',DOGE:'Dogecoin',ADA:'Cardano',TRX:'Tron',AVAX:'Avalanche',LINK:'Ethereum',TON:'TON',DOT:'Polkadot',LTC:'Litecoin',SHIB:'Ethereum',BCH:'Bitcoin Cash',NEAR:'NEAR',ATOM:'Cosmos',UNI:'Ethereum',XLM:'Stellar',APT:'Aptos'};
+function populateAdminNetworks(){
+  var asset=$('assetSelect').value;
+  var networks=ADMIN_NETS[asset]||[ADMIN_DEFAULT_NET[asset]||asset];
+  $('networkSelect').innerHTML=networks.map(function(n){return '<option value="'+esc(n)+'">'+esc(n)+'</option>'}).join('');
+}
+$('assetSelect').addEventListener('change',populateAdminNetworks);
+populateAdminNetworks();
 $('transactionType').addEventListener('change',function(){var gift=this.value==='GIFT_CARD_SELL';document.querySelectorAll('.gift-field').forEach(function(x){x.classList.toggle('hidden',!gift)});document.querySelectorAll('.crypto-field').forEach(function(x){x.classList.toggle('hidden',gift)})});
 $('registerForm').addEventListener('submit',function(e){e.preventDefault();if(!$('customerId').value){$('registerMessage').className='message error';$('registerMessage').textContent='Please search for and select a customer first.';$('customerSearch').focus();return}var f=new FormData(this),data={};f.forEach(function(v,k){if(v!=='')data[k]=v});['crypto_amount','card_value','fiat_amount','exchange_rate','payout_amount'].forEach(function(k){if(data[k]!==undefined)data[k]=Number(data[k])});$('registerMessage').className='message';$('registerMessage').textContent='Registering…';api('/admin/transactions',data).then(function(d){$('registerMessage').className='message success';$('registerMessage').textContent='Transaction registered: '+d.transaction.reference;this.reset();load();}.bind(this)).catch(function(err){$('registerMessage').className='message error';$('registerMessage').textContent=err.message})});
 function openDetail(ref){selected=transactions.find(function(t){return t.reference===ref});if(!selected)return;$('detailTitle').textContent=selected.reference;$('detailStatus').value=selected.status;$('detailMessage').textContent='';var pairs=[['Customer ID',selected.customer_id],['Type',typeLabel(selected.transaction_type)],['Asset / card',selected.asset||selected.card_brand],['Network / region',selected.network||selected.card_region],['Amount',selected.transaction_type==='GIFT_CARD_SELL'?money(selected.card_value,selected.card_currency):money(selected.crypto_amount,selected.asset)],['Fiat amount',money(selected.fiat_amount,selected.fiat_currency)],['Payout',money(selected.payout_amount,selected.payout_currency)],['Created',fmtDate(selected.created_at)],['Customer note',selected.customer_note]];$('detailBody').innerHTML='<div class="detail-list">'+pairs.map(function(p){return '<div class="detail-item"><small>'+esc(p[0])+'</small><strong>'+esc(p[1]||'—')+'</strong></div>'}).join('')+'</div>';$('detailOverlay').classList.remove('hidden');loadEvents(ref,'detailEvents')}
