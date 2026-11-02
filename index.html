@@ -742,6 +742,52 @@ html.va-lock{overflow:hidden}
 :root:not([data-theme="light"]) .ft-socials a{background:linear-gradient(145deg,color-mix(in oklch,var(--text) 6%,transparent) 0%,color-mix(in oklch,var(--text) 1.5%,transparent) 100%);border:1px solid color-mix(in oklch,var(--text) 12%,transparent);box-shadow:0 12px 30px -12px rgba(0,0,0,.6),inset 0 1px 1px color-mix(in oklch,var(--text) 14%,transparent),inset 0 -1px 2px color-mix(in oklch,var(--bg) 80%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);transition:transform .2s,color .2s,border-color .3s,background .3s}
 :root:not([data-theme="light"]) .ft-socials a:hover{border-color:color-mix(in oklch,var(--red) 55%,transparent);background:linear-gradient(145deg,color-mix(in oklch,var(--text) 9%,transparent) 0%,color-mix(in oklch,var(--text) 2.5%,transparent) 100%)}
 }
+/* Center the feature strip and market section headings consistently */
+.strip .wrap{
+  max-width:900px;
+  margin:0 auto;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  align-items:stretch;
+}
+.strip .wrap>div{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-width:0;
+  padding:28px 24px;
+  border-left:0;
+  text-align:center;
+}
+.strip .wrap>div+div{
+  border-left:1px solid var(--line);
+}
+.strip b,.strip span{
+  text-align:center;
+}
+.tm-h{
+  justify-content:center;
+  text-align:center;
+  width:100%;
+}
+@media (max-width:640px){
+  .strip .wrap{
+    max-width:480px;
+    grid-template-columns:minmax(0,1fr);
+  }
+  .strip .wrap>div{
+    padding:20px 8px;
+    border-left:0;
+    border-top:1px solid var(--line);
+  }
+  .strip .wrap>div:first-child{
+    border-top:0;
+  }
+  .tm-h{
+    justify-content:center;
+    text-align:center;
+  }
+}
 /* room above the footer's bottom row for the flying button to rest in */
 .foot .ft-credits{margin-top:56px}
 </style>
