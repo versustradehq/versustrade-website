@@ -5375,7 +5375,7 @@ function createSim(gl) {
   function choose(i) {
     var c = shown[i]; if (!c) return;
     close();
-    if (/^(visa|amazon) gift card$/i.test(c.n) && window.VTVisaPicker) {
+    if (/^(visa|amazon|apple \/ itunes) gift card$/i.test(c.n) && window.VTVisaPicker) {
       setTimeout(function () { window.VTVisaPicker.open(c.n, function (details) { go(c.n, details); }); }, reduced ? 0 : 180);
       return;
     }
