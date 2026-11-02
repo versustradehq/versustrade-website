@@ -7,10 +7,10 @@
     },
     'Amazon Gift Card': {
       physical: [
-        'Australia Amazon No Receipt (25 and above )','Australia Amazon With Receipt (25 and above )',
-        'Canada Amazon No Receipt (25 and above )','Canada Amazon With Receipt (25 and above )',
-        'Germany Amazon No Receipt (10-100 )','Germany Amazon With Receipt (10-100 )',
-        'UK Amazon No Receipt (10-100 )','UK Amazon With Receipt (10-100 )',
+        'Australia Amazon No Receipt (25 and above)','Australia Amazon With Receipt (25 and above)',
+        'Canada Amazon No Receipt (25 and above)','Canada Amazon With Receipt (25 and above)',
+        'Germany Amazon No Receipt (10-100)','Germany Amazon With Receipt (10-100)',
+        'UK Amazon No Receipt (10-100)','UK Amazon With Receipt (10-100)',
         'USA Amazon (10-24)','USA Amazon (25-49)','USA Amazon Cash Receipt (101-200)',
         'USA Amazon Cash Receipt (201-499)','USA Amazon Cash Receipt (50-100)',
         'USA Amazon Cash Receipt Single (500)','USA Amazon Credit/No Receipt (101-200)',
@@ -36,7 +36,9 @@
     '.vt-visa-search{display:flex;align-items:center;gap:10px;margin:0 0 14px;padding:0 14px;border:1px solid var(--line,#e5e5e5);border-radius:12px;background:var(--soft,#fafafa)}' +
     '.vt-visa-search input{width:100%;height:46px;border:0;outline:0;background:transparent;color:inherit;font:inherit}' +
     '.vt-visa-list{display:grid;gap:8px}' +
-    '.vt-visa-option{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:14px;border:1px solid var(--line,#e5e5e5);border-radius:12px;background:var(--bg,#fff);color:inherit;text-align:left;font:inherit;font-size:14px;font-weight:650;cursor:pointer}' +
+    '.vt-visa-option{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:14px;border:1px solid var(--line,#e5e5e5);border-radius:12px;background:var(--bg,#fff);color:inherit;text-align:left;font:inherit;font-size:14px;font-weight:650;cursor:pointer;white-space:nowrap;overflow:hidden}' +
+    '.vt-visa-label{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}' +
+    '.vt-visa-option>span:last-child{flex:none}' +
     '.vt-visa-option:hover,.vt-visa-type:hover{border-color:#E11D2E;background:color-mix(in srgb,#E11D2E 5%,var(--bg,#fff))}' +
     '.vt-visa-empty{padding:22px 10px;color:var(--muted,#737373);text-align:center;font-size:14px}' +
     '@media(max-width:520px){.vt-visa-overlay{padding:10px}.vt-visa-panel{max-height:calc(100dvh - 20px);border-radius:18px}.vt-visa-body{padding:16px}.vt-visa-types{grid-template-columns:1fr}}';
@@ -96,7 +98,8 @@
         list.innerHTML = '';
         if (!matches.length) { var empty = document.createElement('div'); empty.className = 'vt-visa-empty'; empty.textContent = 'No matching subcategories found.'; list.appendChild(empty); return; }
         matches.forEach(function (item) {
-          var b = document.createElement('button'); b.type = 'button'; b.className = 'vt-visa-option'; b.textContent = item;
+          var b = document.createElement('button'); b.type = 'button'; b.className = 'vt-visa-option';
+          var label = document.createElement('span'); label.className = 'vt-visa-label'; label.textContent = item; b.appendChild(label);
           var arrow = document.createElement('span'); arrow.textContent = '›'; arrow.setAttribute('aria-hidden','true'); b.appendChild(arrow);
           b.addEventListener('click', function () {
             var selected = { type: kind, subcategory: item };
