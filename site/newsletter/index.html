@@ -30,6 +30,12 @@ button:disabled{opacity:.6;cursor:default}
 .alt{margin-top:14px;display:inline-block;color:var(--muted);font-size:14px}
 [hidden]{display:none!important}
 </style>
+
+<style id="vt-android-tap-fix">
+/* Prevent Android Chrome's blue tap highlight and text-selection toolbar on controls. */
+button, a, [role="button"], [role="tab"], [role="menuitem"], label, input[type="button"], input[type="submit"], input[type="reset"] { -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-user-select: none; user-select: none; }
+</style>
 </head>
 <body>
 <main class="card" id="card" aria-live="polite">
