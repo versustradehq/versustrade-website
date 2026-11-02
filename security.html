@@ -747,6 +747,12 @@ html.va-lock{overflow:hidden}
 .faq details{border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin:0 0 10px;max-width:72ch}.faq summary{cursor:pointer;font-weight:700;line-height:1.5}.faq details p{margin:10px 0 0}
 @media(max-width:860px){.summary ul,.never ul{grid-template-columns:1fr}}
 </style>
+
+<style id="vt-android-tap-fix">
+/* Prevent Android Chrome's blue tap highlight and text-selection toolbar on controls. */
+button, a, [role="button"], [role="tab"], [role="menuitem"], label, input[type="button"], input[type="submit"], input[type="reset"] { -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-user-select: none; user-select: none; }
+</style>
 </head>
 <body>
 <header class="vt-header" id="vtHeader">
