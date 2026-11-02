@@ -12,9 +12,9 @@
     'USA Visa E-code (100-299)',
     'USA Visa E-code (300 and above)'
   ];
-  var overlay = null, previousFocus = null;
+  var overlay = null, previousFocus = null, activeKeyHandler = null;
   var css = '.vt-visa-overlay{position:fixed;inset:0;z-index:10050;display:grid;place-items:center;padding:18px;background:rgba(0,0,0,.58);backdrop-filter:blur(5px)}' +
-    '.vt-visa-panel{width:min(100%,520px);max-height:min( min(760px, calc(100dvh - 36px)), 760px);display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--line,#e5e5e5);border-radius:20px;background:var(--bg,#fff);color:var(--text,#171717);box-shadow:0 24px 80px rgba(0,0,0,.25)}' +
+    '.vt-visa-panel{width:min(100%,520px);max-height:min(760px,calc(100dvh - 36px));display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--line,#e5e5e5);border-radius:20px;background:var(--bg,#fff);color:var(--text,#171717);box-shadow:0 24px 80px rgba(0,0,0,.25)}' +
     '.vt-visa-head{display:flex;align-items:center;gap:12px;padding:18px 20px;border-bottom:1px solid var(--line,#e5e5e5)}' +
     '.vt-visa-head button{width:34px;height:34px;flex:none;border:0;border-radius:50%;background:var(--pill,#f3f3f3);color:inherit;font-size:20px;cursor:pointer}' +
     '.vt-visa-head strong{flex:1;font-size:17px;font-weight:800}' +
@@ -36,6 +36,7 @@
   }
   function close() {
     if (!overlay) return;
+    if (activeKeyHandler) { document.removeEventListener('keydown', activeKeyHandler); activeKeyHandler = null; }
     overlay.remove(); overlay = null;
     document.documentElement.style.removeProperty('overflow');
     if (previousFocus && previousFocus.focus) previousFocus.focus({ preventScroll: true });
@@ -98,11 +99,9 @@
     }
     back.addEventListener('click', showTypes); closeBtn.addEventListener('click', close);
     overlay.addEventListener('click', function (e) { if (e.target === overlay) close(); });
-    function keydown(e) { if (e.key === 'Escape') { close(); document.removeEventListener('keydown', keydown); } }
+    function keydown(e) { if (e.key === 'Escape') close(); }
+    activeKeyHandler = keydown;
     document.addEventListener('keydown', keydown);
-    var oldClose = close;
-    // Remove the temporary keyboard listener whenever the dialog closes.
-    overlay.addEventListener('DOMNodeRemoved', function () { document.removeEventListener('keydown', keydown); });
     showTypes();
   }
   window.VTVisaPicker = { open: open, close: close };
