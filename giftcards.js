@@ -85,6 +85,18 @@
         'USA Apple/iTunes Ecode (11 to 499, Irregular Values)'
       ]
     },
+    'Target Gift Card': {
+      physical: ['USA Target Visa Gift Card (100 and above)'],
+      ecode: []
+    },
+    'Walmart Gift Card': {
+      physical: ['USA Walmart Physical (100-299)','USA Walmart Physical (300 and above)','USA Walmart Physical (50-99)'],
+      ecode: ['USA Walmart Ecode (300 and above)','USA Walmart Ecode (50-299)']
+    },
+    'PlayStation Gift Card': {
+      physical: ['USA PlayStation Gift Card (10-70)','USA PlayStation Gift Card (200 and above )','USA PlayStation Gift Card (71 - 199)'],
+      ecode: ['USA PlayStation Gift Card (10-70)','USA PlayStation Gift Card (200 and above )','USA PlayStation Gift Card (71 - 199)']
+    },
     'Steam Gift Card': {
       physical: ['($) USA STEAM ECODE','(£) UK Steam Ecode','(€ ) Euro Steam Ecode','Australia Steam Ecode (A$)','CANADA Steam Ecode $','CHF Steam Ecode','NZD Steam Ecode $'],
       ecode: ['($) USA STEAM ECODE','(£) UK Steam Ecode','(€ ) Euro Steam Ecode','Australia Steam Ecode (A$)','CANADA Steam Ecode $','CHF Steam Ecode','NZD Steam Ecode $']
@@ -156,7 +168,14 @@
       [['Physical','Plastic card'],['E-code','Digital code']].forEach(function (entry) {
         var b = document.createElement('button'); b.type = 'button'; b.className = 'vt-visa-type'; b.textContent = entry[0];
         var small = document.createElement('span'); small.textContent = entry[1]; b.appendChild(small);
-        b.addEventListener('click', function () { showSubcategories(entry[0]); });
+        b.addEventListener('click', function () {
+          if (/^Target Gift Card$/i.test(cardName) && entry[0] === 'E-code') {
+            close();
+            if (typeof onSelect === 'function') onSelect({ type: 'E-code', subcategory: null });
+            return;
+          }
+          showSubcategories(entry[0]);
+        });
         types.appendChild(b);
       });
       body.append(p, types);
