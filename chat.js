@@ -982,7 +982,7 @@
 
   function finishGift(f) {
     var d = f.d, val = (GSYM[d.ccy] || '') + Number(d.value).toLocaleString('en-US') + (GSYM[d.ccy] ? '' : ' ' + d.ccy);
-    var isStructured = /visa|amazon|apple|itunes/i.test(d.card || '');
+    var isStructured = /visa|amazon|apple|itunes|steam|razer|sephora/i.test(d.card || '');
     var text = isStructured ? 'I want to sell my ' + d.card + ' (' + d.gkind + ', ' + d.subcategory + ', ' + val + ').' : 'I want to sell my ' + d.card + ' (' + d.gkind.toLowerCase() + ', ' + val + ', bought in ' + d.country + ').';
     S.flow = null; lastTrade = { custom: 'Hi VersusTrade, ' + text, card: d.card, giftType: d.gkind, subcategory: d.subcategory || null }; refreshWa();
     var rows = [['Type', d.gkind]];
