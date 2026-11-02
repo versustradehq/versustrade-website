@@ -3044,6 +3044,7 @@ html.va-lock{overflow:hidden}
 })();
 </script>
 
+<script src="/giftcards.js?v=20261102-1"></script>
 <script src="/chat.js?v=20261101-5"></script>
 <script>
 /* VersusTrade sign in / sign up popup (Supabase Auth over REST). The key below is the PUBLIC publishable key. */
@@ -5363,13 +5364,22 @@ function createSim(gl) {
     timer = setTimeout(function () { modal.hidden = true; }, reduced ? 0 : 280);
     if (lastFocus && lastFocus.focus) try { lastFocus.focus({ preventScroll: true }); } catch (e) {}
   }
-  function go(name) {
-    if (window.VTChat && window.VTChat.sendGiftCard) window.VTChat.sendGiftCard(name);
-    else window.open('https://api.whatsapp.com/send?phone=2349015508108&text=' + encodeURIComponent('Hi VersusTrade, I want to sell my ' + name + '.'), '_blank', 'noopener');
+  function go(name, details) {
+    if (window.VTChat && window.VTChat.sendGiftCard) window.VTChat.sendGiftCard(name, details || null);
+    else {
+      var message = 'Hi VersusTrade, I want to sell my ' + name + '.';
+      if (details) message += ' Type: ' + details.type + '. Subcategory: ' + details.subcategory + '.';
+      window.open('https://api.whatsapp.com/send?phone=2349015508108&text=' + encodeURIComponent(message), '_blank', 'noopener');
+    }
   }
   function choose(i) {
     var c = shown[i]; if (!c) return;
-    close(); setTimeout(function () { go(c.n); }, reduced ? 0 : 180);
+    close();
+    if (/^visa gift card$/i.test(c.n) && window.VTVisaPicker) {
+      setTimeout(function () { window.VTVisaPicker.open(function (details) { go(c.n, details); }); }, reduced ? 0 : 180);
+      return;
+    }
+    setTimeout(function () { go(c.n); }, reduced ? 0 : 180);
   }
 
   modal.addEventListener('click', function (e) {
