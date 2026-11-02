@@ -791,6 +791,12 @@ html.va-lock{overflow:hidden}
 /* room above the footer's bottom row for the flying button to rest in */
 .foot .ft-credits{margin-top:56px}
 </style>
+
+<style id="vt-android-tap-fix">
+/* Prevent Android Chrome's blue tap highlight and text-selection toolbar on controls. */
+button, a, [role="button"], [role="tab"], [role="menuitem"], label, input[type="button"], input[type="submit"], input[type="reset"] { -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-user-select: none; user-select: none; }
+</style>
 </head>
 <body>
 
