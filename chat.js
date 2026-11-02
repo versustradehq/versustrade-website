@@ -891,22 +891,47 @@
     var d = f.d, got = false, i, a, m;
     if (f.step === 'cardtext' && !d.card && raw.trim().length > 1 && raw.length < 40) { d.card = cap(raw.trim()); return true; }
     if (!d.card) for (i = 0; i < GK.length; i++) if (GK[i][0].test(q)) { d.card = GK[i][1]; got = true; break; }
-    var isVisa = /visa/i.test(d.card || '');
-    if (isVisa) {
+    var isVisa = /visa/i.test(d.card || ''), isAmazon = /amazon/i.test(d.card || ''), isStructured = isVisa || isAmazon;
+    if (isStructured) {
       if (!d.gkind) {
         if (/\bphysical\b|plastic|actual card/.test(q)) { d.gkind = 'Physical'; got = true; }
         else if (/e-?code|digital|code only|email/.test(q)) { d.gkind = 'E-code'; got = true; }
       }
       if (d.gkind && !d.subcategory) {
-        var visaOptions = d.gkind === 'Physical' ? [
-          'Canada Visa Gift Card (100-299)','Canada Visa Gift Card (300 and above)','Canada Visa Gift Card (50-99)',
-          'USA Visa 4034/4358 (100-299)','USA Visa 4034/4358 (300 and above)','USA Visa 4034/4358 (50-99)'
-        ] : ['USA Visa E-code (100-299)','USA Visa E-code (300 and above)'];
-        for (i = 0; i < visaOptions.length; i++) if (q.indexOf(visaOptions[i].toLowerCase()) !== -1) { d.subcategory = visaOptions[i]; got = true; break; }
+        var opts = isVisa
+          ? (d.gkind === 'Physical' ? [
+            'Canada Visa Gift Card (100-299)','Canada Visa Gift Card (300 and above)','Canada Visa Gift Card (50-99)',
+            'USA Visa 4034/4358 (100-299)','USA Visa 4034/4358 (300 and above)','USA Visa 4034/4358 (50-99)'
+          ] : ['USA Visa E-code (100-299)','USA Visa E-code (300 and above)'])
+          : (d.gkind === 'Physical' ? [
+            'Australia Amazon No Receipt (25 and above )','Australia Amazon With Receipt (25 and above )',
+            'Canada Amazon No Receipt (25 and above )','Canada Amazon With Receipt (25 and above )',
+            'Germany Amazon No Receipt (10-100 )','Germany Amazon With Receipt (10-100 )',
+            'UK Amazon No Receipt (10-100 )','UK Amazon With Receipt (10-100 )',
+            'USA Amazon (10-24)','USA Amazon (25-49)','USA Amazon Cash Receipt (101-200)',
+            'USA Amazon Cash Receipt (201-499)','USA Amazon Cash Receipt (50-100)',
+            'USA Amazon Cash Receipt Single (500)','USA Amazon Credit/No Receipt (101-200)',
+            'USA Amazon Credit/No Receipt (201-500)','USA Amazon Credit/No Receipt (50-100)',
+            'USA Amazon Debit Receipt (101 - 200)','USA Amazon Debit Receipt (201 - 499)',
+            'USA Amazon Debit Receipt (50-100)','USA Amazon Debit Receipt Single (500)'
+          ] : [
+            'Australia Amazon Ecode (25 and above )','Canada Amazon Ecode (25 and above )',
+            'Germany Amazon Ecode (25 and above )','UK Amazon Ecode (10 and above )',
+            'USA Amazon Ecode (25 and above )'
+          ]);
+        for (i = 0; i < opts.length; i++) if (q.indexOf(opts[i].toLowerCase().trim()) !== -1) { d.subcategory = opts[i]; got = true; break; }
       }
       if (f.step === 'value' && !d.value) {
         m = q.replace(/,/g, '').match(/(\d+(?:\.\d+)?)\s*(?:(k)(?![a-z]))?/);
-        if (m) { a = parseFloat(m[1]) * (m[2] ? 1000 : 1); if (a > 0) { d.value = a; d.ccy = ccyOf(q); got = true; } }
+        if (m) {
+          a = parseFloat(m[1]) * (m[2] ? 1000 : 1);
+          if (a > 0) {
+            d.value = a;
+            var sub = (d.subcategory || '').toLowerCase();
+            d.ccy = isVisa || sub.indexOf('usa') === 0 ? 'USD' : sub.indexOf('canada') === 0 ? 'CAD' : sub.indexOf('australia') === 0 ? 'AUD' : sub.indexOf('uk ') === 0 ? 'GBP' : sub.indexOf('germany') === 0 ? 'EUR' : ccyOf(q);
+            got = true;
+          }
+        }
       } else if (d.value && !d.ccy && ccyOf(q)) { d.ccy = ccyOf(q); got = true; }
       return got;
     }
