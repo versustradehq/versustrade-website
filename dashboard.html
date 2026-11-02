@@ -2698,7 +2698,7 @@ draw();
   function setRT(){}
   
   /* ---- account view ---- */
-  function fromAuth(){var u=window.VTAuth&&VTAuth.user&&VTAuth.user();if(!u)return;if(u.email)USER.email=u.email;var n=u.name||(u.email?u.email.split('@')[0]:'');if(n)setName(n);if(u.created){var joined=new Date(u.created);if(!isNaN(joined.getTime()))USER.since=joined.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}$('aMail').textContent=USER.email;$('aSince').textContent=USER.since}
+  function fromAuth(){var u=window.VTAuth&&VTAuth.user&&VTAuth.user();if(!u)return;if(u.email)USER.email=u.email;var n=u.name||(u.email?u.email.split('@')[0]:'');if(n)setName(n);if(u.created){var joined=new Date(u.created);if(!isNaN(joined.getTime()))USER.since=joined.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}$('aMail').textContent=USER.email;$('aSince').textContent=USER.since;loadCustomerTrades()}
   fromAuth();window.addEventListener('vt-auth',fromAuth);window.addEventListener('vt-profile',function(e){if(e.detail&&e.detail.name)setName(e.detail.name)});
     var done=TRADES.filter(function(t){return t.status==='done'});
   
