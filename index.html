@@ -3044,7 +3044,7 @@ html.va-lock{overflow:hidden}
 })();
 </script>
 
-<script src="/giftcards.js?v=20261102-7"></script>
+<script src="/giftcards.js?v=20261102-8"></script>
 <script src="/chat.js?v=20261102-8"></script>
 <script>
 /* VersusTrade sign in / sign up popup (Supabase Auth over REST). The key below is the PUBLIC publishable key. */
@@ -5316,18 +5316,18 @@ function createSim(gl) {
   var R2 = 'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/';
   // img: logo shown in the list. No img: a coloured monogram tile (add an image URL any time).
   var CARDS = [
-    { n: 'Visa Gift Card', c: '#1a1f71', t: 'VISA' },
+    { n: 'Visa Gift Card', img: 'https://cdn.simpleicons.org/visa/1A1F71', t: 'VISA' },
     { n: 'Amazon Gift Card', img: R2 + 'Amazon.png', t: 'A' },
     { n: 'Apple / iTunes Gift Card', img: R2 + 'Apple.png', t: 'A' },
     { n: 'Google Play Gift Card', img: R2 + 'Google%20Play.png', t: 'G' },
     { n: 'Steam Gift Card', img: R2 + 'Steam.png', t: 'S' },
     { n: 'Razer Gold', img: R2 + 'RAZOR%20GOLD.png', t: 'R' },
-    { n: 'Sephora Gift Card', c: '#111111', t: 'S' },
-    { n: 'Target Gift Card', c: '#cc0000', t: 'T' },
-    { n: 'Walmart Gift Card', c: '#0071ce', t: 'W' },
-    { n: 'PlayStation Gift Card', c: '#003791', t: 'PS' },
-    { n: 'Xbox Gift Card', c: '#107c10', t: 'X' },
-    { n: 'eBay Gift Card', c: '#e53238', t: 'eBay' }
+    { n: 'Sephora Gift Card', img: 'https://cdn.simpleicons.org/sephora/000000', t: 'S' },
+    { n: 'Target Gift Card', img: 'https://cdn.simpleicons.org/target/CC0000', t: 'T' },
+    { n: 'Walmart Gift Card', img: 'https://cdn.simpleicons.org/walmart/0071CE', t: 'W' },
+    { n: 'PlayStation Gift Card', img: 'https://cdn.simpleicons.org/playstation/003791', t: 'PS' },
+    { n: 'Xbox Gift Card', img: 'https://cdn.simpleicons.org/xbox/107C10', t: 'X' },
+    { n: 'eBay Gift Card', img: 'https://cdn.simpleicons.org/ebay/E53238', t: 'eBay' }
   ];
   var $ = function (id) { return document.getElementById(id); };
   var search = $('gcmSearch'), box = $('gcList'), shown = [], lastFocus = null, timer = 0;
@@ -5375,7 +5375,7 @@ function createSim(gl) {
   function choose(i) {
     var c = shown[i]; if (!c) return;
     close();
-    if ((/^(visa|amazon|apple \/ itunes|steam) gift card$/i.test(c.n) || /^razer gold$/i.test(c.n) || /^sephora gift card$/i.test(c.n) || /^(target|walmart) gift card$/i.test(c.n) || /^playstation gift card$/i.test(c.n) || /^xbox gift card$/i.test(c.n)) && window.VTVisaPicker) {
+    if ((/^(visa|amazon|apple \/ itunes|steam) gift card$/i.test(c.n) || /^razer gold$/i.test(c.n) || /^sephora gift card$/i.test(c.n) || /^(target|walmart) gift card$/i.test(c.n) || /^playstation gift card$/i.test(c.n) || /^xbox gift card$/i.test(c.n) || /^ebay gift card$/i.test(c.n)) && window.VTVisaPicker) {
       setTimeout(function () { window.VTVisaPicker.open(c.n, function (details) { go(c.n, details); }); }, reduced ? 0 : 180);
       return;
     }
