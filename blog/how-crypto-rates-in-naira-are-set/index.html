@@ -336,6 +336,20 @@ button{background:none;border:0;cursor:pointer}
 .rv-on [data-rv].rv-in{opacity:1;transform:none;transition:opacity .8s cubic-bezier(.215,.61,.355,1) var(--rv-d,0s),transform .8s cubic-bezier(.215,.61,.355,1) var(--rv-d,0s)}
 .rv-on [data-rv].rv-now{transition:none!important}
 </style>
+
+<style id="vt-android-tap-fix">
+/* Prevent Android Chrome from showing its blue tap/selection overlay on controls. */
+button, a, [role="button"], [role="tab"], [role="menuitem"], label, input[type="button"], input[type="submit"], input[type="reset"] {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * {
+  -webkit-user-select: none;
+  user-select: none;
+}
+</style>
 </head>
 <body>
 <header class="vt-header" id="vtHeader">
