@@ -757,14 +757,19 @@
     });
   }
 
-  function sendGiftCard(name) {
+  function sendGiftCard(name, details) {
     if (S.closedAt) resetChat(true);
-    lastTrade = { custom: 'Hi VersusTrade, I want to sell my ' + name + '.', card: name }; refreshWa();
+    details = details || null;
+    var d = { card: name };
+    if (details) { d.gkind = details.type; d.subcategory = details.subcategory; }
+    var detailText = details ? ' (' + details.type + ', ' + details.subcategory + ')' : '';
+    var requestText = 'I want to sell my ' + name + detailText + '.';
+    lastTrade = { custom: 'Hi VersusTrade, ' + requestText, card: name, giftType: details && details.type, subcategory: details && details.subcategory }; refreshWa();
     open('chat');
-    add({ role: 'user', text: 'I want to sell my ' + name + '.' });
-    if (S.mode !== 'ai') { toTeam('Got it, you want to sell your ' + name + '. Let me check and get back to you.', 'I want to sell my ' + name + '.'); return; }
+    add({ role: 'user', text: requestText });
+    if (S.mode !== 'ai') { toTeam('Got it, you want to sell your ' + name + detailText + '. Let me check and get back to you.', requestText); return; }
     if (S.busy) return;
-    S.flow = { type: 'gift', d: { card: name } }; flowNext();
+    S.flow = { type: 'gift', d: d }; flowNext();
   }
 
   /* ---------- guided flows: Betty asks follow-up questions in the chat (crypto order, gift card sale) ---------- */
@@ -886,6 +891,25 @@
     var d = f.d, got = false, i, a, m;
     if (f.step === 'cardtext' && !d.card && raw.trim().length > 1 && raw.length < 40) { d.card = cap(raw.trim()); return true; }
     if (!d.card) for (i = 0; i < GK.length; i++) if (GK[i][0].test(q)) { d.card = GK[i][1]; got = true; break; }
+    var isVisa = /visa/i.test(d.card || '');
+    if (isVisa) {
+      if (!d.gkind) {
+        if (/\bphysical\b|plastic|actual card/.test(q)) { d.gkind = 'Physical'; got = true; }
+        else if (/e-?code|digital|code only|email/.test(q)) { d.gkind = 'E-code'; got = true; }
+      }
+      if (d.gkind && !d.subcategory) {
+        var visaOptions = d.gkind === 'Physical' ? [
+          'Canada Visa Gift Card (100-299)','Canada Visa Gift Card (300 and above)','Canada Visa Gift Card (50-99)',
+          'USA Visa 4034/4358 (100-299)','USA Visa 4034/4358 (300 and above)','USA Visa 4034/4358 (50-99)'
+        ] : ['USA Visa E-code (100-299)','USA Visa E-code (300 and above)'];
+        for (i = 0; i < visaOptions.length; i++) if (q.indexOf(visaOptions[i].toLowerCase()) !== -1) { d.subcategory = visaOptions[i]; got = true; break; }
+      }
+      if (f.step === 'value' && !d.value) {
+        m = q.replace(/,/g, '').match(/(\d+(?:\.\d+)?)\s*(?:(k)(?![a-z]))?/);
+        if (m) { a = parseFloat(m[1]) * (m[2] ? 1000 : 1); if (a > 0) { d.value = a; d.ccy = ccyOf(q); got = true; } }
+      } else if (d.value && !d.ccy && ccyOf(q)) { d.ccy = ccyOf(q); got = true; }
+      return got;
+    }
     if (!d.gkind) {
       if (/physical|plastic|actual card/.test(q)) { d.gkind = 'Physical card'; got = true; }
       else if (/e-?code|digital|code only|email/.test(q)) { d.gkind = 'E-code'; got = true; }
@@ -898,23 +922,46 @@
     if (!d.country && f.step === 'country' && raw.trim().length > 1 && raw.trim().length <= 40 && !/\d/.test(raw)) { d.country = cap(raw.trim()); got = true; }
     return got;
   }
+
   function nextGift(f) {
-    var d = f.d, cards = (window.VTGiftCards && window.VTGiftCards.cards) || [];
+    var d = f.d, cards = (window.VTGiftCards && window.VTGiftCards.cards) || [], isVisa = /visa/i.test(d.card || '');
     if (!d.card) {
       f.step = 'card';
       return ask('Which gift card would you like to sell?', cards.map(function (c) { return ch(c.n.replace(' Gift Card', ''), 'g:card=' + c.n); }).concat([ch('Other card', 'g:card=?'), CANCEL]));
     }
+    if (isVisa) {
+      if (!d.gkind) { f.step = 'gkind'; return ask('Is your Visa gift card Physical or E-code?', [ch('Physical', 'g:gkind=Physical'), ch('E-code', 'g:gkind=E-code'), CANCEL]); }
+      if (!d.subcategory) {
+        f.step = 'subcategory';
+        var subs = d.gkind === 'Physical' ? [
+          'Canada Visa Gift Card (100-299)','Canada Visa Gift Card (300 and above)','Canada Visa Gift Card (50-99)',
+          'USA Visa 4034/4358 (100-299)','USA Visa 4034/4358 (300 and above)','USA Visa 4034/4358 (50-99)'
+        ] : ['USA Visa E-code (100-299)','USA Visa E-code (300 and above)'];
+        return ask('Select Gift card Subcategory:', subs.map(function (s) { return ch(s, 'g:subcategory=' + s); }).concat([CANCEL]));
+      }
+      if (!d.value) { f.step = 'value'; return ask('What amount is on your ' + d.subcategory + '? For example, 100 or $100.', [CANCEL]); }
+      if (!d.ccy) { f.step = 'ccy'; return ask('What currency is the card amount in?', [ch('US dollars ($)', 'g:ccy=USD'), CANCEL]); }
+      finishGift(f); return;
+    }
     if (!d.gkind) { f.step = 'gkind'; return ask('Is your ' + d.card + ' a physical card, an e-code, or do you only have the receipt?', [ch('Physical card', 'g:gkind=Physical card'), ch('E-code', 'g:gkind=E-code'), ch('Receipt only', 'g:gkind=Receipt only'), CANCEL]); }
-    if (!d.value) { f.step = 'value'; return ask('What is the card value? For example $100, \u00A350 or \u20AC25.', [CANCEL]); }
-    if (!d.ccy) { f.step = 'ccy'; return ask('Is ' + d.value.toLocaleString('en-US') + ' in US dollars, British pounds, euros or Canadian dollars?', [ch('US dollars ($)', 'g:ccy=USD'), ch('British pounds (\u00A3)', 'g:ccy=GBP'), ch('Euros (\u20AC)', 'g:ccy=EUR'), ch('Canadian dollars', 'g:ccy=CAD'), CANCEL]); }
+    if (!d.value) { f.step = 'value'; return ask('What is the card value? For example $100, £50 or €25.', [CANCEL]); }
+    if (!d.ccy) { f.step = 'ccy'; return ask('Is ' + d.value.toLocaleString('en-US') + ' in US dollars, British pounds, euros or Canadian dollars?', [ch('US dollars ($)', 'g:ccy=USD'), ch('British pounds (£)', 'g:ccy=GBP'), ch('Euros (€)', 'g:ccy=EUR'), ch('Canadian dollars', 'g:ccy=CAD'), CANCEL]); }
     if (!d.country) { f.step = 'country'; return ask('Which country was the card bought in?', [ch('United States', 'g:country=United States'), ch('United Kingdom', 'g:country=United Kingdom'), ch('Canada', 'g:country=Canada'), CANCEL]); }
     finishGift(f);
   }
+
   function finishGift(f) {
     var d = f.d, val = (GSYM[d.ccy] || '') + Number(d.value).toLocaleString('en-US') + (GSYM[d.ccy] ? '' : ' ' + d.ccy);
-    var text = 'I want to sell my ' + d.card + ' (' + d.gkind.toLowerCase() + ', ' + val + ', bought in ' + d.country + ').';
-    S.flow = null; lastTrade = { custom: 'Hi VersusTrade, ' + text, card: d.card }; refreshWa();
-    add({ role: 'summary', summary: { tag: 'sell', title: d.card, rows: [['Type', d.gkind], ['Value', val], ['Country', d.country]], text: text } });
+    var isVisa = /visa/i.test(d.card || '');
+    var text = isVisa
+      ? 'I want to sell my ' + d.card + ' (' + d.gkind + ', ' + d.subcategory + ', ' + val + ').'
+      : 'I want to sell my ' + d.card + ' (' + d.gkind.toLowerCase() + ', ' + val + ', bought in ' + d.country + ').';
+    S.flow = null; lastTrade = { custom: 'Hi VersusTrade, ' + text, card: d.card, giftType: d.gkind, subcategory: d.subcategory || null }; refreshWa();
+    var rows = [['Type', d.gkind]];
+    if (isVisa) rows.push(['Subcategory', d.subcategory]);
+    rows.push(['Amount', val]);
+    if (!isVisa) rows.push(['Country', d.country]);
+    add({ role: 'summary', summary: { tag: 'sell', title: d.card, rows: rows, text: text } });
     ask('Thanks, I\u2019ve noted all your gift card details. Our team will confirm the card and rate with you, and process everything.', (CHAT.isLoggedIn() ? [] : [loginAct()]).concat([waAct(lastTrade.custom), telegramAct(lastTrade.custom)]));
   }
 
