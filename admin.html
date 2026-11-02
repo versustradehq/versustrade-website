@@ -217,6 +217,38 @@ tbody tr:hover{background:var(--panel2)}
 .ico-card.sm{border-radius:7px}
 .amt{display:inline-flex;align-items:center;gap:8px}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.vt-filter-dialog{border:0;padding:0;width:min(520px,calc(100vw - 28px));max-width:none;max-height:min(88vh,820px);border-radius:20px;background:var(--panel,var(--bg));color:var(--text);box-shadow:0 28px 80px rgba(0,0,0,.28);overflow:visible}
+.vt-filter-dialog::backdrop{background:rgba(12,16,22,.58);backdrop-filter:blur(3px)}
+.vt-filter-box{max-height:min(88vh,820px);overflow:auto;padding:22px}
+.vt-filter-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
+.vt-filter-head h2{font-size:19px;font-weight:800;letter-spacing:-.03em;margin:0}
+.vt-filter-reset{border:0;background:transparent;color:var(--red);font-weight:700;font-size:13px;padding:7px 4px}
+.vt-filter-section{padding:17px 0;border-top:1px solid var(--line)}
+.vt-filter-section h3{font-size:13px;font-weight:800;margin:0 0 13px}
+.vt-filter-dates{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.vt-filter-date{border:1px solid var(--line);background:var(--panel2,var(--soft));color:var(--text);border-radius:10px;padding:10px 7px;font-size:12px;font-weight:700}
+.vt-filter-date[aria-pressed=true]{border-color:var(--red);background:var(--red-soft,var(--red-tint));color:var(--red)}
+.vt-filter-custom{display:none;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.vt-filter-custom.show{display:grid}
+.vt-filter-custom label{display:grid;gap:6px;font-size:11px;color:var(--muted);font-weight:700}
+.vt-filter-custom input{width:100%;min-width:0;border:1px solid var(--line);border-radius:10px;background:var(--panel2,var(--soft));color:var(--text);padding:10px}
+.vt-filter-group{border:1px solid var(--line);border-radius:13px;overflow:hidden;margin-top:10px}
+.vt-filter-group-head{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;background:var(--panel2,var(--soft));font-size:13px;font-weight:800}
+.vt-filter-selectall{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:11px;font-weight:600}
+.vt-filter-options{display:grid;grid-template-columns:1fr 1fr;gap:0 12px;padding:8px 13px}
+.vt-filter-option{display:flex;align-items:center;gap:9px;min-height:39px;font-size:12px;color:var(--text);cursor:pointer}
+.vt-filter-option input,.vt-filter-selectall input{width:16px;height:16px;accent-color:var(--red);margin:0}
+.vt-filter-foot{display:flex;justify-content:flex-end;gap:9px;padding-top:16px;border-top:1px solid var(--line);margin-top:5px}
+.vt-filter-foot button{border-radius:10px;padding:10px 17px;font-weight:700;font-size:13px}
+.vt-filter-cancel{border:1px solid var(--line);background:var(--panel,var(--bg));color:var(--text)}
+.vt-filter-apply{border:0;background:var(--red);color:#fff}
+.vt-filter-toolbar{display:flex;align-items:center;gap:9px}
+.vt-filter-trigger{display:inline-flex;align-items:center;gap:8px}
+.vt-filter-trigger svg{width:16px;height:16px}
+.vt-account-history-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.vt-account-history-head .h{margin-bottom:16px}
+@media(max-width:520px){.vt-filter-box{padding:18px}.vt-filter-dates{grid-template-columns:repeat(2,minmax(0,1fr))}.vt-filter-options{grid-template-columns:1fr}.vt-account-history-head{align-items:center}}
 </style>
 </head>
 <body>
@@ -293,12 +325,57 @@ tbody tr:hover{background:var(--panel2)}
         </div></div>
       </section>
       <section id="history" class="section">
-        <div class="page-head"><div><div class="eyebrow">Audit log</div><h1>Activity history</h1><div class="sub">A global record of transaction creation, status changes, archives, restores and deletions.</div></div><button class="ghost" id="historyRefresh">Refresh</button></div>
+        <div class="page-head"><div><div class="eyebrow">Audit log</div><h1>Activity history</h1><div class="sub">A global record of transaction creation, status changes, archives, restores and deletions.</div></div><div class="vt-filter-toolbar"><button class="ghost vt-filter-trigger" id="activityFilterOpen" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 5h16M7 12h10m-7 7h4"/></svg>Filter</button><button class="ghost" id="historyRefresh">Refresh</button></div></div>
         <div class="panel"><div class="panel-head"><h2>Recent activity</h2></div><div id="activityList"></div></div>
       </section>
     </main>
   </div>
 </div>
+
+<dialog id="activityFilterDialog" class="vt-filter-dialog" aria-labelledby="activityFilterTitle">
+  <div class="vt-filter-box">
+    <div class="vt-filter-head"><h2 id="activityFilterTitle">Filters</h2><button type="button" class="vt-filter-reset" id="activityFilterReset">Reset</button></div>
+    <section class="vt-filter-section"><h3>Filter By Date</h3>
+      <div class="vt-filter-dates">
+        <button type="button" class="vt-filter-date" data-period="month" aria-pressed="false">This month</button>
+        <button type="button" class="vt-filter-date" data-period="7" aria-pressed="false">7 days</button>
+        <button type="button" class="vt-filter-date" data-period="30" aria-pressed="false">30 days</button>
+        <button type="button" class="vt-filter-date" data-period="today" aria-pressed="false">Today</button>
+      </div>
+      <button type="button" class="vt-filter-date" style="width:100%;margin-top:8px" data-period="custom" aria-pressed="false">Custom date range</button>
+      <div class="vt-filter-custom" id="activityCustomDates">
+        <label>From<input type="date" id="activityDateFrom"></label>
+        <label>To<input type="date" id="activityDateTo"></label>
+      </div>
+    </section>
+    <section class="vt-filter-section"><h3>Filter By Transaction Type</h3>
+      <div class="vt-filter-group"><div class="vt-filter-group-head">Gift Cards<label class="vt-filter-selectall"><input type="checkbox" data-selectall="types"> Select all</label></div>
+        <div class="vt-filter-options">
+          <label class="vt-filter-option"><input type="checkbox" data-filter-value="gift_sell" data-filter-group="types"> Sell Gift Cards</label>
+          <label class="vt-filter-option"><input type="checkbox" data-filter-value="gift_buy" data-filter-group="types"> Buy Gift Cards</label>
+        </div>
+      </div>
+      <div class="vt-filter-group"><div class="vt-filter-group-head">Failed<label class="vt-filter-selectall"><input type="checkbox" data-selectall="failed"> Select all</label></div>
+        <div class="vt-filter-options">
+          <label class="vt-filter-option"><input type="checkbox" data-filter-value="failed" data-filter-group="failed"> Failed</label>
+          <label class="vt-filter-option"><input type="checkbox" data-filter-value="rejected" data-filter-group="failed"> Rejected</label>
+          <label class="vt-filter-option"><input type="checkbox" data-filter-value="flagged" data-filter-group="failed"> Flagged</label>
+          <label class="vt-filter-option"><input type="checkbox" data-filter-value="reversed" data-filter-group="failed"> Reversed</label>
+        </div>
+      </div>
+      <div class="vt-filter-group"><div class="vt-filter-group-head">In Progress<label class="vt-filter-selectall"><input type="checkbox" data-selectall="progress"> Select all</label></div>
+        <div class="vt-filter-options">
+          <label class="vt-filter-option"><input type="checkbox" data-filter-value="pending" data-filter-group="progress"> Pending</label>
+          <label class="vt-filter-option"><input type="checkbox" data-filter-value="processing" data-filter-group="progress"> Processing</label>
+          <label class="vt-filter-option"><input type="checkbox" data-filter-value="reviewing" data-filter-group="progress"> Reviewing</label>
+          <label class="vt-filter-option"><input type="checkbox" data-filter-value="awaiting" data-filter-group="progress"> Awaiting Approval</label>
+          <label class="vt-filter-option"><input type="checkbox" data-filter-value="shipped" data-filter-group="progress"> Shipped</label>
+        </div>
+      </div>
+    </section>
+    <div class="vt-filter-foot"><button type="button" class="vt-filter-cancel" id="activityFilterCancel">Cancel</button><button type="button" class="vt-filter-apply" id="activityFilterApply">Apply filters</button></div>
+  </div>
+</dialog>
 <div id="detailOverlay" class="hidden">
   <div class="panel" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
     <div class="panel-head"><h2 id="detailTitle">Transaction details</h2><button class="icon-btn" id="detailClose" aria-label="Close">✕</button></div>
