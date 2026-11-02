@@ -6,145 +6,217 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Admin | VersusTrade</title>
 <link rel="icon" href="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/REAL%20LOGO%20%20VERSUS TRADE.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script>
 try { var savedTheme = localStorage.getItem('vt-theme'); if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme); } catch(e) {}
 </script>
 <style>
 :root{
- color-scheme:light;--bg:#f5f6f8;--panel:#fff;--panel2:#f8f8fa;--text:#171719;--muted:#777982;--line:#e9e9ed;
- --red:#fe3a12;--red-soft:#fff0ec;--green:#16834a;--green-soft:#e9f8ef;--amber:#a96b00;--amber-soft:#fff5dc;
- --shadow:0 5px 22px rgba(24,24,30,.045);--shadow-lg:0 18px 50px rgba(24,24,30,.10);--radius:16px
+ color-scheme:light;--bg:#f4f6fa;--panel:#fff;--panel2:#f6f7fb;--text:#1c252e;--muted:#637381;--line:#e8ebf1;
+ --red:#fe3a12;--red-soft:#fff0ec;--green:#118d57;--green-soft:#e3f6ec;--amber:#b76e00;--amber-soft:#fff3d6;
+ --shadow:0 0 2px rgba(99,115,129,.18),0 8px 20px -6px rgba(99,115,129,.14);--shadow-lg:0 20px 48px -12px rgba(28,37,46,.22);--side-w:272px
 }
+
 :root[data-theme=dark]{
- color-scheme:dark;--bg:#111114;--panel:#1a1a1e;--panel2:#222227;--text:#f5f5f6;--muted:#a1a1aa;--line:#303037;
- --red:#ff4a27;--red-soft:#3b1d17;--green:#50cf88;--green-soft:#173325;--amber:#ffc45b;--amber-soft:#392d17;
- --shadow:0 5px 22px rgba(0,0,0,.16);--shadow-lg:0 18px 50px rgba(0,0,0,.35)
+ color-scheme:dark;--bg:#141a21;--panel:#1c252e;--panel2:#232d38;--text:#f4f6f8;--muted:#919eab;--line:#2f3a46;
+ --red:#ff5530;--red-soft:#3b1f19;--green:#5be49b;--green-soft:#173a2a;--amber:#ffd666;--amber-soft:#3d3316;
+ --shadow:0 0 2px rgba(0,0,0,.3),0 8px 20px -6px rgba(0,0,0,.35);--shadow-lg:0 20px 48px -12px rgba(0,0,0,.55)
 }
+
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--text);font:14px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
 button,input,select,textarea{font:inherit}
 button{cursor:pointer}
-.shell{width:100%;max-width:none;margin:0;padding:0 34px 48px}
-.top{height:78px;display:flex;align-items:center;justify-content:space-between;gap:18px;position:sticky;top:0;z-index:15;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(18px);border-bottom:1px solid var(--line);margin:0 -34px;padding:0 34px}
-.brand{display:flex;align-items:center;gap:12px;font-weight:850;letter-spacing:-.045em;font-size:19px}
-.brand-mark{width:38px;height:38px;border-radius:12px;background:linear-gradient(145deg,#ff5634,#e92b08);display:grid;place-items:center;color:#fff;font-weight:900;box-shadow:0 6px 15px rgba(254,58,18,.22)}
-.brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:.16em;text-transform:uppercase;font-weight:800;margin-top:1px}
-.top-actions{display:flex;align-items:center;gap:10px}
-.user-pill{color:var(--muted);font-size:12px;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:8px 12px;border:1px solid var(--line);border-radius:99px;background:var(--panel)}
-.icon-btn,.ghost{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:10px;padding:9px 13px;text-decoration:none;transition:.18s ease}
+:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.icon-btn,.ghost{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:10px;padding:9px 13px;font-size:13px;text-decoration:none;transition:.18s ease}
 .icon-btn:hover,.ghost:hover{border-color:var(--red);color:var(--red);transform:translateY(-1px)}
-.primary{border:0;border-radius:10px;background:var(--red);color:white;padding:11px 17px;font-weight:750;box-shadow:0 5px 12px rgba(254,58,18,.15);transition:.18s ease}
+.primary{border:0;border-radius:10px;background:var(--red);color:#fff;padding:11px 17px;font-weight:700;font-size:14px;box-shadow:0 5px 12px rgba(254,58,18,.15);transition:.18s ease}
 .primary:hover{filter:brightness(.96);transform:translateY(-1px);box-shadow:0 8px 18px rgba(254,58,18,.22)}
-.layout{display:grid;grid-template-columns:248px minmax(0,1fr);gap:34px;padding-top:30px;max-width:1600px;margin:0 auto}
-.side{display:flex;flex-direction:column;gap:7px;position:sticky;top:104px;align-self:start;min-height:calc(100vh - 130px);padding:14px 12px;background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
-.nav-label{font-size:9px;color:var(--muted);letter-spacing:.16em;font-weight:850;text-transform:uppercase;padding:13px 13px 8px}
-.nav{border:0;background:transparent;color:var(--muted);text-align:left;padding:12px 13px;border-radius:10px;font-weight:650;font-size:13px;display:flex;align-items:center;gap:12px;transition:background .16s,color .16s}
-.nav .ico{width:21px;height:21px;display:grid;place-items:center;border-radius:7px;background:var(--panel2);font-size:15px}
-.nav.active,.nav:hover{background:var(--red-soft);color:var(--red)}
-.nav.active{font-weight:800}
-.nav.active .ico,.nav:hover .ico{background:color-mix(in srgb,var(--red) 12%,var(--panel));color:var(--red)}
-.side-note{margin-top:auto;padding:14px;border:1px solid var(--line);border-radius:12px;color:var(--muted);font-size:11px;line-height:1.6;background:var(--panel2)}
-.main{min-width:0;padding-bottom:28px}
-.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:24px}
-.eyebrow{color:var(--red);font-size:9px;letter-spacing:.17em;font-weight:850;text-transform:uppercase}
-.page-head h1{margin:5px 0 3px;font-size:29px;line-height:1.2;letter-spacing:-.055em;font-weight:820}
-.sub{color:var(--muted);font-size:12px}
-.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:22px}
-.stat{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:19px 20px;box-shadow:var(--shadow);overflow:hidden;transition:transform .18s,box-shadow .18s}
-.stat:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
-.stat:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--red);opacity:.85}
-.stat:nth-child(2):before{background:var(--amber)}.stat:nth-child(3):before{background:var(--green)}.stat:nth-child(4):before{background:#8b8b96}
-.stat-label{color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.01em}
-.stat-value{font-size:30px;line-height:1.15;font-weight:850;letter-spacing:-.055em;margin-top:10px;font-variant-numeric:tabular-nums}
-.stat-foot{font-size:10px;color:var(--muted);margin-top:5px}
+.primary:disabled{opacity:.6;cursor:wait;transform:none}
+.sub{color:var(--muted);font-size:13px}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
 .panel-head{padding:17px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);min-height:62px}
-.panel-head h2{font-size:14px;margin:0;letter-spacing:-.025em;font-weight:800}
+.panel-head h2{font-size:15px;margin:0;letter-spacing:-.02em;font-weight:700}
 .panel-body{padding:22px}
 .toolbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
-.field,.select,.area{background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:9px;padding:10px 12px;outline:none;width:100%;min-width:0;transition:border-color .16s,box-shadow .16s}
+.field,.select,.area{background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:9px;padding:10px 12px;font-size:14px;outline:none;width:100%;min-width:0;transition:border-color .16s,box-shadow .16s}
 .field::placeholder,.area::placeholder{color:var(--muted);opacity:.75}
 .field:focus,.select:focus,.area:focus{border-color:var(--red);box-shadow:0 0 0 3px color-mix(in srgb,var(--red) 12%,transparent);background:var(--panel)}
-.search{width:min(270px,100%)}
+.search{width:min(300px,100%)}
 .table-wrap{overflow:auto}
-table{width:100%;border-collapse:separate;border-spacing:0;min-width:760px}
+table{width:100%;border-collapse:separate;border-spacing:0;min-width:820px}
 th,td{text-align:left;padding:14px 17px;border-bottom:1px solid var(--line);white-space:nowrap}
-th{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:850;background:var(--panel2)}
-td{font-size:11px;color:var(--text)}
+th{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700;background:var(--panel2)}
+td{font-size:13px;color:var(--text)}
 tbody tr{transition:background .14s}
 tbody tr:hover{background:color-mix(in srgb,var(--red-soft) 38%,var(--panel))}
 tbody tr:last-child td{border-bottom:0}
-.ref{font-weight:800;color:var(--text);letter-spacing:.01em}
+.ref{font-weight:700;letter-spacing:.01em}
+.refcell{display:flex;align-items:center;gap:8px}
+.copy{border:0;background:transparent;color:var(--muted);font-size:11px;padding:3px 6px;border-radius:6px}
+.copy:hover{color:var(--red);background:var(--red-soft)}
+.cust strong{display:block;font-size:13px;font-weight:600}
+.cust small{display:block;color:var(--muted);font-size:12px}
 .muted{color:var(--muted)}
-.status{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:99px;font-size:9px;font-weight:850;letter-spacing:.015em}
-.status:before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+.status{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:99px;font-size:12px;font-weight:700}
+.status:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
 .status.pro{background:var(--amber-soft);color:var(--amber)}
 .status.done{background:var(--green-soft);color:var(--green)}
 .status.dec{background:var(--red-soft);color:var(--red)}
-.type{font-size:10px;font-weight:750;color:var(--muted)}
-.row-action{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:8px;padding:6px 10px;font-size:10px;font-weight:750;transition:.16s}
+.type{font-size:12px;font-weight:600;color:var(--muted)}
+.row-action{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:8px;padding:6px 11px;font-size:12px;font-weight:600;transition:.16s}
 .row-action:hover{border-color:var(--red);color:var(--red);background:var(--red-soft)}
-.empty,.loading{padding:48px 18px;text-align:center;color:var(--muted);font-size:12px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.more{padding:14px;text-align:center;border-top:1px solid var(--line)}
+.empty,.loading{padding:48px 18px;text-align:center;color:var(--muted);font-size:13px}
+.sk-wrap{padding:6px 20px 14px}
+.sk{height:16px;border-radius:6px;margin:18px 0;background:linear-gradient(90deg,var(--panel2),var(--line),var(--panel2));background-size:200% 100%;animation:sh 1.3s infinite linear}
+@keyframes sh{from{background-position:200% 0}to{background-position:-200% 0}}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:17px 16px}
 .form-field{display:flex;flex-direction:column;gap:7px;min-width:0}
-.form-field label{font-size:10px;color:var(--muted);font-weight:800;letter-spacing:.025em}
+.form-field label{font-size:12px;color:var(--muted);font-weight:700}
+.form-field small{font-size:12px}
 .customer-picker{position:relative}
 .customer-results{position:absolute;z-index:10;top:100%;left:0;right:0;margin-top:5px;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-lg);max-height:260px;overflow:auto}
-.customer-option{display:block;width:100%;padding:11px 13px;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--text);text-align:left}
+.customer-option{display:block;width:100%;padding:11px 13px;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--text);text-align:left;font-size:13px}
 .customer-option:last-child{border-bottom:0}
 .customer-option:hover{background:var(--red-soft)}
-.customer-option strong{display:block;font-size:11px}
-.customer-option small{display:block;color:var(--muted);font-size:10px;margin-top:2px}
-.selected-customer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 13px;border:1px solid var(--green);background:var(--green-soft);border-radius:10px;font-size:11px}
+.customer-option strong{display:block;font-size:13px}
+.customer-option small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.selected-customer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 13px;border:1px solid var(--green);background:var(--green-soft);border-radius:10px;font-size:13px}
 .selected-customer strong{display:block}.selected-customer small{color:var(--muted)}
 .span2{grid-column:1/-1}
 .section{display:none}.section.active{display:block;animation:fadeIn .2s ease}
 @keyframes fadeIn{from{opacity:.65;transform:translateY(3px)}to{opacity:1;transform:none}}
-.notice{padding:13px 15px;border-radius:11px;background:var(--red-soft);color:var(--muted);font-size:11px;margin-bottom:20px;border:1px solid color-mix(in srgb,var(--red) 15%,var(--line))}
+.notice{padding:13px 15px;border-radius:11px;background:var(--red-soft);color:var(--muted);font-size:13px;margin-bottom:20px;border:1px solid color-mix(in srgb,var(--red) 15%,var(--line))}
 .notice strong{color:var(--red)}
-.message{margin-top:11px;font-size:11px;color:var(--muted);min-height:17px}
+.message{margin-top:11px;font-size:13px;color:var(--muted);min-height:18px}
 .message.error{color:var(--red)}.message.success{color:var(--green)}
 .detail-list{display:grid;grid-template-columns:1fr 1fr;gap:11px}
 .detail-item{padding:13px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);min-width:0}
-.detail-item small{display:block;color:var(--muted);font-size:9px;font-weight:750;letter-spacing:.04em;text-transform:uppercase;margin-bottom:5px}
-.detail-item strong{font-size:11px;overflow-wrap:anywhere}
+.detail-item small{display:block;color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-bottom:5px}
+.detail-item strong{font-size:13px;font-weight:600;overflow-wrap:anywhere}
 .events{display:flex;flex-direction:column;gap:13px}
 .event{border-left:2px solid var(--red);padding:3px 0 4px 13px}
-.event strong{font-size:11px}.event small{display:block;color:var(--muted);font-size:10px;margin-top:3px}
+.event strong{font-size:13px;text-transform:capitalize}.event small{display:block;color:var(--muted);font-size:12px;margin-top:3px}
 .hidden{display:none!important}
 .access{max-width:460px;margin:12vh auto;padding:34px;background:var(--panel);border:1px solid var(--line);border-radius:18px;text-align:center;box-shadow:var(--shadow-lg)}
-.access h1{font-size:23px;margin:12px 0 7px;letter-spacing:-.04em}.access p{color:var(--muted);font-size:12px}
-#detailOverlay{backdrop-filter:blur(5px)}
-#detailOverlay>.panel{box-shadow:var(--shadow-lg);border-radius:18px}
-#detailOverlay h3{letter-spacing:-.02em}
-@media(max-width:1050px){
- .shell{padding:0 22px 38px}.top{margin:0 -22px;padding:0 22px}
- .layout{grid-template-columns:210px minmax(0,1fr);gap:20px}
- .cards{gap:11px}.stat{padding:16px}
-}
-@media(max-width:820px){
- .layout{grid-template-columns:1fr;gap:18px;padding-top:20px}
- .side{position:static;min-height:0;flex-direction:row;overflow:auto;padding:8px;gap:5px}
- .nav-label,.side-note{display:none}.nav{white-space:nowrap;padding:10px 12px}
- .main{padding-bottom:15px}
+.access h1{font-size:23px;margin:12px 0 7px;letter-spacing:-.04em}.access p{color:var(--muted);font-size:13px}
+#detailOverlay{position:fixed;inset:0;background:#0009;z-index:20;padding:20px;overflow:auto;backdrop-filter:blur(5px)}
+#detailOverlay>.panel{max-width:760px;margin:5vh auto;box-shadow:var(--shadow-lg);border-radius:18px}
+body{font-family:"Plus Jakarta Sans",Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+.shell{display:grid;grid-template-columns:var(--side-w) minmax(0,1fr);min-height:100vh;padding:0;width:100%}
+.side{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:4px;padding:20px 16px;background:var(--panel);border-right:1px solid var(--line);overflow:auto;z-index:30}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:-.03em;font-size:19px;padding:4px 10px 22px}
+.brand-mark{width:38px;height:38px;border-radius:12px;background:linear-gradient(145deg,#ff5634,#e92b08);display:grid;place-items:center;color:#fff;font-weight:900;box-shadow:0 6px 15px rgba(254,58,18,.25)}
+.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin-top:1px}
+.nav-label{font-size:11px;color:var(--muted);letter-spacing:.1em;font-weight:700;text-transform:uppercase;padding:6px 12px 8px}
+.nav{display:flex;align-items:center;gap:12px;width:100%;border:0;background:transparent;color:var(--muted);text-align:left;padding:11px 12px;border-radius:10px;font-weight:600;font-size:14px;transition:background .16s,color .16s}
+.nav svg{width:20px;height:20px;flex-shrink:0}
+.nav:hover{background:var(--panel2);color:var(--text)}
+.nav.active{background:var(--red-soft);color:var(--red);font-weight:700}
+.side-note{margin-top:auto;display:flex;gap:10px;align-items:flex-start;padding:14px;border-radius:14px;background:var(--panel2);border:1px dashed var(--line);color:var(--muted);font-size:12px;line-height:1.55}
+.side-note svg{width:20px;height:20px;flex-shrink:0;color:var(--green)}
+.content{min-width:0;display:flex;flex-direction:column}
+.top{position:sticky;top:0;z-index:15;height:68px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 32px;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(12px)}
+.menu-btn{display:none;place-items:center;padding:8px}
+.menu-btn svg,.icon-btn svg{width:20px;height:20px}
+.top-actions{display:flex;align-items:center;gap:10px;margin-left:auto}
+.user-pill{display:inline-flex;align-items:center;gap:8px;color:var(--text);font-size:13px;font-weight:600;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:7px 14px;border:1px solid var(--line);border-radius:99px;background:var(--panel)}
+.user-pill:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0}
+.user-pill:empty{display:none}
+.main{width:100%;max-width:1400px;padding:8px 32px 40px}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:24px}
+.eyebrow{color:var(--muted);font-size:13px;font-weight:600;letter-spacing:0;text-transform:none}
+.page-head h1{margin:4px 0 2px;font-size:26px;line-height:1.25;letter-spacing:-.03em;font-weight:800}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;margin-bottom:20px}
+.stat{display:flex;align-items:center;gap:16px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow)}
+.stat-ico{width:50px;height:50px;border-radius:14px;display:grid;place-items:center;flex-shrink:0}
+.stat-ico svg{width:24px;height:24px}
+.t-red{background:var(--red-soft);color:var(--red)}.t-amber{background:var(--amber-soft);color:var(--amber)}.t-green{background:var(--green-soft);color:var(--green)}.t-grey{background:var(--panel2);color:var(--muted)}
+.stat-label{color:var(--muted);font-size:13px;font-weight:600}
+.stat-value{font-size:28px;line-height:1.2;font-weight:800;letter-spacing:-.03em;margin-top:2px;font-variant-numeric:tabular-nums}
+.stat-foot{font-size:12px;color:var(--muted);margin-top:2px}
+.ov-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:20px;margin-bottom:20px}
+.bars{display:flex;align-items:stretch;gap:12px;height:190px}
+.bar{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:6px}
+.bar b{font-size:12px;font-weight:700}.bar span{font-size:12px;color:var(--muted)}
+.bar-track{position:relative;flex:1;width:100%;display:flex;justify-content:center}
+.bar-track i{position:absolute;bottom:0;width:70%;max-width:44px;background:var(--red);border-radius:8px 8px 3px 3px;opacity:.9}
+.split{display:flex;height:12px;border-radius:99px;overflow:hidden;background:var(--panel2);margin:6px 0 20px}
+.split i{display:block;height:100%}
+.legend{display:flex;flex-direction:column;gap:12px}
+.legend div{display:flex;align-items:center;gap:10px;font-size:13px}
+.legend em{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.legend span{margin-left:auto;color:var(--muted);font-variant-numeric:tabular-nums}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+.panel-head{padding:18px 24px;min-height:68px}
+.panel-head h2{font-size:16px;font-weight:700}
+.panel-body{padding:24px}
+#register .panel{max-width:940px}
+th{background:var(--panel2);text-transform:none;letter-spacing:0;font-size:13px;font-weight:700;color:var(--muted);padding:14px 20px}
+td{border-bottom:1px dashed var(--line);padding:14px 20px}
+tbody tr:hover{background:var(--panel2)}
+.status{border-radius:8px;padding:4px 10px;font-size:12px;font-weight:700}.status:before{display:none}
+.field,.select,.area{background:var(--panel);border:1px solid color-mix(in srgb,var(--muted) 30%,transparent);border-radius:10px}
+.field:focus,.select:focus,.area:focus{background:var(--panel)}
+.form-field label{font-size:13px;color:var(--text);font-weight:600}
+.row-action{border-radius:8px}
+.cust-wrap{display:flex;align-items:center;gap:12px}
+.avt{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;font-size:13px;flex-shrink:0}
+.scrim{display:none}
+@media(max-width:1180px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.ov-grid{grid-template-columns:1fr}}
+@media(max-width:1024px){
+ .shell{grid-template-columns:1fr}
+ .side{position:fixed;left:0;top:0;bottom:0;width:var(--side-w);transform:translateX(-100%);transition:transform .22s ease;box-shadow:var(--shadow-lg)}
+ .nav-open .side{transform:none}
+ .nav-open .scrim{display:block;position:fixed;inset:0;background:#0007;z-index:25}
+ .menu-btn{display:grid}.top{padding:0 18px}.main{padding:8px 18px 32px}
 }
 @media(max-width:600px){
- .shell{padding:0 13px 28px}.top{height:66px;margin:0 -13px;padding:0 13px}
- .brand{font-size:16px;gap:9px}.brand-mark{width:33px;height:33px;border-radius:10px}
- .top-actions{gap:6px}.user-pill{display:none}.icon-btn,.ghost{padding:8px 9px;font-size:11px}
- .layout{padding-top:15px;gap:14px}.side{margin:0 -2px;border-radius:12px}
- .nav{font-size:11px;padding:9px 10px;gap:7px}.nav .ico{width:18px;height:18px;font-size:13px}
+ .user-pill{display:none}
  .page-head{align-items:flex-start;flex-direction:column;margin-bottom:17px;gap:12px}
- .page-head h1{font-size:25px}.cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:15px}
- .stat{padding:14px 13px;border-radius:12px}.stat-value{font-size:25px;margin-top:8px}
- .panel{border-radius:13px}.panel-body{padding:15px}.panel-head{padding:13px 14px;align-items:flex-start;flex-direction:column}
- .grid2,.form-grid{grid-template-columns:1fr;gap:13px}.span2{grid-column:auto}
+ .page-head h1{font-size:23px}
+ .cards{gap:10px}
+ .stat{flex-direction:column;align-items:flex-start;gap:10px;padding:14px}
+ .stat-value{font-size:24px}
+ .panel-body{padding:16px}.panel-head{padding:14px 16px;align-items:flex-start;flex-direction:column}
+ .form-grid{grid-template-columns:1fr;gap:13px}.span2{grid-column:auto}
  .toolbar{width:100%}.search{width:100%}.toolbar .select{flex:1}
  .detail-list{grid-template-columns:1fr 1fr}
- #detailOverlay{padding:10px!important}#detailOverlay>.panel{margin:3vh auto}
+ table{min-width:0}.hide-sm{display:none}th,td{padding:12px 10px}
+ #detailOverlay{padding:10px}#detailOverlay>.panel{margin:3vh auto}
 }
+.pick{position:relative}
+.pick-native{display:none}
+.pick-btn{display:flex;align-items:center;gap:10px;text-align:left;cursor:pointer;min-height:46px}
+.pick-btn .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pick .nm b{font-weight:600}
+.pick .nm small{color:var(--muted);font-size:12px;margin-left:8px}
+.pick-btn .ico{width:28px;height:28px;font-size:11px}
+.pick-btn .chev{color:var(--muted);font-size:12px}
+.pick-btn[aria-expanded=true]{border-color:var(--red)}
+.pick-panel{position:absolute;z-index:12;top:100%;left:0;right:0;margin-top:5px;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);padding:8px}
+.pick-search{margin-bottom:8px}
+.pick-list{max-height:300px;overflow:auto;display:flex;flex-direction:column;gap:6px}
+.pick-row{display:flex;align-items:center;gap:12px;width:100%;padding:8px 12px 8px 8px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);color:var(--text);text-align:left;font-size:14px}
+.pick-row:hover,.pick-row.active{border-color:var(--red);background:var(--red-soft)}
+.pick-row[aria-selected=true]{box-shadow:inset 0 0 0 1px var(--red)}
+.pick-empty{padding:16px;text-align:center;color:var(--muted);font-size:13px}
+.ico{position:relative;width:36px;height:36px;flex-shrink:0;display:grid;place-items:center;overflow:hidden;color:#fff;font-weight:700;font-size:13px}
+.ico img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.ico-coin{border-radius:50%;background:var(--red)}
+.ico-coin img{background:var(--panel)}
+.ico-card{border-radius:10px;background:#fff;border:1px solid var(--line);letter-spacing:.02em}
+.ico-flag{border-radius:50%;background:#6b6d76;font-size:11px}
+.ico-flag img{object-fit:cover}
+.ico-type svg{width:58%;height:58%}
+.ico.sm{width:24px;height:24px;font-size:10px}
+.ico-card.sm{border-radius:7px}
+.amt{display:inline-flex;align-items:center;gap:8px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -155,76 +227,77 @@ tbody tr:last-child td{border-bottom:0}
   <button id="gateLogin" class="primary hidden" onclick="location.href='/dashboard/'">Go to login</button>
 </div>
 <div id="app" class="shell hidden">
-  <header class="top">
-    <div class="brand"><div class="brand-mark">V</div><div>VersusTrade<small>ADMINISTRATION</small></div></div>
-    <div class="top-actions"><span id="adminEmail" class="user-pill"></span><button class="icon-btn" id="themeBtn" aria-label="Toggle theme">☼ / ☾</button><a class="ghost" href="/dashboard/" style="text-decoration:none">Customer view</a></div>
-  </header>
-  <div class="layout">
-    <aside class="side">
-      <div class="nav-label">Workspace</div>
-      <button class="nav active" data-view="overview"><span class="ico">▦</span> Overview</button>
-      <button class="nav" data-view="transactions"><span class="ico">⇄</span> Transactions</button>
-      <button class="nav" data-view="register"><span class="ico">＋</span> Register transaction</button>
-      <button class="nav" data-view="history"><span class="ico">◷</span> Activity history</button>
-      <div class="side-note">Admin access is verified against your Supabase administrator account.</div>
-    </aside>
+  <aside class="side" id="side">
+    <div class="brand"><div class="brand-mark">V</div><div>VersusTrade<small>Administration</small></div></div>
+    <div class="nav-label">Workspace</div>
+      <button class="nav active" data-view="register"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg> Register transaction</button>
+      <button class="nav" data-view="overview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg> Overview</button>
+      <button class="nav" data-view="transactions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg> Transactions</button>
+      <button class="nav" data-view="history"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg> Activity history</button>
+    <div class="side-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg><span>Admin access is verified against your Supabase administrator account.</span></div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+  <div class="content">
+    <header class="top">
+      <button class="icon-btn menu-btn" id="menuBtn" aria-label="Open menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg></button>
+      <div class="top-actions"><span id="adminEmail" class="user-pill"></span><button class="icon-btn" id="themeBtn" aria-label="Toggle theme" title="Toggle theme">☾</button><a class="ghost" href="/dashboard/">Customer view</a></div>
+    </header>
     <main class="main">
-      <section id="overview" class="section active">
+      <section id="overview" class="section">
         <div class="page-head"><div><div class="eyebrow">Control centre</div><h1>Overview</h1><div class="sub">A live view of VersusTrade transactions.</div></div><button class="primary" id="refreshBtn">Refresh data</button></div>
         <div class="cards">
-          <div class="stat"><div class="stat-label">All transactions</div><div class="stat-value" id="totalCount">—</div><div class="stat-foot">Registered records</div></div>
-          <div class="stat"><div class="stat-label">Processing</div><div class="stat-value" id="proCount">—</div><div class="stat-foot">Awaiting completion</div></div>
-          <div class="stat"><div class="stat-label">Completed</div><div class="stat-value" id="doneCount">—</div><div class="stat-foot">Successfully completed</div></div>
-          <div class="stat"><div class="stat-label">Declined</div><div class="stat-value" id="decCount">—</div><div class="stat-foot">Not completed</div></div>
+          <div class="stat"><span class="stat-ico t-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg></span><div><div class="stat-label">All transactions</div><div class="stat-value" id="totalCount">—</div><div class="stat-foot" id="todayFoot">Registered records</div></div></div>
+          <div class="stat"><span class="stat-ico t-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span><div><div class="stat-label">Processing</div><div class="stat-value" id="proCount">—</div><div class="stat-foot">Awaiting completion</div></div></div>
+          <div class="stat"><span class="stat-ico t-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg></span><div><div class="stat-label">Completed</div><div class="stat-value" id="doneCount">—</div><div class="stat-foot" id="volumeFoot">Successfully completed</div></div></div>
+          <div class="stat"><span class="stat-ico t-grey"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg></span><div><div class="stat-label">Declined</div><div class="stat-value" id="decCount">—</div><div class="stat-foot">Not completed</div></div></div>
         </div>
-        <div class="panel"><div class="panel-head"><h2>Recent transactions</h2><button class="row-action" data-goto="transactions">View all</button></div><div id="recentTable" class="loading">Loading transactions…</div></div>
+        <div class="ov-grid"><div class="panel"><div class="panel-head"><h2>Last 7 days</h2><span class="sub">Transactions per day</span></div><div class="panel-body"><div id="weekChart" class="bars"></div></div></div><div class="panel"><div class="panel-head"><h2>Status split</h2></div><div class="panel-body" id="splitChart"></div></div></div>
+        <div class="panel"><div class="panel-head"><h2>Recent transactions</h2><button class="row-action" data-goto="transactions">View all</button></div><div id="recentTable"></div></div>
       </section>
       <section id="transactions" class="section">
         <div class="page-head"><div><div class="eyebrow">Records</div><h1>Transactions</h1><div class="sub">Search and review customer transactions.</div></div><button class="primary" data-goto="register">＋ Register</button></div>
-        <div class="panel"><div class="panel-head"><h2>All transactions</h2><div class="toolbar"><input id="searchInput" class="field search" placeholder="Search reference or customer ID"><select id="statusFilter" class="select" style="width:auto"><option value="">All statuses</option><option value="VT-PRO">Processing</option><option value="VT-DONE">Completed</option><option value="VT-DEC">Declined</option></select></div></div><div id="allTable" class="loading">Loading transactions…</div></div>
+        <div class="panel"><div class="panel-head"><h2>All transactions</h2><div class="toolbar"><input id="searchInput" class="field search" placeholder="Search reference, name or email" aria-label="Search transactions"><select id="statusFilter" class="select" style="width:auto" aria-label="Filter by status"><option value="">All statuses</option><option value="VT-PRO">Processing</option><option value="VT-DONE">Completed</option><option value="VT-DEC">Declined</option></select></div></div><div id="allTable"></div></div>
       </section>
-      <section id="register" class="section">
+      <section id="register" class="section active">
         <div class="page-head"><div><div class="eyebrow">New record</div><h1>Register transaction</h1><div class="sub">Record a transaction completed or handled by your team.</div></div></div>
         <div class="panel"><div class="panel-body">
-          <div class="notice">New transactions start with status <strong>VT-PRO · Processing</strong>. Registration records the transaction; it does not initiate a payment or transfer.</div>
-          <form id="registerForm" class="form-grid">
-            <div class="form-field"><label>Transaction reference</label><div class="field" style="display:flex;align-items:center;color:var(--muted);background:var(--surface-2);">Generated automatically when saved</div></div>
+                    <form id="registerForm" class="form-grid">
+            <div class="form-field"><label>Transaction reference</label><div class="field" style="display:flex;align-items:center;color:var(--muted);background:var(--panel2)">Generated automatically when saved</div></div>
             <div class="form-field span2 customer-picker">
-              <label>Customer *</label>
+              <label for="customerSearch">Customer *</label>
               <input class="field" id="customerSearch" type="search" autocomplete="off" placeholder="Search customer by name or email">
               <input type="hidden" name="customer_id" id="customerId">
               <div id="customerResults" class="customer-results hidden"></div>
               <div id="selectedCustomer" class="selected-customer hidden"></div>
               <div id="customerSearchMessage" class="message">Type at least 2 characters to find a customer.</div>
             </div>
-            <div class="form-field"><label>Transaction type *</label><select class="select" name="transaction_type" id="transactionType" required><option value="CRYPTO_BUY">Crypto Buy</option><option value="CRYPTO_SELL">Crypto Sell</option><option value="GIFT_CARD_SELL">Gift Card Sell</option></select></div>
-            <div class="form-field crypto-field"><label>Asset</label><select class="select" name="asset" id="assetSelect"><option value="USDT">USDT · Tether</option><option value="USDC">USDC · USD Coin</option><option value="BTC">BTC · Bitcoin</option><option value="ETH">ETH · Ethereum</option><option value="BNB">BNB</option><option value="SOL">SOL · Solana</option><option value="XRP">XRP</option><option value="TRX">TRX · Tron</option><option value="DOGE">DOGE · Dogecoin</option><option value="LTC">LTC · Litecoin</option><option value="TON">TON</option><option value="ADA">ADA · Cardano</option><option value="AVAX">AVAX · Avalanche</option><option value="LINK">LINK · Chainlink</option><option value="DOT">DOT · Polkadot</option><option value="SHIB">SHIB · Shiba Inu</option><option value="BCH">BCH · Bitcoin Cash</option><option value="NEAR">NEAR</option><option value="ATOM">ATOM · Cosmos</option><option value="UNI">UNI · Uniswap</option><option value="XLM">XLM · Stellar</option><option value="APT">APT · Aptos</option></select></div>
-            <div class="form-field crypto-field"><label>Network</label><select class="select" name="network" id="networkSelect"></select></div>
-            <div class="form-field crypto-field"><label>Crypto amount</label><input class="field" name="crypto_amount" id="cryptoAmountInput" type="number" min="0" step="any" readonly placeholder="Calculated from live USD price"><small id="cryptoPriceMessage" class="muted">Select an asset and enter the USD amount.</small></div>
-            <div class="form-field gift-field hidden"><label>Card brand</label><select class="select" name="card_brand"><option value="">Select gift card</option><option>Visa Gift Card</option><option>Amazon Gift Card</option><option>Apple / iTunes Gift Card</option><option>Google Play Gift Card</option><option>Steam Gift Card</option><option>Razer Gold</option><option>Sephora Gift Card</option><option>Target Gift Card</option><option>Walmart Gift Card</option><option>PlayStation Gift Card</option><option>Xbox Gift Card</option><option>eBay Gift Card</option></select></div>
-            <div class="form-field gift-field hidden"><label>Card region</label><input class="field" name="card_region" placeholder="e.g. US"></div>
+            <div class="form-field"><label for="transactionType">Transaction type *</label><select class="select" name="transaction_type" id="transactionType" required><option value="CRYPTO_BUY">Buy Transaction</option><option value="CRYPTO_SELL">Sell Transaction</option><option value="GIFT_CARD_SELL">Gift Card Sell</option></select></div>
+            <div class="form-field crypto-field"><label for="assetSelect">Asset</label><select class="select" name="asset" id="assetSelect"><option value="USDT">USDT · Tether</option><option value="USDC">USDC · USD Coin</option><option value="BTC">BTC · Bitcoin</option><option value="ETH">ETH · Ethereum</option><option value="BNB">BNB</option><option value="SOL">SOL · Solana</option><option value="XRP">XRP</option><option value="TRX">TRX · Tron</option><option value="DOGE">DOGE · Dogecoin</option><option value="LTC">LTC · Litecoin</option><option value="TON">TON</option><option value="ADA">ADA · Cardano</option><option value="AVAX">AVAX · Avalanche</option><option value="LINK">LINK · Chainlink</option><option value="DOT">DOT · Polkadot</option><option value="SHIB">SHIB · Shiba Inu</option><option value="BCH">BCH · Bitcoin Cash</option><option value="NEAR">NEAR</option><option value="ATOM">ATOM · Cosmos</option><option value="UNI">UNI · Uniswap</option><option value="XLM">XLM · Stellar</option><option value="APT">APT · Aptos</option></select></div>
+            <div class="form-field crypto-field"><label for="networkSelect">Network</label><select class="select" name="network" id="networkSelect"></select></div>
+            <input type="hidden" name="crypto_amount" id="cryptoAmountInput">
+            <div class="form-field gift-field hidden"><label for="cardBrand">Card brand</label><select class="select" name="card_brand" id="cardBrand"><option value="">Select gift card</option><option>Visa Gift Card</option><option>Amazon Gift Card</option><option>Apple / iTunes Gift Card</option><option>Google Play Gift Card</option><option>Steam Gift Card</option><option>Razer Gold</option><option>Sephora Gift Card</option><option>Target Gift Card</option><option>Walmart Gift Card</option><option>PlayStation Gift Card</option><option>Xbox Gift Card</option><option>eBay Gift Card</option></select></div>
+            <div class="form-field gift-field hidden"><label for="cardRegion">Card region</label><select class="select" name="card_region" id="cardRegion"><option value="">Select region</option><optgroup label="Common"><option value="US">United States</option><option value="GB">United Kingdom</option><option value="CA">Canada</option><option value="AU">Australia</option><option value="DE">Germany</option><option value="FR">France</option><option value="ES">Spain</option><option value="IT">Italy</option><option value="NL">Netherlands</option><option value="NG">Nigeria</option><option value="GH">Ghana</option><option value="KE">Kenya</option><option value="ZA">South Africa</option><option value="AE">United Arab Emirates</option></optgroup><optgroup label="All countries"><option value="AF">Afghanistan</option><option value="AL">Albania</option><option value="DZ">Algeria</option><option value="AS">American Samoa</option><option value="AD">Andorra</option><option value="AO">Angola</option><option value="AI">Anguilla</option><option value="AQ">Antarctica</option><option value="AG">Antigua and Barbuda</option><option value="AR">Argentina</option><option value="AM">Armenia</option><option value="AW">Aruba</option><option value="AT">Austria</option><option value="AZ">Azerbaijan</option><option value="BS">Bahamas</option><option value="BH">Bahrain</option><option value="BD">Bangladesh</option><option value="BB">Barbados</option><option value="BY">Belarus</option><option value="BE">Belgium</option><option value="BZ">Belize</option><option value="BJ">Benin</option><option value="BM">Bermuda</option><option value="BT">Bhutan</option><option value="BO">Bolivia</option><option value="BQ">Bonaire, Sint Eustatius and Saba</option><option value="BA">Bosnia and Herzegovina</option><option value="BW">Botswana</option><option value="BV">Bouvet Island</option><option value="BR">Brazil</option><option value="IO">British Indian Ocean Territory</option><option value="BN">Brunei Darussalam</option><option value="BG">Bulgaria</option><option value="BF">Burkina Faso</option><option value="BI">Burundi</option><option value="CV">Cabo Verde</option><option value="KH">Cambodia</option><option value="CM">Cameroon</option><option value="KY">Cayman Islands</option><option value="CF">Central African Republic</option><option value="TD">Chad</option><option value="CL">Chile</option><option value="CN">China</option><option value="CX">Christmas Island</option><option value="CC">Cocos (Keeling) Islands</option><option value="CO">Colombia</option><option value="KM">Comoros</option><option value="CG">Congo</option><option value="CD">Congo, The Democratic Republic of the</option><option value="CK">Cook Islands</option><option value="CR">Costa Rica</option><option value="HR">Croatia</option><option value="CU">Cuba</option><option value="CW">Curaçao</option><option value="CY">Cyprus</option><option value="CZ">Czechia</option><option value="CI">Côte d&#x27;Ivoire</option><option value="DK">Denmark</option><option value="DJ">Djibouti</option><option value="DM">Dominica</option><option value="DO">Dominican Republic</option><option value="EC">Ecuador</option><option value="EG">Egypt</option><option value="SV">El Salvador</option><option value="GQ">Equatorial Guinea</option><option value="ER">Eritrea</option><option value="EE">Estonia</option><option value="SZ">Eswatini</option><option value="ET">Ethiopia</option><option value="FK">Falkland Islands (Malvinas)</option><option value="FO">Faroe Islands</option><option value="FJ">Fiji</option><option value="FI">Finland</option><option value="GF">French Guiana</option><option value="PF">French Polynesia</option><option value="TF">French Southern Territories</option><option value="GA">Gabon</option><option value="GM">Gambia</option><option value="GE">Georgia</option><option value="GI">Gibraltar</option><option value="GR">Greece</option><option value="GL">Greenland</option><option value="GD">Grenada</option><option value="GP">Guadeloupe</option><option value="GU">Guam</option><option value="GT">Guatemala</option><option value="GG">Guernsey</option><option value="GN">Guinea</option><option value="GW">Guinea-Bissau</option><option value="GY">Guyana</option><option value="HT">Haiti</option><option value="HM">Heard Island and McDonald Islands</option><option value="VA">Holy See (Vatican City State)</option><option value="HN">Honduras</option><option value="HK">Hong Kong</option><option value="HU">Hungary</option><option value="IS">Iceland</option><option value="IN">India</option><option value="ID">Indonesia</option><option value="IR">Iran</option><option value="IQ">Iraq</option><option value="IE">Ireland</option><option value="IM">Isle of Man</option><option value="IL">Israel</option><option value="JM">Jamaica</option><option value="JP">Japan</option><option value="JE">Jersey</option><option value="JO">Jordan</option><option value="KZ">Kazakhstan</option><option value="KI">Kiribati</option><option value="KW">Kuwait</option><option value="KG">Kyrgyzstan</option><option value="LA">Laos</option><option value="LV">Latvia</option><option value="LB">Lebanon</option><option value="LS">Lesotho</option><option value="LR">Liberia</option><option value="LY">Libya</option><option value="LI">Liechtenstein</option><option value="LT">Lithuania</option><option value="LU">Luxembourg</option><option value="MO">Macao</option><option value="MG">Madagascar</option><option value="MW">Malawi</option><option value="MY">Malaysia</option><option value="MV">Maldives</option><option value="ML">Mali</option><option value="MT">Malta</option><option value="MH">Marshall Islands</option><option value="MQ">Martinique</option><option value="MR">Mauritania</option><option value="MU">Mauritius</option><option value="YT">Mayotte</option><option value="MX">Mexico</option><option value="FM">Micronesia, Federated States of</option><option value="MD">Moldova</option><option value="MC">Monaco</option><option value="MN">Mongolia</option><option value="ME">Montenegro</option><option value="MS">Montserrat</option><option value="MA">Morocco</option><option value="MZ">Mozambique</option><option value="MM">Myanmar</option><option value="NA">Namibia</option><option value="NR">Nauru</option><option value="NP">Nepal</option><option value="NC">New Caledonia</option><option value="NZ">New Zealand</option><option value="NI">Nicaragua</option><option value="NE">Niger</option><option value="NU">Niue</option><option value="NF">Norfolk Island</option><option value="KP">North Korea</option><option value="MK">North Macedonia</option><option value="MP">Northern Mariana Islands</option><option value="NO">Norway</option><option value="OM">Oman</option><option value="PK">Pakistan</option><option value="PW">Palau</option><option value="PS">Palestine, State of</option><option value="PA">Panama</option><option value="PG">Papua New Guinea</option><option value="PY">Paraguay</option><option value="PE">Peru</option><option value="PH">Philippines</option><option value="PN">Pitcairn</option><option value="PL">Poland</option><option value="PT">Portugal</option><option value="PR">Puerto Rico</option><option value="QA">Qatar</option><option value="RO">Romania</option><option value="RU">Russian Federation</option><option value="RW">Rwanda</option><option value="RE">Réunion</option><option value="BL">Saint Barthélemy</option><option value="SH">Saint Helena, Ascension and Tristan da Cunha</option><option value="KN">Saint Kitts and Nevis</option><option value="LC">Saint Lucia</option><option value="MF">Saint Martin (French part)</option><option value="PM">Saint Pierre and Miquelon</option><option value="VC">Saint Vincent and the Grenadines</option><option value="WS">Samoa</option><option value="SM">San Marino</option><option value="ST">Sao Tome and Principe</option><option value="SA">Saudi Arabia</option><option value="SN">Senegal</option><option value="RS">Serbia</option><option value="SC">Seychelles</option><option value="SL">Sierra Leone</option><option value="SG">Singapore</option><option value="SX">Sint Maarten (Dutch part)</option><option value="SK">Slovakia</option><option value="SI">Slovenia</option><option value="SB">Solomon Islands</option><option value="SO">Somalia</option><option value="GS">South Georgia and the South Sandwich Islands</option><option value="KR">South Korea</option><option value="SS">South Sudan</option><option value="LK">Sri Lanka</option><option value="SD">Sudan</option><option value="SR">Suriname</option><option value="SJ">Svalbard and Jan Mayen</option><option value="SE">Sweden</option><option value="CH">Switzerland</option><option value="SY">Syria</option><option value="TW">Taiwan</option><option value="TJ">Tajikistan</option><option value="TZ">Tanzania</option><option value="TH">Thailand</option><option value="TL">Timor-Leste</option><option value="TG">Togo</option><option value="TK">Tokelau</option><option value="TO">Tonga</option><option value="TT">Trinidad and Tobago</option><option value="TN">Tunisia</option><option value="TM">Turkmenistan</option><option value="TC">Turks and Caicos Islands</option><option value="TV">Tuvalu</option><option value="TR">Türkiye</option><option value="UG">Uganda</option><option value="UA">Ukraine</option><option value="UM">United States Minor Outlying Islands</option><option value="UY">Uruguay</option><option value="UZ">Uzbekistan</option><option value="VU">Vanuatu</option><option value="VE">Venezuela</option><option value="VN">Vietnam</option><option value="VG">Virgin Islands, British</option><option value="VI">Virgin Islands, U.S.</option><option value="WF">Wallis and Futuna</option><option value="EH">Western Sahara</option><option value="YE">Yemen</option><option value="ZM">Zambia</option><option value="ZW">Zimbabwe</option><option value="AX">Åland Islands</option></optgroup></select></div>
             <div class="form-field gift-field hidden"><label>Card value</label><input class="field" name="card_value" type="number" min="0" step="any"></div>
             <div class="form-field gift-field hidden"><label>Card currency</label><input class="field" name="card_currency" placeholder="e.g. USD"></div>
-            <div class="form-field"><label>Fiat currency</label><input class="field" name="fiat_currency" value="USD" readonly></div>
-            <div class="form-field"><label>Fiat amount (USD)</label><input class="field" name="fiat_amount" id="fiatAmountInput" type="number" min="0" step="any" placeholder="e.g. 100"></div>
-            <div class="form-field"><label>Exchange rate (₦ per $1)</label><input class="field" name="exchange_rate" id="exchangeRateInput" type="number" min="0" step="any" value="1350"></div>
-            <div class="form-field" id="payoutAmountField"><label>Payout amount (NGN)</label><input class="field" name="payout_amount" id="payoutAmountInput" type="number" min="0" step="any" readonly placeholder="Calculated automatically"></div>
-            <div class="form-field span2"><label>Customer note</label><textarea class="area" name="customer_note" rows="3" placeholder="Optional transaction note"></textarea></div>
-            <div class="span2"><button class="primary" type="submit">Register transaction</button><div id="registerMessage" class="message"></div></div>
+                        <div class="form-field"><label for="fiatAmountInput">Fiat amount (USD)</label><input class="field" name="fiat_amount" id="fiatAmountInput" type="number" min="0" step="any" placeholder="e.g. 100"><small id="cryptoPriceMessage" style="display:none" aria-hidden="true"></small></div>
+            <div class="form-field"><label for="exchangeRateInput">Exchange rate (₦ per $1)</label><input class="field" name="exchange_rate" id="exchangeRateInput" type="number" min="0" step="any" value="1350"></div>
+            <div class="form-field" id="payoutAmountField"><label for="payoutAmountInput">Payout amount (NGN)</label><input class="field" name="payout_amount" id="payoutAmountInput" type="number" min="0" step="any" readonly placeholder="Calculated automatically"></div>
+            <div class="form-field span2"><label for="customerNote">Customer note</label><textarea class="area" name="customer_note" id="customerNote" rows="3" placeholder="Optional transaction note"></textarea></div>
+            <div class="span2"><button class="primary" id="registerBtn" type="submit">Register transaction</button><div id="registerMessage" class="message" role="status"></div></div>
           </form>
         </div></div>
       </section>
       <section id="history" class="section">
         <div class="page-head"><div><div class="eyebrow">Audit log</div><h1>Activity history</h1><div class="sub">Trace transaction creation and status changes.</div></div><button class="ghost" id="historyRefresh">Refresh</button></div>
-        <div class="panel"><div class="panel-head"><h2>Transaction events</h2><input id="historyRef" class="field search" placeholder="Enter transaction reference"></div><div class="panel-body"><div id="eventList" class="empty">Enter a transaction reference to view its history.</div><div id="historyMessage" class="message"></div></div></div>
+        <div class="panel"><div class="panel-head"><h2>Transaction events</h2><input id="historyRef" class="field search" placeholder="Enter transaction reference" aria-label="Transaction reference"></div><div class="panel-body"><div id="eventList" class="empty">Enter a transaction reference to view its history.</div><div id="historyMessage" class="message"></div></div></div>
       </section>
     </main>
   </div>
 </div>
-<div id="detailOverlay" class="hidden" style="position:fixed;inset:0;background:#0009;z-index:20;padding:20px;overflow:auto">
-  <div class="panel" style="max-width:760px;margin:5vh auto">
-    <div class="panel-head"><h2 id="detailTitle">Transaction details</h2><button class="icon-btn" id="detailClose">✕</button></div>
-    <div class="panel-body"><div id="detailBody"></div><div class="toolbar" style="margin-top:18px"><label class="muted" for="detailStatus">Update status</label><select id="detailStatus" class="select" style="max-width:190px"><option value="VT-PRO">Processing</option><option value="VT-DONE">Completed</option><option value="VT-DEC">Declined</option></select><button id="detailUpdate" class="primary">Save status</button></div><div id="detailMessage" class="message"></div><div style="margin-top:22px"><h3 style="font-size:13px">Audit history</h3><div id="detailEvents" class="events"></div></div></div>
+<div id="detailOverlay" class="hidden">
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+    <div class="panel-head"><h2 id="detailTitle">Transaction details</h2><button class="icon-btn" id="detailClose" aria-label="Close">✕</button></div>
+    <div class="panel-body"><div id="detailBody"></div><div class="toolbar" style="margin-top:18px"><label class="muted" for="detailStatus">Update status</label><select id="detailStatus" class="select" style="max-width:190px"><option value="VT-PRO">Processing</option><option value="VT-DONE">Completed</option><option value="VT-DEC">Declined</option></select><button id="detailUpdate" class="primary">Save status</button></div><div id="detailMessage" class="message" role="status"></div><div style="margin-top:22px"><h3 style="font-size:14px">Audit history</h3><div id="detailEvents" class="events"></div></div></div>
   </div>
 </div>
 <script>
@@ -233,21 +306,55 @@ tbody tr:last-child td{border-bottom:0}
 var API='https://versustrade-admin-api.versustradehq.workers.dev';
 var SB='https://axldgaxsdgeycinxqbem.supabase.co';
 var KEY='sb_publishable_eU9t7DqMTbeAOIdsXhcYmg_wwvmwm3j';
-var STORE='vt_auth_session', session=null, transactions=[], selected=null;
+var STORE='vt_auth_session', CUST_STORE='vt_admin_customers', session=null, transactions=[], selected=null, pageSize=50, lastFocus=null;
 var $=function(id){return document.getElementById(id)};
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function readSession(){try{return JSON.parse(localStorage.getItem(STORE)||sessionStorage.getItem(STORE)||'null')}catch(e){return null}}
 function saveSession(){try{localStorage.setItem(STORE,JSON.stringify(session))}catch(e){}}
 function authCall(path,body){return fetch(SB+'/auth/v1'+path,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(r){return r.json().then(function(d){if(!r.ok)throw new Error(d.msg||d.message||'Session refresh failed');return d})})}
 function token(){if(!session)return Promise.reject(new Error('Please log in again.'));var now=Math.floor(Date.now()/1000);if(session.expires_at-60>now)return Promise.resolve(session.access_token);return authCall('/token?grant_type=refresh_token',{refresh_token:session.refresh_token}).then(function(d){session.access_token=d.access_token;session.refresh_token=d.refresh_token;session.expires_at=d.expires_at||(now+(d.expires_in||3600));saveSession();return session.access_token})}
-function api(path,body){return token().then(function(t){return fetch(API+path,{method:'POST',headers:{Authorization:'Bearer '+t,'Content-Type':'application/json'},body:JSON.stringify(body||{})})}).then(function(r){return r.json().then(function(d){if(!r.ok)throw new Error(d.error||d.message||'Request failed');return d})})}
+function api(path,body){if(PREVIEW)return mockApi(path,body);return token().then(function(t){return fetch(API+path,{method:'POST',headers:{Authorization:'Bearer '+t,'Content-Type':'application/json'},body:JSON.stringify(body||{})})}).then(function(r){return r.json().then(function(d){if(!r.ok)throw new Error(d.error||d.message||'Request failed');return d})})}
+
+// PREVIEW MODE (?preview): sample data, no login, no network calls. Remove before deploying.
+var PREVIEW=/[?&]preview\b/.test(location.search);
+var mockCustomers=[{id:'c1a2b3c4-0001',name:'Adaeze Okafor',email:'adaeze@example.com'},{id:'c1a2b3c4-0002',name:'Tunde Bello',email:'tunde.b@example.com'},{id:'c1a2b3c4-0003',name:'Chioma Eze',email:'chioma.eze@example.com'},{id:'c1a2b3c4-0004',name:'Ibrahim Musa',email:'ibrahim@example.com'}];
+var mockTx=[],mockEvents={};
+(function(){
+  if(!PREVIEW)return;
+  var types=['CRYPTO_BUY','CRYPTO_SELL','GIFT_CARD_SELL'],assets=['USDT','BTC','ETH','SOL','USDC'],nets=['TRC20','Bitcoin','ERC20','Solana','BEP20'],st=['VT-PRO','VT-DONE','VT-DONE','VT-DEC','VT-PRO'],cards=['Amazon Gift Card','Apple / iTunes Gift Card','Steam Gift Card'];
+  for(var i=0;i<60;i++){
+    var type=types[i%3],a=i%5,usd=50+(i*37)%900,c=mockCustomers[i%4],gift=type==='GIFT_CARD_SELL';
+    var t={reference:'VT-'+(24100+60-i),customer_id:c.id,transaction_type:type,status:st[i%5],fiat_amount:usd,fiat_currency:'USD',exchange_rate:1350,created_at:new Date(Date.now()-i*5.5*3600*1000).toISOString(),customer_note:i%4===0?'Sample note for preview.':''};
+    if(gift){t.card_brand=cards[i%3];t.card_region='US';t.card_value=usd;t.card_currency='USD';t.payout_amount=usd*1350}
+    else{t.asset=assets[a];t.network=nets[a];t.crypto_amount=+(usd/(a===1?65000:a===2?3200:a===3?150:1)).toFixed(6);if(type==='CRYPTO_SELL')t.payout_amount=usd*1350}
+    mockTx.push(t);
+    mockEvents[t.reference]=[{event_type:'status_changed',new_status:t.status,created_at:t.created_at,actor_user_id:'admin-preview'},{event_type:'transaction_created',new_status:'VT-PRO',created_at:t.created_at,actor_user_id:'admin-preview'}];
+  }
+})();
+function mockApi(path,body){
+  return new Promise(function(res,rej){setTimeout(function(){
+    if(path==='/admin/transactions/list')return res({transactions:mockTx.slice()});
+    if(path==='/admin/customers/search'){var q=(body.query||'').toLowerCase();return res({customers:mockCustomers.filter(function(c){return (c.name+c.email).toLowerCase().includes(q)})})}
+    if(path==='/admin/transactions/events')return res({events:mockEvents[body.reference]||[]});
+    if(path==='/admin/transactions/status'){var t=mockTx.find(function(x){return x.reference===body.reference});if(!t)return rej(new Error('Not found'));t.status=body.status;mockEvents[t.reference].unshift({event_type:'status_changed',new_status:body.status,created_at:new Date().toISOString(),actor_user_id:'admin-preview'});return res({ok:true})}
+    if(path==='/admin/transactions'){var n=Object.assign({reference:'VT-'+(24200+mockTx.length),status:'VT-PRO',created_at:new Date().toISOString()},body);mockTx.unshift(n);mockEvents[n.reference]=[{event_type:'transaction_created',new_status:'VT-PRO',created_at:n.created_at,actor_user_id:'admin-preview'}];return res({transaction:n})}
+    rej(new Error('Not available in preview'));
+  },250)});
+}
+
+// CUSTOMER CACHE (id -> name/email), filled from customer search so tables can show names
+var custCache={};
+try{custCache=JSON.parse(localStorage.getItem(CUST_STORE)||'{}')||{}}catch(e){custCache={}}
+function cacheCustomers(list){list.forEach(function(c){if(c&&c.id)custCache[c.id]={name:c.name,email:c.email}});try{localStorage.setItem(CUST_STORE,JSON.stringify(custCache))}catch(e){}}
+function custInfo(t){var c=custCache[t.customer_id]||{};return{name:t.customer_name||c.name||'',email:t.customer_email||c.email||''}}
+var AV=['#fe3a12','#118d57','#1877f2','#8e33ff','#b76e00','#00a76f','#ff5630'];
+function avt(seed,txt){var h=0,k=String(seed||'');for(var i=0;i<k.length;i++)h=(h*31+k.charCodeAt(i))>>>0;return '<span class="avt" style="background:'+AV[h%AV.length]+'">'+esc(txt)+'</span>'}
+function initials(n){var p=String(n||'').trim().split(/\s+/);return ((p[0]||'?').charAt(0)+(p.length>1?p[p.length-1].charAt(0):'')).toUpperCase()}
+function custCell(t){var c=custInfo(t);if(c.name||c.email)return '<div class="cust-wrap">'+avt(t.customer_id,initials(c.name||c.email))+'<div class="cust"><strong>'+esc(c.name||c.email)+'</strong>'+(c.name&&c.email?'<small>'+esc(c.email)+'</small>':'')+'</div></div>';return '<div class="cust-wrap">'+avt(t.customer_id,'#')+'<span class="muted" title="'+esc(t.customer_id)+'">'+esc(String(t.customer_id||'—').slice(0,8))+'…</span></div>'}
 
 // CUSTOMER SEARCH AND SELECTION
 var customerSearchTimer=null, customerSearchRequest=0;
-function clearCustomerSelection(){
-  $('customerId').value='';
-  $('selectedCustomer').classList.add('hidden');
-  $('selectedCustomer').innerHTML='';
-}
+function clearCustomerSelection(){$('customerId').value='';$('selectedCustomer').classList.add('hidden');$('selectedCustomer').innerHTML=''}
 function searchCustomers(query){
   var requestId=++customerSearchRequest;
   $('customerResults').classList.remove('hidden');
@@ -255,10 +362,8 @@ function searchCustomers(query){
   api('/admin/customers/search',{query:query}).then(function(d){
     if(requestId!==customerSearchRequest)return;
     var customers=d.customers||[];
-    if(!customers.length){
-      $('customerResults').innerHTML='<div class="customer-option muted">No matching customers found.</div>';
-      return;
-    }
+    cacheCustomers(customers);
+    if(!customers.length){$('customerResults').innerHTML='<div class="customer-option muted">No matching customers found.</div>';return}
     $('customerResults').innerHTML=customers.map(function(c){
       return '<button type="button" class="customer-option" data-customer-id="'+esc(c.id)+'" data-customer-name="'+esc(c.name)+'" data-customer-email="'+esc(c.email)+'"><strong>'+esc(c.name)+'</strong><small>'+esc(c.email)+'</small></button>';
     }).join('');
@@ -290,35 +395,95 @@ $('customerSearch').addEventListener('input',function(){
   clearCustomerSelection();
   $('customerResults').classList.add('hidden');
   $('customerSearchMessage').className='message';
-  if(query.length<2){
-    $('customerSearchMessage').textContent='Type at least 2 characters to find a customer.';
-    return;
-  }
+  if(query.length<2){$('customerSearchMessage').textContent='Type at least 2 characters to find a customer.';return}
   $('customerSearchMessage').textContent='Searching…';
   clearTimeout(customerSearchTimer);
   customerSearchTimer=setTimeout(function(){searchCustomers(query)},350);
 });
-document.addEventListener('click',function(event){
-  if(!event.target.closest('.customer-picker'))$('customerResults').classList.add('hidden');
-});
-function setTheme(v){document.documentElement.setAttribute('data-theme',v);try{localStorage.setItem('vt-theme',v)}catch(e){}}
-$('themeBtn').addEventListener('click',function(){setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark')});
-window.addEventListener('storage',function(e){if(e.key==='vt-theme'&&e.newValue)document.documentElement.setAttribute('data-theme',e.newValue)});
+document.addEventListener('click',function(event){if(!event.target.closest('.customer-picker'))$('customerResults').classList.add('hidden')});
+
+// THEME
+function isDark(){var t=document.documentElement.getAttribute('data-theme');return t?t==='dark':window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches}
+function themeIcon(){$('themeBtn').textContent=isDark()?'☀':'☾'}
+function setTheme(v){document.documentElement.setAttribute('data-theme',v);try{localStorage.setItem('vt-theme',v)}catch(e){}themeIcon()}
+$('themeBtn').addEventListener('click',function(){setTheme(isDark()?'light':'dark')});
+window.addEventListener('storage',function(e){if(e.key==='vt-theme'&&e.newValue){document.documentElement.setAttribute('data-theme',e.newValue);themeIcon()}});
+themeIcon();
+
 function gate(title,msg,login){$('gate').classList.remove('hidden');$('app').classList.add('hidden');$('gateTitle').textContent=title;$('gateText').textContent=msg;if(login)$('gateLogin').classList.remove('hidden')}
 function statusLabel(s){return s==='VT-DONE'?'Completed':s==='VT-DEC'?'Declined':'Processing'}
 function statusClass(s){return s==='VT-DONE'?'done':s==='VT-DEC'?'dec':'pro'}
-function fmtDate(v){if(!v)return '—';try{return new Date(v).toLocaleString()}catch(e){return v}}
+function fmtDate(v){if(!v)return '—';try{return new Date(v).toLocaleString(undefined,{dateStyle:'medium',timeStyle:'short'})}catch(e){return v}}
 function money(v,c){if(v===null||v===undefined||v==='')return '—';return Number(v).toLocaleString(undefined,{maximumFractionDigits:2})+(c?' '+c:'')}
-function typeLabel(t){return t==='CRYPTO_BUY'?'Crypto Buy':t==='CRYPTO_SELL'?'Crypto Sell':'Gift Card Sell'}
-function renderTable(target,rows){if(!rows.length){$(target).innerHTML='<div class="empty">No transactions found.</div>';return}var html='<div class="table-wrap"><table><thead><tr><th>Reference</th><th>Customer</th><th>Type</th><th>Amount</th><th>Status</th><th>Date</th><th></th></tr></thead><tbody>';rows.forEach(function(t){var amount=t.transaction_type==='GIFT_CARD_SELL'?money(t.card_value,t.card_currency):money(t.crypto_amount,t.asset);html+='<tr><td><span class="ref">'+esc(t.reference)+'</span></td><td>'+esc(t.customer_id)+'</td><td><span class="type">'+esc(typeLabel(t.transaction_type))+'</span></td><td>'+esc(amount)+'</td><td><span class="status '+statusClass(t.status)+'">'+esc(statusLabel(t.status))+'</span></td><td>'+esc(fmtDate(t.created_at))+'</td><td><button class="row-action" data-ref="'+esc(t.reference)+'">Open</button></td></tr>'});html+='</tbody></table></div>';$(target).innerHTML=html;Array.prototype.forEach.call($(target).querySelectorAll('[data-ref]'),function(b){b.addEventListener('click',function(){openDetail(b.dataset.ref)})})}
-function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
-function filtered(){var q=$('searchInput').value.toLowerCase(),s=$('statusFilter').value;return transactions.filter(function(t){return(!s||t.status===s)&&(!q||(t.reference+' '+t.customer_id).toLowerCase().includes(q))})}
-function paint(){ $('totalCount').textContent=transactions.length;$('proCount').textContent=transactions.filter(function(t){return t.status==='VT-PRO'}).length;$('doneCount').textContent=transactions.filter(function(t){return t.status==='VT-DONE'}).length;$('decCount').textContent=transactions.filter(function(t){return t.status==='VT-DEC'}).length;renderTable('recentTable',transactions.slice(0,6));renderTable('allTable',filtered())}
-function load(){ $('recentTable').innerHTML='<div class="loading">Loading transactions…</div>';$('allTable').innerHTML='<div class="loading">Loading transactions…</div>';return api('/admin/transactions/list',{limit:200}).then(function(d){transactions=d.transactions||[];paint()}).catch(function(e){$('recentTable').innerHTML='<div class="empty">'+esc(e.message)+'</div>';$('allTable').innerHTML='<div class="empty">'+esc(e.message)+'</div>'})}
-function showView(id){document.querySelectorAll('.section').forEach(function(s){s.classList.toggle('active',s.id===id)});document.querySelectorAll('.nav[data-view]').forEach(function(n){n.classList.toggle('active',n.dataset.view===id)});if(id==='history')$('historyRef').focus()}
+function typeLabel(t){return t==='CRYPTO_BUY'?'Buy Transaction':t==='CRYPTO_SELL'?'Sell Transaction':'Gift Card Sell'}
+function skeleton(){var h='<div class="sk-wrap" aria-busy="true">';for(var i=0;i<5;i++)h+='<div class="sk"></div>';return h+'</div>'}
+
+function renderTable(target,rows,limit){
+  if(!rows.length){$(target).innerHTML='<div class="empty">No transactions found.</div>';return}
+  var shown=rows.slice(0,limit||rows.length);
+  var html='<div class="table-wrap"><table><thead><tr><th>Reference</th><th>Customer</th><th class="hide-sm">Type</th><th>Amount</th><th>Status</th><th class="hide-sm">Date</th><th></th></tr></thead><tbody>';
+  shown.forEach(function(t){
+    var amount=t.transaction_type==='GIFT_CARD_SELL'?money(t.card_value,t.card_currency):money(t.crypto_amount,t.asset);
+    html+='<tr><td><div class="refcell"><span class="ref">'+esc(t.reference)+'</span><button class="copy" data-copy="'+esc(t.reference)+'" aria-label="Copy reference">Copy</button></div></td><td>'+custCell(t)+'</td><td class="hide-sm"><span class="type">'+esc(typeLabel(t.transaction_type))+'</span></td><td><span class="amt">'+smIco(t.transaction_type==='GIFT_CARD_SELL'?cardIco(t.card_brand):coinIco(t.asset))+esc(amount)+'</span></td><td><span class="status '+statusClass(t.status)+'">'+esc(statusLabel(t.status))+'</span></td><td class="hide-sm">'+esc(fmtDate(t.created_at))+'</td><td><button class="row-action" data-ref="'+esc(t.reference)+'">Open</button></td></tr>';
+  });
+  html+='</tbody></table></div>';
+  if(rows.length>shown.length)html+='<div class="more"><button class="row-action" data-more>Show more ('+(rows.length-shown.length)+' remaining)</button></div>';
+  $(target).innerHTML=html;
+  Array.prototype.forEach.call($(target).querySelectorAll('[data-ref]'),function(b){b.addEventListener('click',function(){openDetail(b.dataset.ref)})});
+  Array.prototype.forEach.call($(target).querySelectorAll('[data-copy]'),function(b){b.addEventListener('click',function(){
+    var v=b.dataset.copy;
+    (navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).then(function(){b.textContent='Copied';setTimeout(function(){b.textContent='Copy'},1200)}).catch(function(){b.textContent='Failed';setTimeout(function(){b.textContent='Copy'},1200)});
+  })});
+  var more=$(target).querySelector('[data-more]');
+  if(more)more.addEventListener('click',function(){pageSize+=50;paint()});
+}
+function filtered(){
+  var q=$('searchInput').value.toLowerCase().trim(),s=$('statusFilter').value;
+  return transactions.filter(function(t){
+    if(s&&t.status!==s)return false;
+    if(!q)return true;
+    var c=custInfo(t);
+    return (t.reference+' '+t.customer_id+' '+c.name+' '+c.email).toLowerCase().includes(q);
+  });
+}
+function sameDay(a,b){return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate()}
+
+function renderCharts(){
+  var days=[],i,now=new Date();
+  for(i=6;i>=0;i--)days.push({d:new Date(now.getFullYear(),now.getMonth(),now.getDate()-i),n:0});
+  transactions.forEach(function(t){if(!t.created_at)return;var c=new Date(t.created_at);days.forEach(function(x){if(sameDay(x.d,c))x.n++})});
+  var max=Math.max.apply(null,days.map(function(x){return x.n}).concat(1));
+  $('weekChart').innerHTML=days.map(function(x){return '<div class="bar"><b>'+x.n+'</b><div class="bar-track"><i style="height:'+Math.max(2,Math.round(x.n/max*100))+'%"></i></div><span>'+esc(x.d.toLocaleDateString(undefined,{weekday:'short'}))+'</span></div>'}).join('');
+  var st=[['VT-DONE','Completed','var(--green)'],['VT-PRO','Processing','var(--amber)'],['VT-DEC','Declined','var(--red)']],tot=transactions.length;
+  var cnt=st.map(function(x){return transactions.filter(function(t){return t.status===x[0]}).length});
+  $('splitChart').innerHTML='<div class="split">'+st.map(function(x,k){return tot?'<i style="width:'+(cnt[k]/tot*100)+'%;background:'+x[2]+'"></i>':''}).join('')+'</div><div class="legend">'+st.map(function(x,k){return '<div><em style="background:'+x[2]+'"></em>'+x[1]+'<span>'+cnt[k]+(tot?' · '+Math.round(cnt[k]/tot*100)+'%':'')+'</span></div>'}).join('')+'</div>';
+}
+function paint(){
+  var n=function(st){return transactions.filter(function(t){return t.status===st}).length};
+  var now=new Date(),today=transactions.filter(function(t){return t.created_at&&sameDay(new Date(t.created_at),now)}).length;
+  var vol=transactions.reduce(function(sum,t){return sum+(t.status==='VT-DONE'?Number(t.fiat_amount)||0:0)},0);
+  $('totalCount').textContent=transactions.length;$('proCount').textContent=n('VT-PRO');$('doneCount').textContent=n('VT-DONE');$('decCount').textContent=n('VT-DEC');
+  $('todayFoot').textContent=today+' today';
+  $('volumeFoot').textContent='$'+vol.toLocaleString(undefined,{maximumFractionDigits:0})+' completed volume';
+  renderCharts();
+  renderTable('recentTable',transactions.slice(0,6));
+  renderTable('allTable',filtered(),pageSize);
+}
+function load(){
+  $('recentTable').innerHTML=skeleton();$('allTable').innerHTML=skeleton();
+  return api('/admin/transactions/list',{limit:200}).then(function(d){transactions=d.transactions||[];paint()}).catch(function(e){$('recentTable').innerHTML='<div class="empty">'+esc(e.message)+'</div>';$('allTable').innerHTML='<div class="empty">'+esc(e.message)+'</div>'});
+}
+function showView(id){$('app').classList.remove('nav-open');document.querySelectorAll('.section').forEach(function(s){s.classList.toggle('active',s.id===id)});document.querySelectorAll('.nav[data-view]').forEach(function(n){n.classList.toggle('active',n.dataset.view===id)});if(id==='history')$('historyRef').focus()}
 document.querySelectorAll('[data-view]').forEach(function(b){b.addEventListener('click',function(){showView(b.dataset.view)})});
 document.querySelectorAll('[data-goto]').forEach(function(b){b.addEventListener('click',function(){showView(b.dataset.goto)})});
-$('refreshBtn').addEventListener('click',load);$('searchInput').addEventListener('input',paint);$('statusFilter').addEventListener('change',paint);
+$('refreshBtn').addEventListener('click',load);
+$('searchInput').addEventListener('input',function(){pageSize=50;paint()});
+$('statusFilter').addEventListener('change',function(){pageSize=50;paint()});
+
+$('menuBtn').addEventListener('click',function(){$('app').classList.toggle('nav-open')});
+$('scrim').addEventListener('click',function(){$('app').classList.remove('nav-open')});
+
+// NETWORKS
 var ADMIN_NETS = {
   USDT: ['TRC20','BEP20','ERC20','Solana','Polygon','Arbitrum One','Optimism','TON'],
   USDC: ['ERC20','BEP20','Solana','Polygon','Arbitrum One','Base','Optimism','Avalanche C-Chain'],
@@ -335,13 +500,16 @@ function populateAdminNetworks(){
   var asset=$('assetSelect').value;
   var networks=ADMIN_NETS[asset]||[ADMIN_DEFAULT_NET[asset]||asset];
   $('networkSelect').innerHTML=networks.map(function(n){return '<option value="'+esc(n)+'">'+esc(n)+'</option>'}).join('');
+  if(pickers&&pickers.networkSelect)pickers.networkSelect.refresh();
 }
 $('assetSelect').addEventListener('change',populateAdminNetworks);
 populateAdminNetworks();
+
+// LIVE PRICE
 var CRYPTO_PRICE_CACHE={};
 var COINGECKO_IDS={BTC:'bitcoin',ETH:'ethereum',BNB:'binancecoin',SOL:'solana',XRP:'ripple',DOGE:'dogecoin',ADA:'cardano',TRX:'tron',AVAX:'avalanche-2',LINK:'chainlink',TON:'the-open-network',DOT:'polkadot',LTC:'litecoin',SHIB:'shiba-inu',BCH:'bitcoin-cash',NEAR:'near',ATOM:'cosmos',UNI:'uniswap',XLM:'stellar',APT:'aptos',USDC:'usd-coin'};
 function getCryptoUsdPrice(asset){
-  if(asset==='USDT'||asset==='USDC'){CRYPTO_PRICE_CACHE[asset]={price:1,time:Date.now()};return Promise.resolve(1);}
+  if(asset==='USDT'||asset==='USDC'){CRYPTO_PRICE_CACHE[asset]={price:1,time:Date.now()};return Promise.resolve(1)}
   var cached=CRYPTO_PRICE_CACHE[asset];
   if(cached&&Date.now()-cached.time<30000)return Promise.resolve(cached.price);
   var hosts=['https://data-api.binance.vision','https://api.binance.com','https://api1.binance.com'];
@@ -355,37 +523,190 @@ function getCryptoUsdPrice(asset){
     return fetch('https://api.coingecko.com/api/v3/simple/price?ids='+encodeURIComponent(id)+'&vs_currencies=usd').then(function(r){if(!r.ok)throw new Error('Price source unavailable');return r.json()}).then(function(d){var p=Number(d[id]&&d[id].usd);if(!(p>0))throw new Error('Invalid price');CRYPTO_PRICE_CACHE[asset]={price:p,time:Date.now()};return p});
   });
 }
-var cryptoPriceRequest=0;
+var cryptoPriceRequest=0, PRICE_HINT='Select an asset and enter the USD amount.';
 function updateCryptoAmount(){
   var type=$('transactionType').value,asset=$('assetSelect').value,usd=Number($('fiatAmountInput').value),out=$('cryptoAmountInput'),msg=$('cryptoPriceMessage');
-  if(type==='GIFT_CARD_SELL'){out.value='';return Promise.resolve();}
+  if(type==='GIFT_CARD_SELL'){out.value='';return Promise.resolve()}
   var request=++cryptoPriceRequest;
-  if(!(usd>0)){out.value='';msg.textContent='Enter the USD amount to calculate the crypto quantity.';return Promise.resolve();}
+  if(!(usd>0)){out.value='';msg.textContent='Enter the USD amount to see the crypto equivalent.';return Promise.resolve()}
   msg.textContent='Getting live '+asset+' price…';out.value='';
   return getCryptoUsdPrice(asset).then(function(price){
     if(request!==cryptoPriceRequest)return;
     out.value=(usd/price).toFixed(8);
-    msg.textContent='Live '+asset+' price: $'+price.toLocaleString(undefined,{maximumFractionDigits:8})+' USD';
+    msg.textContent='≈ '+out.value+' '+asset+' at $'+price.toLocaleString(undefined,{maximumFractionDigits:8});
   }).catch(function(error){
     if(request!==cryptoPriceRequest)return;
-    msg.textContent=error.message+'. Try again before registering.';
+    msg.textContent='Live price unavailable. The transaction can still be registered.';
   });
 }
-function updatePayout(){var amount=Number($('fiatAmountInput').value),rate=Number($('exchangeRateInput').value);$('payoutAmountInput').value=amount>0&&rate>0?(amount*rate).toFixed(2):'';}
-$('fiatAmountInput').addEventListener('input',function(){updatePayout();updateCryptoAmount();});
-$('assetSelect').addEventListener('change',function(){updateCryptoAmount();});
+function updatePayout(){var amount=Number($('fiatAmountInput').value),rate=Number($('exchangeRateInput').value);$('payoutAmountInput').value=amount>0&&rate>0?(amount*rate).toFixed(2):''}
+$('fiatAmountInput').addEventListener('input',function(){updatePayout();updateCryptoAmount()});
+$('assetSelect').addEventListener('change',function(){updateCryptoAmount()});
 $('exchangeRateInput').addEventListener('input',updatePayout);
-function updateTransactionFields(){var type=$('transactionType').value,gift=type==='GIFT_CARD_SELL',buy=type==='CRYPTO_BUY';document.querySelectorAll('.gift-field').forEach(function(x){x.classList.toggle('hidden',!gift)});document.querySelectorAll('.crypto-field').forEach(function(x){x.classList.toggle('hidden',gift)});$('payoutAmountField').classList.toggle('hidden',buy);updatePayout();}
-$('transactionType').addEventListener('change',updateTransactionFields);
+function updateTransactionFields(){var type=$('transactionType').value,gift=type==='GIFT_CARD_SELL',buy=type==='CRYPTO_BUY';document.querySelectorAll('.gift-field').forEach(function(x){x.classList.toggle('hidden',!gift)});document.querySelectorAll('.crypto-field').forEach(function(x){x.classList.toggle('hidden',gift)});$('payoutAmountField').classList.toggle('hidden',buy);updatePayout()}
+$('transactionType').addEventListener('change',function(){updateTransactionFields();updateCryptoAmount()});
 updateTransactionFields();
-$('registerForm').addEventListener('submit',function(e){e.preventDefault();if(!$('customerId').value){$('registerMessage').className='message error';$('registerMessage').textContent='Please search for and select a customer first.';$('customerSearch').focus();return}var f=new FormData(this),data={};f.forEach(function(v,k){if(v!=='')data[k]=v});data.fiat_currency='USD';data.payout_currency='NGN';if(data.transaction_type==='CRYPTO_BUY'){delete data.payout_amount;}else{data.payout_amount=Number($('payoutAmountInput').value||0);}['crypto_amount','card_value','fiat_amount','exchange_rate','payout_amount'].forEach(function(k){if(data[k]!==undefined)data[k]=Number(data[k])});$('registerMessage').className='message';$('registerMessage').textContent='Checking live crypto price…';updateCryptoAmount().then(function(){if(data.transaction_type!=='GIFT_CARD_SELL'){var crypto=Number($('cryptoAmountInput').value);if(!(crypto>0))throw new Error('Could not calculate the crypto amount. Check the live price connection and try again.');data.crypto_amount=crypto;}$('registerMessage').textContent='Registering…';return api('/admin/transactions',data)}).then(function(d){$('registerMessage').className='message success';$('registerMessage').textContent='Transaction registered: '+d.transaction.reference;this.reset();populateAdminNetworks();load();}.bind(this)).catch(function(err){$('registerMessage').className='message error';$('registerMessage').textContent=err.message})});
-function openDetail(ref){selected=transactions.find(function(t){return t.reference===ref});if(!selected)return;$('detailTitle').textContent=selected.reference;$('detailStatus').value=selected.status;$('detailMessage').textContent='';var pairs=[['Customer ID',selected.customer_id],['Type',typeLabel(selected.transaction_type)],['Asset / card',selected.asset||selected.card_brand],['Network / region',selected.network||selected.card_region],['Amount',selected.transaction_type==='GIFT_CARD_SELL'?money(selected.card_value,selected.card_currency):money(selected.crypto_amount,selected.asset)],['Fiat amount',money(selected.fiat_amount,selected.fiat_currency)],['Payout',selected.transaction_type==='CRYPTO_BUY'?'—':money(selected.payout_amount,'NGN')],['Created',fmtDate(selected.created_at)],['Customer note',selected.customer_note]];$('detailBody').innerHTML='<div class="detail-list">'+pairs.map(function(p){return '<div class="detail-item"><small>'+esc(p[0])+'</small><strong>'+esc(p[1]||'—')+'</strong></div>'}).join('')+'</div>';$('detailOverlay').classList.remove('hidden');loadEvents(ref,'detailEvents')}
-function loadEvents(ref,target){$(target).innerHTML='<div class="muted">Loading history…</div>';api('/admin/transactions/events',{reference:ref}).then(function(d){var ev=d.events||[];$(target).innerHTML=ev.length?ev.map(function(x){return '<div class="event"><strong>'+esc(x.event_type.replace('_',' '))+' · '+esc(statusLabel(x.new_status||''))+'</strong><small>'+esc(fmtDate(x.created_at))+' · '+esc(x.actor_user_id||'System')+'</small></div>'}).join(''):'<div class="muted">No audit events found.</div>'}).catch(function(e){$(target).innerHTML='<div class="message error">'+esc(e.message)+'</div>'})}
-$('detailClose').addEventListener('click',function(){$('detailOverlay').classList.add('hidden')});$('detailOverlay').addEventListener('click',function(e){if(e.target===this)this.classList.add('hidden')});
-$('detailUpdate').addEventListener('click',function(){if(!selected)return;var status=$('detailStatus').value;$('detailMessage').textContent='Updating…';api('/admin/transactions/status',{reference:selected.reference,status:status}).then(function(){ $('detailMessage').className='message success';$('detailMessage').textContent='Status updated.';return load()}).then(function(){selected=transactions.find(function(t){return t.reference===selected.reference});if(selected)loadEvents(selected.reference,'detailEvents')}).catch(function(e){$('detailMessage').className='message error';$('detailMessage').textContent=e.message})});
-function historySearch(){var ref=$('historyRef').value.trim();if(!ref){$('historyMessage').textContent='Enter a transaction reference.';return}loadEvents(ref,'eventList')}
-$('historyRefresh').addEventListener('click',historySearch);$('historyRef').addEventListener('keydown',function(e){if(e.key==='Enter')historySearch()});
-function start(){session=readSession();if(!session||!session.access_token){gate('Admin login required','Please sign in to your VersusTrade account first.',true);return}token().then(function(t){return fetch(API+'/admin/verify',{method:'POST',headers:{Authorization:'Bearer '+t}})}).then(function(r){return r.json().then(function(d){if(!r.ok||!d.authorized)throw new Error(d.error||'Admin access denied')})}).then(function(){ $('gate').classList.add('hidden');$('app').classList.remove('hidden');$('adminEmail').textContent=session.email||'';load()}).catch(function(e){gate('Access denied',e.message+' If you believe this is an error, contact the administrator.',true)})}
+
+// REGISTER
+function resetRegisterForm(form){
+  form.reset();populateAdminNetworks();clearCustomerSelection();
+  $('customerSearch').value='';$('customerSearchMessage').textContent='Type at least 2 characters to find a customer.';$('customerSearchMessage').className='message';
+  $('cryptoPriceMessage').textContent=PRICE_HINT;
+  updateTransactionFields();refreshPickers();
+}
+$('registerForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  var form=this,btn=$('registerBtn'),msg=$('registerMessage');
+  if(!$('customerId').value){msg.className='message error';msg.textContent='Please search for and select a customer first.';$('customerSearch').focus();return}
+  var f=new FormData(form),data={};
+  f.forEach(function(v,k){if(v!=='')data[k]=v});
+  data.fiat_currency='USD';data.payout_currency='NGN';
+  if(data.transaction_type==='CRYPTO_BUY'){delete data.payout_amount}else{data.payout_amount=Number($('payoutAmountInput').value||0)}
+  if(data.transaction_type==='GIFT_CARD_SELL'){delete data.asset;delete data.network;delete data.crypto_amount}
+  ['crypto_amount','card_value','fiat_amount','exchange_rate','payout_amount'].forEach(function(k){if(data[k]!==undefined)data[k]=Number(data[k])});
+  btn.disabled=true;msg.className='message';msg.textContent='Checking live crypto price…';
+  updateCryptoAmount().then(function(){
+    if(data.transaction_type!=='GIFT_CARD_SELL'){
+      var crypto=Number($('cryptoAmountInput').value);
+      if(crypto>0)data.crypto_amount=crypto;else delete data.crypto_amount;
+    }
+    msg.textContent='Registering…';
+    return api('/admin/transactions',data);
+  }).then(function(d){
+    msg.className='message success';msg.textContent='Transaction registered: '+d.transaction.reference;
+    resetRegisterForm(form);load();
+  }).catch(function(err){msg.className='message error';msg.textContent=err.message}).then(function(){btn.disabled=false});
+});
+
+// DETAIL MODAL
+function openDetail(ref){
+  selected=transactions.find(function(t){return t.reference===ref});if(!selected)return;
+  lastFocus=document.activeElement;
+  var c=custInfo(selected);
+  $('detailTitle').textContent=selected.reference;$('detailStatus').value=selected.status;$('detailMessage').textContent='';$('detailMessage').className='message';
+  var pairs=[['Customer',c.name?(c.name+(c.email?' · '+c.email:'')):selected.customer_id],['Customer ID',selected.customer_id],['Type',typeLabel(selected.transaction_type)],['Asset / card',selected.asset||selected.card_brand,selected.transaction_type==='GIFT_CARD_SELL'?cardIco(selected.card_brand):coinIco(selected.asset)],['Network / region',selected.network||selected.card_region,selected.transaction_type==='GIFT_CARD_SELL'?flagIco(selected.card_region):netIco(selected.network)],['Amount',selected.transaction_type==='GIFT_CARD_SELL'?money(selected.card_value,selected.card_currency):money(selected.crypto_amount,selected.asset)],['Fiat amount',money(selected.fiat_amount,selected.fiat_currency)],['Payout',selected.transaction_type==='CRYPTO_BUY'?'—':money(selected.payout_amount,'NGN')],['Created',fmtDate(selected.created_at)],['Customer note',selected.customer_note]];
+  $('detailBody').innerHTML='<div class="detail-list">'+pairs.map(function(p){return '<div class="detail-item"><small>'+esc(p[0])+'</small><strong class="amt">'+(p[2]?smIco(p[2]):'')+esc(p[1]||'—')+'</strong></div>'}).join('')+'</div>';
+  $('detailOverlay').classList.remove('hidden');$('detailClose').focus();
+  loadEvents(ref,'detailEvents');
+}
+function closeDetail(){$('detailOverlay').classList.add('hidden');if(lastFocus&&lastFocus.focus)lastFocus.focus()}
+function loadEvents(ref,target){
+  $(target).innerHTML='<div class="muted">Loading history…</div>';
+  api('/admin/transactions/events',{reference:ref}).then(function(d){
+    var ev=d.events||[];
+    $(target).innerHTML=ev.length?ev.map(function(x){return '<div class="event"><strong>'+esc(String(x.event_type||'').replace(/_/g,' ').toLowerCase())+' · '+esc(statusLabel(x.new_status||''))+'</strong><small>'+esc(fmtDate(x.created_at))+' · '+esc(x.actor_user_id||'System')+'</small></div>'}).join(''):'<div class="muted">No audit events found.</div>';
+  }).catch(function(e){$(target).innerHTML='<div class="message error">'+esc(e.message)+'</div>'});
+}
+$('detailClose').addEventListener('click',closeDetail);
+$('detailOverlay').addEventListener('click',function(e){if(e.target===this)closeDetail()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('detailOverlay').classList.contains('hidden'))closeDetail()});
+$('detailUpdate').addEventListener('click',function(){
+  if(!selected)return;
+  var status=$('detailStatus').value,btn=this,msg=$('detailMessage');
+  if(status===selected.status){msg.className='message';msg.textContent='Status is already '+statusLabel(status)+'.';return}
+  if(status!=='VT-PRO'&&!confirm('Mark '+selected.reference+' as '+statusLabel(status)+'? This is recorded in the audit log.'))return;
+  var ref=selected.reference;
+  btn.disabled=true;msg.className='message';msg.textContent='Updating…';
+  api('/admin/transactions/status',{reference:ref,status:status}).then(function(){
+    msg.className='message success';msg.textContent='Status updated.';return load();
+  }).then(function(){
+    selected=transactions.find(function(t){return t.reference===ref});
+    if(selected)loadEvents(ref,'detailEvents');
+  }).catch(function(e){msg.className='message error';msg.textContent=e.message}).then(function(){btn.disabled=false});
+});
+
+// HISTORY
+function historySearch(){var ref=$('historyRef').value.trim();if(!ref){$('historyMessage').textContent='Enter a transaction reference.';return}$('historyMessage').textContent='';loadEvents(ref,'eventList')}
+$('historyRefresh').addEventListener('click',historySearch);
+$('historyRef').addEventListener('keydown',function(e){if(e.key==='Enter')historySearch()});
+
+// LOGO PICKERS: same logo sources as the homepage (CoinCap coin icons, R2 gift card logos)
+var R2='https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/';
+var CARD_META={'Visa Gift Card':{c:'#1a1f71',t:'VISA'},'Amazon Gift Card':{img:'Amazon.png',t:'A'},'Apple / iTunes Gift Card':{img:'Apple.png',t:'A'},'Google Play Gift Card':{img:'Google%20Play.png',t:'G'},'Steam Gift Card':{img:'Steam.png',t:'S'},'Razer Gold':{img:'RAZOR%20GOLD.png',t:'R'},'Sephora Gift Card':{c:'#111111',t:'S'},'Target Gift Card':{c:'#cc0000',t:'T'},'Walmart Gift Card':{c:'#0071ce',t:'W'},'PlayStation Gift Card':{c:'#003791',t:'PS'},'Xbox Gift Card':{c:'#107c10',t:'X'},'eBay Gift Card':{c:'#e53238',t:'e'}};
+var NET_SYM={trc20:'trx',tron:'trx',bep20:'bnb','bnb chain':'bnb',erc20:'eth',ethereum:'eth',solana:'sol',polygon:'matic','arbitrum one':'arb',optimism:'op',ton:'ton',bitcoin:'btc','avalanche c-chain':'avax',avalanche:'avax',xrpl:'xrp',dogecoin:'doge',cardano:'ada',polkadot:'dot',litecoin:'ltc','bitcoin cash':'bch',near:'near',cosmos:'atom',stellar:'xlm',aptos:'apt'};
+function coinIco(sym){sym=String(sym||'');return '<span class="ico ico-coin">'+esc(sym.charAt(0).toUpperCase())+'<img src="https://assets.coincap.io/assets/icons/'+encodeURIComponent(sym.toLowerCase())+'@2x.png" alt="" loading="lazy" onerror="this.remove()"></span>'}
+function cardIco(name){
+  var m=CARD_META[name];
+  if(!m)return '<span class="ico ico-card" style="background:#6b6d76">'+esc(String(name||'?').charAt(0))+'</span>';
+  if(m.img)return '<span class="ico ico-card"><img src="'+R2+m.img+'" alt="" loading="lazy" onerror="var p=this.parentNode;p.style.background=\'#e11d2e\';p.textContent=\''+m.t+'\'"></span>';
+  return '<span class="ico ico-card" style="background:'+m.c+'">'+esc(m.t)+'</span>';
+}
+function flagIco(code){code=String(code||'');if(!code)return '';return '<span class="ico ico-flag">'+esc(code.toUpperCase())+'<img src="https://flagcdn.com/w80/'+encodeURIComponent(code.toLowerCase())+'.png" alt="" loading="lazy" onerror="this.remove()"></span>'}
+function netIco(name){var s=NET_SYM[String(name||'').toLowerCase()];return s?coinIco(s):'<span class="ico ico-coin">'+esc(String(name||'?').charAt(0))+'</span>'}
+function typeIco(v){
+  var P={CRYPTO_BUY:['#16834a','<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>'],CRYPTO_SELL:['#fe3a12','<polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/>'],GIFT_CARD_SELL:['#6b4ce6','<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/>']}[v]||['#6b6d76','<circle cx="12" cy="12" r="9"/>'];
+  return '<span class="ico ico-card ico-type" style="background:'+P[0]+';border-color:transparent"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+P[1]+'</svg></span>';
+}
+function smIco(h){return String(h).replace('class="ico ','class="ico sm ')}
+var ICONS={transactionType:typeIco,assetSelect:coinIco,networkSelect:netIco,cardBrand:cardIco,cardRegion:flagIco};
+var pickers={};
+function makePicker(sel,iconFn){
+  var wrap=document.createElement('div');wrap.className='pick';
+  var btn=document.createElement('button');btn.type='button';btn.className='select pick-btn';btn.setAttribute('aria-haspopup','listbox');btn.setAttribute('aria-expanded','false');
+  var lab=document.querySelector('label[for="'+sel.id+'"]');if(lab)btn.setAttribute('aria-label',lab.textContent);
+  var panel=document.createElement('div');panel.className='pick-panel hidden';
+  var search=document.createElement('input');search.type='search';search.className='field pick-search';search.placeholder='Search…';search.setAttribute('aria-label','Search');search.autocomplete='off';
+  var list=document.createElement('div');list.className='pick-list';list.setAttribute('role','listbox');
+  panel.appendChild(search);panel.appendChild(list);wrap.appendChild(btn);wrap.appendChild(panel);
+  sel.parentNode.insertBefore(wrap,sel.nextSibling);sel.classList.add('pick-native');sel.tabIndex=-1;
+  var items=[],shown=[],active=-1;
+  function parse(){items=Array.prototype.map.call(sel.options,function(o){var p=o.text.split(' · ');return{v:o.value,t:o.text,main:p[0],sub:p[1]||''}})}
+  function label(it){return '<span class="nm"><b>'+esc(it.main)+'</b>'+(it.sub?'<small>'+esc(it.sub)+'</small>':'')+'</span>'}
+  function drawBtn(){
+    var cur=items.filter(function(i){return i.v===sel.value})[0];
+    var ph=items.filter(function(i){return i.v===''})[0];
+    btn.innerHTML=(cur&&cur.v!==''?iconFn(cur.v)+label(cur):'<span class="nm muted">'+esc(ph?ph.main:'Select')+'</span>')+'<span class="chev" aria-hidden="true">▾</span>';
+  }
+  function drawList(q){
+    q=(q||'').trim().toLowerCase();
+    shown=items.filter(function(i){return i.v!==''&&(!q||i.t.toLowerCase().indexOf(q)>-1||i.v.toLowerCase().indexOf(q)>-1)});
+    if(!shown.length){list.innerHTML='<div class="pick-empty">No matches.</div>';active=-1;return}
+    list.innerHTML=shown.map(function(i,n){return '<button type="button" class="pick-row" role="option" data-i="'+n+'" aria-selected="'+(i.v===sel.value)+'">'+iconFn(i.v)+label(i)+'</button>'}).join('');
+    active=q?0:shown.map(function(i){return i.v}).indexOf(sel.value);
+    mark(true);
+  }
+  function mark(scroll){
+    Array.prototype.forEach.call(list.querySelectorAll('.pick-row'),function(r,n){r.classList.toggle('active',n===active);if(n===active&&scroll)r.scrollIntoView({block:'nearest'})});
+  }
+  function isOpen(){return !panel.classList.contains('hidden')}
+  function open(){
+    parse();search.value='';search.classList.toggle('hidden',shown.length+1<=8&&items.length<=8);
+    panel.classList.remove('hidden');btn.setAttribute('aria-expanded','true');drawList('');
+    if(items.length>8){search.focus({preventScroll:true})}
+  }
+  function close(focusBtn){panel.classList.add('hidden');btn.setAttribute('aria-expanded','false');if(focusBtn)btn.focus()}
+  function choose(n){
+    var it=shown[n];if(!it)return;
+    var changed=sel.value!==it.v;sel.value=it.v;drawBtn();close(true);
+    if(changed)sel.dispatchEvent(new Event('change',{bubbles:true}));
+  }
+  btn.addEventListener('click',function(){isOpen()?close():open()});
+  btn.addEventListener('keydown',function(e){if((e.key==='ArrowDown'||e.key==='ArrowUp')&&!isOpen()){e.preventDefault();open();if(items.length<=8)list.focus&&list.querySelector('.pick-row.active,.pick-row')&&list.querySelector('.pick-row.active,.pick-row').focus()}});
+  search.addEventListener('input',function(){drawList(search.value)});
+  panel.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){e.preventDefault();e.stopPropagation();close(true);return}
+    var rows=list.querySelectorAll('.pick-row');if(!rows.length)return;
+    if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();var cur=document.activeElement&&document.activeElement.classList.contains('pick-row')?+document.activeElement.dataset.i:active;active=Math.max(0,Math.min(rows.length-1,(cur<0?0:cur)+(e.key==='ArrowDown'?1:-1)));mark(true);rows[active].focus()}
+    else if(e.key==='Enter'&&document.activeElement===search){e.preventDefault();choose(Math.max(0,active))}
+  });
+  list.addEventListener('click',function(e){var r=e.target.closest('.pick-row');if(r)choose(+r.dataset.i)});
+  document.addEventListener('click',function(e){if(isOpen()&&!wrap.contains(e.target))close()});
+  parse();drawBtn();
+  return{refresh:function(){parse();drawBtn()}};
+}
+function initPickers(){Object.keys(ICONS).forEach(function(id){if($(id))pickers[id]=makePicker($(id),ICONS[id])})}
+function refreshPickers(){Object.keys(pickers).forEach(function(k){pickers[k].refresh()})}
+initPickers();
+
+// START
+function start(){
+  if(PREVIEW){cacheCustomers(mockCustomers);session={email:'Preview mode · sample data'};$('gate').classList.add('hidden');$('app').classList.remove('hidden');$('adminEmail').textContent=session.email;document.title='Preview | VersusTrade Admin';load();return}
+  session=readSession();
+  if(!session||!session.access_token){gate('Admin login required','Please sign in to your VersusTrade account first.',true);return}
+  token().then(function(t){return fetch(API+'/admin/verify',{method:'POST',headers:{Authorization:'Bearer '+t}})}).then(function(r){return r.json().then(function(d){if(!r.ok||!d.authorized)throw new Error(d.error||'Admin access denied')})}).then(function(){
+    $('gate').classList.add('hidden');$('app').classList.remove('hidden');$('adminEmail').textContent=session.email||'';load();
+  }).catch(function(e){gate('Access denied',e.message+' If you believe this is an error, contact the administrator.',true)});
+}
 start();
 })();
 </script>
