@@ -2810,18 +2810,18 @@ draw();
   }
   setInterval(function(){if(cur==='rates')drawRates()},5000);
   var CARDS = [
-    { n: 'Visa Gift Card', c: '#1a1f71', t: 'VISA' },
+    { n: 'Visa Gift Card', img: 'https://cdn.simpleicons.org/visa/1A1F71', t: 'VISA' },
     { n: 'Amazon Gift Card', img: R2 + 'Amazon.png', t: 'A' },
     { n: 'Apple / iTunes Gift Card', img: R2 + 'Apple.png', t: 'A' },
     { n: 'Google Play Gift Card', img: R2 + 'Google%20Play.png', t: 'G' },
     { n: 'Steam Gift Card', img: R2 + 'Steam.png', t: 'S' },
     { n: 'Razer Gold', img: R2 + 'RAZOR%20GOLD.png', t: 'R' },
-    { n: 'Sephora Gift Card', c: '#111111', t: 'S' },
-    { n: 'Target Gift Card', c: '#cc0000', t: 'T' },
-    { n: 'Walmart Gift Card', c: '#0071ce', t: 'W' },
-    { n: 'PlayStation Gift Card', c: '#003791', t: 'PS' },
-    { n: 'Xbox Gift Card', c: '#107c10', t: 'X' },
-    { n: 'eBay Gift Card', c: '#e53238', t: 'eBay' }
+    { n: 'Sephora Gift Card', img: 'https://cdn.simpleicons.org/sephora/000000', t: 'S' },
+    { n: 'Target Gift Card', img: 'https://cdn.simpleicons.org/target/CC0000', t: 'T' },
+    { n: 'Walmart Gift Card', img: 'https://cdn.simpleicons.org/walmart/0071CE', t: 'W' },
+    { n: 'PlayStation Gift Card', img: 'https://cdn.simpleicons.org/playstation/003791', t: 'PS' },
+    { n: 'Xbox Gift Card', img: 'https://cdn.simpleicons.org/xbox/107C10', t: 'X' },
+    { n: 'eBay Gift Card', img: 'https://cdn.simpleicons.org/ebay/E53238', t: 'eBay' }
   ];
   function gcTile(c){var cv=document.createElement('canvas');cv.width=800;cv.height=1026;var x=cv.getContext('2d');
     x.fillStyle=c.c||'#27272a';x.fillRect(0,0,800,1026);x.fillStyle='#fff';x.textAlign='center';x.textBaseline='middle';
@@ -2832,7 +2832,7 @@ draw();
     bend:2,textColor:'#71717a',borderRadius:.05,scrollEase:.05,fadeEdges:.3,scrollSpeed:1.9,autoScroll:1,snap:false,rotateAmplitude:12,scaleOnHover:1.05,glare:.5,shadow:.5});
   var giftItems=CARDS.map(function(c){var it={title:c.n,description:'Rate confirmed in chat',meta:'Sell',metaClass:'sell'};if(c.img)it.image=c.img;else it.tile={bg:c.c,text:c.t};return it});
   VTAnimatedList($('rtGift'),{items:giftItems,animation:'pop',width:560,maxHeight:348,fadeSize:28,
-    onItemSelect:function(item){var n=item.title;if((/^(visa|amazon|apple \/ itunes|steam) gift card$/i.test(n) || /^razer gold$/i.test(n) || /^sephora gift card$/i.test(n) || /^(target|walmart) gift card$/i.test(n) || /^playstation gift card$/i.test(n) || /^xbox gift card$/i.test(n))&&window.VTVisaPicker){window.VTVisaPicker.open(n,function(details){if(window.VTChat&&VTChat.sendGiftCard)VTChat.sendGiftCard(n,details);else toast('Chat isn\u2019t available right now. Please try again in a moment.')});return}if(window.VTChat&&VTChat.sendGiftCard)VTChat.sendGiftCard(n);else toast('Chat isn\u2019t available right now. Please try again in a moment.')}});
+    onItemSelect:function(item){var n=item.title;if((/^(visa|amazon|apple \/ itunes|steam) gift card$/i.test(n) || /^razer gold$/i.test(n) || /^sephora gift card$/i.test(n) || /^(target|walmart) gift card$/i.test(n) || /^playstation gift card$/i.test(n) || /^xbox gift card$/i.test(n) || /^ebay gift card$/i.test(n))&&window.VTVisaPicker){window.VTVisaPicker.open(n,function(details){if(window.VTChat&&VTChat.sendGiftCard)VTChat.sendGiftCard(n,details);else toast('Chat isn\u2019t available right now. Please try again in a moment.')});return}if(window.VTChat&&VTChat.sendGiftCard)VTChat.sendGiftCard(n);else toast('Chat isn\u2019t available right now. Please try again in a moment.')}});
   window.VTGiftCards={cards:CARDS,open:function(){showView('rates');setRT('gift')}};
   var _sv=Element.prototype.scrollIntoView;Element.prototype.scrollIntoView=function(o){if(this.id==='markets'&&cur!=='trade')showView('trade',true);else if(this.id==='rates'&&cur!=='rates')showView('rates',true);return _sv.call(this,o)};
   function setRT(){}
@@ -2887,7 +2887,7 @@ draw();
   th.dataset.themeBound='1';paint();
 })();
 </script>
-<script src="/giftcards.js?v=20261102-7"></script>
+<script src="/giftcards.js?v=20261102-8"></script>
 <script src="/chat.js?v=20261102-8" onload="window.__vtChatLoaded=1;window.vtChatReady&&window.vtChatReady()" onerror="window.__vtChatLoaded=0;window.vtChatFail&&window.vtChatFail()"></script>
 </body>
 </html>
