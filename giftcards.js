@@ -18,7 +18,7 @@
         'USA Amazon Debit Receipt (101 - 200)','USA Amazon Debit Receipt (201 - 499)',
         'USA Amazon Debit Receipt (50-100)','USA Amazon Debit Receipt Single (500)'
       ],
-      ecode: ['Australia Amazon Ecode (25 and above )','Canada Amazon Ecode (25 and above )','Germany Amazon Ecode (25 and above )','UK Amazon Ecode (10 and above )','USA Amazon Ecode (25 and above )']
+      ecode: ['Australia Amazon Ecode (25 and above)','Canada Amazon Ecode (25 and above)','Germany Amazon Ecode (25 and above)','UK Amazon Ecode (10 and above)','USA Amazon Ecode (25 and above)']
     },
     'Apple / iTunes Gift Card': {
       physical: [
@@ -94,20 +94,20 @@
       ecode: ['USA Walmart Ecode (300 and above)','USA Walmart Ecode (50-299)']
     },
     'PlayStation Gift Card': {
-      physical: ['USA PlayStation Gift Card (10-70)','USA PlayStation Gift Card (200 and above )','USA PlayStation Gift Card (71 - 199)'],
-      ecode: ['USA PlayStation Gift Card (10-70)','USA PlayStation Gift Card (200 and above )','USA PlayStation Gift Card (71 - 199)']
+      physical: ['USA PlayStation Gift Card (10-70)','USA PlayStation Gift Card (200 and above)','USA PlayStation Gift Card (71 - 199)'],
+      ecode: ['USA PlayStation Gift Card (10-70)','USA PlayStation Gift Card (200 and above)','USA PlayStation Gift Card (71 - 199)']
     },
     'Xbox Gift Card': {
       physical: ['($) USA Physical Xbox Gift Card (10 and above)','Australian Xbox Gift Card (10 and above)','Brazilian Xbox Gift Card (50 and above)','Canada Physical Xbox (10 and above)','EURO Physical Xbox (10 and above)','NZD Xbox Gift Card (10 and above)','Singapore Xbox Gift Card (10 and above)','UK Physical Xbox (10 and above)'],
-      ecode: ['($) USA Xbox E-code(10 and above )','Australian Xbox Gift Card (10 and above )','Brazilian Xbox Gift Card (50 and above )','Canada Ecode Xbox (10 and above )','EURO Ecode Xbox (10 and above )','NZD Xbox Gift Card (10 and above )','Singapore Xbox Gift Card (10 and above )','UK Ecode Xbox (10 and above )']
+      ecode: ['($) USA Xbox E-code(10 and above)','Australian Xbox Gift Card (10 and above)','Brazilian Xbox Gift Card (50 and above)','Canada Ecode Xbox (10 and above)','EURO Ecode Xbox (10 and above)','NZD Xbox Gift Card (10 and above)','Singapore Xbox Gift Card (10 and above)','UK Ecode Xbox (10 and above)']
     },
     'Steam Gift Card': {
-      physical: ['($) USA STEAM ECODE','(£) UK Steam Ecode','(€ ) Euro Steam Ecode','Australia Steam Ecode (A$)','CANADA Steam Ecode $','CHF Steam Ecode','NZD Steam Ecode $'],
-      ecode: ['($) USA STEAM ECODE','(£) UK Steam Ecode','(€ ) Euro Steam Ecode','Australia Steam Ecode (A$)','CANADA Steam Ecode $','CHF Steam Ecode','NZD Steam Ecode $']
+      physical: ['($) USA STEAM ECODE','(£) UK Steam Ecode','(€) Euro Steam Ecode','Australia Steam Ecode (A$)','CANADA Steam Ecode $','CHF Steam Ecode','NZD Steam Ecode $'],
+      ecode: ['($) USA STEAM ECODE','(£) UK Steam Ecode','(€) Euro Steam Ecode','Australia Steam Ecode (A$)','CANADA Steam Ecode $','CHF Steam Ecode','NZD Steam Ecode $']
     },
     'Razer Gold': {
-      physical: ['($) Green Razer Gift Card USA (10 and above)','($) USA Razer Gold Gift Card','(£) UK Razer Gold Gift Card (10 and above)','(€ ) Euro Razer Gold Gift Card (10 and above)','Australian Razer Gold Gift Card','Brazilian Razer Gold Gift Card (10 and above)','Canada Razer Gold Gift Card','Malaysian Razergold (25 and above)','Mexican Razer Gold Gift Card','NZD Razer Gold Gift Card (10 and above)','Singapore Razer Gold Gift Card (10 and above)'],
-      ecode: ['($) Green Razer Gift Card USA (10 and above)','($) USA Razer Gold Gift Card','(£) UK Razer Gold Gift Card (10 and above)','(€ ) Euro Razer Gold Gift Card (10 and above)','Australian Razer Gold Gift Card','Brazilian Razer Gold Gift Card ( 10 and above)','Canada Razer Gold Gift Card','Malaysian Razergold (25 and above)','Mexican Razer Gold Gift Card','NZD Razer Gold Gift Card (10 and above)','Singapore Razer Gold Gift Card (10 and above)']
+      physical: ['($) Green Razer Gift Card USA (10 and above)','($) USA Razer Gold Gift Card','(£) UK Razer Gold Gift Card (10 and above)','(€) Euro Razer Gold Gift Card (10 and above)','Australian Razer Gold Gift Card','Brazilian Razer Gold Gift Card (10 and above)','Canada Razer Gold Gift Card','Malaysian Razergold (25 and above)','Mexican Razer Gold Gift Card','NZD Razer Gold Gift Card (10 and above)','Singapore Razer Gold Gift Card (10 and above)'],
+      ecode: ['($) Green Razer Gift Card USA (10 and above)','($) USA Razer Gold Gift Card','(£) UK Razer Gold Gift Card (10 and above)','(€) Euro Razer Gold Gift Card (10 and above)','Australian Razer Gold Gift Card','Brazilian Razer Gold Gift Card ( 10 and above)','Canada Razer Gold Gift Card','Malaysian Razergold (25 and above)','Mexican Razer Gold Gift Card','NZD Razer Gold Gift Card (10 and above)','Singapore Razer Gold Gift Card (10 and above)']
     },
     'Sephora Gift Card': {
       physical: ['CAD Sephora Physical (100-299)','CAD Sephora Physical (300 and above)','USA Sephora Physical - 6347 6330 (100-299)','USA Sephora Physical - 6347 6330 (300 and above)','USA Sephora Physical (50-99)','USA Sephora Physical 6318 6348 6320 6340 6353 6346 (300 above)','USA Sephora Physical- 6318 6348 6320 6340 6346 6353 (100-299)'],
