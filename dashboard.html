@@ -1259,10 +1259,55 @@ var USER={name:'',email:'',phone:'',kyc:'Verified',since:''};
 var TRADES=[];
 var LABEL={done:'Success',wait:'Processing',fail:'Declined'},PER=5,page=1,filt='all',stat='all',term='';
 var $=function(i){return document.getElementById(i)};
+var accountFilterState={period:'all',from:'',to:'',types:[],failed:[],progress:[]};
+function bindFilterPanel(prefix,onApply){
+  var dialog=$(prefix+'FilterDialog'),state={period:'all',from:'',to:'',types:[],failed:[],progress:[]};
+  function paint(){
+    dialog.querySelectorAll('[data-period]').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.period===state.period?'true':'false')});
+    dialog.querySelectorAll('[data-filter-group]').forEach(function(c){c.checked=state[c.dataset.filterGroup].indexOf(c.dataset.filterValue)>-1});
+    dialog.querySelectorAll('[data-selectall]').forEach(function(c){var g=c.dataset.selectall,items=[].slice.call(dialog.querySelectorAll('[data-filter-group="'+g+'"]'));c.checked=items.length>0&&items.every(function(x){return x.checked});c.indeterminate=items.some(function(x){return x.checked})&&!c.checked});
+    $(prefix+'CustomDates').classList.toggle('show',state.period==='custom');
+    $(prefix+'DateFrom').value=state.from;$(prefix+'DateTo').value=state.to;
+  }
+  function reset(){state={period:'all',from:'',to:'',types:[],failed:[],progress:[]};paint();onApply(state)}
+  dialog.querySelectorAll('[data-period]').forEach(function(b){b.addEventListener('click',function(){state.period=b.dataset.period;paint()})});
+  dialog.querySelectorAll('[data-filter-group]').forEach(function(c){c.addEventListener('change',function(){var g=c.dataset.filterGroup,v=c.dataset.filterValue;if(c.checked&&state[g].indexOf(v)<0)state[g].push(v);if(!c.checked)state[g]=state[g].filter(function(x){return x!==v});paint()})});
+  dialog.querySelectorAll('[data-selectall]').forEach(function(c){c.addEventListener('change',function(){var g=c.dataset.selectall,items=[].slice.call(dialog.querySelectorAll('[data-filter-group="'+g+'"]'));state[g]=c.checked?items.map(function(x){return x.dataset.filterValue}):[];paint()})});
+  $(prefix+'DateFrom').addEventListener('change',function(){state.from=this.value;state.period='custom';paint()});
+  $(prefix+'DateTo').addEventListener('change',function(){state.to=this.value;state.period='custom';paint()});
+  $(prefix+'FilterOpen').addEventListener('click',function(){paint();dialog.showModal()});
+  $(prefix+'FilterReset').addEventListener('click',reset);
+  $(prefix+'FilterCancel').addEventListener('click',function(){dialog.close()});
+  $(prefix+'FilterApply').addEventListener('click',function(){dialog.close();onApply(state)});
+  paint();return state;
+}
+function filterDateMatch(value,state){
+  if(state.period==='all')return true;
+  var d=new Date(value);if(isNaN(d.getTime()))return false;
+  var start=new Date(),end=new Date();start.setHours(0,0,0,0);end.setHours(23,59,59,999);
+  if(state.period==='today'){}
+  else if(state.period==='7')start.setDate(start.getDate()-6);
+  else if(state.period==='30')start.setDate(start.getDate()-29);
+  else if(state.period==='month')start.setDate(1);
+  else if(state.period==='custom'){
+    if(state.from){var f=new Date(state.from+'T00:00:00');if(!isNaN(f.getTime()))start=f}
+    if(state.to){var t=new Date(state.to+'T23:59:59.999');if(!isNaN(t.getTime()))end=t}
+  }
+  return d>=start&&d<=end;
+}
+
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function ngn(n){return '\u20A6'+Math.round(Number(n)||0).toLocaleString('en-US')}
 function dt(d){var x=new Date(d);return isNaN(x.getTime())?'—':x.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}
-function list(){return TRADES.filter(function(t){return(filt==='all'||t.side===filt)&&(stat==='all'||t.status===stat)&&(t.asset+' '+t.name+' '+t.id).toLowerCase().indexOf(term)>-1})}
+function list(){return TRADES.filter(function(t){
+  if((filt!=='all'&&t.side!==filt)||(stat!=='all'&&t.status!==stat)||(t.asset+' '+t.name+' '+t.id).toLowerCase().indexOf(term)<0)return false;
+  if(!filterDateMatch(t.date,accountFilterState))return false;
+  var types=accountFilterState.types;
+  if(types.length&&types.indexOf(t.transactionType)<0)return false;
+  var failed=accountFilterState.failed,progress=accountFilterState.progress;
+  if((failed.length||progress.length)&&!((t.status==='fail'&&failed.length)||(t.status==='wait'&&progress.length)))return false;
+  return true;
+})}
 function draw(){
   var l=list(),pages=Math.max(1,Math.ceil(l.length/PER));page=Math.min(page,pages);
   var s=l.slice((page-1)*PER,page*PER);
@@ -1284,7 +1329,7 @@ function mapTransaction(t){
   else if(t.payout_amount!=null)amount=t.payout_amount;
   else amount=t.fiat_amount;
   var status=t.status==='VT-DONE'?'done':t.status==='VT-DEC'?'fail':'wait';
-  return {id:t.reference,side:side,asset:asset,name:gift?'Gift card':asset,ngn:Number(amount)||0,qty:qty||'—',date:t.created_at||'',status:status};
+  return {id:t.reference,side:side,asset:asset,name:gift?'Gift card':asset,transactionType:gift?'gift_sell':'',ngn:Number(amount)||0,qty:qty||'—',date:t.created_at||'',status:status};
 }
 var tradesLoading=false;
 function loadCustomerTrades(){
@@ -1299,6 +1344,7 @@ function loadCustomerTrades(){
     console.error('VersusTrade customer transactions:',err);
   }).then(function(){tradesLoading=false});
 }
+accountFilterState=bindFilterPanel('account',function(s){accountFilterState=s;page=1;draw()});
 $('tabs').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;filt=b.dataset.f;page=1;[].forEach.call($('tabs').children,function(x){x.setAttribute('aria-selected',x===b)});draw()});
 $('chips').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;stat=b.dataset.s;page=1;[].forEach.call($('chips').children,function(x){x.setAttribute('aria-pressed',x===b)});draw()});
 $('q').addEventListener('input',function(){term=this.value.trim().toLowerCase();page=1;draw()});
