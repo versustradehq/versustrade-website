@@ -858,7 +858,7 @@ function makePicker(sel,iconFn){
   panel.appendChild(search);panel.appendChild(list);wrap.appendChild(btn);wrap.appendChild(panel);
   sel.parentNode.insertBefore(wrap,sel.nextSibling);sel.classList.add('pick-native');sel.tabIndex=-1;
   var items=[],shown=[],active=-1;
-  function parse(){items=Array.prototype.map.call(sel.options,function(o){var p=o.text.split(/\\s[·—]\\s/);return{v:o.value,t:o.text,main:p[0],sub:p[1]||''}})}
+  function parse(){items=Array.prototype.map.call(sel.options,function(o){var p=o.text.split(/\s[·—]\s/);return{v:o.value,t:o.text,main:p[0],sub:p[1]||''}})}
   function label(it){return '<span class="nm"><b>'+esc(it.main)+'</b>'+(it.sub?'<small>'+esc(it.sub)+'</small>':'')+'</span>'}
   function drawBtn(){
     var cur=items.filter(function(i){return i.v===sel.value})[0];
