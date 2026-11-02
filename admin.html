@@ -838,7 +838,15 @@ function typeIco(v){
   return '<span class="ico ico-card ico-type" style="background:'+P[0]+';border-color:transparent"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+P[1]+'</svg></span>';
 }
 function smIco(h){return String(h).replace('class="ico ','class="ico sm ')}
-var ICONS={transactionType:typeIco,assetSelect:coinIco,networkSelect:netIco,cardBrand:cardIco,cardRegion:flagIco};
+function cardTypeIco(v){
+  var m={Physical:['#fe3a12','P'], 'E-code':['#6b4ce6','E']}[v]||['#6b6d76',String(v||'?').charAt(0)];
+  return '<span class="ico ico-card" style="background:'+m[0]+';border-color:transparent">'+esc(m[1])+'</span>';
+}
+function currencyIco(v){
+  var codes={USD:'US',EUR:'EU',GBP:'GB',CAD:'CA',AUD:'AU'};
+  return flagIco(codes[v]||v);
+}
+var ICONS={transactionType:typeIco,assetSelect:coinIco,networkSelect:netIco,cardBrand:cardIco,cardType:cardTypeIco,cardRegion:flagIco,cardCurrency:currencyIco};
 var pickers={};
 function makePicker(sel,iconFn){
   var wrap=document.createElement('div');wrap.className='pick';
@@ -850,7 +858,7 @@ function makePicker(sel,iconFn){
   panel.appendChild(search);panel.appendChild(list);wrap.appendChild(btn);wrap.appendChild(panel);
   sel.parentNode.insertBefore(wrap,sel.nextSibling);sel.classList.add('pick-native');sel.tabIndex=-1;
   var items=[],shown=[],active=-1;
-  function parse(){items=Array.prototype.map.call(sel.options,function(o){var p=o.text.split(' · ');return{v:o.value,t:o.text,main:p[0],sub:p[1]||''}})}
+  function parse(){items=Array.prototype.map.call(sel.options,function(o){var p=o.text.split(/\\s[·—]\\s/);return{v:o.value,t:o.text,main:p[0],sub:p[1]||''}})}
   function label(it){return '<span class="nm"><b>'+esc(it.main)+'</b>'+(it.sub?'<small>'+esc(it.sub)+'</small>':'')+'</span>'}
   function drawBtn(){
     var cur=items.filter(function(i){return i.v===sel.value})[0];
