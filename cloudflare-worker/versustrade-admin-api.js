@@ -174,9 +174,9 @@ export default {
         const reference = `VT-${prefix}-${date}-${uniquePart}`;
 
         if (transaction_type === "GIFT_CARD_SELL" &&
-          (!card_brand || !card_region || !card_value || !card_currency)) {
+          (!card_brand || !card_region || !card_currency)) {
           return respond({
-            error: "Gift card transactions require card_brand, card_region, card_value and card_currency"
+            error: "Gift card transactions require card_brand, card_region and card_currency"
           }, 400);
         }
         if ((transaction_type === "CRYPTO_BUY" || transaction_type === "CRYPTO_SELL") &&
