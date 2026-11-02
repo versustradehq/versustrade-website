@@ -1132,7 +1132,7 @@ window.VTCircularGallery=function(container,opts){
   
   <div class="sw" id="bn" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Offers">
     <div class="sw-stage" id="swStage">
-      <div class="sw-slot"><div class="sw-card"><div class="sw-t"><b>Sell gift cards at clear rates</b><span>Fast payouts, real people on hand.</span></div><div class="sw-r"><div class="thumbs"><img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/Amazon.png" alt="Amazon" height="44" loading="lazy" decoding="async"><img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/Apple.png" alt="Apple" height="44" loading="lazy" decoding="async"><img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/Google%20Play.png" alt="Google Play" height="44" loading="lazy" decoding="async"><img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/RAZOR%20GOLD.png" alt="Razer Gold" height="44" loading="lazy" decoding="async"><img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/Steam.png" alt="Steam" height="44" loading="lazy" decoding="async"><span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:9px;background:#fff;color:#e53238;font-weight:900;font-size:12px;letter-spacing:-1px;">eBay</span></div><a class="bt red sm" href="#rates" data-go="rates:gift">Sell now</a></div></div><span class="sw-shade"></span></div>
+      <div class="sw-slot"><div class="sw-card"><div class="sw-t"><b>Sell gift cards at clear rates</b><span>Fast payouts, real people on hand.</span></div><div class="sw-r"><div class="thumbs"><img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/Amazon.png" alt="Amazon" height="44" loading="lazy" decoding="async"><img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/Apple.png" alt="Apple" height="44" loading="lazy" decoding="async"><img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/Google%20Play.png" alt="Google Play" height="44" loading="lazy" decoding="async"><img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/RAZOR%20GOLD.png" alt="Razer Gold" height="44" loading="lazy" decoding="async"><img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/Steam.png" alt="Steam" height="44" loading="lazy" decoding="async"></div><a class="bt red sm" href="#rates" data-go="rates:gift">Sell now</a></div></div><span class="sw-shade"></span></div>
       <div class="sw-slot"><div class="sw-card alt"><div class="sw-t"><b>Buy &amp; sell crypto</b><span>BTC, USDT, ETH and more at clear rates.</span></div><div class="sw-r"><div class="thumbs coins"><span class="cn"><b>B</b><img src="https://assets.coincap.io/assets/icons/btc@2x.png" alt="Bitcoin" loading="lazy" onerror="this.remove()"></span><span class="cn"><b>E</b><img src="https://assets.coincap.io/assets/icons/eth@2x.png" alt="Ethereum" loading="lazy" onerror="this.remove()"></span><span class="cn"><b>T</b><img src="https://assets.coincap.io/assets/icons/usdt@2x.png" alt="Tether" loading="lazy" onerror="this.remove()"></span><span class="cn"><b>S</b><img src="https://assets.coincap.io/assets/icons/sol@2x.png" alt="Solana" loading="lazy" onerror="this.remove()"></span></div><a class="bt red sm" href="#trade" data-go="trade">Trade now</a></div></div><span class="sw-shade"></span></div>
     </div>
   </div>
@@ -1414,7 +1414,7 @@ function updateStats(){
 function mapTransaction(t){
   var gift=t.transaction_type==='GIFT_CARD_SELL',side=t.transaction_type==='CRYPTO_BUY'?'buy':'sell';
   var asset=gift?(t.card_brand||'Gift card'):(t.asset||'Crypto');
-  var qty=gift?((t.card_currency||'')+' '+(t.card_value==null?'':t.card_value)).trim():((t.crypto_amount==null?'':t.crypto_amount)+' '+(t.asset||'')).trim();
+  var qty=gift?([t.card_type,t.card_region].filter(Boolean).join(' · ')):((t.crypto_amount==null?'':t.crypto_amount)+' '+(t.asset||'')).trim();
   var amount=null;
   if(t.payout_currency==='NGN'&&t.payout_amount!=null)amount=t.payout_amount;
   else if(t.fiat_currency==='NGN'&&t.fiat_amount!=null)amount=t.fiat_amount;
@@ -1429,7 +1429,7 @@ function loadCustomerTrades(){
   if(tradesLoading||!currentUser||!currentUser.id)return;
   tradesLoading=true;
   var customerFilter=encodeURIComponent('eq.'+currentUser.id);
-  VTAuth.rest('GET','/transactions?select=reference,transaction_type,status,asset,network,crypto_amount,card_brand,card_region,card_value,card_currency,fiat_currency,fiat_amount,payout_amount,payout_currency,created_at&customer_id='+customerFilter+'&archived_at=is.null&order=created_at.desc&limit=200').then(function(rows){
+  VTAuth.rest('GET','/transactions?select=reference,transaction_type,status,asset,network,crypto_amount,card_brand,card_type,card_region,fiat_currency,fiat_amount,payout_amount,payout_currency,created_at&customer_id='+customerFilter+'&archived_at=is.null&order=created_at.desc&limit=200').then(function(rows){
     TRADES=(Array.isArray(rows)?rows:[]).map(mapTransaction);
     page=1;draw();updateStats();
   }).catch(function(err){
