@@ -750,6 +750,16 @@ html.va-lock{overflow:hidden}
 .vt-account-history-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .vt-account-history-head .h{margin-bottom:16px}
 @media(max-width:520px){.vt-filter-box{padding:18px}.vt-filter-dates{grid-template-columns:repeat(2,minmax(0,1fr))}.vt-filter-options{grid-template-columns:1fr}.vt-account-history-head{align-items:center}}
+
+/* Filter panel: keep the scrollbar discreet until interaction and use even corner radii. */
+.vt-filter-box{border-radius:20px;scrollbar-width:none;scrollbar-color:transparent transparent}
+.vt-filter-box:hover,.vt-filter-box:focus-within{scrollbar-width:thin;scrollbar-color:var(--muted) transparent}
+.vt-filter-box::-webkit-scrollbar{width:6px;height:6px}
+.vt-filter-box::-webkit-scrollbar-track{background:transparent}
+.vt-filter-box::-webkit-scrollbar-thumb{background:transparent;border-radius:20px}
+.vt-filter-box:hover::-webkit-scrollbar-thumb,.vt-filter-box:focus-within::-webkit-scrollbar-thumb{background:var(--muted);border-radius:20px}
+.vt-filter-group{border-radius:14px!important}
+.vt-filter-date,.vt-filter-custom input,.vt-filter-foot button{border-radius:10px}
 </style>
 <script>
 (function(){
@@ -1299,7 +1309,12 @@ window.VTCircularGallery=function(container,opts){
       <div class="vt-filter-group"><div class="vt-filter-group-head">Gift Cards<label class="vt-filter-selectall"><input type="checkbox" data-selectall="types"> Select all</label></div>
         <div class="vt-filter-options">
           <label class="vt-filter-option"><input type="checkbox" data-filter-value="gift_sell" data-filter-group="types"> Sell Gift Cards</label>
-          <label class="vt-filter-option"><input type="checkbox" data-filter-value="gift_buy" data-filter-group="types"> Buy Gift Cards</label>
+          </div>
+      </div>
+      <div class="vt-filter-group"><div class="vt-filter-group-head">Crypto<label class="vt-filter-selectall"><input type="checkbox" data-selectall="crypto"> Select all</label></div>
+        <div class="vt-filter-options">
+          <label class="vt-filter-option"><input type="checkbox" data-filter-value="crypto_buy" data-filter-group="crypto"> Crypto Buys</label>
+          <label class="vt-filter-option"><input type="checkbox" data-filter-value="crypto_sell" data-filter-group="crypto"> Crypto Sells</label>
         </div>
       </div>
       <div class="vt-filter-group"><div class="vt-filter-group-head">Failed<label class="vt-filter-selectall"><input type="checkbox" data-selectall="failed"> Select all</label></div>
@@ -1379,7 +1394,7 @@ function dt(d){var x=new Date(d);return isNaN(x.getTime())?'—':x.toLocaleDateS
 function list(){return TRADES.filter(function(t){
   if((filt!=='all'&&t.side!==filt)||(stat!=='all'&&t.status!==stat)||(t.asset+' '+t.name+' '+t.id).toLowerCase().indexOf(term)<0)return false;
   if(!filterDateMatch(t.date,accountFilterState))return false;
-  var types=accountFilterState.types;
+  var types=accountFilterState.types.concat(accountFilterState.crypto);
   if(types.length&&types.indexOf(t.transactionType)<0)return false;
   var failed=accountFilterState.failed,progress=accountFilterState.progress;
   if((failed.length||progress.length)&&!((t.status==='fail'&&failed.length)||(t.status==='wait'&&progress.length)))return false;
@@ -1406,7 +1421,7 @@ function mapTransaction(t){
   else if(t.payout_amount!=null)amount=t.payout_amount;
   else amount=t.fiat_amount;
   var status=t.status==='VT-DONE'?'done':t.status==='VT-DEC'?'fail':'wait';
-  return {id:t.reference,side:side,asset:asset,name:gift?'Gift card':asset,transactionType:gift?'gift_sell':'',ngn:Number(amount)||0,qty:qty||'—',date:t.created_at||'',status:status};
+  return {id:t.reference,side:side,asset:asset,name:gift?'Gift card':asset,transactionType:gift?'gift_sell':(t.transaction_type==='CRYPTO_BUY'?'crypto_buy':'crypto_sell'),ngn:Number(amount)||0,qty:qty||'—',date:t.created_at||'',status:status};
 }
 var tradesLoading=false;
 function loadCustomerTrades(){
