@@ -19,6 +19,71 @@
         'USA Amazon Debit Receipt (50-100)','USA Amazon Debit Receipt Single (500)'
       ],
       ecode: ['Australia Amazon Ecode (25 and above )','Canada Amazon Ecode (25 and above )','Germany Amazon Ecode (25 and above )','UK Amazon Ecode (10 and above )','USA Amazon Ecode (25 and above )']
+    },
+    'Apple / iTunes Gift Card': {
+      physical: [
+        'Australia Apple/iTunes Physical (50 and above)',
+        'AUSTRIA Apple/iTunes Physical (50 and above)',
+        'Belgium Apple/iTunes Physical (50 and above)',
+        'Brazil Apple/Itunes Physical (50 and above)',
+        'Canada Apple/iTunes Physical (50 and above)',
+        'Denmark Apple/Itunes Physical (100 and above)',
+        'Finland Apple/iTunes Physical (50 and above)',
+        'France Apple/iTunes Physical (50 and above)',
+        'Germany Apple/iTunes Physical (50 and above)',
+        'Greece Apple/iTunes Physical (25 and above)',
+        'Ireland Apple/iTunes Physical (50 and above)',
+        'Italy Apple/iTunes Physical (50 and above)',
+        'Luxembourg Apple/iTunes Physical (25 and above)',
+        'Mexico Apple/iTunes Physical (100 and above)',
+        'NETHERLANDS Apple/iTunes Physical (50 and above)',
+        'Norway Apple/Itunes Physical (100 and above)',
+        'NZD Apple/iTunes Physical (50 and above)',
+        'Poland Apple/iTunes Physical (100 and above)',
+        'Portugal Apple/iTunes Physical (25 and above)',
+        'Singapore Apple/iTunes Physical (50 and above)',
+        'Spain Apple/iTunes Physical (50 and above)',
+        'Swedish Apple/Itunes Physical (100 and above)',
+        'Switzerland Apple/iTunes Physical (50 and above)',
+        'UAE Apple/Itunes Physical (100 and above)',
+        'UK Apple/iTunes Physical (10- 495, Multiples of 5)',
+        'UK Apple/iTunes Physical (100, 150, 200, 250 - 500)',
+        'UK Apple/iTunes Physical (11-499, Irregular Values)',
+        'USA Apple/iTunes Physical (10- 495, Multiples of 5)',
+        'USA Apple/iTunes Physical (100 - 450 VERTICAL)',
+        'USA Apple/iTunes Physical (100, 150, 200, 300 - 450 horizontal)',
+        'USA Apple/iTunes Physical (11-499, Irregular Values)',
+        'USA Apple/iTunes Physical (250 horizontal, Single Value)',
+        'USA Apple/iTunes Physical (500 horizontal, Single Value)',
+        'USA Apple/iTunes Physical (500 VERTICAL)'
+      ],
+      ecode: [
+        'Australia Apple/iTunes Ecode (50 and above)',
+        'AUSTRIA Apple/iTunes Ecode (50 and above)',
+        'Belgium Apple/iTunes Ecode (50 and above)',
+        'Brazil Apple/Itunes Ecode (100 and above)',
+        'Canada Apple/iTunes Ecode (50 and above)',
+        'Denmark Apple/Itunes Ecode (100 and above)',
+        'Finland Apple/iTunes Ecode (50 and above)',
+        'France Apple/iTunes Ecode (50 and above)',
+        'Germany Apple/iTunes Ecode (50 and above)',
+        'Greece Apple/iTunes Ecode (25 and above)',
+        'Ireland Apple/iTunes Ecode (50 and above)',
+        'Italy Apple/iTunes Ecode (50 and above)',
+        'Luxembourg Apple/iTunes Ecode (25 and above)',
+        'NETHERLANDS Apple/iTunes Ecode (50 and above)',
+        'Norway Apple/Itunes Ecode (100 and above)',
+        'NZD Apple/iTunes Ecode (50 and above)',
+        'Portugal Apple/iTunes Ecode (25 and above)',
+        'Singapore Apple/iTunes Ecode (50 and above)',
+        'Spain Apple/iTunes Ecode (50 and above)',
+        'Swedish Apple/Itunes Ecode (100 and above)',
+        'Switzerland Apple/iTunes Ecode (50 and above)',
+        'UAE Apple/Itunes Ecode (100 and above)',
+        'UK Apple/iTunes Ecode (100 and above)',
+        'USA Apple/iTunes Ecode (10-500; Multiples of 5)',
+        'USA Apple/iTunes Ecode (11 to 499, Irregular Values)'
+      ]
     }
   };
   var overlay = null, previousFocus = null, activeKeyHandler = null;
@@ -74,7 +139,7 @@
     document.documentElement.style.overflow = 'hidden';
     function showTypes() {
       back.hidden = true; title.textContent = cardName; body.innerHTML = '';
-      var p = document.createElement('p'); p.className = 'vt-visa-intro'; p.textContent = 'Choose the type of Visa gift card you have.';
+      var p = document.createElement('p'); p.className = 'vt-visa-intro'; p.textContent = 'Choose whether your ' + cardName + ' is Physical or E-code.';
       var types = document.createElement('div'); types.className = 'vt-visa-types';
       [['Physical','Plastic card'],['E-code','Digital code']].forEach(function (entry) {
         var b = document.createElement('button'); b.type = 'button'; b.className = 'vt-visa-type'; b.textContent = entry[0];
@@ -118,5 +183,5 @@
     document.addEventListener('keydown', keydown);
     showTypes();
   }
-  window.VTVisaPicker = { open: open, close: close };
+  window.VTVisaPicker = { open: open, close: close, getSubcategories: function (cardName, kind) { var c = catalogs[cardName]; return c ? (kind === 'Physical' ? c.physical.slice() : c.ecode.slice()) : []; } };
 })();
