@@ -200,7 +200,7 @@ tbody tr:last-child td{border-bottom:0}
             <div class="form-field"><label>Transaction type *</label><select class="select" name="transaction_type" id="transactionType" required><option value="CRYPTO_BUY">Crypto Buy</option><option value="CRYPTO_SELL">Crypto Sell</option><option value="GIFT_CARD_SELL">Gift Card Sell</option></select></div>
             <div class="form-field crypto-field"><label>Asset</label><select class="select" name="asset" id="assetSelect"><option value="USDT">USDT · Tether</option><option value="BTC">BTC · Bitcoin</option><option value="ETH">ETH · Ethereum</option><option value="BNB">BNB</option><option value="SOL">SOL · Solana</option><option value="XRP">XRP</option><option value="TRX">TRX · Tron</option><option value="DOGE">DOGE · Dogecoin</option><option value="LTC">LTC · Litecoin</option><option value="TON">TON</option><option value="ADA">ADA · Cardano</option><option value="AVAX">AVAX · Avalanche</option><option value="LINK">LINK · Chainlink</option><option value="DOT">DOT · Polkadot</option><option value="SHIB">SHIB · Shiba Inu</option><option value="BCH">BCH · Bitcoin Cash</option><option value="NEAR">NEAR</option><option value="ATOM">ATOM · Cosmos</option><option value="UNI">UNI · Uniswap</option><option value="XLM">XLM · Stellar</option><option value="APT">APT · Aptos</option><option value="USDC">USDC · USD Coin</option></select></div>
             <div class="form-field crypto-field"><label>Network</label><select class="select" name="network" id="networkSelect"></select></div>
-            <div class="form-field crypto-field"><label>Crypto amount</label><input class="field" name="crypto_amount" type="number" min="0" step="any"></div>
+            <div class="form-field crypto-field"><label>Crypto amount</label><input class="field" name="crypto_amount" id="cryptoAmountInput" type="number" min="0" step="any" readonly placeholder="Calculated from live USD price"><small id="cryptoPriceMessage" class="muted">Select an asset and enter the USD amount.</small></div>
             <div class="form-field gift-field hidden"><label>Card brand</label><select class="select" name="card_brand"><option value="">Select gift card</option><option>Visa Gift Card</option><option>Amazon Gift Card</option><option>Apple / iTunes Gift Card</option><option>Google Play Gift Card</option><option>Steam Gift Card</option><option>Razer Gold</option><option>Sephora Gift Card</option><option>Target Gift Card</option><option>Walmart Gift Card</option><option>PlayStation Gift Card</option><option>Xbox Gift Card</option><option>eBay Gift Card</option></select></div>
             <div class="form-field gift-field hidden"><label>Card region</label><input class="field" name="card_region" placeholder="e.g. US"></div>
             <div class="form-field gift-field hidden"><label>Card value</label><input class="field" name="card_value" type="number" min="0" step="any"></div>
@@ -338,8 +338,58 @@ function populateAdminNetworks(){
 }
 $('assetSelect').addEventListener('change',populateAdminNetworks);
 populateAdminNetworks();
+var CRYPTO_PRICE_CACHE={};
+var COINGECKO_IDS={BTC:'bitcoin',ETH:'ethereum',BNB:'binancecoin',SOL:'solana',XRP:'ripple',DOGE:'dogecoin',ADA:'cardano',TRX:'tron',AVAX:'avalanche-2',LINK:'chainlink',TON:'the-open-network',DOT:'polkadot',LTC:'litecoin',SHIB:'shiba-inu',BCH:'bitcoin-cash',NEAR:'near',ATOM:'cosmos',UNI:'uniswap',XLM:'stellar',APT:'aptos',USDC:'usd-coin'};
+function getCryptoUsdPrice(asset){
+  var cached=CRYPTO_PRICE_CACHE[asset];
+  if(cached&&Date.now()-cached.time<30000)return Promise.resolve(cached.price);
+  var hosts=['https://data-api.binance.vision','https://api.binance.com','https://api1.binance.com'];
+  function tryHost(i){
+    if(i>=hosts.length)return Promise.reject(new Error('Live price unavailable'));
+    return fetch(hosts[i]+'/api/v3/ticker/price?symbol='+encodeURIComponent(asset+'USDT')).then(function(r){if(!r.ok)throw new Error('Price source unavailable');return r.json()}).then(function(d){var p=Number(d.price);if(!(p>0))throw new Error('Invalid price');CRYPTO_PRICE_CACHE[asset]={price:p,time:Date.now()};return p}).catch(function(){return tryHost(i+1)});
+  }
+  return tryHost(0).catch(function(){
+    var id=COINGECKO_IDS[asset];
+    if(!id)throw new Error('No live USD price source for '+asset);
+    return fetch('https://api.coingecko.com/api/v3/simple/price?ids='+encodeURIComponent(id)+'&vs_currencies=usd').then(function(r){if(!r.ok)throw new Error('Price source unavailable');return r.json()}).then(function(d){var p=Number(d[id]&&d[id].usd);if(!(p>0))throw new Error('Invalid price');CRYPTO_PRICE_CACHE[asset]={price:p,time:Date.now()};return p});
+  });
+}
+var cryptoPriceRequest=0;
+function updateCryptoAmount(){
+  var type=$('transactionType').value,asset=$('assetSelect').value,usd=Number($('fiatAmountInput').value),out=$('cryptoAmountInput'),msg=$('cryptoPriceMessage');
+  if(type==='GIFT_CARD_SELL'){out.value='';return Promise.resolve();}
+  var request=++cryptoPriceRequest;
+  if(!(usd>0)){out.value='';msg.textContent='Enter the USD amount to calculate the crypto quantity.';return Promise.resolve();}
+  msg.textContent='Getting live '+asset+' price…';out.value='';
+  return getCryptoUsdPrice(asset).then(function(price){
+    if(request!==cryptoPriceRequest)return;
+    out.value=(usd/price).toFixed(8);
+    msg.textContent='Live '+asset+' price: 
+$('exchangeRateInput').addEventListener('input',updatePayout);
+function updateTransactionFields(){var type=$('transactionType').value,gift=type==='GIFT_CARD_SELL',buy=type==='CRYPTO_BUY';document.querySelectorAll('.gift-field').forEach(function(x){x.classList.toggle('hidden',!gift)});document.querySelectorAll('.crypto-field').forEach(function(x){x.classList.toggle('hidden',gift)});$('payoutAmountField').classList.toggle('hidden',buy);updatePayout();}
+$('transactionType').addEventListener('change',updateTransactionFields);
+updateTransactionFields();
+$('registerForm').addEventListener('submit',function(e){e.preventDefault();if(!$('customerId').value){$('registerMessage').className='message error';$('registerMessage').textContent='Please search for and select a customer first.';$('customerSearch').focus();return}var f=new FormData(this),data={};f.forEach(function(v,k){if(v!=='')data[k]=v});data.fiat_currency='USD';data.payout_currency='NGN';if(data.transaction_type==='CRYPTO_BUY'){delete data.payout_amount;}else{data.payout_amount=Number($('payoutAmountInput').value||0);}['crypto_amount','card_value','fiat_amount','exchange_rate','payout_amount'].forEach(function(k){if(data[k]!==undefined)data[k]=Number(data[k])});$('registerMessage').className='message';$('registerMessage').textContent='Checking live crypto price…';updateCryptoAmount().then(function(){if(data.transaction_type!=='GIFT_CARD_SELL'){var crypto=Number($('cryptoAmountInput').value);if(!(crypto>0))throw new Error('Could not calculate the crypto amount. Check the live price connection and try again.');data.crypto_amount=crypto;}$('registerMessage').textContent='Registering…';return api('/admin/transactions',data)}).then(function(d){$('registerMessage').className='message success';$('registerMessage').textContent='Transaction registered: '+d.transaction.reference;this.reset();populateAdminNetworks();load();}.bind(this)).catch(function(err){$('registerMessage').className='message error';$('registerMessage').textContent=err.message})});
+function openDetail(ref){selected=transactions.find(function(t){return t.reference===ref});if(!selected)return;$('detailTitle').textContent=selected.reference;$('detailStatus').value=selected.status;$('detailMessage').textContent='';var pairs=[['Customer ID',selected.customer_id],['Type',typeLabel(selected.transaction_type)],['Asset / card',selected.asset||selected.card_brand],['Network / region',selected.network||selected.card_region],['Amount',selected.transaction_type==='GIFT_CARD_SELL'?money(selected.card_value,selected.card_currency):money(selected.crypto_amount,selected.asset)],['Fiat amount',money(selected.fiat_amount,selected.fiat_currency)],['Payout',selected.transaction_type==='CRYPTO_BUY'?'—':money(selected.payout_amount,'NGN')],['Created',fmtDate(selected.created_at)],['Customer note',selected.customer_note]];$('detailBody').innerHTML='<div class="detail-list">'+pairs.map(function(p){return '<div class="detail-item"><small>'+esc(p[0])+'</small><strong>'+esc(p[1]||'—')+'</strong></div>'}).join('')+'</div>';$('detailOverlay').classList.remove('hidden');loadEvents(ref,'detailEvents')}
+function loadEvents(ref,target){$(target).innerHTML='<div class="muted">Loading history…</div>';api('/admin/transactions/events',{reference:ref}).then(function(d){var ev=d.events||[];$(target).innerHTML=ev.length?ev.map(function(x){return '<div class="event"><strong>'+esc(x.event_type.replace('_',' '))+' · '+esc(statusLabel(x.new_status||''))+'</strong><small>'+esc(fmtDate(x.created_at))+' · '+esc(x.actor_user_id||'System')+'</small></div>'}).join(''):'<div class="muted">No audit events found.</div>'}).catch(function(e){$(target).innerHTML='<div class="message error">'+esc(e.message)+'</div>'})}
+$('detailClose').addEventListener('click',function(){$('detailOverlay').classList.add('hidden')});$('detailOverlay').addEventListener('click',function(e){if(e.target===this)this.classList.add('hidden')});
+$('detailUpdate').addEventListener('click',function(){if(!selected)return;var status=$('detailStatus').value;$('detailMessage').textContent='Updating…';api('/admin/transactions/status',{reference:selected.reference,status:status}).then(function(){ $('detailMessage').className='message success';$('detailMessage').textContent='Status updated.';return load()}).then(function(){selected=transactions.find(function(t){return t.reference===selected.reference});if(selected)loadEvents(selected.reference,'detailEvents')}).catch(function(e){$('detailMessage').className='message error';$('detailMessage').textContent=e.message})});
+function historySearch(){var ref=$('historyRef').value.trim();if(!ref){$('historyMessage').textContent='Enter a transaction reference.';return}loadEvents(ref,'eventList')}
+$('historyRefresh').addEventListener('click',historySearch);$('historyRef').addEventListener('keydown',function(e){if(e.key==='Enter')historySearch()});
+function start(){session=readSession();if(!session||!session.access_token){gate('Admin login required','Please sign in to your VersusTrade account first.',true);return}token().then(function(t){return fetch(API+'/admin/verify',{method:'POST',headers:{Authorization:'Bearer '+t}})}).then(function(r){return r.json().then(function(d){if(!r.ok||!d.authorized)throw new Error(d.error||'Admin access denied')})}).then(function(){ $('gate').classList.add('hidden');$('app').classList.remove('hidden');$('adminEmail').textContent=session.email||'';load()}).catch(function(e){gate('Access denied',e.message+' If you believe this is an error, contact the administrator.',true)})}
+start();
+})();
+</script>
+</body>
+</html>+price.toLocaleString(undefined,{maximumFractionDigits:8})+' USD';
+  }).catch(function(error){
+    if(request!==cryptoPriceRequest)return;
+    msg.textContent=error.message+'. Try again before registering.';
+  });
+}
 function updatePayout(){var amount=Number($('fiatAmountInput').value),rate=Number($('exchangeRateInput').value);$('payoutAmountInput').value=amount>0&&rate>0?(amount*rate).toFixed(2):'';}
-$('fiatAmountInput').addEventListener('input',updatePayout);
+$('fiatAmountInput').addEventListener('input',function(){updatePayout();updateCryptoAmount();});
+$('assetSelect').addEventListener('change',function(){updateCryptoAmount();});
 $('exchangeRateInput').addEventListener('input',updatePayout);
 function updateTransactionFields(){var type=$('transactionType').value,gift=type==='GIFT_CARD_SELL',buy=type==='CRYPTO_BUY';document.querySelectorAll('.gift-field').forEach(function(x){x.classList.toggle('hidden',!gift)});document.querySelectorAll('.crypto-field').forEach(function(x){x.classList.toggle('hidden',gift)});$('payoutAmountField').classList.toggle('hidden',buy);updatePayout();}
 $('transactionType').addEventListener('change',updateTransactionFields);
