@@ -84,6 +84,18 @@
         'USA Apple/iTunes Ecode (10-500; Multiples of 5)',
         'USA Apple/iTunes Ecode (11 to 499, Irregular Values)'
       ]
+    },
+    'Steam Gift Card': {
+      physical: ['($) USA STEAM ECODE','(£) UK Steam Ecode','(€ ) Euro Steam Ecode','Australia Steam Ecode (A$)','CANADA Steam Ecode $','CHF Steam Ecode','NZD Steam Ecode $'],
+      ecode: ['($) USA STEAM ECODE','(£) UK Steam Ecode','(€ ) Euro Steam Ecode','Australia Steam Ecode (A$)','CANADA Steam Ecode $','CHF Steam Ecode','NZD Steam Ecode $']
+    },
+    'Razer Gold': {
+      physical: ['($) Green Razer Gift Card USA (10 and above)','($) USA Razer Gold Gift Card','(£) UK Razer Gold Gift Card (10 and above)','(€ ) Euro Razer Gold Gift Card (10 and above)','Australian Razer Gold Gift Card','Brazilian Razer Gold Gift Card (10 and above)','Canada Razer Gold Gift Card','Malaysian Razergold (25 and above)','Mexican Razer Gold Gift Card','NZD Razer Gold Gift Card (10 and above)','Singapore Razer Gold Gift Card (10 and above)'],
+      ecode: ['($) Green Razer Gift Card USA (10 and above)','($) USA Razer Gold Gift Card','(£) UK Razer Gold Gift Card (10 and above)','(€ ) Euro Razer Gold Gift Card (10 and above)','Australian Razer Gold Gift Card','Brazilian Razer Gold Gift Card ( 10 and above)','Canada Razer Gold Gift Card','Malaysian Razergold (25 and above)','Mexican Razer Gold Gift Card','NZD Razer Gold Gift Card (10 and above)','Singapore Razer Gold Gift Card (10 and above)']
+    },
+    'Sephora Gift Card': {
+      physical: ['CAD Sephora Physical (100-299)','CAD Sephora Physical (300 and above)','USA Sephora Physical - 6347 6330 (100-299)','USA Sephora Physical - 6347 6330 (300 and above)','USA Sephora Physical (50-99)','USA Sephora Physical 6318 6348 6320 6340 6353 6346 (300 above)','USA Sephora Physical- 6318 6348 6320 6340 6346 6353 (100-299)'],
+      ecode: ['USA Sephora Ecode (100 and above)','USA Sephora Ecode (50-99)']
     }
   };
   var overlay = null, previousFocus = null, activeKeyHandler = null;
@@ -92,7 +104,7 @@
     '.vt-visa-panel{width:min(100%,520px);max-height:min(760px,calc(100dvh - 36px));display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--line,#e5e5e5);border-radius:20px;background:var(--bg,#fff);color:var(--text,#171717);box-shadow:0 24px 80px rgba(0,0,0,.25)}' +
     '.vt-visa-head{display:flex;align-items:center;gap:12px;padding:18px 20px;border-bottom:1px solid var(--line,#e5e5e5)}' +
     '.vt-visa-head button{width:34px;height:34px;flex:none;border:0;border-radius:50%;background:var(--pill,#f3f3f3);color:inherit;font-size:20px;cursor:pointer}' +
-    '.vt-visa-head strong{flex:1;font-size:17px;font-weight:800}' +
+    '.vt-visa-head strong{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:17px;font-weight:800}' +
     '.vt-visa-body{padding:20px;overflow:auto}' +
     '.vt-visa-intro{margin:0 0 14px;color:var(--muted,#737373);font-size:14px}' +
     '.vt-visa-types{display:grid;grid-template-columns:1fr 1fr;gap:12px}' +
