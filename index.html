@@ -3044,8 +3044,8 @@ html.va-lock{overflow:hidden}
 })();
 </script>
 
-<script src="/giftcards.js?v=20261102-5"></script>
-<script src="/chat.js?v=20261102-6"></script>
+<script src="/giftcards.js?v=20261102-6"></script>
+<script src="/chat.js?v=20261102-7"></script>
 <script>
 /* VersusTrade sign in / sign up popup (Supabase Auth over REST). The key below is the PUBLIC publishable key. */
 (function () {
@@ -5375,7 +5375,7 @@ function createSim(gl) {
   function choose(i) {
     var c = shown[i]; if (!c) return;
     close();
-    if ((/^(visa|amazon|apple \/ itunes|steam) gift card$/i.test(c.n) || /^razer gold$/i.test(c.n) || /^sephora gift card$/i.test(c.n)) && window.VTVisaPicker) {
+    if ((/^(visa|amazon|apple \/ itunes|steam) gift card$/i.test(c.n) || /^razer gold$/i.test(c.n) || /^sephora gift card$/i.test(c.n) || /^(target|walmart) gift card$/i.test(c.n) || /^playstation gift card$/i.test(c.n)) && window.VTVisaPicker) {
       setTimeout(function () { window.VTVisaPicker.open(c.n, function (details) { go(c.n, details); }); }, reduced ? 0 : 180);
       return;
     }
