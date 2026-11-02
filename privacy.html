@@ -193,6 +193,12 @@ button{background:none;border:0;cursor:pointer}
 .doc-foot a:hover{color:var(--red)}
 @media (max-width:959px){.doc-grid{grid-template-columns:minmax(0,1fr);gap:20px}.toc{position:static;display:flex;flex-wrap:wrap;gap:6px;align-items:center}.toc b{width:100%;margin-bottom:2px}.toc a{border:1px solid var(--line);border-radius:999px;padding:6px 12px}.toc a.on{border-color:var(--red)}}
 </style>
+
+<style id="vt-android-tap-fix">
+/* Prevent Android Chrome's blue tap highlight and text-selection toolbar on controls. */
+button, a, [role="button"], [role="tab"], [role="menuitem"], label, input[type="button"], input[type="submit"], input[type="reset"] { -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-user-select: none; user-select: none; }
+</style>
 </head>
 <body>
 <header class="vt-header" id="vtHeader">
