@@ -1,17 +1,27 @@
-/* Shared Visa Gift Card selection flow for the homepage and customer dashboard. */
+/* Shared Visa and Amazon Gift Card selection flow for the homepage and customer dashboard. */
 (function () {
-  var physical = [
-    'Canada Visa Gift Card (100-299)',
-    'Canada Visa Gift Card (300 and above)',
-    'Canada Visa Gift Card (50-99)',
-    'USA Visa 4034/4358 (100-299)',
-    'USA Visa 4034/4358 (300 and above)',
-    'USA Visa 4034/4358 (50-99)'
-  ];
-  var ecode = [
-    'USA Visa E-code (100-299)',
-    'USA Visa E-code (300 and above)'
-  ];
+  var catalogs = {
+    'Visa Gift Card': {
+      physical: ['Canada Visa Gift Card (100-299)','Canada Visa Gift Card (300 and above)','Canada Visa Gift Card (50-99)','USA Visa 4034/4358 (100-299)','USA Visa 4034/4358 (300 and above)','USA Visa 4034/4358 (50-99)'],
+      ecode: ['USA Visa E-code (100-299)','USA Visa E-code (300 and above)']
+    },
+    'Amazon Gift Card': {
+      physical: [
+        'Australia Amazon No Receipt (25 and above )','Australia Amazon With Receipt (25 and above )',
+        'Canada Amazon No Receipt (25 and above )','Canada Amazon With Receipt (25 and above )',
+        'Germany Amazon No Receipt (10-100 )','Germany Amazon With Receipt (10-100 )',
+        'UK Amazon No Receipt (10-100 )','UK Amazon With Receipt (10-100 )',
+        'USA Amazon (10-24)','USA Amazon (25-49)','USA Amazon Cash Receipt (101-200)',
+        'USA Amazon Cash Receipt (201-499)','USA Amazon Cash Receipt (50-100)',
+        'USA Amazon Cash Receipt Single (500)','USA Amazon Credit/No Receipt (101-200)',
+        'USA Amazon Credit/No Receipt (201-500)','USA Amazon Credit/No Receipt (50-100)',
+        'USA Amazon Debit Receipt (101 - 200)','USA Amazon Debit Receipt (201 - 499)',
+        'USA Amazon Debit Receipt (50-100)','USA Amazon Debit Receipt Single (500)'
+      ],
+      ecode: ['Australia Amazon Ecode (25 and above )','Canada Amazon Ecode (25 and above )','Germany Amazon Ecode (25 and above )','UK Amazon Ecode (10 and above )','USA Amazon Ecode (25 and above )']
+    }
+  };
+  var overlay = null, previousFocus = null, activeKeyHandler = null;
   var overlay = null, previousFocus = null, activeKeyHandler = null;
   var css = '.vt-visa-overlay{position:fixed;inset:0;z-index:10050;display:grid;place-items:center;padding:18px;background:rgba(0,0,0,.58);backdrop-filter:blur(5px)}' +
     '.vt-visa-panel{width:min(100%,520px);max-height:min(760px,calc(100dvh - 36px));display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--line,#e5e5e5);border-radius:20px;background:var(--bg,#fff);color:var(--text,#171717);box-shadow:0 24px 80px rgba(0,0,0,.25)}' +
@@ -41,7 +51,7 @@
     document.documentElement.style.removeProperty('overflow');
     if (previousFocus && previousFocus.focus) previousFocus.focus({ preventScroll: true });
   }
-  function open(onSelect) {
+  function open(cardName, onSelect) {
     addStyle();
     if (overlay) close();
     previousFocus = document.activeElement;
@@ -49,18 +59,19 @@
     overlay.className = 'vt-visa-overlay';
     overlay.setAttribute('role', 'dialog');
     overlay.setAttribute('aria-modal', 'true');
-    overlay.setAttribute('aria-label', 'Choose Visa gift card type');
+    var catalog = catalogs[cardName] || catalogs['Visa Gift Card'];
+    overlay.setAttribute('aria-label', 'Choose ' + cardName + ' type');
     var panel = document.createElement('div'); panel.className = 'vt-visa-panel';
     var head = document.createElement('div'); head.className = 'vt-visa-head';
     var back = document.createElement('button'); back.type = 'button'; back.textContent = '‹'; back.setAttribute('aria-label', 'Back'); back.hidden = true;
-    var title = document.createElement('strong'); title.textContent = 'Visa Gift Card';
+    var title = document.createElement('strong'); title.textContent = cardName;
     var closeBtn = document.createElement('button'); closeBtn.type = 'button'; closeBtn.textContent = '×'; closeBtn.setAttribute('aria-label', 'Close');
     head.append(back, title, closeBtn);
     var body = document.createElement('div'); body.className = 'vt-visa-body';
     panel.append(head, body); overlay.appendChild(panel); document.body.appendChild(overlay);
     document.documentElement.style.overflow = 'hidden';
     function showTypes() {
-      back.hidden = true; title.textContent = 'Visa Gift Card'; body.innerHTML = '';
+      back.hidden = true; title.textContent = cardName; body.innerHTML = '';
       var p = document.createElement('p'); p.className = 'vt-visa-intro'; p.textContent = 'Choose the type of Visa gift card you have.';
       var types = document.createElement('div'); types.className = 'vt-visa-types';
       [['Physical','Plastic card'],['E-code','Digital code']].forEach(function (entry) {
@@ -78,7 +89,7 @@
       var searchWrap = document.createElement('label'); searchWrap.className = 'vt-visa-search';
       var icon = document.createElement('span'); icon.textContent = '⌕'; icon.setAttribute('aria-hidden','true'); searchWrap.append(icon,search);
       var list = document.createElement('div'); list.className = 'vt-visa-list';
-      var items = kind === 'Physical' ? physical : ecode;
+      var items = kind === 'Physical' ? catalog.physical : catalog.ecode;
       function draw() {
         var q = search.value.trim().toLowerCase();
         var matches = items.filter(function (item) { return item.toLowerCase().indexOf(q) !== -1; });
