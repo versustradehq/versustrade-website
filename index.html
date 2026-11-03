@@ -1104,7 +1104,7 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
   // BUY / SELL rates. Source order: (1) the VersusTrade rates Worker, which you update from Telegram;
   // (2) the open standard-rate feed with the margins below; (3) the fixed numbers written in the HTML.
   (function () {
-    var RATES_URL = 'https://versustrade-rates.YOUR-SUBDOMAIN.workers.dev/rates'; // paste your Worker address + /rates
+    var RATES_URL = 'https://versustrade-rates.versustradehq.workers.dev/rates'; // paste your Worker address + /rates
     var R = { buyMargin: 75, sellMargin: 75, cacheHours: 6 }, KEY = 'vt-usdngn';
     var buy = document.getElementById('rtBuy'), sell = document.getElementById('rtSell'), std = document.getElementById('rtStd');
     if (!buy || !sell || !std) return;
