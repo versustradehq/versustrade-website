@@ -158,6 +158,15 @@ body{font-family:"Plus Jakarta Sans",Inter,ui-sans-serif,system-ui,-apple-system
 .brand-mark{width:42px;height:42px;border-radius:12px;background:#e5e7eb;display:grid;place-items:center;padding:5px;overflow:hidden;box-shadow:0 4px 12px rgba(28,37,46,.10)}.brand-mark img{display:block;width:100%;height:100%;object-fit:contain}
 .brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin-top:1px}
 
+.nav-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 8px 8px 12px}
+.nav-heading .nav-label{padding:0}
+.sidebar-pin{position:relative;width:34px;height:34px;display:grid;place-items:center;flex:0 0 34px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);color:var(--muted);box-shadow:0 2px 6px rgba(0,0,0,.05);transition:background .18s,color .18s,border-color .18s,box-shadow .18s,transform .18s}
+.sidebar-pin svg{width:17px;height:17px;display:block;transition:transform .2s ease}
+.sidebar-pin:hover{border-color:var(--red);color:var(--red);background:var(--red-soft);transform:translateY(-1px)}
+.sidebar-pin:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+.sidebar-pin[aria-pressed=true]{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 3px 10px rgba(254,58,18,.24)}
+.sidebar-pin[aria-pressed=false] svg{transform:rotate(-35deg)}
+.sidebar-pin[aria-pressed=true]::after{content:"";position:absolute;width:5px;height:5px;right:4px;top:4px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px var(--red)}
 .nav-label{font-size:11px;color:var(--muted);letter-spacing:.1em;font-weight:700;text-transform:uppercase;padding:6px 12px 8px}
 .nav{display:flex;align-items:center;gap:12px;width:100%;border:0;background:transparent;color:var(--muted);text-align:left;padding:11px 12px;border-radius:10px;font-weight:600;font-size:14px;transition:background .16s,color .16s}
 .nav svg{width:20px;height:20px;flex-shrink:0}
@@ -177,7 +186,7 @@ body{font-family:"Plus Jakarta Sans",Inter,ui-sans-serif,system-ui,-apple-system
 .user-pill{display:inline-flex;align-items:center;gap:8px;color:var(--text);font-size:13px;font-weight:600;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:7px 14px;border:1px solid var(--line);border-radius:99px;background:var(--panel)}
 .user-pill:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0}
 .user-pill:empty{display:none}
-.main{width:100%;max-width:1400px;padding:8px 32px 40px}
+.main{width:100%;max-width:none;padding:8px 32px 40px}
 .page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:24px}
 .eyebrow{color:var(--muted);font-size:13px;font-weight:600;letter-spacing:0;text-transform:none}
 .page-head h1{margin:4px 0 2px;font-size:26px;line-height:1.25;letter-spacing:-.03em;font-weight:800}
@@ -205,7 +214,7 @@ body{font-family:"Plus Jakarta Sans",Inter,ui-sans-serif,system-ui,-apple-system
 .panel-head{padding:18px 24px;min-height:68px}
 .panel-head h2{font-size:16px;font-weight:700}
 .panel-body{padding:24px}
-#register .panel{max-width:940px}
+#register .panel{width:100%;max-width:none}
 th{background:var(--panel2);text-transform:none;letter-spacing:0;font-size:13px;font-weight:700;color:var(--muted);padding:14px 20px}
 td{border-bottom:1px dashed var(--line);padding:14px 20px}
 tbody tr:hover{background:var(--panel2)}
@@ -218,7 +227,28 @@ tbody tr:hover{background:var(--panel2)}
 .avt{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;font-size:13px;flex-shrink:0}
 .scrim{display:none}
 @media(max-width:1180px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.ov-grid{grid-template-columns:1fr}}
-
+@media(min-width:1025px){
+ #app{--side-w:272px;transition:grid-template-columns .22s ease}
+ #app.sidebar-unpinned{--side-w:76px}
+ #app.sidebar-unpinned .side{width:76px;padding-left:12px;padding-right:12px;overflow-x:hidden;overflow-y:auto;transition:width .22s ease,box-shadow .22s ease}
+ #app.sidebar-unpinned .side:hover,#app.sidebar-unpinned .side:has(:focus-visible){position:sticky;width:272px;padding-left:16px;padding-right:16px;overflow:visible;box-shadow:var(--shadow-lg)}
+ #app.sidebar-unpinned .brand{justify-content:center;padding-left:0;padding-right:0}
+ #app.sidebar-unpinned .brand>div:last-child{display:none}
+ #app.sidebar-unpinned .nav-heading{justify-content:center;padding-left:0;padding-right:0}
+ #app.sidebar-unpinned .nav-heading .nav-label{display:none}
+ #app.sidebar-unpinned .nav{justify-content:center;gap:0;padding-left:0;padding-right:0;font-size:0}
+ #app.sidebar-unpinned .nav svg{width:20px;height:20px}
+ #app.sidebar-unpinned .nav .nav-text{display:none}
+ #app.sidebar-unpinned .side-note{display:none}
+ #app.sidebar-unpinned .side:hover .brand,#app.sidebar-unpinned .side:has(:focus-visible) .brand{justify-content:flex-start;padding-left:10px;padding-right:10px}
+ #app.sidebar-unpinned .side:hover .brand>div:last-child,#app.sidebar-unpinned .side:has(:focus-visible) .brand>div:last-child{display:block}
+ #app.sidebar-unpinned .side:hover .nav-heading,#app.sidebar-unpinned .side:has(:focus-visible) .nav-heading{justify-content:space-between;padding-left:12px;padding-right:8px}
+ #app.sidebar-unpinned .side:hover .nav-heading .nav-label,#app.sidebar-unpinned .side:has(:focus-visible) .nav-heading .nav-label{display:block}
+ #app.sidebar-unpinned .side:hover .nav,#app.sidebar-unpinned .side:has(:focus-visible) .nav{justify-content:flex-start;gap:12px;padding-left:12px;padding-right:12px;font-size:14px}
+ #app.sidebar-unpinned .side:hover .nav .nav-text,#app.sidebar-unpinned .side:has(:focus-visible) .nav .nav-text{display:inline}
+ #app.sidebar-unpinned .side:hover .side-note,#app.sidebar-unpinned .side:has(:focus-visible) .side-note{display:flex}
+}
+@media(max-width:1024px){.nav-heading{padding:6px 12px 8px}.sidebar-pin{display:none}}
 @media(max-width:1024px){
  .shell{grid-template-columns:1fr}
  .side{position:fixed;left:0;top:0;bottom:0;width:var(--side-w);transform:translateX(-100%);transition:transform .22s ease;box-shadow:var(--shadow-lg)}
@@ -336,7 +366,7 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * {
 <div id="app" class="shell hidden">
   <aside class="side" id="side">
     <div class="brand"><div class="brand-mark"><img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/REAL%20LOGO%20%20VERSUSTRADE.png" alt="VersusTrade logo"></div><div>VersusTrade<small>Administration</small></div></div>
-    <div class="nav-label">Workspace</div>
+    <div class="nav-heading"><div class="nav-label">Workspace</div><button class="sidebar-pin" id="sidebarPin" type="button" aria-label="Unpin sidebar" title="Unpin sidebar" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 5 5-4 1-4 4 1 4-2 2-2-5-4-4-5-2 2-2 4 1 4-4 1-2Z"/><path d="m9 15-6 6"/></svg></button></div>
       <button class="nav active" data-view="register" title="Register transaction" aria-label="Register transaction"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg><span class="nav-text">Register transaction</span></button>
       <button class="nav" data-view="overview" title="Overview" aria-label="Overview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg><span class="nav-text">Overview</span></button>
       <button class="nav" data-view="transactions" title="Transactions" aria-label="Transactions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg><span class="nav-text">Transactions</span></button>
@@ -801,6 +831,16 @@ $('statusFilter').addEventListener('change',function(){pageSize=50;paint()});
 
 $('menuBtn').addEventListener('click',function(){$('app').classList.toggle('nav-open')});
 $('scrim').addEventListener('click',function(){$('app').classList.remove('nav-open')});
+ 
+// Desktop sidebar collapse: hover/focus expands an unpinned icon rail.
+(function(){
+ var app=$('app'),pin=$('sidebarPin'),store='vt-admin-sidebar-pinned',mq=window.matchMedia('(min-width:1025px)'),pinned=true;
+ try{var saved=localStorage.getItem(store);if(saved==='0')pinned=false;else if(saved==='1')pinned=true}catch(e){}
+ function apply(){app.classList.toggle('sidebar-unpinned',mq.matches&&!pinned);if(pin){pin.setAttribute('aria-pressed',String(pinned));pin.setAttribute('aria-label',pinned?'Unpin sidebar':'Pin sidebar');pin.title=pinned?'Unpin sidebar to auto-collapse':'Pin sidebar open'}}
+ if(pin)pin.addEventListener('click',function(){if(!mq.matches)return;pinned=!pinned;try{localStorage.setItem(store,pinned?'1':'0')}catch(e){}apply()});
+ if(mq.addEventListener)mq.addEventListener('change',apply);else if(mq.addListener)mq.addListener(apply);
+ apply();
+})();
 
 // NETWORKS
 var ADMIN_NETS = {
