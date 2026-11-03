@@ -1121,7 +1121,9 @@ window.VTCircularGallery=function(container,opts){
 #v-rates #rtGift .animated-list{max-width:560px}
 #v-rates #rtGift .animated-list__viewport{overscroll-behavior:contain}
 @media(max-width:640px){
-  #v-rates>.dp-sm{padding-top:calc(8px + env(safe-area-inset-top,0px));padding-bottom:2px}
+  #v-rates>.dp-sm{padding-top:calc(8px + env(safe-area-inset-top,0px));padding-bottom:2px;border-radius:0!important;box-shadow:none!important}
+  #v-rates>.dp-sm>.w{display:block;width:100%!important;max-width:none!important;margin:0 auto!important;padding:0 16px!important;text-align:center!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;box-sizing:border-box}
+  #v-rates>.dp-sm>.w>h1,#v-rates>.dp-sm>.w>p{display:block;width:100%;margin-left:auto!important;margin-right:auto!important;text-align:center!important}
   #v-rates .rv{padding-top:0;gap:5px;padding-bottom:calc(112px + env(safe-area-inset-bottom,0px))}
   #v-rates .gcg{height:clamp(168px,29vh,205px)}
   #v-rates #rtGift .animated-list__viewport{max-height:max(150px,calc(100dvh - 370px))!important}
