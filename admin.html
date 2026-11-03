@@ -26,6 +26,18 @@ try { var savedTheme = localStorage.getItem('vt-theme'); if (savedTheme) documen
 }
 
 *{box-sizing:border-box}
+/* Keep the activity table inside the content column and prevent clipped references. */
+.content{min-width:0}
+#activityList{min-width:0;max-width:100%}
+#activityList .table-wrap{width:100%;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain}
+#activityList table{width:100%;min-width:760px;table-layout:fixed}
+#activityList th:nth-child(1),#activityList td:nth-child(1){width:22%;white-space:normal;overflow-wrap:anywhere}
+#activityList th:nth-child(2),#activityList td:nth-child(2){width:20%;white-space:normal}
+#activityList th:nth-child(3),#activityList td:nth-child(3){width:23%;white-space:normal;overflow-wrap:anywhere}
+#activityList th:nth-child(4),#activityList td:nth-child(4){width:20%;white-space:normal}
+#activityList th:nth-child(5),#activityList td:nth-child(5){width:15%;white-space:normal;overflow-wrap:anywhere}
+#activityList td .copy{max-width:100%;white-space:normal;overflow-wrap:anywhere;text-align:left;line-height:1.4;padding:2px}
+
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--text);font:14px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
 button,input,select,textarea{font:inherit}
@@ -120,6 +132,7 @@ tbody tr:last-child td{border-bottom:0}
 #statusConfirm .confirm-actions{display:flex;justify-content:flex-end;gap:10px;padding:0 25px 24px}
 #statusConfirm .confirm-actions button{min-width:112px;padding:11px 17px;border-radius:11px;font:inherit;font-size:13px;font-weight:800;cursor:pointer}
 #statusConfirm .confirm-cancel{background:var(--panel);border:1px solid var(--line);color:var(--text)}
+#statusConfirm .confirm-accept.danger{background:linear-gradient(110deg,#b91c1c,#991b1b);border-color:#991b1b}
 #statusConfirm .confirm-accept{background:linear-gradient(110deg,#fe3a12,#d91f16);border:1px solid #e52c18;color:#fff;box-shadow:0 5px 14px #fe3a122c}
 @keyframes confirmIn{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
 @media(max-width:560px){#statusConfirm{padding:18px;align-items:end}#statusConfirm .confirm-card{width:100%;border-radius:20px 20px 16px 16px}#statusConfirm .confirm-top{padding:20px 21px 16px}#statusConfirm .confirm-content{padding:22px 21px}#statusConfirm .confirm-actions{padding:0 21px 21px;display:grid;grid-template-columns:1fr 1fr}#statusConfirm .confirm-actions button{width:100%;min-width:0;padding:13px 10px}}
@@ -457,7 +470,8 @@ var KEY='sb_publishable_eU9t7DqMTbeAOIdsXhcYmg_wwvmwm3j';
 var STORE='vt_auth_session', CUST_STORE='vt_admin_customers', session=null, transactions=[], archiveTransactions=[], selected=null, pageSize=50, lastFocus=null;
 var $=function(id){return document.getElementById(id)};
 var statusConfirmResolve=null,statusConfirmLastFocus=null;
-function confirmStatusChange(ref,status){return new Promise(function(resolve){statusConfirmResolve=resolve;statusConfirmLastFocus=document.activeElement;$('statusConfirmRef').textContent=ref;$('statusConfirmCopy').innerHTML='Are you sure you want to mark this transaction as <strong>'+esc(statusLabel(status))+'</strong>? This change will be recorded in the audit log.';$('statusConfirmAccept').textContent='Confirm '+statusLabel(status);$('statusConfirm').classList.remove('hidden');document.body.style.overflow='hidden';$('statusConfirmAccept').focus()})}
+function confirmAction(title,ref,copy,accept,danger){return new Promise(function(resolve){statusConfirmResolve=resolve;statusConfirmLastFocus=document.activeElement;$('statusConfirmTitle').textContent=title;$('statusConfirmRef').textContent=ref;$('statusConfirmRef').classList.toggle('hidden',!ref);$('statusConfirmCopy').textContent=copy;$('statusConfirmAccept').textContent=accept||'Confirm';$('statusConfirmAccept').classList.toggle('danger',!!danger);$('statusConfirm').classList.remove('hidden');document.body.style.overflow='hidden';$('statusConfirmAccept').focus()})}
+function confirmStatusChange(ref,status){return confirmAction('Confirm status change',ref,'Are you sure you want to mark this transaction as '+statusLabel(status)+'? This change will be recorded in the audit log.','Confirm '+statusLabel(status),status==='VT-DEC')}
 function closeStatusConfirm(answer){var o=$('statusConfirm');if(o.classList.contains('hidden'))return;o.classList.add('hidden');document.body.style.overflow='';var resolve=statusConfirmResolve;statusConfirmResolve=null;if(statusConfirmLastFocus&&statusConfirmLastFocus.focus)statusConfirmLastFocus.focus();if(resolve)resolve(!!answer)}
 
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
@@ -866,7 +880,7 @@ $('registerForm').addEventListener('submit',function(e){
     return api('/admin/transactions',data);
   }).then(function(d){
     msg.className='message success';msg.textContent='Transaction registered: '+d.transaction.reference;
-    resetRegisterForm(form);load();
+    var newRef=d.transaction.reference;resetRegisterForm(form);showView('transactions');load().then(function(){if(transactions.some(function(t){return t.reference===newRef})){openDetail(newRef)}else{$('searchInput').value=newRef;paint()}});
   }).catch(function(err){msg.className='message error';msg.textContent=err.message}).then(function(){btn.disabled=false});
 });
 
@@ -876,8 +890,10 @@ function openDetail(ref){
   lastFocus=document.activeElement;
   var c=custInfo(selected);
   $('detailTitle').textContent=selected.reference;$('detailStatus').value=selected.status;$('detailMessage').textContent='';$('detailMessage').className='message';$('detailArchive').classList.toggle('hidden',!!selected.archived_at);$('detailStatus').disabled=!!selected.archived_at;$('detailUpdate').disabled=!!selected.archived_at;
-  var pairs=[['Customer',c.name?(c.name+(c.email?' · '+c.email:'')):selected.customer_id],['Customer ID',selected.customer_id],['Type',typeLabel(selected.transaction_type)],['Asset / card',selected.asset||selected.card_brand,selected.transaction_type==='GIFT_CARD_SELL'?cardIco(selected.card_brand):coinIco(selected.asset)],['Card type',selected.transaction_type==='GIFT_CARD_SELL'?selected.card_type:'—'],['Card currency',selected.transaction_type==='GIFT_CARD_SELL'?selected.card_currency:'—'],['Network / region',selected.network||selected.card_region,selected.transaction_type==='GIFT_CARD_SELL'?flagIco(selected.card_region):netIco(selected.network)],['Amount',selected.transaction_type==='GIFT_CARD_SELL'?money(selected.fiat_amount,selected.fiat_currency):money(selected.crypto_amount,selected.asset)],['Fiat amount',selected.transaction_type==='GIFT_CARD_SELL'?'—':money(selected.fiat_amount,selected.fiat_currency)],['Amount (NGN)',money(selected.payout_amount,'NGN')],['Transaction date',fmtDate(selected.created_at)],['Customer note',selected.customer_note]];
-  $('detailBody').innerHTML='<div class="detail-list">'+pairs.map(function(p){return '<div class="detail-item"><small>'+esc(p[0])+'</small><strong class="amt">'+(p[2]?smIco(p[2]):'')+esc(p[1]||'—')+'</strong></div>'}).join('')+'</div>';
+  var isGift=selected.transaction_type==='GIFT_CARD_SELL',rate=Number(selected.exchange_rate||0),ngn=Number(selected.payout_amount||0);if(!ngn&& !isGift&&Number(selected.fiat_amount)>0&&rate>0)ngn=Number(selected.fiat_amount)*rate;
+  var pairs=[['Customer',c.name?(c.name+(c.email?' · '+c.email:'')):selected.customer_id],['Customer ID',selected.customer_id],['Type',typeLabel(selected.transaction_type)],['Asset / card',selected.asset||selected.card_brand,isGift?cardIco(selected.card_brand):coinIco(selected.asset)],['Card type',selected.card_type],['Card currency',selected.card_currency],['Network / region',selected.network||selected.card_region,isGift?flagIco(selected.card_region):netIco(selected.network)],['Amount',isGift?money(selected.fiat_amount,selected.fiat_currency):money(selected.crypto_amount,selected.asset)],['Fiat amount',isGift?'—':money(selected.fiat_amount,selected.fiat_currency)],['Amount (NGN)',isGift?'—':ngn?money(ngn,'NGN'):'—'],['Transaction date',fmtDate(selected.created_at)],['Customer note',selected.customer_note]];
+  pairs=pairs.filter(function(p){return !isGift&&(p[0]!=='Card type'&&p[0]!=='Card currency')||isGift||p[0]!=='Card type'&&p[0]!=='Card currency'});
+  $('detailBody').innerHTML='<div class="detail-list">'+pairs.map(function(p){if((p[0]==='Card type'||p[0]==='Card currency')&&!isGift)return '';return '<div class="detail-item"><small>'+esc(p[0])+'</small><strong class="amt">'+(p[2]?smIco(p[2]):'')+esc(p[1]||'—')+'</strong></div>'}).join('')+'</div>';
   $('detailOverlay').classList.remove('hidden');$('detailClose').focus();
   loadEvents(ref,'detailEvents');
 }
@@ -905,19 +921,15 @@ $('detailUpdate').addEventListener('click',function(){
 
 // ARCHIVE ACTIONS
 function restoreTransaction(ref){
-  if(!confirm('Restore '+ref+' to the active Transactions list?'))return;
-  api('/admin/transactions/restore',{reference:ref}).then(function(){return load()}).catch(function(e){alert(e.message)});
+  confirmAction('Restore transaction',ref,'Move this transaction back to the active Transactions list?','Restore transaction',false).then(function(ok){if(!ok)return;api('/admin/transactions/restore',{reference:ref}).then(function(){return load()}).catch(function(e){alert(e.message)})});
 }
 function deleteTransaction(ref){
-  if(!confirm('Permanently delete '+ref+'? This cannot be undone. Its deletion record will remain in Activity History.'))return;
-  api('/admin/transactions/delete',{reference:ref}).then(function(){return load()}).catch(function(e){alert(e.message)});
+  confirmAction('Permanently delete transaction',ref,'This action cannot be undone. The deletion will still be recorded in Activity History.','Delete permanently',true).then(function(ok){if(!ok)return;api('/admin/transactions/delete',{reference:ref}).then(function(){return load()}).catch(function(e){alert(e.message)})});
 }
 $('detailArchive').addEventListener('click',function(){
   if(!selected||selected.archived_at)return;
   var ref=selected.reference;
-  if(!confirm('Move '+ref+' to Archives? You can restore it later.'))return;
-  this.disabled=true;
-  api('/admin/transactions/archive',{reference:ref}).then(function(){closeDetail();return load()}).catch(function(e){$('detailMessage').className='message error';$('detailMessage').textContent=e.message}).then(function(){$('detailArchive').disabled=false});
+  var button=this;confirmAction('Archive transaction',ref,'Move this transaction to Archives? You can restore it later.','Move to archives',false).then(function(ok){if(!ok)return;button.disabled=true;api('/admin/transactions/archive',{reference:ref}).then(function(){closeDetail();return load()}).catch(function(e){$('detailMessage').className='message error';$('detailMessage').textContent=e.message}).then(function(){button.disabled=false})});
 });
 $('archivesRefresh').addEventListener('click',load);
 $('historyRefresh').addEventListener('click',renderActivity);
