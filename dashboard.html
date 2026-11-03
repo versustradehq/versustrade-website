@@ -1548,43 +1548,21 @@ draw();
 </script>
 <script>
 (function () {
-    var RATES_URL = 'https://versustrade-rates.versustradehq.workers.dev/rates'; // paste your Worker address + /rates
-    var R = { buyMargin: 75, sellMargin: 75, cacheHours: 6 }, KEY = 'vt-usdngn';
+    var RATES_URL = 'https://versustrade-rates.versustradehq.workers.dev/rates';
     var buy = document.getElementById('rtBuy'), sell = document.getElementById('rtSell'), std = document.getElementById('rtStd');
     if (!buy || !sell || !std) return;
-    function fmt(n) { return '\u20A6' + Math.round(n).toLocaleString('en-US'); }
-    function put(b, s, note) { buy.textContent = fmt(b); sell.textContent = fmt(s); std.textContent = note; window.VT_RATE = { buy: Math.round(b), sell: Math.round(s) }; document.dispatchEvent(new Event('vt-rate')); }
-    function direct() {
-      function show(n, note) { put(n - R.buyMargin, n + R.sellMargin, 'Standard rate ' + fmt(n) + ' per $1 \u00B7 ' + note); }
-      var c = null;
-      try { c = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
-      if (c && c.n > 0 && Date.now() - c.t < R.cacheHours * 3600000) { show(c.n, 'updated daily'); return; }
-      fetch('https://open.er-api.com/v6/latest/USD')
-        .then(function (r) { return r.json(); })
-        .then(function (d) {
-          var n = d && d.rates && d.rates.NGN;
-          if (!(n > 0)) throw new Error('no rate');
-          show(n, 'updated daily');
-          try { localStorage.setItem(KEY, JSON.stringify({ n: n, t: Date.now() })); } catch (e) {}
-        })
-        .catch(function () {
-          if (c && c.n > 0) show(c.n, 'last known rate');
-          else std.textContent = 'Live standard rate unavailable. Showing our listed rates.';
-        });
-    }
-    if (RATES_URL.indexOf('YOUR-SUBDOMAIN') > -1) { direct(); return; }
-    fetch(RATES_URL)
-      .then(function (r) { return r.json(); })
+    function fmt(n) { return '\\u20A6' + Math.round(n).toLocaleString('en-US'); }
+    fetch(RATES_URL, { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error('Rates unavailable'); return r.json(); })
       .then(function (d) {
-        if (!(d.buy > 0 && d.sell > 0)) throw new Error('bad data');
-        var note = d.standard ? 'Standard rate ' + fmt(d.standard) + ' per $1 \u00B7 updated daily' : 'Rates set by VersusTrade';
-        if (!d.standard && d.updated) {
-          var t = new Date(d.updated);
-          if (!isNaN(t)) note += ' \u00B7 updated ' + t.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
-        }
-        put(d.buy, d.sell, note);
+        if (!(Number(d.buy) > 0 && Number(d.sell) > 0)) throw new Error('Invalid rates');
+        buy.textContent = fmt(Number(d.buy));
+        sell.textContent = fmt(Number(d.sell));
+        std.textContent = d.updated ? 'Rates updated ' + new Date(d.updated).toLocaleDateString('en-GB') : 'Rates set by VersusTrade';
+        window.VT_RATE = { buy: Number(d.buy), sell: Number(d.sell) };
+        document.dispatchEvent(new Event('vt-rate'));
       })
-      .catch(direct);
+      .catch(function () { std.textContent = 'Rates temporarily unavailable. Please check again shortly.'; });
   })();
 </script>
 <script>
