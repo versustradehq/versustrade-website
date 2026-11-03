@@ -1109,10 +1109,16 @@ window.VTCircularGallery=function(container,opts){
 })();
 </script>
 <style>
-/* Gift card view spacing and alignment */
-#v-rates .dp-sm .w{text-align:center}
-#v-rates .rv{padding-top:14px;gap:14px;padding-bottom:104px}
-#v-rates .gcg{height:280px}
+/* Gift card view: compact header, retain the existing animated list styling */
+#v-rates>.dp-sm{padding-top:calc(14px + env(safe-area-inset-top,0px));padding-bottom:10px}
+#v-rates>.dp-sm .w{width:min(calc(100% - 32px),720px);margin:0 auto;padding:13px 17px;text-align:left;background:var(--card,var(--surface));border:1px solid var(--line);border-radius:14px;box-sizing:border-box}
+#v-rates>.dp-sm h1{margin:0;font-size:clamp(21px,4vw,27px);line-height:1.15}
+#v-rates>.dp-sm p{margin-top:3px;font-size:12.5px;line-height:1.4}
+#v-rates .rv{padding-top:10px;gap:12px;padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))}
+#v-rates .gcg{height:250px}
+#v-rates #rtGift{padding-bottom:12px}
+#v-rates #rtGift .animated-list{max-width:560px}
+#v-rates #rtGift .animated-list__viewport{overscroll-behavior:contain}
 </style>
 
 <style>
