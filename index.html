@@ -1107,7 +1107,7 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
     var RATES_URL = 'https://versustrade-rates.versustradehq.workers.dev/rates';
     var buy = document.getElementById('rtBuy'), sell = document.getElementById('rtSell'), std = document.getElementById('rtStd');
     if (!buy || !sell || !std) return;
-    function fmt(n) { return '\\u20A6' + Math.round(n).toLocaleString('en-US'); }
+    function fmt(n) { return '₦' + Math.round(n).toLocaleString('en-US'); }
     fetch(RATES_URL, { cache: 'no-store' })
       .then(function (r) { if (!r.ok) throw new Error('Rates unavailable'); return r.json(); })
       .then(function (d) {
