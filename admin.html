@@ -291,7 +291,7 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * {
       <button class="nav" data-view="transactions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg> Transactions</button>
       <button class="nav" data-view="archives"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h18v4H3z"/><path d="M5 8v12h14V8"/><path d="M10 12h4"/></svg> Archives</button>
       <button class="nav" data-view="history"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg> Activity history</button>
-      <button class="nav" data-view="rates">Rate management</button>
+      <button class="nav" data-view="rates"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 14 4-4 4 4 6-7"/></svg> Rate management</button>
     <div class="side-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg><span>Admin access is verified against your Supabase administrator account.</span></div>
   </aside>
   <div class="scrim" id="scrim"></div>
@@ -352,13 +352,9 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * {
       <section id="rates" class="section">
         <div class="page-head"><div><div class="eyebrow">Exchange settings</div><h1>Rate management</h1><div class="sub">Manage the USD to NGN rates displayed across VersusTrade.</div></div><button class="ghost" id="ratesRefresh" type="button">Refresh rates</button></div>
         <div class="panel"><div class="panel-head"><h2>Exchange rates</h2><span class="sub" id="ratesUpdated">Loading current rates…</span></div><div class="panel-body">
-          <div class="notice">Fixed mode uses your entered rates. Live mode uses a live USD/NGN reference rate with your margins.</div>
           <form id="ratesForm" class="form-grid">
-            <div class="form-field span2"><label for="ratesMode">Rate mode</label><select id="ratesMode" class="select"><option value="fixed">Fixed rates</option><option value="live">Live reference rate + margins</option></select></div>
-            <div class="form-field" id="fixedBuyField"><label for="ratesBuy">BUY rate (₦ per $1)</label><input class="field" id="ratesBuy" type="number" min="1" step="0.01" required></div>
-            <div class="form-field" id="fixedSellField"><label for="ratesSell">SELL rate (₦ per $1)</label><input class="field" id="ratesSell" type="number" min="1" step="0.01" required></div>
-            <div class="form-field"><label for="ratesBuyMargin">BUY margin (₦ below reference)</label><input class="field" id="ratesBuyMargin" type="number" min="0" step="0.01" required></div>
-            <div class="form-field"><label for="ratesSellMargin">SELL margin (₦ above reference)</label><input class="field" id="ratesSellMargin" type="number" min="0" step="0.01" required></div>
+            <div class="form-field"><label for="ratesBuy">BUY rate (₦ per $1)</label><input class="field" id="ratesBuy" type="number" min="1" step="0.01" required></div>
+            <div class="form-field"><label for="ratesSell">SELL rate (₦ per $1)</label><input class="field" id="ratesSell" type="number" min="1" step="0.01" required></div>
             <div class="span2 toolbar"><button class="primary" id="ratesSave" type="submit">Save rates</button><span id="ratesMessage" class="message" role="status"></span></div>
           </form>
           <div class="detail-list" style="margin-top:22px"><div class="detail-item"><small>Current BUY rate</small><strong id="ratesCurrentBuy">—</strong></div><div class="detail-item"><small>Current SELL rate</small><strong id="ratesCurrentSell">—</strong></div></div>
@@ -445,7 +441,7 @@ function api(path,body){if(PREVIEW)return mockApi(path,body);return token().then
 // PREVIEW MODE (?preview): sample data, no login, no network calls. Remove before deploying.
 var PREVIEW=/[?&]preview\b/.test(location.search);
 var mockCustomers=[{id:'c1a2b3c4-0001',name:'Adaeze Okafor',email:'adaeze@example.com'},{id:'c1a2b3c4-0002',name:'Tunde Bello',email:'tunde.b@example.com'},{id:'c1a2b3c4-0003',name:'Chioma Eze',email:'chioma.eze@example.com'},{id:'c1a2b3c4-0004',name:'Ibrahim Musa',email:'ibrahim@example.com'}];
-var mockTx=[],mockEvents={},mockRates={mode:'fixed',buy:1300,sell:1450,buyMargin:75,sellMargin:75,updated:null};
+var mockTx=[],mockEvents={},mockRates={buy:1300,sell:1450,updated:null};
 (function(){
   if(!PREVIEW)return;
   var types=['CRYPTO_BUY','CRYPTO_SELL','GIFT_CARD_SELL'],assets=['USDT','BTC','ETH','SOL','USDC'],nets=['TRC20','Bitcoin','ERC20','Solana','BEP20'],st=['VT-PRO','VT-DONE','VT-DONE','VT-DEC','VT-PRO'],cards=['Amazon Gift Card','Apple / iTunes Gift Card','Steam Gift Card'];
@@ -691,9 +687,7 @@ function load(){
   return Promise.all([active,archived]).then(function(){renderActivity()});
 }
 function paintRates(r){
-  $('ratesMode').value=r.mode||'fixed';$('ratesBuy').value=r.buy??1300;$('ratesSell').value=r.sell??1450;
-  $('ratesBuyMargin').value=r.buyMargin??75;$('ratesSellMargin').value=r.sellMargin??75;
-  var live=r.mode==='live';$('fixedBuyField').classList.toggle('hidden',live);$('fixedSellField').classList.toggle('hidden',live);
+  $('ratesBuy').value=r.buy??1300;$('ratesSell').value=r.sell??1450;
   $('ratesUpdated').textContent=r.updated?'Last updated '+fmtDate(r.updated):'Using default rates';
   $('ratesCurrentBuy').textContent='₦'+Number(r.buy||0).toLocaleString(undefined,{maximumFractionDigits:2});
   $('ratesCurrentSell').textContent='₦'+Number(r.sell||0).toLocaleString(undefined,{maximumFractionDigits:2});
@@ -703,12 +697,10 @@ function loadRates(){
   api('/admin/rates/get',{}).then(function(d){paintRates(d.rates||{});$('ratesMessage').textContent='';})
     .catch(function(e){$('ratesMessage').className='message error';$('ratesMessage').textContent=e.message;});
 }
-$('ratesMode').addEventListener('change',function(){var live=this.value==='live';$('fixedBuyField').classList.toggle('hidden',live);$('fixedSellField').classList.toggle('hidden',live)});
 $('ratesForm').addEventListener('submit',function(e){
   e.preventDefault();var btn=$('ratesSave'),msg=$('ratesMessage');
-  var payload={mode:$('ratesMode').value,buy:Number($('ratesBuy').value),sell:Number($('ratesSell').value),buyMargin:Number($('ratesBuyMargin').value),sellMargin:Number($('ratesSellMargin').value)};
-  if(payload.mode==='fixed'&&(!(payload.buy>0)||!(payload.sell>0))){msg.className='message error';msg.textContent='Enter valid BUY and SELL rates.';return}
-  if(!Number.isFinite(payload.buyMargin)||payload.buyMargin<0||!Number.isFinite(payload.sellMargin)||payload.sellMargin<0){msg.className='message error';msg.textContent='Margins must be zero or greater.';return}
+  var payload={buy:Number($('ratesBuy').value),sell:Number($('ratesSell').value)};
+  if(!(payload.buy>0)||!(payload.sell>0)||!Number.isFinite(payload.buy)||!Number.isFinite(payload.sell)){msg.className='message error';msg.textContent='Enter valid BUY and SELL rates greater than zero.';return}
   btn.disabled=true;msg.className='message';msg.textContent='Saving rates…';
   api('/admin/rates/update',payload).then(function(d){paintRates(d.rates||payload);msg.className='message success';msg.textContent='Rates saved successfully.';})
     .catch(function(e){msg.className='message error';msg.textContent=e.message;})
