@@ -1109,16 +1109,26 @@ window.VTCircularGallery=function(container,opts){
 })();
 </script>
 <style>
-/* Gift card view: compact header, retain the existing animated list styling */
-#v-rates>.dp-sm{padding-top:calc(14px + env(safe-area-inset-top,0px));padding-bottom:10px}
-#v-rates>.dp-sm .w{width:min(calc(100% - 32px),720px);margin:0 auto;padding:13px 17px;text-align:left;background:var(--card,var(--surface));border:1px solid var(--line);border-radius:14px;box-sizing:border-box}
+/* Gift card view: plain compact heading, raised gallery and dock-safe list */
+#v-rates>.dp-sm{padding-top:calc(10px + env(safe-area-inset-top,0px));padding-bottom:4px}
+#v-rates>.dp-sm .w{width:min(calc(100% - 32px),720px);margin:0 auto;padding:0;text-align:left;background:transparent;border:0;border-radius:0;box-sizing:border-box}
 #v-rates>.dp-sm h1{margin:0;font-size:clamp(21px,4vw,27px);line-height:1.15}
 #v-rates>.dp-sm p{margin-top:3px;font-size:12.5px;line-height:1.4}
-#v-rates .rv{padding-top:10px;gap:12px;padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))}
-#v-rates .gcg{height:250px}
+#v-rates .rv{padding-top:4px;gap:8px;padding-bottom:calc(116px + env(safe-area-inset-bottom,0px))}
+#v-rates .gcg{height:210px}
 #v-rates #rtGift{padding-bottom:12px}
 #v-rates #rtGift .animated-list{max-width:560px}
 #v-rates #rtGift .animated-list__viewport{overscroll-behavior:contain}
+@media(max-width:640px){
+  #v-rates>.dp-sm{padding-top:calc(8px + env(safe-area-inset-top,0px));padding-bottom:2px}
+  #v-rates .rv{padding-top:0;gap:5px;padding-bottom:calc(112px + env(safe-area-inset-bottom,0px))}
+  #v-rates .gcg{height:clamp(168px,29vh,205px)}
+  #v-rates #rtGift .animated-list__viewport{max-height:max(150px,calc(100dvh - 370px))!important}
+}
+@media(max-height:700px) and (max-width:640px){
+  #v-rates .gcg{height:clamp(145px,25vh,175px)}
+  #v-rates #rtGift .animated-list__viewport{max-height:max(130px,calc(100dvh - 325px))!important}
+}
 </style>
 
 <style>
