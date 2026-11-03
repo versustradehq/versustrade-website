@@ -56,7 +56,7 @@ tbody tr:hover{background:color-mix(in srgb,var(--red-soft) 38%,var(--panel))}
 tbody tr:last-child td{border-bottom:0}
 .ref{font-weight:700;letter-spacing:.01em}
 .refcell{display:flex;align-items:center;gap:8px}
-.copy{border:0;background:transparent;color:var(--muted);font-size:11px;padding:3px 6px;border-radius:6px}
+.copy{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border:0;background:transparent;color:var(--muted);padding:4px;border-radius:6px;vertical-align:middle}.copy svg{width:16px;height:16px;display:block}.copy:hover{color:var(--red);background:var(--red-soft)}
 .copy:hover{color:var(--red);background:var(--red-soft)}
 .cust strong{display:block;font-size:13px;font-weight:600}
 .cust small{display:block;color:var(--muted);font-size:12px}
@@ -549,7 +549,7 @@ function renderTable(target,rows,limit){
   var html='<div class="table-wrap"><table><thead><tr><th>Reference</th><th>Customer</th><th class="hide-sm">Type</th><th>Amount</th><th>Status</th><th class="hide-sm">Date</th><th></th></tr></thead><tbody>';
   shown.forEach(function(t){
     var amount=t.transaction_type==='GIFT_CARD_SELL'?money(t.fiat_amount,t.fiat_currency):money(t.crypto_amount,t.asset);
-    html+='<tr><td><div class="refcell"><span class="ref">'+esc(t.reference)+'</span><button class="copy" data-copy="'+esc(t.reference)+'" aria-label="Copy reference">Copy</button></div></td><td>'+custCell(t)+'</td><td class="hide-sm"><span class="type">'+esc(typeLabel(t.transaction_type))+'</span></td><td><span class="amt">'+smIco(t.transaction_type==='GIFT_CARD_SELL'?cardIco(t.card_brand):coinIco(t.asset))+esc(amount)+'</span></td><td><span class="status '+statusClass(t.status)+'">'+esc(statusLabel(t.status))+'</span></td><td class="hide-sm">'+esc(fmtDate(t.created_at))+'</td><td><button class="row-action" data-ref="'+esc(t.reference)+'">Open</button></td></tr>';
+    html+='<tr><td><div class="refcell"><span class="ref">'+esc(t.reference)+'</span><button class="copy" data-copy="'+esc(t.reference)+'" aria-label="Copy reference" title="Copy reference"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg></button></div></td><td>'+custCell(t)+'</td><td class="hide-sm"><span class="type">'+esc(typeLabel(t.transaction_type))+'</span></td><td><span class="amt">'+smIco(t.transaction_type==='GIFT_CARD_SELL'?cardIco(t.card_brand):coinIco(t.asset))+esc(amount)+'</span></td><td><span class="status '+statusClass(t.status)+'">'+esc(statusLabel(t.status))+'</span></td><td class="hide-sm">'+esc(fmtDate(t.created_at))+'</td><td><button class="row-action" data-ref="'+esc(t.reference)+'">Open</button></td></tr>';
   });
   html+='</tbody></table></div>';
   if(rows.length>shown.length)html+='<div class="more"><button class="row-action" data-more>Show more ('+(rows.length-shown.length)+' remaining)</button></div>';
@@ -557,7 +557,7 @@ function renderTable(target,rows,limit){
   Array.prototype.forEach.call($(target).querySelectorAll('[data-ref]'),function(b){b.addEventListener('click',function(){openDetail(b.dataset.ref)})});
   Array.prototype.forEach.call($(target).querySelectorAll('[data-copy]'),function(b){b.addEventListener('click',function(){
     var v=b.dataset.copy;
-    (navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).then(function(){b.textContent='Copied';setTimeout(function(){b.textContent='Copy'},1200)}).catch(function(){b.textContent='Failed';setTimeout(function(){b.textContent='Copy'},1200)});
+    (navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).then(function(){b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>';b.setAttribute('aria-label','Reference copied');setTimeout(function(){b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>';b.setAttribute('aria-label','Copy reference')},1200)}).catch(function(){b.setAttribute('aria-label','Copy failed')});
   })});
   var more=$(target).querySelector('[data-more]');
   if(more)more.addEventListener('click',function(){pageSize+=50;paint()});
