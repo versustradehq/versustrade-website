@@ -95,38 +95,23 @@ export default {
         return respond({ error: "Invalid JSON body" }, 400);
       }
 
-      // Admin-only exchange-rate management, backed by the same KV used by the public Rates Worker.
+      // Admin-only exchange-rate management, backed by the public Rates Worker's KV.
       if (path === "/admin/rates/get") {
         if (!env.RATES) return respond({ error: "Rates KV binding is missing from the Admin API Worker" }, 500);
-        const defaults = { mode: "fixed", buy: 1300, sell: 1450, buyMargin: 75, sellMargin: 75, updated: null };
-        const config = { ...defaults, ...((await env.RATES.get("config", "json")) || {}) };
-        return respond({ ok: true, rates: config });
+        const defaults = { buy: 1300, sell: 1450, updated: null };
+        const rates = { ...defaults, ...((await env.RATES.get("config", "json")) || {}) };
+        return respond({ ok: true, rates });
       }
 
       if (path === "/admin/rates/update") {
         if (!env.RATES) return respond({ error: "Rates KV binding is missing from the Admin API Worker" }, 500);
-        const mode = body.mode;
         const buy = Number(body.buy), sell = Number(body.sell);
-        const buyMargin = Number(body.buyMargin), sellMargin = Number(body.sellMargin);
-        if (!["fixed", "live"].includes(mode)) return respond({ error: "Choose fixed or live rate mode" }, 400);
-        if (mode === "fixed" && (![buy, sell].every(Number.isFinite) || buy <= 0 || sell <= 0 || buy > 1e7 || sell > 1e7)) {
+        if (![buy, sell].every(Number.isFinite) || buy <= 0 || sell <= 0 || buy > 1e7 || sell > 1e7) {
           return respond({ error: "Enter valid BUY and SELL rates greater than zero" }, 400);
         }
-        if (![buyMargin, sellMargin].every(Number.isFinite) || buyMargin < 0 || sellMargin < 0 || buyMargin > 1e6 || sellMargin > 1e6) {
-          return respond({ error: "Enter valid non-negative BUY and SELL margins" }, 400);
-        }
-        const defaults = { mode: "fixed", buy: 1300, sell: 1450, buyMargin: 75, sellMargin: 75, updated: null };
-        const previous = { ...defaults, ...((await env.RATES.get("config", "json")) || {}) };
-        const config = {
-          mode,
-          buy: mode === "fixed" ? buy : previous.buy,
-          sell: mode === "fixed" ? sell : previous.sell,
-          buyMargin,
-          sellMargin,
-          updated: new Date().toISOString()
-        };
-        await env.RATES.put("config", JSON.stringify(config));
-        return respond({ ok: true, message: "Rates updated", rates: config });
+        const rates = { buy, sell, updated: new Date().toISOString() };
+        await env.RATES.put("config", JSON.stringify(rates));
+        return respond({ ok: true, message: "Rates updated", rates });
       }
 
       const rest = (table, query = "") =>
