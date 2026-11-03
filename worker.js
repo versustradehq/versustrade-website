@@ -7,7 +7,9 @@ const DEFAULTS = { buy: 1300, sell: 1450, updated: null };
 export default {
   async fetch(req, env) {
     const url = new URL(req.url);
-    const origin = env.ALLOWED_ORIGIN || '*';
+    const allowedOrigins = (env.ALLOWED_ORIGIN || '').split(',').map((value) => value.trim()).filter(Boolean);
+    const requestOrigin = req.headers.get('Origin');
+    const origin = allowedOrigins.includes(requestOrigin) ? requestOrigin : (allowedOrigins[0] || 'https://versustrade.co');
 
     if (req.method === 'OPTIONS') {
       return new Response(null, { status: 204, headers: {
