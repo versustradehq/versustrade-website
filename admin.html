@@ -26,17 +26,18 @@ try { var savedTheme = localStorage.getItem('vt-theme'); if (savedTheme) documen
 }
 
 *{box-sizing:border-box}
-/* Keep the activity table inside the content column and prevent clipped references. */
+/* Activity history: keep reference IDs readable and give each column room. */
 .content{min-width:0}
 #activityList{min-width:0;max-width:100%}
 #activityList .table-wrap{width:100%;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain}
-#activityList table{width:100%;min-width:760px;table-layout:fixed}
-#activityList th:nth-child(1),#activityList td:nth-child(1){width:22%;white-space:normal;overflow-wrap:anywhere}
-#activityList th:nth-child(2),#activityList td:nth-child(2){width:20%;white-space:normal}
+#activityList table{width:100%;min-width:900px;table-layout:fixed}
+#activityList th:nth-child(1),#activityList td:nth-child(1){width:23%;white-space:nowrap}
+#activityList th:nth-child(2),#activityList td:nth-child(2){width:21%;white-space:normal}
 #activityList th:nth-child(3),#activityList td:nth-child(3){width:23%;white-space:normal;overflow-wrap:anywhere}
-#activityList th:nth-child(4),#activityList td:nth-child(4){width:20%;white-space:normal}
-#activityList th:nth-child(5),#activityList td:nth-child(5){width:15%;white-space:normal;overflow-wrap:anywhere}
-#activityList td .copy{max-width:100%;white-space:normal;overflow-wrap:anywhere;text-align:left;line-height:1.4;padding:2px}
+#activityList th:nth-child(4),#activityList td:nth-child(4){width:19%;white-space:normal}
+#activityList th:nth-child(5),#activityList td:nth-child(5){width:14%;white-space:normal;overflow-wrap:anywhere}
+#activityList td .copy{display:inline-flex;width:auto;height:auto;max-width:none;min-width:0;white-space:nowrap;overflow-wrap:normal;word-break:normal;text-align:left;line-height:1.4;padding:0;border:0;background:transparent;color:var(--text);font-size:13px;font-weight:700;letter-spacing:.01em}
+#activityList td .copy:hover{color:var(--red);background:transparent}
 
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--text);font:14px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
