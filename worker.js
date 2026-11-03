@@ -1,9 +1,6 @@
 // VersusTrade rates Worker
-// - GET  /rates     -> public JSON the website reads
-// - POST /telegram  -> Telegram webhook; only allowed Telegram user IDs can change rates
-//
-// Bindings and secrets (see README.md):
-//   RATES (KV namespace), BOT_TOKEN, WEBHOOK_SECRET, ALLOWED_IDS, ALLOWED_ORIGIN (plain var)
+// GET /rates -> public BUY and SELL rates used by the website.
+// POST /telegram -> optional Telegram rate updates.
 
 const DEFAULTS = { buy: 1300, sell: 1450, updated: null };
 
@@ -23,7 +20,7 @@ export default {
       return new Response(JSON.stringify(await currentRates(env)), { headers: {
         'content-type': 'application/json; charset=utf-8',
         'access-control-allow-origin': origin,
-        'cache-control': 'public, max-age=30',
+        'cache-control': 'no-store',
       } });
     }
     if (url.pathname === '/telegram' && req.method === 'POST') return handleTelegram(req, env);
@@ -38,18 +35,16 @@ async function loadConfig(env) {
 async function currentRates(env) {
   const cfg = await loadConfig(env);
   return {
-    buy: Number(cfg.buy) || DEFAULTS.buy,
-    sell: Number(cfg.sell) || DEFAULTS.sell,
+    buy: Number(cfg.buy) > 0 ? Number(cfg.buy) : DEFAULTS.buy,
+    sell: Number(cfg.sell) > 0 ? Number(cfg.sell) : DEFAULTS.sell,
     updated: cfg.updated || null,
   };
 }
 
 const n0 = (x) => Math.round(x).toLocaleString('en-US');
-
 function describe(r) {
   return `BUY: ₦${n0(r.buy)}\nSELL: ₦${n0(r.sell)}`;
 }
-
 const HELP = [
   'Commands:',
   '/rates 1300 1450 – set BUY and SELL rates',
@@ -86,38 +81,20 @@ async function handleTelegram(req, env) {
   const nums = parts.slice(1).map((a) => Number(a.replace(/,/g, '')));
   const good = (list) => list.length > 0 && list.every((x) => Number.isFinite(x));
   const cfg = await loadConfig(env);
-  const save = async () => { cfg.updated = new Date().toISOString(); await env.RATES.put('config', JSON.stringify(cfg)); };
+  const save = async () => {
+    cfg.updated = new Date().toISOString();
+    await env.RATES.put('config', JSON.stringify({ buy: cfg.buy, sell: cfg.sell, updated: cfg.updated }));
+  };
 
   if (cmd === '/rates') {
     if (nums.length !== 2 || !good(nums) || nums.some((x) => x <= 0 || x > 1e7)) {
-      await reply(env, chat, 'Use: /rates BUY SELL\\nExample: /rates 1800 1900');
+      await reply(env, chat, 'Use: /rates BUY SELL\nExample: /rates 1800 1900');
       return ok;
     }
-    cfg.buy = nums[0]; cfg.sell = nums[1];
-    await save();
-    await reply(env, chat, 'Updated.\\n' + describe(await currentRates(env)));
-  } else if (cmd === '/status') {
-    await reply(env, chat, describe(await currentRates(env)));
-  } else {
-    await reply(env, chat, HELP);
-  }
-  return ok;
-    }
-    cfg.mode = 'fixed'; cfg.buy = nums[0]; cfg.sell = nums[1];
+    cfg.buy = nums[0];
+    cfg.sell = nums[1];
     await save();
     await reply(env, chat, 'Updated.\n' + describe(await currentRates(env)));
-  } else if (cmd === '/margin') {
-    if (!(nums.length === 1 || nums.length === 2) || !good(nums) || nums.some((x) => x < 0 || x > 1e6)) {
-      await reply(env, chat, 'Use: /margin BUY SELL\nExample: /margin 75 75');
-      return ok;
-    }
-    cfg.mode = 'live'; cfg.buyMargin = nums[0]; cfg.sellMargin = nums.length === 2 ? nums[1] : nums[0];
-    await save();
-    await reply(env, chat, 'Updated.\n' + describe(await currentRates(env)));
-  } else if (cmd === '/live') {
-    cfg.mode = 'live';
-    await save();
-    await reply(env, chat, 'Live mode on.\n' + describe(await currentRates(env)));
   } else if (cmd === '/status') {
     await reply(env, chat, describe(await currentRates(env)));
   } else {
