@@ -102,6 +102,29 @@ tbody tr:last-child td{border-bottom:0}
 .events{display:flex;flex-direction:column;gap:13px}
 .event{border-left:2px solid var(--red);padding:3px 0 4px 13px}
 .event strong{font-size:13px;text-transform:capitalize}.event small{display:block;color:var(--muted);font-size:12px;margin-top:3px}
+
+#statusConfirm{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:22px;background:rgba(12,14,18,.62);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}
+#statusConfirm.hidden{display:none!important}
+#statusConfirm .confirm-card{width:min(100%,440px);overflow:hidden;background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:20px;box-shadow:0 24px 80px rgba(0,0,0,.28);animation:confirmIn .18s ease-out}
+#statusConfirm .confirm-top{position:relative;padding:23px 25px 19px;background:linear-gradient(125deg,#171717 0%,#292323 58%,#fe3a12 160%);color:#fff}
+#statusConfirm .confirm-top:after{content:"";position:absolute;right:-35px;top:-75px;width:180px;height:180px;border:1px solid #ffffff20;border-radius:50%;box-shadow:0 0 0 22px #ffffff09,0 0 0 44px #ffffff06}
+#statusConfirm .confirm-brand{font-size:11px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:#ffffffb8}
+#statusConfirm .confirm-close{position:absolute;right:17px;top:15px;width:34px;height:34px;border:1px solid #ffffff35;border-radius:50%;background:#ffffff12;color:#fff;font-size:19px;cursor:pointer}
+#statusConfirm .confirm-content{padding:25px}
+#statusConfirm .confirm-icon{width:48px;height:48px;display:grid;place-items:center;border-radius:15px;background:var(--red-soft);color:var(--red);margin-bottom:17px}
+#statusConfirm .confirm-icon svg{width:24px;height:24px}
+#statusConfirm .confirm-title{font-size:19px;font-weight:800;letter-spacing:-.035em;margin:0 0 9px}
+#statusConfirm .confirm-ref{display:block;margin:0 0 10px;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);font-size:12px;font-weight:700;overflow-wrap:anywhere}
+#statusConfirm .confirm-copy{font-size:13px;line-height:1.6;color:var(--muted);margin:0}
+#statusConfirm .confirm-copy strong{color:var(--text)}
+#statusConfirm .confirm-actions{display:flex;justify-content:flex-end;gap:10px;padding:0 25px 24px}
+#statusConfirm .confirm-actions button{min-width:112px;padding:11px 17px;border-radius:11px;font:inherit;font-size:13px;font-weight:800;cursor:pointer}
+#statusConfirm .confirm-cancel{background:var(--panel);border:1px solid var(--line);color:var(--text)}
+#statusConfirm .confirm-accept{background:linear-gradient(110deg,#fe3a12,#d91f16);border:1px solid #e52c18;color:#fff;box-shadow:0 5px 14px #fe3a122c}
+@keyframes confirmIn{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+@media(max-width:560px){#statusConfirm{padding:18px;align-items:end}#statusConfirm .confirm-card{width:100%;border-radius:20px 20px 16px 16px}#statusConfirm .confirm-top{padding:20px 21px 16px}#statusConfirm .confirm-content{padding:22px 21px}#statusConfirm .confirm-actions{padding:0 21px 21px;display:grid;grid-template-columns:1fr 1fr}#statusConfirm .confirm-actions button{width:100%;min-width:0;padding:13px 10px}}
+@media(prefers-reduced-motion:reduce){#statusConfirm .confirm-card{animation:none}}
+
 .hidden{display:none!important}
 .access{max-width:460px;margin:12vh auto;padding:34px;background:var(--panel);border:1px solid var(--line);border-radius:18px;text-align:center;box-shadow:var(--shadow-lg)}
 .access h1{font-size:23px;margin:12px 0 7px;letter-spacing:-.04em}.access p{color:var(--muted);font-size:13px}
@@ -424,6 +447,7 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * {
     <div class="panel-body"><div id="detailBody"></div><div class="toolbar" style="margin-top:18px"><label class="muted" for="detailStatus">Update status</label><select id="detailStatus" class="select" style="max-width:190px"><option value="VT-PRO">Processing</option><option value="VT-DONE">Completed</option><option value="VT-DEC">Declined</option></select><button id="detailUpdate" class="primary">Save status</button><button id="detailArchive" class="ghost">Archive transaction</button></div><div id="detailMessage" class="message" role="status"></div><div style="margin-top:22px"><h3 style="font-size:14px">Audit history</h3><div id="detailEvents" class="events"></div></div></div>
   </div>
 </div>
+<div id="statusConfirm" class="hidden" role="presentation"><section class="confirm-card" role="dialog" aria-modal="true" aria-labelledby="statusConfirmTitle" aria-describedby="statusConfirmCopy"><div class="confirm-top"><div class="confirm-brand">VersusTrade · Admin</div><button type="button" class="confirm-close" id="statusConfirmClose" aria-label="Close">×</button></div><div class="confirm-content"><div class="confirm-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.8 20h18.4L12 3Z"/><path d="M12 9v5m0 3h.01"/></svg></div><h2 class="confirm-title" id="statusConfirmTitle">Confirm status change</h2><div class="confirm-ref" id="statusConfirmRef"></div><p class="confirm-copy" id="statusConfirmCopy">This change will be recorded in the audit log.</p></div><div class="confirm-actions"><button type="button" class="confirm-cancel" id="statusConfirmCancel">Cancel</button><button type="button" class="confirm-accept" id="statusConfirmAccept">Confirm update</button></div></section></div>
 <script>
 (function(){
 'use strict';
@@ -432,6 +456,10 @@ var SB='https://axldgaxsdgeycinxqbem.supabase.co';
 var KEY='sb_publishable_eU9t7DqMTbeAOIdsXhcYmg_wwvmwm3j';
 var STORE='vt_auth_session', CUST_STORE='vt_admin_customers', session=null, transactions=[], archiveTransactions=[], selected=null, pageSize=50, lastFocus=null;
 var $=function(id){return document.getElementById(id)};
+var statusConfirmResolve=null,statusConfirmLastFocus=null;
+function confirmStatusChange(ref,status){return new Promise(function(resolve){statusConfirmResolve=resolve;statusConfirmLastFocus=document.activeElement;$('statusConfirmRef').textContent=ref;$('statusConfirmCopy').innerHTML='Are you sure you want to mark this transaction as <strong>'+esc(statusLabel(status))+'</strong>? This change will be recorded in the audit log.';$('statusConfirmAccept').textContent='Confirm '+statusLabel(status);$('statusConfirm').classList.remove('hidden');document.body.style.overflow='hidden';$('statusConfirmAccept').focus()})}
+function closeStatusConfirm(answer){var o=$('statusConfirm');if(o.classList.contains('hidden'))return;o.classList.add('hidden');document.body.style.overflow='';var resolve=statusConfirmResolve;statusConfirmResolve=null;if(statusConfirmLastFocus&&statusConfirmLastFocus.focus)statusConfirmLastFocus.focus();if(resolve)resolve(!!answer)}
+
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function readSession(){try{return JSON.parse(localStorage.getItem(STORE)||sessionStorage.getItem(STORE)||'null')}catch(e){return null}}
 function saveSession(){try{localStorage.setItem(STORE,JSON.stringify(session))}catch(e){}}
@@ -563,9 +591,8 @@ function renderTable(target,rows,limit){
       if(!record)return;
       previous=record.status;
       if(status===previous)return;
-      if(status!=='VT-PRO'&&!confirm('Mark '+ref+' as '+statusLabel(status)+'? This is recorded in the audit log.')){sel.value=previous;return}
-      sel.disabled=true;
-      api('/admin/transactions/status',{reference:ref,status:status}).then(function(){return load()}).catch(function(e){alert('Status update failed: '+e.message);sel.value=previous;sel.disabled=false});
+      var proceed=status==='VT-PRO'?Promise.resolve(true):confirmStatusChange(ref,status);
+      proceed.then(function(ok){if(!ok){sel.value=previous;return}sel.disabled=true;api('/admin/transactions/status',{reference:ref,status:status}).then(function(){return load()}).catch(function(e){alert('Status update failed: '+e.message);sel.value=previous;sel.disabled=false})});
     });
   });
   Array.prototype.forEach.call($(target).querySelectorAll('[data-copy]'),function(b){b.addEventListener('click',function(){
@@ -862,6 +889,7 @@ function loadEvents(ref,target){
     $(target).innerHTML=ev.length?ev.map(function(x){return '<div class="event"><strong>'+esc(String(x.event_type||'').replace(/_/g,' ').toLowerCase())+' · '+esc(statusLabel(x.new_status||''))+'</strong><small>'+esc(fmtDate(x.created_at))+' · '+esc(x.actor_user_id||'System')+'</small></div>'}).join(''):'<div class="muted">No audit events found.</div>';
   }).catch(function(e){$(target).innerHTML='<div class="message error">'+esc(e.message)+'</div>'});
 }
+$('statusConfirmAccept').addEventListener('click',function(){closeStatusConfirm(true)});$('statusConfirmCancel').addEventListener('click',function(){closeStatusConfirm(false)});$('statusConfirmClose').addEventListener('click',function(){closeStatusConfirm(false)});$('statusConfirm').addEventListener('click',function(e){if(e.target===this)closeStatusConfirm(false)});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('statusConfirm').classList.contains('hidden'))closeStatusConfirm(false)});
 $('detailClose').addEventListener('click',closeDetail);
 $('detailOverlay').addEventListener('click',function(e){if(e.target===this)closeDetail()});
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('detailOverlay').classList.contains('hidden'))closeDetail()});
@@ -869,15 +897,10 @@ $('detailUpdate').addEventListener('click',function(){
   if(!selected)return;
   var status=$('detailStatus').value,btn=this,msg=$('detailMessage');
   if(status===selected.status){msg.className='message';msg.textContent='Status is already '+statusLabel(status)+'.';return}
-  if(status!=='VT-PRO'&&!confirm('Mark '+selected.reference+' as '+statusLabel(status)+'? This is recorded in the audit log.'))return;
-  var ref=selected.reference;
-  btn.disabled=true;msg.className='message';msg.textContent='Updating…';
-  api('/admin/transactions/status',{reference:ref,status:status}).then(function(){
-    msg.className='message success';msg.textContent='Status updated.';return load();
-  }).then(function(){
-    selected=transactions.find(function(t){return t.reference===ref});
-    if(selected)loadEvents(ref,'detailEvents');
-  }).catch(function(e){msg.className='message error';msg.textContent=e.message}).then(function(){btn.disabled=false});
+  var ref=selected.reference,proceed=status==='VT-PRO'?Promise.resolve(true):confirmStatusChange(ref,status);
+  proceed.then(function(ok){if(!ok)return;btn.disabled=true;msg.className='message';msg.textContent='Updating…';
+    api('/admin/transactions/status',{reference:ref,status:status}).then(function(){msg.className='message success';msg.textContent='Status updated.';return load()}).then(function(){selected=transactions.find(function(t){return t.reference===ref});if(selected)loadEvents(ref,'detailEvents')}).catch(function(e){msg.className='message error';msg.textContent=e.message}).then(function(){btn.disabled=false})
+  });
 });
 
 // ARCHIVE ACTIONS
