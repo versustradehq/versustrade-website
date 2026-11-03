@@ -5298,18 +5298,18 @@ function createSim(gl) {
   var R2 = 'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/';
   // img: logo shown in the list. No img: a coloured monogram tile (add an image URL any time).
   var CARDS = [
-    { n: 'Visa Gift Card', img: 'https://cdn.simpleicons.org/visa/1A1F71', t: 'VISA' },
-    { n: 'Amazon Gift Card', img: R2 + 'Amazon.png', t: 'A' },
-    { n: 'Apple / iTunes Gift Card', img: R2 + 'Apple.png', t: 'A' },
-    { n: 'Google Play Gift Card', img: R2 + 'Google%20Play.png', t: 'G' },
-    { n: 'Steam Gift Card', img: R2 + 'Steam.png', t: 'S' },
-    { n: 'Razer Gold', img: R2 + 'RAZOR%20GOLD.png', t: 'R' },
-    { n: 'Sephora Gift Card', img: 'https://cdn.simpleicons.org/sephora/000000', t: 'S' },
-    { n: 'Target Gift Card', img: 'https://cdn.simpleicons.org/target/CC0000', t: 'T' },
-    { n: 'Walmart Gift Card', img: 'https://cdn.simpleicons.org/walmart/0071CE', t: 'W' },
-    { n: 'PlayStation Gift Card', img: 'https://cdn.simpleicons.org/playstation/003791', t: 'PS' },
-    { n: 'Xbox Gift Card', img: 'https://cdn.simpleicons.org/xbox/107C10', t: 'X' },
-    { n: 'eBay Gift Card', img: 'https://cdn.simpleicons.org/ebay/E53238', t: 'eBay' }
+    { n: 'eBay Gift Card', img: 'https://cdn.simpleicons.org/ebay/E53238', t: 'eBay' },
+    { n: 'Amazon Gift Card', img: 'https://developer.sogo.africa/images/gift-cards/amazon.webp', t: 'A' },
+    { n: 'Apple / iTunes Gift Card', img: 'https://developer.sogo.africa/images/gift-cards/apple.webp', t: 'A' },
+    { n: 'Google Play Gift Card', img: 'https://developer.sogo.africa/images/gift-cards/google.webp', t: 'G' },
+    { n: 'Steam Gift Card', img: 'https://developer.sogo.africa/images/gift-cards/steampowered.webp', t: 'S' },
+    { n: 'Razer Gold', img: 'https://developer.sogo.africa/images/gift-cards/razer.webp', t: 'R' },
+    { n: 'Sephora Gift Card', img: 'https://developer.sogo.africa/images/gift-cards/sephora.webp', t: 'S' },
+    { n: 'Target Gift Card', img: 'https://developer.sogo.africa/images/gift-cards/target.webp', t: 'T' },
+    { n: 'Walmart Gift Card', img: 'https://developer.sogo.africa/images/gift-cards/walmart.webp', t: 'W' },
+    { n: 'PlayStation Gift Card', img: 'https://developer.sogo.africa/images/gift-cards/playstation.webp', t: 'PS' },
+    { n: 'Xbox Gift Card', img: 'https://developer.sogo.africa/images/gift-cards/xbox.webp', t: 'X' },
+    { n: 'eBay Gift Card', img: 'https://developer.sogo.africa/images/gift-cards/ebay.webp', t: 'eBay' }
   ];
   var $ = function (id) { return document.getElementById(id); };
   var search = $('gcmSearch'), box = $('gcList'), shown = [], lastFocus = null, timer = 0;
