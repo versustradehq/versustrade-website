@@ -63,6 +63,7 @@ tbody tr:last-child td{border-bottom:0}
 .muted{color:var(--muted)}
 .status{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:99px;font-size:12px;font-weight:700}
 .status:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.inline-status{width:auto;min-width:118px;max-width:140px;padding:7px 9px;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer}.inline-status.pro{color:var(--amber);background:var(--amber-soft);border-color:color-mix(in srgb,var(--amber) 22%,var(--line))}.inline-status.done{color:var(--green);background:var(--green-soft);border-color:color-mix(in srgb,var(--green) 22%,var(--line))}.inline-status.dec{color:var(--red);background:var(--red-soft);border-color:color-mix(in srgb,var(--red) 22%,var(--line))}
 .status.pro{background:var(--amber-soft);color:var(--amber)}
 .status.done{background:var(--green-soft);color:var(--green)}
 .status.dec{background:var(--red-soft);color:var(--red)}
@@ -549,12 +550,24 @@ function renderTable(target,rows,limit){
   var html='<div class="table-wrap"><table><thead><tr><th>Reference</th><th>Customer</th><th class="hide-sm">Type</th><th>Amount</th><th>Status</th><th class="hide-sm">Date</th><th></th></tr></thead><tbody>';
   shown.forEach(function(t){
     var amount=t.transaction_type==='GIFT_CARD_SELL'?money(t.fiat_amount,t.fiat_currency):money(t.crypto_amount,t.asset);
-    html+='<tr><td><div class="refcell"><span class="ref">'+esc(t.reference)+'</span><button class="copy" data-copy="'+esc(t.reference)+'" aria-label="Copy reference" title="Copy reference"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg></button></div></td><td>'+custCell(t)+'</td><td class="hide-sm"><span class="type">'+esc(typeLabel(t.transaction_type))+'</span></td><td><span class="amt">'+smIco(t.transaction_type==='GIFT_CARD_SELL'?cardIco(t.card_brand):coinIco(t.asset))+esc(amount)+'</span></td><td><span class="status '+statusClass(t.status)+'">'+esc(statusLabel(t.status))+'</span></td><td class="hide-sm">'+esc(fmtDate(t.created_at))+'</td><td><button class="row-action" data-ref="'+esc(t.reference)+'">Open</button></td></tr>';
+    html+='<tr><td><div class="refcell"><span class="ref">'+esc(t.reference)+'</span><button class="copy" data-copy="'+esc(t.reference)+'" aria-label="Copy reference" title="Copy reference"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg></button></div></td><td>'+custCell(t)+'</td><td class="hide-sm"><span class="type">'+esc(typeLabel(t.transaction_type))+'</span></td><td><span class="amt">'+smIco(t.transaction_type==='GIFT_CARD_SELL'?cardIco(t.card_brand):coinIco(t.asset))+esc(amount)+'</span></td><td><select class="select inline-status '+statusClass(t.status)+'" data-inline-status="'+esc(t.reference)+'" aria-label="Change status for '+esc(t.reference)+'" +(t.archived_at?'disabled':'')+><option value="VT-PRO" +(t.status==='VT-PRO'?'selected':'')+>Processing</option><option value="VT-DONE" +(t.status==='VT-DONE'?'selected':'')+>Completed</option><option value="VT-DEC" +(t.status==='VT-DEC'?'selected':'')+>Declined</option></select></td><td class="hide-sm">'+esc(fmtDate(t.created_at))+'</td><td><button class="row-action" data-ref="'+esc(t.reference)+'">Open</button></td></tr>';
   });
   html+='</tbody></table></div>';
   if(rows.length>shown.length)html+='<div class="more"><button class="row-action" data-more>Show more ('+(rows.length-shown.length)+' remaining)</button></div>';
   $(target).innerHTML=html;
   Array.prototype.forEach.call($(target).querySelectorAll('[data-ref]'),function(b){b.addEventListener('click',function(){openDetail(b.dataset.ref)})});
+  Array.prototype.forEach.call($(target).querySelectorAll('[data-inline-status]'),function(sel){
+    sel.addEventListener('change',function(){
+      var ref=sel.dataset.inlineStatus,status=sel.value,previous=sel.dataset.previous||'';
+      var record=transactions.find(function(t){return t.reference===ref});
+      if(!record)return;
+      previous=record.status;
+      if(status===previous)return;
+      if(status!=='VT-PRO'&&!confirm('Mark '+ref+' as '+statusLabel(status)+'? This is recorded in the audit log.')){sel.value=previous;return}
+      sel.disabled=true;
+      api('/admin/transactions/status',{reference:ref,status:status}).then(function(){return load()}).catch(function(e){alert('Status update failed: '+e.message);sel.value=previous;sel.disabled=false});
+    });
+  });
   Array.prototype.forEach.call($(target).querySelectorAll('[data-copy]'),function(b){b.addEventListener('click',function(){
     var v=b.dataset.copy;
     (navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).then(function(){b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>';b.setAttribute('aria-label','Reference copied');setTimeout(function(){b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>';b.setAttribute('aria-label','Copy reference')},1200)}).catch(function(){b.setAttribute('aria-label','Copy failed')});
