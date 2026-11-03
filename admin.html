@@ -309,7 +309,7 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * {
           <div class="stat"><span class="stat-ico t-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg></span><div><div class="stat-label">Completed</div><div class="stat-value" id="doneCount">—</div><div class="stat-foot" id="volumeFoot">Successfully completed</div></div></div>
           <div class="stat"><span class="stat-ico t-grey"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg></span><div><div class="stat-label">Declined</div><div class="stat-value" id="decCount">—</div><div class="stat-foot">Not completed</div></div></div>
         </div>
-        <div class="ov-grid"><div class="panel"><div class="panel-head"><h2>Last 7 days</h2><span class="sub">Transactions per day</span></div><div class="panel-body"><div id="weekChart" class="bars"></div></div></div><div class="panel"><div class="panel-head"><h2>Status split</h2></div><div class="panel-body" id="splitChart"></div></div></div>
+        <div class="ov-grid"><div class="panel"><div class="panel-head"><h2 id="chartPeriodTitle">Last 7 days</h2><select id="chartPeriod" class="select" style="width:auto;min-width:145px;padding:8px 10px" aria-label="Chart date range"><option value="7">Last 7 days</option><option value="30">Last 30 days</option><option value="90">Last 3 months</option><option value="180">Last 6 months</option><option value="365">Last 1 year</option></select></div><div class="panel-body" style="overflow-x:auto"><div id="weekChart" class="bars"></div></div></div><div class="panel"><div class="panel-head"><h2>Status split</h2></div><div class="panel-body" id="splitChart"></div></div></div>
         <div class="panel"><div class="panel-head"><h2>Recent transactions</h2><button class="row-action" data-goto="transactions">View all</button></div><div id="recentTable"></div></div>
       </section>
       <section id="transactions" class="section">
@@ -574,15 +574,31 @@ function filtered(){
 function sameDay(a,b){return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate()}
 
 function renderCharts(){
-  var days=[],i,now=new Date();
-  for(i=6;i>=0;i--)days.push({d:new Date(now.getFullYear(),now.getMonth(),now.getDate()-i),n:0});
-  transactions.forEach(function(t){if(!t.created_at)return;var c=new Date(t.created_at);days.forEach(function(x){if(sameDay(x.d,c))x.n++})});
-  var max=Math.max.apply(null,days.map(function(x){return x.n}).concat(1));
-  $('weekChart').innerHTML=days.map(function(x){return '<div class="bar"><b>'+x.n+'</b><div class="bar-track"><i style="height:'+Math.max(2,Math.round(x.n/max*100))+'%"></i></div><span>'+esc(x.d.toLocaleDateString(undefined,{weekday:'short'}))+'</span></div>'}).join('');
+  var period=Number($('chartPeriod')&&$('chartPeriod').value||7),now=new Date(),start=new Date(now.getFullYear(),now.getMonth(),now.getDate()),buckets=[],i;
+  if(period===7||period===30){
+    start.setDate(start.getDate()-(period-1));
+    for(i=0;i<period;i++){var day=new Date(start);day.setDate(start.getDate()+i);buckets.push({start:day,end:new Date(day.getFullYear(),day.getMonth(),day.getDate()+1),label:period===7?day.toLocaleDateString(undefined,{weekday:'short'}):day.toLocaleDateString(undefined,{day:'numeric',month:'short'})})}
+  }else if(period===90){
+    start.setDate(start.getDate()-89);
+    var first=new Date(start);first.setDate(first.getDate()-first.getDay());
+    for(i=0;i<13;i++){var ws=new Date(first);ws.setDate(first.getDate()+i*7);var we=new Date(ws);we.setDate(ws.getDate()+7);buckets.push({start:ws,end:we,label:ws.toLocaleDateString(undefined,{day:'numeric',month:'short'})})}
+  }else{
+    start=new Date(now.getFullYear(),now.getMonth()-(period===180?5:11),1);
+    var count=period===180?6:12;
+    for(i=0;i<count;i++){var ms=new Date(start.getFullYear(),start.getMonth()+i,1),me=new Date(start.getFullYear(),start.getMonth()+i+1,1);buckets.push({start:ms,end:me,label:ms.toLocaleDateString(undefined,{month:'short'})})}
+  }
+  buckets.forEach(function(b){b.n=0});
+  transactions.forEach(function(t){if(!t.created_at)return;var d=new Date(t.created_at);buckets.forEach(function(b){if(d>=b.start&&d<b.end)b.n++})});
+  var max=Math.max.apply(null,buckets.map(function(x){return x.n}).concat(1)),chart=$('weekChart');
+  chart.style.minWidth=period===30?'700px':'0';
+  chart.style.gap=period===30?'8px':'12px';
+  chart.innerHTML=buckets.map(function(x){return '<div class="bar"><b>'+x.n+'</b><div class="bar-track"><i style="height:'+Math.max(2,Math.round(x.n/max*100))+'%"></i></div><span>'+esc(x.label)+'</span></div>'}).join('');
+  $('chartPeriodTitle').textContent=period===7?'Last 7 days':period===30?'Last 30 days':period===90?'Last 3 months':period===180?'Last 6 months':'Last 1 year';
   var st=[['VT-DONE','Completed','var(--green)'],['VT-PRO','Processing','var(--amber)'],['VT-DEC','Declined','var(--red)']],tot=transactions.length;
   var cnt=st.map(function(x){return transactions.filter(function(t){return t.status===x[0]}).length});
   $('splitChart').innerHTML='<div class="split">'+st.map(function(x,k){return tot?'<i style="width:'+(cnt[k]/tot*100)+'%;background:'+x[2]+'"></i>':''}).join('')+'</div><div class="legend">'+st.map(function(x,k){return '<div><em style="background:'+x[2]+'"></em>'+x[1]+'<span>'+cnt[k]+(tot?' · '+Math.round(cnt[k]/tot*100)+'%':'')+'</span></div>'}).join('')+'</div>';
 }
+$('chartPeriod').addEventListener('change',renderCharts);
 function paint(){
   var n=function(st){return transactions.filter(function(t){return t.status===st}).length};
   var now=new Date(),today=transactions.filter(function(t){return t.created_at&&sameDay(new Date(t.created_at),now)}).length;
