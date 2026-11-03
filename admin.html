@@ -915,7 +915,7 @@ $('detailUpdate').addEventListener('click',function(){
   if(status===selected.status){msg.className='message';msg.textContent='Status is already '+statusLabel(status)+'.';return}
   var ref=selected.reference,proceed=status==='VT-PRO'?Promise.resolve(true):confirmStatusChange(ref,status);
   proceed.then(function(ok){if(!ok)return;btn.disabled=true;msg.className='message';msg.textContent='Updating…';
-    api('/admin/transactions/status',{reference:ref,status:status}).then(function(){msg.className='message success';msg.textContent='Status updated.';return load()}).then(function(){selected=transactions.find(function(t){return t.reference===ref});if(selected)loadEvents(ref,'detailEvents')}).catch(function(e){msg.className='message error';msg.textContent=e.message}).then(function(){btn.disabled=false})
+    api('/admin/transactions/status',{reference:ref,status:status}).then(function(){return load()}).then(function(){closeDetail()}).catch(function(e){msg.className='message error';msg.textContent=e.message}).then(function(){btn.disabled=false})
   });
 });
 
