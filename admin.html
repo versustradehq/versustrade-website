@@ -445,7 +445,7 @@ function api(path,body){if(PREVIEW)return mockApi(path,body);return token().then
 // PREVIEW MODE (?preview): sample data, no login, no network calls. Remove before deploying.
 var PREVIEW=/[?&]preview\b/.test(location.search);
 var mockCustomers=[{id:'c1a2b3c4-0001',name:'Adaeze Okafor',email:'adaeze@example.com'},{id:'c1a2b3c4-0002',name:'Tunde Bello',email:'tunde.b@example.com'},{id:'c1a2b3c4-0003',name:'Chioma Eze',email:'chioma.eze@example.com'},{id:'c1a2b3c4-0004',name:'Ibrahim Musa',email:'ibrahim@example.com'}];
-var mockTx=[],mockEvents={};
+var mockTx=[],mockEvents={},mockRates={mode:'fixed',buy:1300,sell:1450,buyMargin:75,sellMargin:75,updated:null};
 (function(){
   if(!PREVIEW)return;
   var types=['CRYPTO_BUY','CRYPTO_SELL','GIFT_CARD_SELL'],assets=['USDT','BTC','ETH','SOL','USDC'],nets=['TRC20','Bitcoin','ERC20','Solana','BEP20'],st=['VT-PRO','VT-DONE','VT-DONE','VT-DEC','VT-PRO'],cards=['Amazon Gift Card','Apple / iTunes Gift Card','Steam Gift Card'];
@@ -460,6 +460,8 @@ var mockTx=[],mockEvents={};
 })();
 function mockApi(path,body){
   return new Promise(function(res,rej){setTimeout(function(){
+    if(path==='/admin/rates/get')return res({ok:true,rates:mockRates});
+    if(path==='/admin/rates/update'){mockRates=Object.assign({},mockRates,body,{updated:new Date().toISOString()});return res({ok:true,rates:mockRates})}
     if(path==='/admin/transactions/list')return res({transactions:mockTx.slice()});
     if(path==='/admin/customers/search'){var q=(body.query||'').toLowerCase();return res({customers:mockCustomers.filter(function(c){return (c.name+c.email).toLowerCase().includes(q)})})}
     if(path==='/admin/transactions/events')return res({events:mockEvents[body.reference]||[]});
@@ -688,7 +690,33 @@ function load(){
   var archived=api('/admin/transactions/list',{limit:500,archived:true}).then(function(d){archiveTransactions=d.transactions||[];renderArchives()}).catch(function(e){$('archiveTable').innerHTML='<div class="empty">'+esc(e.message)+'</div>'});
   return Promise.all([active,archived]).then(function(){renderActivity()});
 }
-function showView(id){$('app').classList.remove('nav-open');document.querySelectorAll('.section').forEach(function(s){s.classList.toggle('active',s.id===id)});document.querySelectorAll('.nav[data-view]').forEach(function(n){n.classList.toggle('active',n.dataset.view===id)});if(id==='history')renderActivity();if(id==='archives')renderArchives()}
+function paintRates(r){
+  $('ratesMode').value=r.mode||'fixed';$('ratesBuy').value=r.buy??1300;$('ratesSell').value=r.sell??1450;
+  $('ratesBuyMargin').value=r.buyMargin??75;$('ratesSellMargin').value=r.sellMargin??75;
+  var live=r.mode==='live';$('fixedBuyField').classList.toggle('hidden',live);$('fixedSellField').classList.toggle('hidden',live);
+  $('ratesUpdated').textContent=r.updated?'Last updated '+fmtDate(r.updated):'Using default rates';
+  $('ratesCurrentBuy').textContent='₦'+Number(r.buy||0).toLocaleString(undefined,{maximumFractionDigits:2});
+  $('ratesCurrentSell').textContent='₦'+Number(r.sell||0).toLocaleString(undefined,{maximumFractionDigits:2});
+}
+function loadRates(){
+  $('ratesMessage').className='message';$('ratesMessage').textContent='Loading…';
+  api('/admin/rates/get',{}).then(function(d){paintRates(d.rates||{});$('ratesMessage').textContent='';})
+    .catch(function(e){$('ratesMessage').className='message error';$('ratesMessage').textContent=e.message;});
+}
+$('ratesMode').addEventListener('change',function(){var live=this.value==='live';$('fixedBuyField').classList.toggle('hidden',live);$('fixedSellField').classList.toggle('hidden',live)});
+$('ratesForm').addEventListener('submit',function(e){
+  e.preventDefault();var btn=$('ratesSave'),msg=$('ratesMessage');
+  var payload={mode:$('ratesMode').value,buy:Number($('ratesBuy').value),sell:Number($('ratesSell').value),buyMargin:Number($('ratesBuyMargin').value),sellMargin:Number($('ratesSellMargin').value)};
+  if(payload.mode==='fixed'&&(!(payload.buy>0)||!(payload.sell>0))){msg.className='message error';msg.textContent='Enter valid BUY and SELL rates.';return}
+  if(!Number.isFinite(payload.buyMargin)||payload.buyMargin<0||!Number.isFinite(payload.sellMargin)||payload.sellMargin<0){msg.className='message error';msg.textContent='Margins must be zero or greater.';return}
+  btn.disabled=true;msg.className='message';msg.textContent='Saving rates…';
+  api('/admin/rates/update',payload).then(function(d){paintRates(d.rates||payload);msg.className='message success';msg.textContent='Rates saved successfully.';})
+    .catch(function(e){msg.className='message error';msg.textContent=e.message;})
+    .then(function(){btn.disabled=false});
+});
+$('ratesRefresh').addEventListener('click',loadRates);
+
+function showView(id){$('app').classList.remove('nav-open');document.querySelectorAll('.section').forEach(function(s){s.classList.toggle('active',s.id===id)});document.querySelectorAll('.nav[data-view]').forEach(function(n){n.classList.toggle('active',n.dataset.view===id)});if(id==='history')renderActivity();if(id==='archives')renderArchives();if(id==='rates')loadRates()}
 document.querySelectorAll('[data-view]').forEach(function(b){b.addEventListener('click',function(){showView(b.dataset.view)})});
 document.querySelectorAll('[data-goto]').forEach(function(b){b.addEventListener('click',function(){showView(b.dataset.goto)})});
 activityFilterState=bindFilterPanel('activity',function(s){activityFilterState=s;paintActivity()});
