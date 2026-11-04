@@ -626,7 +626,7 @@ position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom,0px));tran
 .av-identity{min-width:0;flex:1}.av-identity b{display:block;font-size:18px;font-weight:800;overflow-wrap:anywhere}.av-identity small{display:block;font-size:13px;color:rgba(255,255,255,.72);overflow-wrap:anywhere}
 button.av-big{border:0;cursor:pointer;font-family:inherit;transition:transform .15s}button.av-big:active{transform:scale(.95)}
 button.av-big:focus-visible{outline:2px solid var(--red);outline-offset:3px}
-.avm-pop{box-sizing:border-box;color:var(--text);display:none;position:absolute;left:0;top:calc(100% + 12px);transform:none;width:min(320px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow-y:auto;overscroll-behavior:contain;background:var(--bg);border:1px solid var(--line);border-radius:20px;box-shadow:0 24px 48px -20px rgba(0,0,0,.45);z-index:40}
+.avm-pop{box-sizing:border-box;color:var(--text);display:none;position:absolute;left:0;top:calc(100% + 12px);transform:none;width:min(320px,calc(100vw - 32px));max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);overflow-y:auto;overscroll-behavior:contain;background:var(--bg);border:1px solid var(--line);border-radius:20px;box-shadow:0 24px 48px -20px rgba(0,0,0,.45);z-index:40}
 .avm-pop.on{display:block}
 .avm-pop .mi{padding:14px 18px;font-size:15px}
 .av-hero b{display:block;font-size:20px;font-weight:900;letter-spacing:-.02em}.av-hero small{display:block;color:var(--muted)}
@@ -692,11 +692,11 @@ html.va-lock{overflow:hidden}
 .va .va-foot{margin:14px 0 0;color:var(--muted);font-size:14px;text-align:center}
 .va .va-note{margin:16px 0 0;color:var(--muted);font-size:12px;text-align:center}
 .va :focus-visible{outline:2px solid var(--red);outline-offset:2px}
-@media (max-width:480px){.va{padding:0}.va-card{min-height:100dvh;margin:0;padding:56px 22px 28px;border:0;border-radius:0}}
+@media (max-width:480px){.va{padding:0}.va-card{min-height:100vh;min-height:100dvh;margin:0;padding:56px 22px 28px;border:0;border-radius:0}}
 @media (prefers-reduced-motion:reduce){.va,.va-card{transition:none}}
 #v-chat{padding:0}
-#v-chat .vc{position:relative;inset:auto;right:auto;bottom:auto;z-index:1;width:100%;max-width:none;margin:0;height:calc(100dvh - 88px - env(safe-area-inset-bottom,0px));opacity:1;visibility:visible;pointer-events:auto;transform:none;transition:none;background:transparent;border:0;border-radius:0;box-shadow:none}
-@media(max-width:560px){#v-chat{padding:0}#v-chat .vc{max-width:none;border-radius:0;border:0;background:transparent;box-shadow:none;height:calc(var(--vc-vv-height,100dvh) - 88px - env(safe-area-inset-bottom,0px));min-height:180px}}
+#v-chat .vc{position:relative;inset:auto;right:auto;bottom:auto;z-index:1;width:100%;max-width:none;margin:0;height:calc(100vh - 88px - env(safe-area-inset-bottom,0px));height:calc(100dvh - 88px - env(safe-area-inset-bottom,0px));opacity:1;visibility:visible;pointer-events:auto;transform:none;transition:none;background:transparent;border:0;border-radius:0;box-shadow:none}
+@media(max-width:560px){#v-chat{padding:0}#v-chat .vc{max-width:none;border-radius:0;border:0;background:transparent;box-shadow:none;height:calc(var(--vc-vv-height,100vh) - 88px - env(safe-area-inset-bottom,0px));min-height:180px}}
 .chat-host:empty:after{content:"Loading chat\2026";display:block;padding:48px 16px;text-align:center;color:var(--muted)}
 .dock-badge{position:absolute;top:-5px;right:-5px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:var(--red);color:#fff;font-size:11px;font-weight:800;line-height:19px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.3)}.dock-badge[hidden]{display:none}
 .vt-toast{position:fixed;left:50%;bottom:calc(104px + env(safe-area-inset-bottom,0px));transform:translate(-50%,8px);z-index:300;max-width:calc(100vw - 32px);padding:11px 18px;border-radius:999px;background:#1A1A1A;color:#fff;font-weight:600;font-size:14px;text-align:center;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none}.vt-toast.on{opacity:1;transform:translate(-50%,0)}
@@ -1140,11 +1140,11 @@ window.VTCircularGallery=function(container,opts){
   #v-rates>.dp-sm>.w>h1,#v-rates>.dp-sm>.w>p{display:block;width:100%;margin-left:auto!important;margin-right:auto!important;text-align:center!important}
   #v-rates .rv{padding-top:0;gap:5px;padding-bottom:calc(112px + env(safe-area-inset-bottom,0px))}
   #v-rates .gcg{height:clamp(168px,29vh,205px)}
-  #v-rates #rtGift .animated-list__viewport{max-height:max(150px,calc(100dvh - 370px))!important}
+  #v-rates #rtGift .animated-list__viewport{max-height:max(150px,calc(100vh - 370px))!important;max-height:max(150px,calc(100dvh - 370px))!important}
 }
 @media(max-height:700px) and (max-width:640px){
   #v-rates .gcg{height:clamp(145px,25vh,175px)}
-  #v-rates #rtGift .animated-list__viewport{max-height:max(130px,calc(100dvh - 325px))!important}
+  #v-rates #rtGift .animated-list__viewport{max-height:max(130px,calc(100vh - 325px))!important;max-height:max(130px,calc(100dvh - 325px))!important}
 }
 </style>
 
