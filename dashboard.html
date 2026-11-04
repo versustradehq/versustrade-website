@@ -3046,5 +3046,44 @@ draw();
 </script>
 <script src="/giftcards.js?v=20261102-8"></script>
 <script src="/chat.js?v=20261102-8" onload="window.__vtChatLoaded=1;window.vtChatReady&&window.vtChatReady()" onerror="window.__vtChatLoaded=0;window.vtChatFail&&window.vtChatFail()"></script>
+
+<script id="vt-gift-gallery-spacing">
+(function(){
+  var view=document.getElementById('v-rates');
+  var heading=view&&view.querySelector('.vt-gift-heading');
+  var gallery=view&&view.querySelector('.gcg');
+  var list=view&&view.querySelector('#rtGift');
+  if(!view||!heading||!gallery||!list)return;
+  var raf=0;
+  function balance(){
+    raf=0;
+    if(!view.classList.contains('on'))return;
+    gallery.style.top='0px';
+    var h=heading.getBoundingClientRect();
+    var g=gallery.getBoundingClientRect();
+    var l=list.getBoundingClientRect();
+    var available=l.top-h.bottom-g.height;
+    var shift=(available/2);
+    if(!Number.isFinite(shift))return;
+    gallery.style.top=Math.round(shift)+'px';
+  }
+  function schedule(){if(!raf)raf=requestAnimationFrame(balance)}
+  if(window.ResizeObserver){
+    var ro=new ResizeObserver(schedule);
+    ro.observe(heading);ro.observe(gallery);ro.observe(list);
+  }
+  if(window.MutationObserver){
+    var mo=new MutationObserver(schedule);
+    mo.observe(heading,{childList:true,subtree:true,characterData:true});
+    mo.observe(list,{childList:true,subtree:true,characterData:true});
+  }
+  window.addEventListener('resize',schedule,{passive:true});
+  window.addEventListener('orientationchange',schedule,{passive:true});
+  document.addEventListener('visibilitychange',schedule);
+  schedule();
+  var check=setInterval(schedule,700);
+  window.addEventListener('pagehide',function(){clearInterval(check);if(raf)cancelAnimationFrame(raf)});
+})();
+</script>
 </body>
 </html>
