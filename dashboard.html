@@ -2870,10 +2870,23 @@ draw();
     window.VTCircularGallery(host,{
       items:GALLERY_CARDS.map(function(card){return{image:card.img,text:card.n}}),
       bend:3,textColor:'var(--vt-ink, #777777)',borderRadius:.055,
-      scrollSpeed:1.35,scrollEase:.065,autoScroll:.42,itemSize:.88,itemAspect:.78,
+      scrollSpeed:1.35,scrollEase:.065,autoScroll:.84,itemSize:.88,itemAspect:.78,
       gap:.28,wave:1,fadeEdges:.10,shadow:.28,showTitles:true,
       snap:true,intro:true,scaleOnHover:1.045,rotateAmplitude:10,
-      smoothness:.62,glare:.35
+      smoothness:.62,glare:.35,
+      onItemClick:function(item){
+        var names={'Amazon':'Amazon Gift Card','iTunes':'Apple / iTunes Gift Card','PlayStation':'PlayStation Gift Card','Sephora':'Sephora Gift Card','Visa':'Visa Gift Card','Razer':'Razer Gold'};
+        var n=names[item.text]||item.text;
+        if(window.VTVisaPicker&&window.VTVisaPicker.open){
+          window.VTVisaPicker.open(n,function(details){
+            if(window.VTChat&&VTChat.sendGiftCard)VTChat.sendGiftCard(n,details);
+            else toast('Chat isn’t available right now. Please try again in a moment.');
+          });
+          return;
+        }
+        if(window.VTChat&&VTChat.sendGiftCard)VTChat.sendGiftCard(n);
+        else toast('Chat isn’t available right now. Please try again in a moment.');
+      }
     });
   })();
   var giftItems=CARDS.map(function(c){var it={title:c.n,description:'Rate confirmed in chat',meta:'Sell',metaClass:'sell'};if(c.img)it.image=c.img;else it.tile={bg:c.c,text:c.t};return it});
