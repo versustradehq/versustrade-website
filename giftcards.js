@@ -121,7 +121,7 @@
   var overlay = null, previousFocus = null, activeKeyHandler = null;
   var overlay = null, previousFocus = null, activeKeyHandler = null;
   var css = '.vt-visa-overlay{position:fixed;inset:0;z-index:10050;display:grid;place-items:center;padding:18px;background:rgba(0,0,0,.58);backdrop-filter:blur(5px)}' +
-    '.vt-visa-panel{width:min(100%,520px);max-height:min(760px,calc(100dvh - 36px));display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--line,#e5e5e5);border-radius:20px;background:var(--bg,#fff);color:var(--text,#171717);box-shadow:0 24px 80px rgba(0,0,0,.25)}' +
+    '.vt-visa-panel{width:min(100%,520px);max-height:min(760px,calc(100vh - 36px));max-height:min(760px,calc(100dvh - 36px));display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--line,#e5e5e5);border-radius:20px;background:var(--bg,#fff);color:var(--text,#171717);box-shadow:0 24px 80px rgba(0,0,0,.25)}' +
     '.vt-visa-head{display:flex;align-items:center;gap:12px;padding:18px 20px;border-bottom:1px solid var(--line,#e5e5e5)}' +
     '.vt-visa-head button{width:34px;height:34px;flex:none;border:0;border-radius:50%;background:var(--pill,#f3f3f3);color:inherit;font-size:20px;cursor:pointer}' +
     '.vt-visa-head strong{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:17px;font-weight:800}' +
@@ -138,7 +138,7 @@
     '.vt-visa-option>span:last-child{flex:none}' +
     '.vt-visa-option:hover,.vt-visa-type:hover{border-color:#E11D2E;background:color-mix(in srgb,#E11D2E 5%,var(--bg,#fff))}' +
     '.vt-visa-empty{padding:22px 10px;color:var(--muted,#737373);text-align:center;font-size:14px}' +
-    '@media(max-width:520px){.vt-visa-overlay{padding:10px}.vt-visa-panel{max-height:calc(100dvh - 20px);border-radius:18px}.vt-visa-body{padding:16px}.vt-visa-types{grid-template-columns:1fr}}';
+    '@media(max-width:520px){.vt-visa-overlay{padding:10px}.vt-visa-panel{max-height:calc(100vh - 20px);max-height:calc(100dvh - 20px);border-radius:18px}.vt-visa-body{padding:16px}.vt-visa-types{grid-template-columns:1fr}}';
   function addStyle() {
     if (document.getElementById('vtVisaPickerStyle')) return;
     var s = document.createElement('style'); s.id = 'vtVisaPickerStyle'; s.textContent = css; document.head.appendChild(s);
