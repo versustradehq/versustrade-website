@@ -1212,12 +1212,23 @@ body:has(#v-rates.on){overflow:hidden!important;overscroll-behavior:none}
 #v-rates #rtGift .animated-list__item{padding:5px 10px 5px 8px;gap:8px;min-height:0}
 #v-rates #rtGift .animated-list__lead{width:30px;height:30px}
 @media(min-width:641px){
-  #v-rates.on{height:calc(100dvh - 80px)!important;min-height:0!important;max-height:calc(100dvh - 80px)!important;overflow:hidden!important}
-  #v-rates .vt-gift-heading{margin-top:24px;margin-bottom:3px}
-  #v-rates .rv{height:calc(100% - 86px);min-height:0;max-height:calc(100% - 86px);overflow:hidden;align-content:start;box-sizing:border-box}
-  #v-rates .gcg{height:clamp(190px,34dvh,300px)!important;min-height:clamp(190px,34dvh,300px)!important;max-height:34dvh!important}
-  #v-rates #gcGallery.circular-gallery{height:100%;min-height:0;max-height:100%}
-  #v-rates #rtGift{max-height:48dvh;overflow:hidden}
+  /* Desktop Gift Cards: options on the left, larger endless vertical card stream on the right. */
+  #v-rates .vt-gift-heading{margin-top:20px;margin-bottom:2px}
+  #v-rates .vt-gift-subtitle{margin-bottom:14px}
+  #v-rates .w.rv{display:grid!important;grid-template-columns:minmax(0,1.08fr) minmax(300px,.92fr);grid-template-areas:"list gallery";align-items:stretch;gap:clamp(24px,4vw,64px);width:min(calc(100% - 96px),1320px);height:calc(100% - 104px);max-height:calc(100% - 104px);margin:0 auto;padding:0 0 12px;overflow:hidden}
+  #v-rates #rtGift{grid-area:list;position:relative;left:auto;right:auto;top:auto;bottom:auto;transform:none;width:100%;max-width:none;height:100%;max-height:none;align-self:stretch;overflow:hidden;padding:14px 16px;border-radius:20px}
+  #v-rates #rtGift .animated-list{max-width:none;width:100%}
+  #v-rates #rtGift .animated-list__viewport{max-height:calc(100dvh - 230px)!important;height:100%;overflow-y:auto;overscroll-behavior:contain}
+  #v-rates .gcg.vt-gift-marquee{grid-area:gallery;display:block!important;position:relative!important;width:100%!important;height:100%!important;min-height:0!important;max-height:none!important;overflow:hidden!important;border-radius:22px;background:linear-gradient(180deg,rgba(127,127,127,.035),rgba(127,127,127,.10) 50%,rgba(127,127,127,.035));-webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 8%,#000 92%,transparent 100%);mask-image:linear-gradient(to bottom,transparent 0%,#000 8%,#000 92%,transparent 100%)}
+  #v-rates .vt-gift-marquee-track{display:flex;flex-direction:column;gap:18px;will-change:transform;animation:vtGiftFall 72s linear infinite}
+  #v-rates .vt-gift-marquee:hover .vt-gift-marquee-track{animation-play-state:paused}
+  #v-rates .vt-gift-marquee-group{display:flex;flex-direction:column;align-items:center;gap:18px;flex:none;padding:10px 0}
+  #v-rates .vt-gift-marquee-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;width:min(78%,330px);min-height:clamp(150px,23dvh,220px);padding:12px;border:1px solid var(--line,rgba(127,127,127,.18));border-radius:18px;background:var(--card,#fff);box-shadow:0 12px 28px rgba(0,0,0,.10);color:var(--text,#222);cursor:pointer;transition:transform .25s ease,box-shadow .25s ease}
+  #v-rates .vt-gift-marquee-card:hover{transform:translateY(-3px) scale(1.025);box-shadow:0 18px 36px rgba(0,0,0,.16)}
+  #v-rates .vt-gift-marquee-card img{display:block;width:100%;height:clamp(115px,18dvh,175px);object-fit:contain}
+  #v-rates .vt-gift-marquee-card span{font-size:13px;font-weight:750;letter-spacing:.01em}
+  @keyframes vtGiftFall{from{transform:translateY(-50%)}to{transform:translateY(0)}}
+  @media(prefers-reduced-motion:reduce){#v-rates .vt-gift-marquee-track{animation:none}}
 }
 @media(max-width:640px){
   #v-rates .vt-gift-heading{margin-top:20px}
@@ -3044,29 +3055,57 @@ draw();
     window.setInterval(function(){index=(index+1)%names.length;showName(names[index],!reduced)},reduced?3000:2200);
   })();
   (function renderGiftGallery(){
-    var host=$('gcGallery');if(!host||!window.VTCircularGallery)return;
-    host.replaceChildren();
-    window.VTCircularGallery(host,{
-      items:GALLERY_CARDS.map(function(card){return{image:card.img,text:card.n}}),
-      bend:3,textColor:'var(--vt-ink, #777777)',borderRadius:.055,
-      scrollSpeed:1.35,scrollEase:.065,autoScroll:2.1,itemSize:window.matchMedia('(min-width: 641px)').matches?1.08:1.08,itemAspect:.78,
-      gap:.28,wave:1,fadeEdges:.10,shadow:.28,showTitles:true,
-      snap:true,intro:true,scaleOnHover:1.045,rotateAmplitude:10,
-      smoothness:.62,glare:.35,
-      onItemClick:function(item){
-        var names={'Amazon':'Amazon Gift Card','iTunes':'Apple / iTunes Gift Card','Google Play':'Google Play Gift Card','Steam':'Steam Gift Card','Razer':'Razer Gold','Sephora':'Sephora Gift Card','Target':'Target Gift Card','Walmart':'Walmart Gift Card','PlayStation':'PlayStation Gift Card','Xbox':'Xbox Gift Card','eBay':'eBay Gift Card','Visa':'Visa Gift Card'};
-        var n=names[item.text]||item.text;
-        if(window.VTVisaPicker&&window.VTVisaPicker.open){
-          window.VTVisaPicker.open(n,function(details){
-            if(window.VTChat&&VTChat.sendGiftCard)VTChat.sendGiftCard(n,details);
-            else toast('Chat isn’t available right now. Please try again in a moment.');
-          });
-          return;
-        }
-        if(window.VTChat&&VTChat.sendGiftCard)VTChat.sendGiftCard(n);
-        else toast('Chat isn’t available right now. Please try again in a moment.');
+    var host=$('gcGallery');if(!host)return;
+    var names={'Amazon':'Amazon Gift Card','iTunes':'Apple / iTunes Gift Card','Google Play':'Google Play Gift Card','Steam':'Steam Gift Card','Razer':'Razer Gold','Sephora':'Sephora Gift Card','Target':'Target Gift Card','Walmart':'Walmart Gift Card','PlayStation':'PlayStation Gift Card','Xbox':'Xbox Gift Card','eBay':'eBay Gift Card','Visa':'Visa Gift Card'};
+    function chooseCard(item){
+      var n=names[item.text]||item.text;
+      if(window.VTVisaPicker&&window.VTVisaPicker.open){
+        window.VTVisaPicker.open(n,function(details){
+          if(window.VTChat&&VTChat.sendGiftCard)VTChat.sendGiftCard(n,details);
+          else toast('Chat isn’t available right now. Please try again in a moment.');
+        });
+        return;
       }
-    });
+      if(window.VTChat&&VTChat.sendGiftCard)VTChat.sendGiftCard(n);
+      else toast('Chat isn’t available right now. Please try again in a moment.');
+    }
+    function renderDesktop(){
+      host.className='gcg vt-gift-marquee';
+      host.replaceChildren();
+      var track=document.createElement('div');track.className='vt-gift-marquee-track';
+      [0,1].forEach(function(copy){
+        var group=document.createElement('div');group.className='vt-gift-marquee-group';
+        if(copy)group.setAttribute('aria-hidden','true');
+        GALLERY_CARDS.forEach(function(card){
+          var tile=document.createElement('button');tile.type='button';tile.className='vt-gift-marquee-card';
+          tile.setAttribute('aria-label','Select '+card.n+' gift card');
+          var img=document.createElement('img');img.src=card.img;img.alt=copy?'':card.n+' gift card';img.loading=copy?'lazy':'eager';img.decoding='async';
+          var label=document.createElement('span');label.textContent=card.n;
+          tile.appendChild(img);tile.appendChild(label);
+          if(!copy)tile.addEventListener('click',function(){chooseCard({text:card.n})});
+          group.appendChild(tile);
+        });
+        track.appendChild(group);
+      });
+      host.appendChild(track);
+    }
+    function renderMobile(){
+      host.className='gcg';
+      host.replaceChildren();
+      if(!window.VTCircularGallery)return;
+      window.VTCircularGallery(host,{
+        items:GALLERY_CARDS.map(function(card){return{image:card.img,text:card.n}}),
+        bend:3,textColor:'var(--vt-ink, #777777)',borderRadius:.055,
+        scrollSpeed:1.35,scrollEase:.065,autoScroll:2.1,itemSize:1.08,itemAspect:.78,
+        gap:.28,wave:1,fadeEdges:.10,shadow:.28,showTitles:true,
+        snap:true,intro:true,scaleOnHover:1.045,rotateAmplitude:10,
+        smoothness:.62,glare:.35,onItemClick:chooseCard
+      });
+    }
+    var mq=window.matchMedia('(min-width: 641px)');
+    function render(){if(mq.matches)renderDesktop();else renderMobile()}
+    render();
+    if(mq.addEventListener)mq.addEventListener('change',render);else if(mq.addListener)mq.addListener(render);
   })();
   var giftItems=CARDS.map(function(c){var it={title:c.n,description:'Rate confirmed in chat',meta:'Sell',metaClass:'sell'};if(c.img)it.image=c.img;else it.tile={bg:c.c,text:c.t};return it});
   VTAnimatedList($('rtGift'),{items:giftItems,animation:'pop',width:560,maxHeight:348,fadeSize:28,
@@ -3138,6 +3177,7 @@ draw();
   var raf=0;
   function balance(){
     raf=0;
+    if(window.matchMedia('(min-width: 641px)').matches)return;
     if(!view.classList.contains('on'))return;
     gallery.style.top='0px';
     var h=heading.getBoundingClientRect();
