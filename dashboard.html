@@ -348,12 +348,19 @@ body.hide .r .amt{text-align:right}
 .sw-shade{position:absolute;inset:0;z-index:3;border-radius:inherit;background:#0a0a0a;opacity:0;pointer-events:none}
 .sw-t{flex:1;min-width:0}.sw-t b{display:block;font-size:18px;line-height:1.3}.sw-t span{opacity:.8}
 .sw-r{display:flex;align-items:center;gap:18px;flex:none}
+.dash-gift-stack{position:relative;flex:none;width:174px;height:70px;isolation:isolate}
+.dash-gift-stack img{position:absolute;left:50%;top:50%;width:58px;height:58px;object-fit:cover;border:3px solid #fff;border-radius:12px;background:#fff;box-shadow:0 6px 14px -4px rgba(0,0,0,.55),0 0 0 1px rgba(0,0,0,.08);transform:translate(-50%,-50%) translateX(var(--stack-x)) rotate(var(--stack-r));}
+.dash-gift-stack img:nth-child(1){--stack-x:-48px;--stack-r:-12deg;z-index:1}
+.dash-gift-stack img:nth-child(2){--stack-x:-24px;--stack-r:-6deg;z-index:2}
+.dash-gift-stack img:nth-child(3){--stack-x:0px;--stack-r:0deg;z-index:3}
+.dash-gift-stack img:nth-child(4){--stack-x:24px;--stack-r:6deg;z-index:4}
+.dash-gift-stack img:nth-child(5){--stack-x:48px;--stack-r:12deg;z-index:5}
 .thumbs{display:flex;align-items:center}
 .thumbs img{height:44px;width:auto;max-width:76px;border-radius:10px;box-shadow:0 6px 14px -4px rgba(0,0,0,.55),0 0 0 2px rgba(255,255,255,.9);background:#fff;position:relative}
 .thumbs img+img{margin-left:-14px}
 .cn{position:relative;width:42px;height:42px;border-radius:50%;background:#fff;color:#1a1a1a;display:grid;place-items:center;font-weight:800;box-shadow:0 6px 14px -4px rgba(0,0,0,.55),0 0 0 2px rgba(255,255,255,.9);overflow:hidden}
 .cn+.cn{margin-left:-12px}.cn img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#fff}
-@media(max-width:640px){.sw{--h:140px}.sw-card{flex-wrap:wrap;align-content:center;gap:10px;padding:14px 16px}.sw-t{flex:1 1 100%}.sw-t b{font-size:17px}.sw-r{width:100%;justify-content:space-between;gap:10px}.thumbs img{height:34px;max-width:58px;border-radius:8px}.thumbs img+img{margin-left:-11px}.cn{width:34px;height:34px;font-size:13px}.cn+.cn{margin-left:-10px}}
+@media(max-width:640px){.sw{--h:140px}.sw-card{flex-wrap:wrap;align-content:center;gap:10px;padding:14px 16px}.sw-t{flex:1 1 100%}.sw-t b{font-size:17px}.sw-r{width:100%;justify-content:space-between;gap:10px}.dash-gift-stack{width:140px;height:54px}.dash-gift-stack img{width:44px;height:44px;border-width:2px;border-radius:9px}.dash-gift-stack img:nth-child(1){--stack-x:-36px}.dash-gift-stack img:nth-child(2){--stack-x:-18px}.dash-gift-stack img:nth-child(4){--stack-x:18px}.dash-gift-stack img:nth-child(5){--stack-x:36px}.thumbs img{height:34px;max-width:58px;border-radius:8px}.thumbs img+img{margin-left:-11px}.cn{width:34px;height:34px;font-size:13px}.cn+.cn{margin-left:-10px}}
 .ch{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}.ch h2{margin:0!important}
 .ed{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border:1px solid var(--line);border-radius:999px;font-weight:600;font-size:13px;background:var(--bg)}.ed:hover{background:var(--pill)}.ed svg{width:14px;height:14px}
 .dlg{border:0;padding:0;border-radius:24px;width:min(420px,calc(100vw - 32px));background:var(--bg);color:var(--text);box-shadow:0 30px 70px -20px rgba(0,0,0,.5)}
@@ -1137,6 +1144,14 @@ window.VTCircularGallery=function(container,opts){
 /* Keep the original circular-gallery surface as the base; the 3D carousel is a separate overlay layer. */
 #v-rates #gcGallery.vt-3d-gallery{height:100%;min-height:0;width:100%;position:relative;display:block;overflow:hidden;touch-action:pan-y;user-select:none;-webkit-user-select:none;perspective:950px;perspective-origin:50% 48%;isolation:isolate;background:transparent}
 #v-rates #gcGallery.vt-3d-gallery::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit;background:radial-gradient(ellipse at 50% 48%,rgba(127,127,127,.10),transparent 68%)}
+#v-rates .vt-gc-gallery-base{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;pointer-events:none}
+#v-rates .vt-gc-gallery-base img{position:absolute;width:clamp(74px,11vw,98px);height:clamp(94px,14vw,122px);object-fit:contain;border-radius:10px;background:#fff;border:2px solid #fff;box-shadow:0 8px 20px rgba(0,0,0,.3)}
+#v-rates .vt-gc-gallery-base img:nth-child(1){transform:translateX(-74px) rotate(-15deg)}
+#v-rates .vt-gc-gallery-base img:nth-child(2){transform:translateX(-44px) rotate(-9deg)}
+#v-rates .vt-gc-gallery-base img:nth-child(3){transform:translateX(-14px) rotate(-3deg)}
+#v-rates .vt-gc-gallery-base img:nth-child(4){transform:translateX(16px) rotate(3deg)}
+#v-rates .vt-gc-gallery-base img:nth-child(5){transform:translateX(46px) rotate(9deg)}
+#v-rates .vt-gc-gallery-base img:nth-child(6){transform:translateX(76px) rotate(15deg)}
 #v-rates .vt-3d-gallery-ring{position:absolute;inset:0;z-index:2;transform-style:preserve-3d;animation:vtGift3DRotate 34s linear infinite;will-change:transform;pointer-events:none}
 #v-rates .vt-3d-gallery-card{position:absolute;left:50%;top:50%;width:clamp(132px,19vw,178px);height:clamp(158px,22vw,196px);margin:0;overflow:hidden;border-radius:14px;display:flex;align-items:center;justify-content:center;background:#191919;backface-visibility:hidden;transform:translate(-50%,-50%) rotateY(calc(var(--card-index)*60deg)) translateZ(clamp(170px,25vw,235px));box-shadow:0 14px 30px rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.12)}
 #v-rates .vt-3d-gallery-card img{display:block;width:100%;height:100%;object-fit:contain}
@@ -1194,7 +1209,7 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
   
   <div class="sw" id="bn" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Offers">
     <div class="sw-stage" id="swStage">
-      <div class="sw-slot"><div class="sw-card"><div class="sw-t"><b>Sell gift cards at clear rates</b><span>Fast payouts, real people on hand.</span></div><div class="sw-r"><div class="thumbs"><img src="https://developer.sogo.africa/images/gift-cards/amazon.webp" alt="Amazon" height="44" loading="lazy" decoding="async"><img src="https://developer.sogo.africa/images/gift-cards/apple.webp" alt="Apple" height="44" loading="lazy" decoding="async"><img src="https://developer.sogo.africa/images/gift-cards/google.webp" alt="Google Play" height="44" loading="lazy" decoding="async"><img src="https://developer.sogo.africa/images/gift-cards/razer.webp" alt="Razer Gold" height="44" loading="lazy" decoding="async"><img src="https://developer.sogo.africa/images/gift-cards/steampowered.webp" alt="Steam" height="44" loading="lazy" decoding="async"></div><a class="bt red sm" href="#rates" data-go="rates:gift">Sell now</a></div></div><span class="sw-shade"></span></div>
+      <div class="sw-slot"><div class="sw-card"><div class="sw-t"><b>Sell gift cards at clear rates</b><span>Fast payouts, real people on hand.</span></div><div class="sw-r"><div class="dash-gift-stack" aria-label="Amazon, Apple, Steam, Google Play and Razer Gold gift cards"><img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/Amazon.png" alt="Amazon gift card" loading="lazy" decoding="async"><img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/Apple.png" alt="Apple gift card" loading="lazy" decoding="async"><img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/Steam.png" alt="Steam gift card" loading="lazy" decoding="async"><img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/Google%20Play.png" alt="Google Play gift card" loading="lazy" decoding="async"><img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/RAZOR%20GOLD.png" alt="Razer Gold gift card" loading="lazy" decoding="async"></div><a class="bt red sm" href="#rates" data-go="rates:gift">Sell now</a></div></div><span class="sw-shade"></span></div>
       <div class="sw-slot"><div class="sw-card alt"><div class="sw-t"><b>Buy &amp; sell crypto</b><span>BTC, USDT, ETH and more at clear rates.</span></div><div class="sw-r"><div class="thumbs coins"><span class="cn"><b>B</b><img src="https://assets.coincap.io/assets/icons/btc@2x.png" alt="Bitcoin" loading="lazy" onerror="this.remove()"></span><span class="cn"><b>E</b><img src="https://assets.coincap.io/assets/icons/eth@2x.png" alt="Ethereum" loading="lazy" onerror="this.remove()"></span><span class="cn"><b>T</b><img src="https://assets.coincap.io/assets/icons/usdt@2x.png" alt="Tether" loading="lazy" onerror="this.remove()"></span><span class="cn"><b>S</b><img src="https://assets.coincap.io/assets/icons/sol@2x.png" alt="Solana" loading="lazy" onerror="this.remove()"></span></div><a class="bt red sm" href="#trade" data-go="trade">Trade now</a></div></div><span class="sw-shade"></span></div>
     </div>
   </div>
@@ -2873,6 +2888,8 @@ draw();
   (function renderGiftGallery(){
     var host=$('gcGallery');if(!host)return;
     host.classList.add('circular-gallery','vt-3d-gallery');
+    var base=document.createElement('div');base.className='vt-gc-gallery-base';base.setAttribute('aria-hidden','true');
+    GALLERY_CARDS.forEach(function(card){var img=document.createElement('img');img.src=card.img;img.alt='';img.loading='eager';img.decoding='async';base.appendChild(img)});
     var ring=document.createElement('div');ring.className='vt-3d-gallery-ring';
     GALLERY_CARDS.forEach(function(card,index){
       var tile=document.createElement('div');tile.className='vt-3d-gallery-card';
@@ -2881,7 +2898,7 @@ draw();
       img.onerror=function(){tile.classList.add('image-unavailable');tile.textContent=card.n};
       tile.appendChild(img);ring.appendChild(tile);
     });
-    host.replaceChildren(ring);
+    host.replaceChildren(base,ring);
     host.setAttribute('role','region');host.setAttribute('aria-label','3D rotating gift card gallery');
     host.addEventListener('mouseenter',function(){ring.style.animationPlayState='paused'});
     host.addEventListener('mouseleave',function(){ring.style.animationPlayState='running'});
