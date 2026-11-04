@@ -2994,7 +2994,7 @@ draw();
     if(chatUp()||window.__vtChatLoading)return;
     window.__vtChatLoading=true;
     var s=document.createElement('script');
-    s.src='/chat.js?v=20261104-3&retry='+(chatRetryCount+1);
+    s.src='/chat.js?v=20261104-4&retry='+(chatRetryCount+1);
     s.async=true;
     s.onload=function(){
       window.__vtChatLoading=false;window.__vtChatLoaded=1;chatRetrying=false;chatRetryCount=0;
@@ -3267,7 +3267,7 @@ draw();
 })();
 </script>
 <script src="/giftcards.js?v=20261102-8"></script>
-<script id="vt-chat-script" src="/chat.js?v=20261104-3" onload="window.__vtChatLoading=false;window.__vtChatLoaded=1;if(window.VTChat&&window.VTChat.open){window.vtChatReady&&window.vtChatReady()}else{window.__vtChatLoaded=0;window.vtChatFail&&window.vtChatFail()}" onerror="window.__vtChatLoading=false;window.__vtChatLoaded=0;window.vtChatFail&&window.vtChatFail()"></script>
+<script id="vt-chat-script" src="/chat.js?v=20261104-4" onload="window.__vtChatLoading=false;window.__vtChatLoaded=1;if(window.VTChat&&window.VTChat.open){window.vtChatReady&&window.vtChatReady()}else{window.__vtChatLoaded=0;window.vtChatFail&&window.vtChatFail()}" onerror="window.__vtChatLoading=false;window.__vtChatLoaded=0;window.vtChatFail&&window.vtChatFail()"></script>
 
 <script id="vt-gift-gallery-spacing">
 (function(){
