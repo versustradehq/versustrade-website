@@ -170,12 +170,13 @@ body{font-family:"Plus Jakarta Sans",Inter,ui-sans-serif,system-ui,-apple-system
 .nav-heading .nav-label{padding:0}
 .sidebar-pin{position:relative;width:38px;height:38px;display:grid;place-items:center;flex:0 0 38px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(145deg,var(--panel),var(--panel2));color:var(--muted);box-shadow:0 3px 9px rgba(0,0,0,.07),inset 0 1px 0 rgba(255,255,255,.45);transition:background .2s,color .2s,border-color .2s,box-shadow .2s,transform .2s}
 .sidebar-pin svg{width:19px;height:19px;display:block;transition:transform .24s cubic-bezier(.2,.8,.2,1)}
+.sidebar-pin img{width:21px;height:21px;display:block;object-fit:contain;transition:transform .24s cubic-bezier(.2,.8,.2,1)}
 .sidebar-pin:hover{border-color:var(--red);color:var(--red);background:var(--red-soft);transform:translateY(-2px);box-shadow:0 6px 14px rgba(254,58,18,.12)}
 .sidebar-pin:active{transform:translateY(0) scale(.94)}
 .sidebar-pin:focus-visible{outline:2px solid var(--red);outline-offset:3px}
 .sidebar-pin[aria-pressed=true]{background:linear-gradient(145deg,#ff5938,var(--red));border-color:var(--red);color:#fff;box-shadow:0 4px 13px rgba(254,58,18,.28),inset 0 1px 0 #ffffff45}
-.sidebar-pin[aria-pressed=false] svg{transform:rotate(-38deg)}
-.sidebar-pin[aria-pressed=true] svg{filter:drop-shadow(0 1px 1px #8d1d0e55)}
+.sidebar-pin[aria-pressed=false] img{transform:rotate(-38deg)}
+.sidebar-pin[aria-pressed=true] img{filter:drop-shadow(0 1px 1px #8d1d0e55)}
 .sidebar-pin[aria-pressed=true]::after{content:"";position:absolute;width:6px;height:6px;right:5px;top:5px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px var(--red)}
 .nav-label{font-size:11px;color:var(--muted);letter-spacing:.1em;font-weight:700;text-transform:uppercase;padding:6px 12px 8px}
 .nav{display:flex;align-items:center;gap:12px;width:100%;border:0;background:transparent;color:var(--muted);text-align:left;padding:11px 12px;border-radius:10px;font-weight:600;font-size:14px;transition:background .16s,color .16s}
@@ -376,7 +377,7 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * {
 <div id="app" class="shell hidden">
   <aside class="side" id="side">
     <div class="brand"><div class="brand-mark"><img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/REAL%20LOGO%20%20VERSUSTRADE.png" alt="VersusTrade logo"></div><div>VersusTrade<small>Administration</small></div></div>
-    <div class="nav-heading"><div class="nav-label">Workspace</div><button class="sidebar-pin" id="sidebarPin" type="button" aria-label="Unpin sidebar" title="Unpin sidebar" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 5 5-5.5 1.5-5 5L9 20l-2 1-1.5-6.5-5-5L2 7l5.5 1.5 5-5L14 1z" transform="translate(2 1) scale(.88)"/><path d="m8 16-5 5"/></svg></button></div>
+    <div class="nav-heading"><div class="nav-label">Workspace</div><button class="sidebar-pin" id="sidebarPin" type="button" aria-label="Unpin sidebar" title="Unpin sidebar" aria-pressed="true"><img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/pin.png" alt="" aria-hidden="true"></button></div>
       <button class="nav active" data-view="register" title="Register transaction" aria-label="Register transaction"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg><span class="nav-text">Register transaction</span></button>
       <button class="nav" data-view="overview" title="Overview" aria-label="Overview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg><span class="nav-text">Overview</span></button>
       <button class="nav" data-view="transactions" title="Transactions" aria-label="Transactions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg><span class="nav-text">Transactions</span></button>
