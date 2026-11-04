@@ -847,7 +847,7 @@ $('scrim').addEventListener('click',function(){$('app').classList.remove('nav-op
  var app=$('app'),pin=$('sidebarPin'),store='vt-admin-sidebar-pinned',mq=window.matchMedia('(min-width:1025px)'),pinned=true;
  try{var saved=localStorage.getItem(store);if(saved==='0')pinned=false;else if(saved==='1')pinned=true}catch(e){}
  function apply(){app.classList.toggle('sidebar-unpinned',mq.matches&&!pinned);if(pin){pin.setAttribute('aria-pressed',String(pinned));pin.setAttribute('aria-label',pinned?'Unpin sidebar':'Pin sidebar');pin.title=pinned?'Unpin sidebar to auto-collapse':'Pin sidebar open'}}
- if(pin)pin.addEventListener('click',function(){if(!mq.matches)return;pinned=!pinned;try{localStorage.setItem(store,pinned?'1':'0')}catch(e){}apply()});
+ if(pin)pin.addEventListener('click',function(){if(!mq.matches)return;pinned=!pinned;try{localStorage.setItem(store,pinned?'1':'0')}catch(e){}apply();if(!pinned)pin.blur()});
  if(mq.addEventListener)mq.addEventListener('change',apply);else if(mq.addListener)mq.addListener(apply);
  apply();
 })();
