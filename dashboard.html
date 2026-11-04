@@ -3236,6 +3236,7 @@ draw();
 (function(){
   var view=document.getElementById('v-rates');
   var heading=view&&view.querySelector('.vt-gift-heading');
+  var subtitle=view&&view.querySelector('.vt-gift-subtitle');
   var gallery=view&&view.querySelector('.gcg');
   var list=view&&view.querySelector('#rtGift');
   if(!view||!heading||!gallery||!list)return;
@@ -3245,22 +3246,22 @@ draw();
     if(window.matchMedia('(min-width: 641px)').matches)return;
     if(!view.classList.contains('on'))return;
     gallery.style.top='0px';
-    var h=heading.getBoundingClientRect();
+    var textBottom=(subtitle?subtitle.getBoundingClientRect().bottom:heading.getBoundingClientRect().bottom);
     var g=gallery.getBoundingClientRect();
     var l=list.getBoundingClientRect();
-    var available=l.top-h.bottom-g.height;
-    var shift=(available/2);
+    var available=l.top-textBottom-g.height;
+    var shift=available/2;
     if(!Number.isFinite(shift))return;
     gallery.style.top=Math.round(shift)+'px';
   }
   function schedule(){if(!raf)raf=requestAnimationFrame(balance)}
   if(window.ResizeObserver){
     var ro=new ResizeObserver(schedule);
-    ro.observe(heading);ro.observe(gallery);ro.observe(list);
+    ro.observe(heading);if(subtitle)ro.observe(subtitle);ro.observe(gallery);ro.observe(list);
   }
   if(window.MutationObserver){
     var mo=new MutationObserver(schedule);
-    mo.observe(heading,{childList:true,subtree:true,characterData:true});
+    mo.observe(heading,{childList:true,subtree:true,characterData:true});if(subtitle)mo.observe(subtitle,{childList:true,subtree:true,characterData:true});
     mo.observe(list,{childList:true,subtree:true,characterData:true});
   }
   window.addEventListener('resize',schedule,{passive:true});
