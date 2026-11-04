@@ -1145,7 +1145,7 @@ window.VTCircularGallery=function(container,opts){
 #v-rates #rtGift{padding-bottom:12px}
 #v-rates #rtGift .animated-list{max-width:560px}
 #v-rates #rtGift .animated-list__viewport{overscroll-behavior:contain}
-#v-rates #gcGallery.circular-gallery{height:280px;min-height:280px;width:100%;position:relative;display:block;overflow:hidden;border-radius:18px;background:radial-gradient(ellipse at 50% 52%,rgba(127,127,127,.09),transparent 70%);touch-action:pan-y}
+#v-rates #gcGallery.circular-gallery{height:320px;min-height:320px;width:100%;position:relative;display:block;overflow:hidden;border-radius:18px;background:radial-gradient(ellipse at 50% 52%,rgba(127,127,127,.09),transparent 70%);touch-action:pan-y}
 #v-rates #gcGallery .circular-gallery-canvas{width:100%;height:100%}
 #v-rates #gcGallery .circular-gallery-label{font-size:12px;font-weight:700;letter-spacing:.01em;text-shadow:0 1px 5px rgba(0,0,0,.24)}
 @media(max-width:640px){#v-rates #gcGallery.circular-gallery{height:250px;min-height:250px}}
@@ -2870,7 +2870,7 @@ draw();
     window.VTCircularGallery(host,{
       items:GALLERY_CARDS.map(function(card){return{image:card.img,text:card.n}}),
       bend:3,textColor:'var(--vt-ink, #777777)',borderRadius:.055,
-      scrollSpeed:1.35,scrollEase:.065,autoScroll:1.05,itemSize:.88,itemAspect:.78,
+      scrollSpeed:1.35,scrollEase:.065,autoScroll:1.05,itemSize:window.matchMedia('(min-width: 641px)').matches?1.08:.88,itemAspect:.78,
       gap:.28,wave:1,fadeEdges:.10,shadow:.28,showTitles:true,
       snap:true,intro:true,scaleOnHover:1.045,rotateAmplitude:10,
       smoothness:.62,glare:.35,
