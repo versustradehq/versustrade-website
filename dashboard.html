@@ -2905,10 +2905,24 @@ draw();
 (function(){
   var $=function(i){return document.getElementById(i)},reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   var VIEWS=['home','rates','trade','chat','account'],cur='home',R2='https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/';
+  var pendingChat=false,chatRetryCount=0,chatRetryTimer=0,chatRetrying=false;
+  function ensureChatLoad(){
+    if(chatUp()||window.__vtChatLoading)return;
+    window.__vtChatLoading=true;
+    var s=document.createElement('script');
+    s.src='/chat.js?v=20261104-3&retry='+(chatRetryCount+1);
+    s.async=true;
+    s.onload=function(){
+      window.__vtChatLoading=false;window.__vtChatLoaded=1;chatRetrying=false;chatRetryCount=0;
+      if(chatUp()){window.vtChatReady&&window.vtChatReady();}
+      else window.vtChatFail&&window.vtChatFail();
+    };
+    s.onerror=function(){window.__vtChatLoading=false;window.__vtChatLoaded=0;window.vtChatFail&&window.vtChatFail();};
+    document.head.appendChild(s);
+  }
   /* ---- views ---- */
   function showView(n,keep){
     if(VIEWS.indexOf(n)<0)n='home';
-    if(n==='chat'&&!chatUp()&&window.__vtChatLoaded===0){toast('Chat isn\u2019t available right now. Please try again in a moment.');return}
     cur=n;
     VIEWS.forEach(function(v){$('v-'+v).classList.toggle('on',v===n)});
     [].forEach.call(document.querySelectorAll('.dock-item[data-view]'),function(b){var on=b.getAttribute('data-view')===n;b.classList.toggle('on',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
@@ -2916,11 +2930,22 @@ draw();
     try{history.replaceState(null,'','#'+n)}catch(e){}
     requestAnimationFrame(function(){window.dispatchEvent(new Event('resize'))});
     if(n==='rates')drawRates();
-    if(n==='chat'){if(chatUp()){var p=document.getElementById('vtChat');VTChat.open(keep&&p?(p.getAttribute('data-view')||'home'):'home')}else if(window.__vtChatLoaded===undefined)pendingChat=true;else toast('Chat isn\u2019t available right now. Please try again in a moment.')}
-    else if(chatUp())VTChat.close();
+    if(n==='chat'){
+      if(chatUp()){var p=document.getElementById('vtChat');VTChat.open(keep&&p?(p.getAttribute('data-view')||'home'):'home');}
+      else {pendingChat=true;if(window.__vtChatLoaded===0)ensureChatLoad();}
+    } else if(chatUp())VTChat.close();
   }
-  var pendingChat=false;
-  window.vtChatFail=function(){pendingChat=false;if(cur==='chat'){toast('Chat isn\u2019t available right now. Please try again in a moment.');showView('home')}};
+  window.vtChatFail=function(){
+    window.__vtChatLoading=false;
+    if(chatRetryCount<2){
+      chatRetryCount++;chatRetrying=true;
+      clearTimeout(chatRetryTimer);
+      chatRetryTimer=setTimeout(function(){if(cur==='chat'&&!chatUp())ensureChatLoad();else if(!chatUp())ensureChatLoad();},500*chatRetryCount);
+      return;
+    }
+    pendingChat=false;chatRetrying=false;
+    if(cur==='chat'){toast('Betty could not load just now. Please try again shortly.');showView('home');}
+  };
   window.vtShow=showView;
   function logOut(){
     var tok=null,K='vt_auth_session';
@@ -3097,7 +3122,7 @@ draw();
 })();
 </script>
 <script src="/giftcards.js?v=20261102-8"></script>
-<script src="/chat.js?v=20261104-2" onload="window.__vtChatLoaded=1;window.vtChatReady&&window.vtChatReady()" onerror="window.__vtChatLoaded=0;window.vtChatFail&&window.vtChatFail()"></script>
+<script id="vt-chat-script" src="/chat.js?v=20261104-3" onload="window.__vtChatLoading=false;window.__vtChatLoaded=1;if(window.VTChat&&window.VTChat.open){window.vtChatReady&&window.vtChatReady()}else{window.__vtChatLoaded=0;window.vtChatFail&&window.vtChatFail()}" onerror="window.__vtChatLoading=false;window.__vtChatLoaded=0;window.vtChatFail&&window.vtChatFail()"></script>
 
 <script id="vt-gift-gallery-spacing">
 (function(){
