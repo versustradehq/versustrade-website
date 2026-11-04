@@ -1149,7 +1149,7 @@ window.VTCircularGallery=function(container,opts){
 #v-rates #gcGallery .circular-gallery-canvas{width:100%;height:100%}
 #v-rates #gcGallery .circular-gallery-label{font-size:12px;font-weight:700;letter-spacing:.01em;text-shadow:0 1px 5px rgba(0,0,0,.24)}
 #v-rates .rv{padding-bottom:calc(330px + env(safe-area-inset-bottom,0px))}
-#v-rates.vt-gift-intro-dismissed>.dp-sm{display:none}
+/* Gift Cards intro remains visible on every visit and every screen size. */
 @media(max-width:640px){
   #v-rates .gcg{height:280px!important;min-height:280px!important}
   #v-rates #gcGallery.circular-gallery{height:280px;min-height:280px}
@@ -2874,22 +2874,10 @@ draw();
     {n:'Visa',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/VISA.png'},
     {n:'Razer',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/RAZOR.png'}
   ];
+  // Gift Cards heading and subtitle are intentionally persistent on mobile and desktop.
   (function giftIntroMemory(){
-    var view=$('v-rates'),intro=$('vtGiftIntro');
-    if(!view||!intro||!window.matchMedia('(max-width: 640px)').matches)return;
-    // Show the intro on first view; once seen, hide it on the next page load.
-    var key='vtGiftIntroViewed';
-    try{if(localStorage.getItem(key)==='1')view.classList.add('vt-gift-intro-dismissed')}catch(e){}
-    if(!('IntersectionObserver' in window))return;
-    var observer=new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){
-        if(entry.isIntersecting&&entry.intersectionRatio>=.5){
-          try{localStorage.setItem(key,'1')}catch(e){}
-          observer.disconnect();
-        }
-      });
-    },{threshold:[.5]});
-    observer.observe(intro);
+    var view=$('v-rates');
+    if(view)view.classList.remove('vt-gift-intro-dismissed');
   })();
   (function renderGiftGallery(){
     var host=$('gcGallery');if(!host||!window.VTCircularGallery)return;
