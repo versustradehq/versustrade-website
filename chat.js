@@ -127,7 +127,8 @@
     var inputFocused = false;
     function syncChatViewport() {
       if (window.innerWidth > 560) return;
-      var keyboardOpen = inputFocused && (vv.height < window.innerHeight - 120);\n      panel.style.setProperty("--vc-dock-clearance", document.getElementById("dock") && !keyboardOpen ? "88px" : "0px");
+      var keyboardOpen = inputFocused && (vv.height < window.innerHeight - 120);
+      panel.style.setProperty("--vc-dock-clearance", document.getElementById("dock") && !keyboardOpen ? "88px" : "0px");
       if (keyboardOpen) {
         panel.style.setProperty('--vc-vv-top', Math.max(0, vv.offsetTop) + 'px');
         panel.style.setProperty('--vc-vv-height', Math.max(180, vv.height) + 'px');
