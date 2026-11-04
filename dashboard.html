@@ -1134,14 +1134,9 @@ window.VTCircularGallery=function(container,opts){
 #v-rates #rtGift{padding-bottom:12px}
 #v-rates #rtGift .animated-list{max-width:560px}
 #v-rates #rtGift .animated-list__viewport{overscroll-behavior:contain}
-#v-rates .gift-gallery-roll{height:100%;overflow:hidden;position:relative;display:flex;align-items:center;touch-action:pan-y}
-#v-rates .gift-gallery-track{display:flex;align-items:center;gap:16px;width:max-content;flex:none;animation:vtGiftGalleryRoll 34s linear infinite;will-change:transform}
-#v-rates .gift-gallery-card{width:clamp(132px,19vw,178px);height:clamp(158px,22vw,196px);flex:none;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:14px;background:transparent}
-#v-rates .gift-gallery-card img{display:block;width:100%;height:100%;object-fit:contain}
-#v-rates .gift-gallery-card.image-unavailable{background:#202020;color:#fff;font-weight:700;font-size:14px}
-@keyframes vtGiftGalleryRoll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@media(prefers-reduced-motion:reduce){#v-rates .gift-gallery-track{animation:none;overflow-x:auto}}
-@media(max-width:640px){#v-rates .gift-gallery-track{gap:12px}#v-rates .gift-gallery-card{width:clamp(112px,34vw,150px);height:clamp(140px,42vw,174px)}}
+#v-rates #gcGallery.circular-gallery{height:100%;min-height:0}
+#v-rates #gcGallery .circular-gallery-canvas{width:100%;height:100%}
+@media(max-width:640px){#v-rates #gcGallery.circular-gallery{height:100%}}
 @media(max-width:640px){
   #v-rates>.dp-sm{padding-top:calc(8px + env(safe-area-inset-top,0px));padding-bottom:2px;border-radius:0!important;box-shadow:none!important}
   #v-rates>.dp-sm>.w{display:block;width:100%!important;max-width:none!important;margin:0 auto!important;padding:0 16px!important;text-align:center!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;box-sizing:border-box}
@@ -2869,23 +2864,34 @@ draw();
     {n:'Razer',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/RAZOR.png'}
   ];
   (function renderGiftGallery(){
-    var host=$('gcGallery');if(!host)return;
-    host.classList.add('gift-gallery-roll');
-    var track=document.createElement('div');track.className='gift-gallery-track';
-    [0,1].forEach(function(copy){
-      GALLERY_CARDS.forEach(function(card){
-        var tile=document.createElement('div');tile.className='gift-gallery-card';
-        var img=document.createElement('img');img.src=card.img;img.alt=card.n+' gift card';img.loading=copy?'lazy':'eager';img.decoding='async';
-        img.onerror=function(){tile.classList.add('image-unavailable');tile.textContent=card.n};
-        tile.appendChild(img);track.appendChild(tile);
-      });
+    var host=$('gcGallery');if(!host||!window.VTCircularGallery)return;
+    var items=GALLERY_CARDS.map(function(card){
+      return {image:card.img,text:card.n,fallback:gcTile({n:card.n})};
     });
-    host.replaceChildren(track);
-    host.setAttribute('role','region');host.setAttribute('aria-label','Gift card gallery');
-    host.addEventListener('mouseenter',function(){track.style.animationPlayState='paused'});
-    host.addEventListener('mouseleave',function(){track.style.animationPlayState='running'});
-    host.addEventListener('focusin',function(){track.style.animationPlayState='paused'});
-    host.addEventListener('focusout',function(){track.style.animationPlayState='running'});
+    window.VTCircularGallery(host,{
+      items:items,
+      bend:3,
+      textColor:'#ffffff',
+      borderRadius:.055,
+      font:'700 13px Inter, sans-serif',
+      scrollSpeed:1.25,
+      scrollEase:.075,
+      itemSize:.92,
+      itemAspect:.78,
+      gap:.28,
+      wave:.8,
+      fadeEdges:.1,
+      shadow:.28,
+      grayscale:false,
+      showTitles:false,
+      snap:true,
+      autoScroll:.16,
+      intro:true,
+      scaleOnHover:1.07,
+      rotateAmplitude:10,
+      smoothness:.58,
+      glare:.35
+    });
   })();
   var giftItems=CARDS.map(function(c){var it={title:c.n,description:'Rate confirmed in chat',meta:'Sell',metaClass:'sell'};if(c.img)it.image=c.img;else it.tile={bg:c.c,text:c.t};return it});
   VTAnimatedList($('rtGift'),{items:giftItems,animation:'pop',width:560,maxHeight:348,fadeSize:28,
