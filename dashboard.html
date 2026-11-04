@@ -1196,6 +1196,33 @@ window.VTCircularGallery=function(container,opts){
 button, a, [role="button"], [role="tab"], [role="menuitem"], label, input[type="button"], input[type="submit"], input[type="reset"] { -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
 button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-user-select: none; user-select: none; }
 </style>
+
+<style id="vt-gift-layout-final">
+/* Keep the Gift Cards view self-contained at every screen size. */
+body:has(#v-rates.on){overflow:hidden!important;overscroll-behavior:none}
+#v-rates .vt-gift-heading{margin-top:24px}
+#v-rates .vt-gift-name{background:linear-gradient(145deg,#F0384A,#C9121F)}
+#v-rates #rtGift .animated-list__viewport{max-height:min(340px,42dvh)!important;overflow-y:auto;overscroll-behavior:contain}
+#v-rates #rtGift .animated-list__item{padding:5px 10px 5px 8px;gap:8px;min-height:0}
+#v-rates #rtGift .animated-list__lead{width:30px;height:30px}
+@media(min-width:641px){
+  #v-rates.on{height:calc(100dvh - 80px)!important;min-height:0!important;max-height:calc(100dvh - 80px)!important;overflow:hidden!important}
+  #v-rates .vt-gift-heading{margin-top:24px;margin-bottom:8px}
+  #v-rates .rv{height:calc(100% - 62px);min-height:0;max-height:calc(100% - 62px);overflow:hidden;align-content:start;box-sizing:border-box}
+  #v-rates .gcg{height:clamp(190px,34dvh,300px)!important;min-height:clamp(190px,34dvh,300px)!important;max-height:34dvh!important}
+  #v-rates #gcGallery.circular-gallery{height:100%;min-height:0;max-height:100%}
+  #v-rates #rtGift{max-height:48dvh;overflow:hidden}
+}
+@media(max-width:640px){
+  #v-rates .vt-gift-heading{margin-top:20px}
+  #v-rates #rtGift .animated-list__viewport{max-height:min(340px,42dvh)!important}
+}
+@media(max-width:640px) and (max-height:650px){
+  #v-rates .vt-gift-heading{margin-top:14px}
+  #v-rates #rtGift .animated-list__viewport{max-height:38dvh!important}
+}
+</style>
+
 </head>
 <body>
 
