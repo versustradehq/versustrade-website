@@ -1135,6 +1135,11 @@ window.VTCircularGallery=function(container,opts){
 #v-rates>.dp-sm{padding-top:calc(10px + env(safe-area-inset-top,0px));padding-bottom:4px}
 #v-rates>.dp-sm .w{width:min(calc(100% - 32px),720px);margin:0 auto;padding:0;text-align:center;background:transparent;border:0;border-radius:0;box-sizing:border-box}
 #v-rates>.dp-sm h1{margin:0;font-size:clamp(21px,4vw,27px);line-height:1.15}
+#v-rates .vt-gift-heading{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;column-gap:.24em;row-gap:.12em}
+#v-rates .vt-gift-name{display:inline-flex;align-items:center;justify-content:center;max-width:100%;overflow:hidden;vertical-align:middle;padding:.10em .28em .13em;border-radius:.16em;background:#fe3a12;color:#fff;white-space:pre;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+#v-rates .vt-gift-name .vt-gift-char{display:inline-block;animation:vtGiftCharSlide .42s cubic-bezier(.22,1,.36,1) both}
+@keyframes vtGiftCharSlide{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+@media(prefers-reduced-motion:reduce){#v-rates .vt-gift-name .vt-gift-char{animation:none}}
 #v-rates>.dp-sm p{margin-top:3px;font-size:12.5px;line-height:1.4}
 #v-rates .rv{padding-top:4px;gap:8px;padding-bottom:calc(116px + env(safe-area-inset-bottom,0px))}
 /* Explicitly restore the Gift Cards view's layout when it is selected.
@@ -1226,7 +1231,7 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
     </div>
   </section>
 </div>
-<div class="view" id="v-rates"><section class="dp dp-sm" id="vtGiftIntro"><div class="w"><h1>Trade Giftcard for Cash</h1><p>Pick a card to sell. Real people confirm your rate in chat.</p></div></section>
+<div class="view" id="v-rates"><section class="dp dp-sm" id="vtGiftIntro"><div class="w"><h1 class="vt-gift-heading">Trade <span class="vt-gift-name" id="vtGiftRotatingName" aria-label="Amazon Gift Card">Amazon Gift Card</span> for Cash</h1><p>Pick a card to sell. Real people confirm your rate in chat.</p></div></section>
   <div class="w rv">
     <div class="gcg" id="gcGallery" aria-label="Supported gift cards"></div>
     <div id="rtGift"></div>
@@ -2875,6 +2880,40 @@ draw();
     {n:'Visa',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/VISA.png'},
     {n:'Razer',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/RAZOR.png'}
   ];
+  (function rotateGiftHeading(){
+    var host=$('vtGiftRotatingName');if(!host)return;
+    var names=[
+      'Amazon Gift Card',
+      'Apple/iTunes Gift Card',
+      'Google Play Gift Card',
+      'Steam Gift Card',
+      'Razer Gold Gift Card',
+      'Target Gift Card',
+      'Walmart Gift Card',
+      'PlayStation Gift Card',
+      'Xbox Gift Card',
+      'eBay Gift Card',
+      'Visa Gift Card'
+    ];
+    var index=0;
+    function showName(name,animate){
+      host.replaceChildren();
+      Array.from(name).forEach(function(char,i){
+        var part=document.createElement('span');
+        part.className='vt-gift-char';
+        part.textContent=char===' '?'\\u00a0':char;
+        if(animate)part.style.animationDelay=((name.length-1-i)*.025)+'s';
+        host.appendChild(part);
+      });
+      host.setAttribute('aria-label',name);
+    }
+    showName(names[0],false);
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      window.setInterval(function(){index=(index+1)%names.length;showName(names[index],false)},3000);
+    }else{
+      window.setInterval(function(){index=(index+1)%names.length;showName(names[index],true)},2000);
+    }
+  })();
   // Gift Cards heading and subtitle are intentionally persistent on mobile and desktop.
   (function giftIntroMemory(){
     var view=$('v-rates');
