@@ -577,6 +577,9 @@ position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom,0px));tran
 #v-trade .rt-left .rt-note{margin-top:16px;text-align:center}
 .view:not(.on){position:absolute;left:0;right:0;top:0;height:0;overflow:hidden;visibility:hidden;pointer-events:none}
 .view.on{animation:viewIn .38s cubic-bezier(.22,1,.36,1)}@keyframes viewIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+/* Keep the fixed Gift Card list anchored to the viewport during section entry. */
+#v-rates.view.on{animation:giftViewFadeIn .38s cubic-bezier(.22,1,.36,1)}
+@keyframes giftViewFadeIn{from{opacity:0}to{opacity:1}}
 @media(prefers-reduced-motion:reduce){.view.on{animation:none}}
 .fab-h{position:fixed;right:0;bottom:0;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none}
 .dp-sm{padding-top:calc(36px + env(safe-area-inset-top,0px));padding-bottom:30px}.dp-sm h1{margin:0 0 4px;font-size:clamp(28px,5vw,40px);font-weight:900;letter-spacing:-.03em;line-height:1.1}.dp-sm p{margin:0;opacity:.8}
