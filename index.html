@@ -797,6 +797,23 @@ html.va-lock{overflow:hidden}
 button, a, [role="button"], [role="tab"], [role="menuitem"], label, input[type="button"], input[type="submit"], input[type="reset"] { -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
 button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-user-select: none; user-select: none; }
 </style>
+
+<style id="vt-global-search-style">
+#vtSearchDialog{width:min(560px,calc(100% - 28px));max-width:560px;padding:0;border:1px solid rgba(127,127,127,.25);border-radius:20px;background:var(--card,#171719);color:var(--text,#f5f5f5);box-shadow:0 28px 90px rgba(0,0,0,.48)}
+#vtSearchDialog::backdrop{background:rgba(0,0,0,.62);backdrop-filter:blur(5px)}
+#vtSearchDialog .vts-wrap{padding:16px}
+#vtSearchDialog .vts-input{display:flex;align-items:center;gap:12px;padding:0 14px;border:1px solid var(--line,rgba(127,127,127,.25));border-radius:14px;background:var(--soft,rgba(127,127,127,.1))}
+#vtSearchDialog .vts-input svg{width:20px;height:20px;flex:none;opacity:.7}
+#vtSearchDialog input{width:100%;min-width:0;padding:16px 0;border:0;outline:0;background:transparent;color:inherit;font:inherit;font-size:16px}
+#vtSearchDialog .vts-hint{margin:14px 4px 8px;color:var(--muted,#999);font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase}
+#vtSearchDialog .vts-results{display:grid;gap:5px;max-height:min(54vh,430px);overflow:auto}
+#vtSearchDialog .vts-result{display:flex;align-items:center;justify-content:space-between;gap:14px;width:100%;padding:12px 13px;border:0;border-radius:12px;background:transparent;color:inherit;text-align:left;cursor:pointer;font:inherit}
+#vtSearchDialog .vts-result:hover,#vtSearchDialog .vts-result:focus-visible{outline:0;background:var(--soft,rgba(127,127,127,.13))}
+#vtSearchDialog .vts-result small{display:block;margin-top:3px;color:var(--muted,#999);font-size:12px}
+#vtSearchDialog .vts-result .vts-arrow{color:var(--red,#fe3a12);font-size:18px}
+#vtSearchDialog .vts-empty{padding:22px 12px;color:var(--muted,#999);text-align:center;font-size:14px}
+</style>
+
 </head>
 <body>
 
@@ -814,6 +831,18 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
     </div>
   </div>
 </header>
+
+<dialog id="vtSearchDialog" aria-label="Search VersusTrade">
+  <div class="vts-wrap">
+    <label class="vts-input">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="M14 14l4 4"/></svg>
+      <input id="vtGlobalSearchInput" type="search" placeholder="Search VersusTrade..." autocomplete="off" aria-label="Search VersusTrade">
+    </label>
+    <div class="vts-hint">Explore VersusTrade</div>
+    <div class="vts-results" id="vtGlobalSearchResults" role="listbox"></div>
+  </div>
+</dialog>
+
 
 <main>
   <!-- Hero -->
@@ -5493,5 +5522,47 @@ function createSim(gl) {
 <!-- Footer animation and newsletter: add these two files next to this page (same files the blog uses) -->
 <script src="coins.js" defer></script>
 <script src="newsletter.js" defer></script>
+
+<script id="vt-global-search">
+(function(){
+  var button=document.querySelector('.vt-actions button[aria-label="Search"]');
+  var dialog=document.getElementById('vtSearchDialog');
+  var input=document.getElementById('vtGlobalSearchInput');
+  var results=document.getElementById('vtGlobalSearchResults');
+  if(!button||!dialog||!input||!results)return;
+  var items=[
+    {title:'Buy & Sell Crypto',desc:'Choose an asset and start a crypto trade',href:'#markets',keys:'bitcoin btc usdt ethereum buy sell crypto trading'},
+    {title:'Gift Cards',desc:'Browse supported gift cards and selling options',href:'#giftcards',keys:'gift card apple itunes steam amazon ebay walmart razer playstation xbox'},
+    {title:'Markets',desc:'Explore digital asset market information',href:'#markets',keys:'market prices coins assets'},
+    {title:'Rates',desc:'View VersusTrade rates and available pairs',href:'#rates',keys:'exchange rate currency pairs usd ngn'},
+    {title:'Customer Support',desc:'Get help from the VersusTrade support team',href:'#support',keys:'help contact support betty chat'},
+    {title:'Log in',desc:'Access your VersusTrade account',href:'/?login=1',keys:'login sign in account register signup'},
+    {title:'Customer Dashboard',desc:'Open your account dashboard and transactions',href:'/dashboard.html',keys:'dashboard profile transactions history account'},
+    {title:'About VersusTrade',desc:'Learn more about VersusTrade',href:'#about',keys:'about company who we are'},
+    {title:'Newsletter',desc:'Find updates and announcements',href:'#newsletter',keys:'newsletter updates email subscribe'}
+  ];
+  function draw(query){
+    var q=String(query||'').trim().toLowerCase();
+    var found=items.filter(function(item){return !q||(item.title+' '+item.desc+' '+item.keys).toLowerCase().includes(q)});
+    results.innerHTML='';
+    if(!found.length){var empty=document.createElement('div');empty.className='vts-empty';empty.textContent='No matching pages or services found.';results.appendChild(empty);return}
+    found.forEach(function(item){
+      var a=document.createElement('a');a.className='vts-result';a.href=item.href;a.setAttribute('role','option');
+      var copy=document.createElement('span'),title=document.createElement('strong'),desc=document.createElement('small'),arrow=document.createElement('span');
+      title.textContent=item.title;desc.textContent=item.desc;arrow.className='vts-arrow';arrow.textContent='→';
+      copy.appendChild(title);copy.appendChild(desc);a.appendChild(copy);a.appendChild(arrow);
+      a.addEventListener('click',function(){dialog.close();});
+      results.appendChild(a);
+    });
+  }
+  function open(){draw(input.value);if(!dialog.open)dialog.showModal();setTimeout(function(){input.focus();},30)}
+  button.addEventListener('click',open);
+  input.addEventListener('input',function(){draw(input.value)});
+  dialog.addEventListener('click',function(e){if(e.target===dialog)dialog.close()});
+  document.addEventListener('keydown',function(e){if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();open()}});
+  draw('');
+})();
+</script>
+
 </body>
 </html>
