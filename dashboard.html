@@ -947,11 +947,13 @@ window.VTCircularGallery=function(container,opts){
     container.style.padding='12px 4px 20px';container.style.boxSizing='border-box';
     container.style.scrollSnapType='x mandatory';container.style.webkitOverflowScrolling='touch';
     (S.items||[]).forEach(function(item){
-      var card=document.createElement('div');card.style.cssText='flex:0 0 190px;height:245px;border-radius:14px;overflow:hidden;background:#27272a;position:relative;scroll-snap-align:center;display:flex;align-items:center;justify-content:center';
-      var im=document.createElement('img');im.alt=item.text||'Gift card';im.loading='lazy';im.decoding='async';
-      im.style.cssText='width:100%;height:100%;object-fit:contain;padding:18px;box-sizing:border-box';
+      var card=document.createElement('button');card.type='button';card.setAttribute('aria-label','Select '+(item.text||'gift card'));card.style.cssText='flex:0 0 190px;height:245px;border:0;padding:0;border-radius:14px;overflow:hidden;background:#27272a;position:relative;scroll-snap-align:center;display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation';
+      var im=document.createElement('img');im.alt='';im.loading='lazy';im.decoding='async';
+      im.style.cssText='width:100%;height:100%;object-fit:contain;padding:18px;box-sizing:border-box;pointer-events:none';
       im.onerror=function(){if(item.fallback&&im.src!==item.fallback){im.src=item.fallback}else{card.textContent=item.text||'Gift card';card.style.color='#fff';card.style.fontWeight='700'}};
-      im.src=item.image||item.fallback||'';card.appendChild(im);container.appendChild(card);
+      im.src=item.image||item.fallback||'';card.appendChild(im);
+      card.addEventListener('click',function(){if(S.onItemClick)S.onItemClick(item,S.items.indexOf(item))});
+      container.appendChild(card);
     });
     return null;
   }
@@ -1091,7 +1093,7 @@ window.VTCircularGallery=function(container,opts){
     if(card)container.setAttribute('data-pointer','');else container.removeAttribute('data-pointer')}
   function snapNow(){if(!S.snap)return;setSlot(nearest())}
 
-  function onDown(ev){if(ev.button!==0)return;state.drag={id:ev.pointerId,x0:ev.clientX,y0:ev.clientY,start:state.target,moved:false,samples:[],p:point(ev)};state.lastInput=performance.now();wake()}
+  function onDown(ev){if(ev.button!==0)return;var p=point(ev);state.drag={id:ev.pointerId,x0:ev.clientX,y0:ev.clientY,start:state.target,moved:false,samples:[],p:p,cardAtDown:hit(p)};state.lastInput=performance.now();wake()}
   function onMove(ev){var drag=state.drag;
     if(drag&&drag.id===ev.pointerId){var dx=ev.clientX-drag.x0,dy=ev.clientY-drag.y0;
       if(!drag.moved&&Math.hypot(dx,dy)>6){if(Math.abs(dy)>Math.abs(dx)&&ev.pointerType!=='mouse'){state.drag=null;return}
@@ -1102,9 +1104,9 @@ window.VTCircularGallery=function(container,opts){
   function onUp(ev){var drag=state.drag;if(!drag||drag.id!==ev.pointerId)return;state.drag=null;container.removeAttribute('data-dragging');
     if(container.hasPointerCapture&&container.hasPointerCapture(ev.pointerId))container.releasePointerCapture(ev.pointerId);
     if(drag.moved){var sm=drag.samples;if(sm.length>1){var a=sm[0],b=sm[sm.length-1],span=Math.max(b.t-a.t,16),speed=((b.x-a.x)/span)*1000;state.target-=speed*.18*(S.scrollSpeed/2)}snapNow();return}
-    var hh=hit(drag.p),card=hh&&hh.card;if(!card)return;
+    var hh=drag.cardAtDown,card=hh&&hh.card;if(!card)return;
     if(S.onItemClick)S.onItemClick(card.item,card.index);
-    setSlot(card.slot)}  /* cards never open: a tap just centres the card */
+    setSlot(card.slot)}
   function onCancel(ev){if(state.drag&&state.drag.id===ev.pointerId){state.drag=null;container.removeAttribute('data-dragging');snapNow()}}
   function onWheel(ev){
     /* only horizontal gestures move the gallery, so the page still scrolls normally */
