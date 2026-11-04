@@ -1221,7 +1221,9 @@ body:has(#v-rates.on){overflow:hidden!important;overscroll-behavior:none}
   #v-rates #rtGift .animated-list__viewport{max-height:calc(100dvh - 230px)!important;height:100%;overflow-y:auto;overscroll-behavior:contain}
   #v-rates .gcg.vt-gift-marquee{grid-area:gallery;display:block!important;position:relative!important;width:100%!important;height:100%!important;min-height:0!important;max-height:none!important;overflow:hidden!important;border-radius:22px;background:linear-gradient(180deg,rgba(127,127,127,.035),rgba(127,127,127,.10) 50%,rgba(127,127,127,.035));-webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 8%,#000 92%,transparent 100%);mask-image:linear-gradient(to bottom,transparent 0%,#000 8%,#000 92%,transparent 100%)}
   #v-rates .vt-gift-marquee-track{display:flex;flex-direction:column;gap:0;will-change:transform;animation:vtGiftFall 42s linear infinite}
-  #v-rates .vt-gift-marquee:hover .vt-gift-marquee-track{animation-play-state:paused}
+  #v-rates .vt-gift-marquee-track>*{flex-shrink:0}
+  #v-rates .vt-gift-marquee-group{width:100%;box-sizing:border-box}
+  #v-rates .vt-gift-marquee-group[aria-hidden="true"] .vt-gift-marquee-card{pointer-events:none}
   #v-rates .vt-gift-marquee-group{display:flex;flex-direction:column;align-items:center;gap:18px;flex:none;padding:10px 0}
   #v-rates .vt-gift-marquee-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;width:min(78%,330px);min-height:clamp(150px,23dvh,220px);padding:12px;border:1px solid var(--line,rgba(127,127,127,.18));border-radius:18px;background:var(--card,#fff);box-shadow:0 12px 28px rgba(0,0,0,.10);color:var(--text,#222);cursor:pointer;transition:transform .25s ease,box-shadow .25s ease}
   #v-rates .vt-gift-marquee-card:hover{transform:translateY(-3px) scale(1.025);box-shadow:0 18px 36px rgba(0,0,0,.16)}
@@ -1260,12 +1262,12 @@ body:has(#v-rates.on){overflow:hidden!important;overscroll-behavior:none}
 
   /* The vertical gallery stays visually open: no gallery panel or individual card tiles. */
   #v-rates .gcg.vt-gift-marquee{
-    overflow-y:auto!important;
+    overflow:hidden!important;
+    overflow-y:hidden!important;
     overflow-x:hidden!important;
-    scrollbar-width:thin;
-    scrollbar-color:rgba(128,128,128,.45) transparent;
-    overscroll-behavior:contain;
-    scroll-behavior:smooth;
+    scrollbar-width:none!important;
+    -ms-overflow-style:none;
+    overscroll-behavior:none;
     border-radius:0!important;
     background:transparent!important;
     -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 6%,#000 94%,transparent 100%);
@@ -3144,7 +3146,7 @@ draw();
         GALLERY_CARDS.forEach(function(card){
           var tile=document.createElement('button');tile.type='button';tile.className='vt-gift-marquee-card';
           tile.setAttribute('aria-label','Select '+card.n+' gift card');
-          var img=document.createElement('img');img.src=card.img;img.alt=copy?'':card.n+' gift card';img.loading=copy?'lazy':'eager';img.decoding='async';
+          var img=document.createElement('img');img.src=card.img;img.alt=copy?'':card.n+' gift card';img.loading='eager';img.decoding='async';
           var label=document.createElement('span');label.textContent=card.n;
           tile.appendChild(img);tile.appendChild(label);
           if(!copy)tile.addEventListener('click',function(){chooseCard({text:card.n})});
