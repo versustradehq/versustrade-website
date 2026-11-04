@@ -1155,8 +1155,7 @@ window.VTCircularGallery=function(container,opts){
   #v-rates #gcGallery.circular-gallery{height:280px;min-height:280px}
   #v-rates .rv{padding-bottom:calc(300px + env(safe-area-inset-bottom,0px))}
   #v-rates #rtGift{bottom:calc(12px + env(safe-area-inset-bottom,0px) + 64px + 8px);width:calc(100% - 24px);padding:8px 9px 7px}
-  #v-rates #rtGift .animated-list__viewport{max-height:min(300px,45dvh)!important}
-  #v-rates.vt-gift-intro-dismissed #rtGift .animated-list__viewport{max-height:min(300px,45dvh)!important}
+  #v-rates #rtGift .animated-list__viewport{max-height:min(360px,55dvh)!important}
 }
 @media(max-width:360px){#v-rates #rtGift{bottom:calc(12px + env(safe-area-inset-bottom,0px) + 60px + 8px)}}
 @media(max-width:340px){#v-rates #rtGift{bottom:calc(12px + env(safe-area-inset-bottom,0px) + 58px + 8px)}}
@@ -2878,6 +2877,7 @@ draw();
   (function giftIntroMemory(){
     var view=$('v-rates'),intro=$('vtGiftIntro');
     if(!view||!intro||!window.matchMedia('(max-width: 640px)').matches)return;
+    // Show the intro on first view; once seen, hide it on the next page load.
     var key='vtGiftIntroViewed';
     try{if(localStorage.getItem(key)==='1')view.classList.add('vt-gift-intro-dismissed')}catch(e){}
     if(!('IntersectionObserver' in window))return;
@@ -2897,7 +2897,7 @@ draw();
     window.VTCircularGallery(host,{
       items:GALLERY_CARDS.map(function(card){return{image:card.img,text:card.n}}),
       bend:3,textColor:'var(--vt-ink, #777777)',borderRadius:.055,
-      scrollSpeed:1.35,scrollEase:.065,autoScroll:1.05,itemSize:window.matchMedia('(min-width: 641px)').matches?1.08:1.08,itemAspect:.78,
+      scrollSpeed:1.35,scrollEase:.065,autoScroll:2.1,itemSize:window.matchMedia('(min-width: 641px)').matches?1.08:1.08,itemAspect:.78,
       gap:.28,wave:1,fadeEdges:.10,shadow:.28,showTitles:true,
       snap:true,intro:true,scaleOnHover:1.045,rotateAmplitude:10,
       smoothness:.62,glare:.35,
