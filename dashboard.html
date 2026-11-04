@@ -2871,10 +2871,16 @@ draw();
   var GALLERY_CARDS = [
     {n:'Amazon',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/AMZAON.png'},
     {n:'iTunes',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/ITUNES.png'},
-    {n:'PlayStation',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/PLAY%20STATION%20GALLERY.png'},
+    {n:'Google Play',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/Google%20play.png'},
+    {n:'Steam',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/steam.png'},
+    {n:'Razer',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/RAZOR.png'},
     {n:'Sephora',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/SEPHORA.png'},
-    {n:'Visa',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/VISA.png'},
-    {n:'Razer',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/RAZOR.png'}
+    {n:'Target',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/target.png'},
+    {n:'Walmart',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/walmart.png'},
+    {n:'PlayStation',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/PLAY%20STATION%20GALLERY.png'},
+    {n:'Xbox',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/x%20box.png'},
+    {n:'eBay',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/ebay.png'},
+    {n:'Visa',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/VISA.png'}
   ];
   (function rotateGiftHeading(){
     var host=$('vtGiftRotatingName');if(!host)return;
@@ -2919,7 +2925,7 @@ draw();
       snap:true,intro:true,scaleOnHover:1.045,rotateAmplitude:10,
       smoothness:.62,glare:.35,
       onItemClick:function(item){
-        var names={'Amazon':'Amazon Gift Card','iTunes':'Apple / iTunes Gift Card','PlayStation':'PlayStation Gift Card','Sephora':'Sephora Gift Card','Visa':'Visa Gift Card','Razer':'Razer Gold'};
+        var names={'Amazon':'Amazon Gift Card','iTunes':'Apple / iTunes Gift Card','Google Play':'Google Play Gift Card','Steam':'Steam Gift Card','Razer':'Razer Gold','Sephora':'Sephora Gift Card','Target':'Target Gift Card','Walmart':'Walmart Gift Card','PlayStation':'PlayStation Gift Card','Xbox':'Xbox Gift Card','eBay':'eBay Gift Card','Visa':'Visa Gift Card'};
         var n=names[item.text]||item.text;
         if(window.VTVisaPicker&&window.VTVisaPicker.open){
           window.VTVisaPicker.open(n,function(details){
