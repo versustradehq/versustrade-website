@@ -1168,16 +1168,19 @@ window.VTCircularGallery=function(container,opts){
   #v-rates .w.rv{height:calc(100% - 58px);min-height:0;max-height:calc(100% - 58px);padding-top:0;padding-bottom:0!important;gap:4px;overflow:hidden;align-content:start;box-sizing:border-box}
   #v-rates .gcg{height:clamp(145px,29dvh,245px)!important;min-height:clamp(145px,29dvh,245px)!important;max-height:29dvh!important}
   #v-rates #gcGallery.circular-gallery{height:100%;min-height:0;max-height:100%}
-  #v-rates #rtGift{bottom:calc(12px + env(safe-area-inset-bottom,0px) + 64px + 8px);width:calc(100% - 24px);max-height:34dvh;padding:7px 9px 6px;overflow:hidden}
-  #v-rates #rtGift .animated-list__viewport{max-height:27dvh!important;overflow-y:auto;overscroll-behavior:contain}
+  #v-rates #rtGift{bottom:calc(12px + env(safe-area-inset-bottom,0px) + 64px + 8px);width:calc(100% - 24px);max-height:48dvh;padding:7px 9px 6px;overflow:hidden}
+  #v-rates #rtGift .animated-list__viewport{max-height:min(340px,42dvh)!important;overflow-y:auto;overscroll-behavior:contain}
+  /* Compact rows so five gift-card options remain visible without page scrolling. */
+  #v-rates #rtGift .animated-list__item{padding:5px 10px 5px 8px;gap:8px;min-height:0}
+  #v-rates #rtGift .animated-list__lead{width:30px;height:30px}
   body:has(#v-rates.on){overflow:hidden;overscroll-behavior:none}
 }
 @media(max-width:640px) and (max-height:650px){
   #v-rates .vt-gift-heading{margin-top:14px;font-size:clamp(16px,4.2vw,19px)}
   #v-rates .w.rv{height:calc(100% - 48px);max-height:calc(100% - 48px)}
   #v-rates .gcg{height:clamp(115px,23dvh,165px)!important;min-height:clamp(115px,23dvh,165px)!important;max-height:23dvh!important}
-  #v-rates #rtGift{max-height:31dvh}
-  #v-rates #rtGift .animated-list__viewport{max-height:24dvh!important}
+  #v-rates #rtGift{max-height:45dvh}
+  #v-rates #rtGift .animated-list__viewport{max-height:38dvh!important}
 }
 </style>
 
