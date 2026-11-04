@@ -1137,21 +1137,25 @@ window.VTCircularGallery=function(container,opts){
 #v-rates>.dp-sm h1{margin:0;font-size:clamp(21px,4vw,27px);line-height:1.15}
 #v-rates>.dp-sm p{margin-top:3px;font-size:12.5px;line-height:1.4}
 #v-rates .rv{padding-top:4px;gap:8px;padding-bottom:calc(116px + env(safe-area-inset-bottom,0px))}
-#v-rates .gcg{height:210px}
+/* Explicitly restore the Gift Cards view's layout when it is selected.
+   The shared .view:not(.on) rule collapses inactive views to zero height. */
+#v-rates.on{position:relative!important;left:auto!important;right:auto!important;top:auto!important;height:auto!important;min-height:100vh;overflow:visible!important;visibility:visible!important;pointer-events:auto!important}
+#v-rates .rv{display:grid!important;grid-template-columns:minmax(0,1fr);width:min(100% - 32px,720px);margin:0 auto;min-width:0}
+#v-rates .gcg{display:block!important;position:relative!important;width:100%!important;height:210px!important;min-height:210px!important;flex:none!important;overflow:hidden!important;visibility:visible!important;opacity:1!important}
 #v-rates #rtGift{padding-bottom:12px}
 #v-rates #rtGift .animated-list{max-width:560px}
 #v-rates #rtGift .animated-list__viewport{overscroll-behavior:contain}
 /* Keep the original circular-gallery surface as the base; the 3D carousel is a separate overlay layer. */
 #v-rates #gcGallery.vt-3d-gallery{height:100%;min-height:0;width:100%;position:relative;display:block;overflow:hidden;touch-action:pan-y;user-select:none;-webkit-user-select:none;perspective:950px;perspective-origin:50% 48%;isolation:isolate;background:transparent}
 #v-rates #gcGallery.vt-3d-gallery::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit;background:radial-gradient(ellipse at 50% 48%,rgba(127,127,127,.10),transparent 68%)}
-#v-rates .vt-gc-gallery-base{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;pointer-events:none;visibility:visible}
-#v-rates .vt-gc-gallery-base img{position:absolute;width:clamp(74px,11vw,98px);height:clamp(94px,14vw,122px);object-fit:contain;border-radius:10px;background:#fff;border:2px solid #fff;box-shadow:0 8px 20px rgba(0,0,0,.3)}
-#v-rates .vt-gc-gallery-base img:nth-child(1){transform:translateX(-74px) rotate(-15deg)}
-#v-rates .vt-gc-gallery-base img:nth-child(2){transform:translateX(-44px) rotate(-9deg)}
-#v-rates .vt-gc-gallery-base img:nth-child(3){transform:translateX(-14px) rotate(-3deg)}
-#v-rates .vt-gc-gallery-base img:nth-child(4){transform:translateX(16px) rotate(3deg)}
-#v-rates .vt-gc-gallery-base img:nth-child(5){transform:translateX(46px) rotate(9deg)}
-#v-rates .vt-gc-gallery-base img:nth-child(6){transform:translateX(76px) rotate(15deg)}
+#v-rates .vt-gc-gallery-base{position:absolute;inset:0;z-index:1;display:block!important;pointer-events:none;visibility:visible!important;opacity:1!important}
+#v-rates .vt-gc-gallery-base img{position:absolute;display:block!important;left:50%;top:50%;width:clamp(74px,11vw,98px);height:clamp(94px,14vw,122px);object-fit:contain;border-radius:10px;background:#fff;border:2px solid #fff;box-shadow:0 8px 20px rgba(0,0,0,.3);opacity:1!important;visibility:visible!important}
+#v-rates .vt-gc-gallery-base img:nth-child(1){z-index:1;transform:translate(-50%,-50%) translateX(-74px) rotate(-15deg)}
+#v-rates .vt-gc-gallery-base img:nth-child(2){z-index:2;transform:translate(-50%,-50%) translateX(-44px) rotate(-9deg)}
+#v-rates .vt-gc-gallery-base img:nth-child(3){z-index:3;transform:translate(-50%,-50%) translateX(-14px) rotate(-3deg)}
+#v-rates .vt-gc-gallery-base img:nth-child(4){z-index:4;transform:translate(-50%,-50%) translateX(16px) rotate(3deg)}
+#v-rates .vt-gc-gallery-base img:nth-child(5){z-index:5;transform:translate(-50%,-50%) translateX(46px) rotate(9deg)}
+#v-rates .vt-gc-gallery-base img:nth-child(6){z-index:6;transform:translate(-50%,-50%) translateX(76px) rotate(15deg)}
 #v-rates .vt-3d-gallery-ring{position:absolute;inset:0;z-index:2;transform-style:preserve-3d;animation:vtGift3DRotate 34s linear infinite;will-change:transform;pointer-events:none}
 #v-rates .vt-3d-gallery-card{position:absolute;left:50%;top:50%;width:clamp(132px,19vw,178px);height:clamp(158px,22vw,196px);margin:0;overflow:hidden;border-radius:14px;display:flex;align-items:center;justify-content:center;background:#191919;backface-visibility:hidden;transform:translate(-50%,-50%) rotateY(calc(var(--card-index)*60deg)) translateZ(clamp(170px,25vw,235px));box-shadow:0 14px 30px rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.12)}
 #v-rates .vt-3d-gallery-card img{display:block;width:100%;height:100%;object-fit:contain}
