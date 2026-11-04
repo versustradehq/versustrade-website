@@ -1144,7 +1144,7 @@ window.VTCircularGallery=function(container,opts){
 /* Keep the original circular-gallery surface as the base; the 3D carousel is a separate overlay layer. */
 #v-rates #gcGallery.vt-3d-gallery{height:100%;min-height:0;width:100%;position:relative;display:block;overflow:hidden;touch-action:pan-y;user-select:none;-webkit-user-select:none;perspective:950px;perspective-origin:50% 48%;isolation:isolate;background:transparent}
 #v-rates #gcGallery.vt-3d-gallery::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit;background:radial-gradient(ellipse at 50% 48%,rgba(127,127,127,.10),transparent 68%)}
-#v-rates .vt-gc-gallery-base{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;pointer-events:none}
+#v-rates .vt-gc-gallery-base{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;pointer-events:none;visibility:visible}
 #v-rates .vt-gc-gallery-base img{position:absolute;width:clamp(74px,11vw,98px);height:clamp(94px,14vw,122px);object-fit:contain;border-radius:10px;background:#fff;border:2px solid #fff;box-shadow:0 8px 20px rgba(0,0,0,.3)}
 #v-rates .vt-gc-gallery-base img:nth-child(1){transform:translateX(-74px) rotate(-15deg)}
 #v-rates .vt-gc-gallery-base img:nth-child(2){transform:translateX(-44px) rotate(-9deg)}
@@ -1158,7 +1158,7 @@ window.VTCircularGallery=function(container,opts){
 #v-rates .vt-3d-gallery-card.image-unavailable{color:#fff;font-size:14px;font-weight:800}
 @keyframes vtGift3DRotate{from{transform:rotateY(0deg)}to{transform:rotateY(360deg)}}
 @media(prefers-reduced-motion:reduce){#v-rates .vt-3d-gallery-ring{animation:none}}
-@media(max-width:640px){#v-rates #gcGallery.vt-3d-gallery{perspective:720px}#v-rates .vt-3d-gallery-card{width:clamp(112px,34vw,150px);height:clamp(140px,42vw,174px);margin-left:calc(clamp(112px,34vw,150px) / -2);margin-top:calc(clamp(140px,42vw,174px) / -2);transform:rotateY(calc(var(--card-index)*60deg)) translateZ(clamp(142px,42vw,174px))}}
+@media(max-width:640px){#v-rates #gcGallery.vt-3d-gallery{perspective:720px}#v-rates .vt-3d-gallery-card{width:clamp(112px,34vw,150px);height:clamp(140px,42vw,174px);margin:0;transform:translate(-50%,-50%) rotateY(calc(var(--card-index)*60deg)) translateZ(clamp(142px,42vw,174px))}}
 @media(max-width:640px){
   #v-rates>.dp-sm{padding-top:calc(8px + env(safe-area-inset-top,0px));padding-bottom:2px;border-radius:0!important;box-shadow:none!important}
   #v-rates>.dp-sm>.w{display:block;width:100%!important;max-width:none!important;margin:0 auto!important;padding:0 16px!important;text-align:center!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;box-sizing:border-box}
@@ -1238,7 +1238,16 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
 </div>
 <div class="view" id="v-rates"><section class="dp dp-sm"><div class="w"><h1>Trade Giftcard for Cash</h1><p>Pick a card to sell. Real people confirm your rate in chat.</p></div></section>
   <div class="w rv">
-    <div class="gcg" id="gcGallery"></div>
+    <div class="gcg" id="gcGallery" role="region" aria-label="Rotating gift card gallery">
+      <div class="vt-gc-gallery-base" aria-hidden="true">
+        <img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/AMZAON.png" alt="" loading="eager" decoding="async">
+        <img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/ITUNES.png" alt="" loading="eager" decoding="async">
+        <img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/PLAY%20STATION%20GALLERY.png" alt="" loading="eager" decoding="async">
+        <img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/SEPHORA.png" alt="" loading="eager" decoding="async">
+        <img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/VISA.png" alt="" loading="eager" decoding="async">
+        <img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/RAZOR.png" alt="" loading="eager" decoding="async">
+      </div>
+    </div>
     <div id="rtGift"></div>
   </div>
 </div>
@@ -2888,8 +2897,6 @@ draw();
   (function renderGiftGallery(){
     var host=$('gcGallery');if(!host)return;
     host.classList.add('circular-gallery','vt-3d-gallery');
-    var base=document.createElement('div');base.className='vt-gc-gallery-base';base.setAttribute('aria-hidden','true');
-    GALLERY_CARDS.forEach(function(card){var img=document.createElement('img');img.src=card.img;img.alt='';img.loading='eager';img.decoding='async';base.appendChild(img)});
     var ring=document.createElement('div');ring.className='vt-3d-gallery-ring';
     GALLERY_CARDS.forEach(function(card,index){
       var tile=document.createElement('div');tile.className='vt-3d-gallery-card';
@@ -2898,7 +2905,7 @@ draw();
       img.onerror=function(){tile.classList.add('image-unavailable');tile.textContent=card.n};
       tile.appendChild(img);ring.appendChild(tile);
     });
-    host.replaceChildren(base,ring);
+    host.appendChild(ring);
     host.setAttribute('role','region');host.setAttribute('aria-label','3D rotating gift card gallery');
     host.addEventListener('mouseenter',function(){ring.style.animationPlayState='paused'});
     host.addEventListener('mouseleave',function(){ring.style.animationPlayState='running'});
