@@ -401,7 +401,7 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
       </article>
       <article class="fq-item" id="q-how-do-i-contact-support" data-cat="help">
         <h3><button class="fq-q" type="button" aria-expanded="false" aria-controls="q-how-do-i-contact-support-a"><span class="fq-qt">How do I contact support?</span><span class="fq-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span></button></h3>
-        <div class="fq-a-wrap"><div class="fq-a" id="q-how-do-i-contact-support-a" role="region" aria-labelledby="q-how-do-i-contact-support"><div class="fq-a-in"><p>Ask our assistant on the website for instant answers, or talk to a representative in chat or on <a href="https://api.whatsapp.com/send?phone=2349015508108&amp;text=Hi%20VersusTrade" target="_blank" rel="noopener">WhatsApp</a>. You can also visit our <a href="/support/">Support page</a>.</p></div></div></div>
+        <div class="fq-a-wrap"><div class="fq-a" id="q-how-do-i-contact-support-a" role="region" aria-labelledby="q-how-do-i-contact-support"><div class="fq-a-in"><p>Ask our assistant on the website for instant answers, or talk to a representative in chat or on <a href="https://api.whatsapp.com/send?phone=2349015508108&amp;text=Hi%20VersusTrade" target="_blank" rel="noopener">WhatsApp</a>. You can also visit our <a href="/#support">Support page</a>.</p></div></div></div>
       </article>
       <article class="fq-item" id="q-can-i-ask-questions-before-i-trade" data-cat="help">
         <h3><button class="fq-q" type="button" aria-expanded="false" aria-controls="q-can-i-ask-questions-before-i-trade-a"><span class="fq-qt">Can I ask questions before I trade?</span><span class="fq-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span></button></h3>
@@ -424,7 +424,7 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
     <div class="fq-help">
       <h2>Still have a question?</h2>
       <p>Ask our assistant on the website, or talk to a real person on WhatsApp.</p>
-      <div class="fq-btns"><a class="fq-btn red" href="https://api.whatsapp.com/send?phone=2349015508108&amp;text=Hi%20VersusTrade%2C%20I%20have%20a%20question" target="_blank" rel="noopener">Chat on WhatsApp</a><a class="fq-btn" href="/support/">Visit Support</a></div>
+      <div class="fq-btns"><a class="fq-btn red" href="https://api.whatsapp.com/send?phone=2349015508108&amp;text=Hi%20VersusTrade%2C%20I%20have%20a%20question" target="_blank" rel="noopener">Chat on WhatsApp</a><a class="fq-btn" href="/#support">Visit Support</a></div>
     </div>
     <div class="fq-end"></div>
   </section>
@@ -494,7 +494,7 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
       { desk: true, label: 'Rates', href: '/#rates' },
       { desk: true, label: 'Support', href: '/#support' },
       { desk: true, label: 'Blog', href: '/blog/' },
-      { label: 'Log in', href: '/login/' }
+      (function () { try { if (localStorage.getItem('vt_auth_session') || sessionStorage.getItem('vt_auth_session')) return { label: 'Account', href: '/dashboard/' }; } catch (e) {} return { label: 'Log in', href: '/?login=1' }; })()
     ],
     initialActiveIndex: 3, size: 'md', frame: true, particleCount: 15, spread: 56,
     animationTime: 600, timeVariance: 300, gooeyness: 0.5, wobble: 0.5, hoverEffect: true,
