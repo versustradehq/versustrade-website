@@ -1144,7 +1144,7 @@ window.VTCircularGallery=function(container,opts){
 #v-rates .gcg{display:block!important;position:relative!important;width:100%!important;height:210px!important;min-height:210px!important;flex:none!important;overflow:hidden!important;visibility:visible!important;opacity:1!important}
 #v-rates #rtGift{padding-bottom:0;position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom,0px) + 68px + 10px);transform:translateX(-50%);width:min(calc(100% - 32px),560px);max-width:560px;z-index:59;box-sizing:border-box;padding:10px 12px 8px;border:1px solid var(--line,rgba(127,127,127,.2));border-radius:16px;background:var(--card,var(--bg,#fff));box-shadow:0 12px 34px rgba(0,0,0,.16)}
 #v-rates #rtGift .animated-list{max-width:560px;width:100%}
-#v-rates #rtGift .animated-list__viewport{overscroll-behavior:contain;max-height:min(220px,34dvh)!important;overflow-y:auto}
+#v-rates #rtGift .animated-list__viewport{overscroll-behavior:contain;max-height:min(300px,42dvh)!important;overflow-y:auto}
 #v-rates #gcGallery.circular-gallery{height:320px;min-height:320px;width:100%;position:relative;display:block;overflow:hidden;border-radius:18px;background:radial-gradient(ellipse at 50% 52%,rgba(127,127,127,.09),transparent 70%);touch-action:pan-y}
 #v-rates #gcGallery .circular-gallery-canvas{width:100%;height:100%}
 #v-rates #gcGallery .circular-gallery-label{font-size:12px;font-weight:700;letter-spacing:.01em;text-shadow:0 1px 5px rgba(0,0,0,.24)}
@@ -1156,6 +1156,7 @@ window.VTCircularGallery=function(container,opts){
   #v-rates .rv{padding-bottom:calc(300px + env(safe-area-inset-bottom,0px))}
   #v-rates #rtGift{bottom:calc(12px + env(safe-area-inset-bottom,0px) + 64px + 8px);width:calc(100% - 24px);padding:8px 9px 7px}
   #v-rates #rtGift .animated-list__viewport{max-height:min(190px,30dvh)!important}
+  #v-rates.vt-gift-intro-dismissed #rtGift .animated-list__viewport{max-height:min(300px,45dvh)!important}
 }
 @media(max-width:360px){#v-rates #rtGift{bottom:calc(12px + env(safe-area-inset-bottom,0px) + 60px + 8px)}}
 @media(max-width:340px){#v-rates #rtGift{bottom:calc(12px + env(safe-area-inset-bottom,0px) + 58px + 8px)}}
