@@ -911,7 +911,28 @@ if(t.length){window.addEventListener('scroll',spy,{passive:true});spy()}})();</s
     a.className = 'gooey-nav__link'; a.href = item.href;
     a.innerHTML = '<span class="gooey-nav__label">' + item.label + '</span>';
     if (item.auth) a.addEventListener('click', function (e) { if (window.VTAuth) { e.preventDefault(); window.VTAuth.click(); } });
-    else a.addEventListener('click', function (e) { e.preventDefault(); pick(i, true); });
+    else a.addEventListener('click', function (e) {
+      e.preventDefault();
+      var target;
+      try { target = new URL(item.href, window.location.href); } catch (err) { pick(i, true); return; }
+      var here = new URL(window.location.href);
+      if (target.origin !== here.origin || target.pathname !== here.pathname || target.search !== here.search) {
+        window.location.assign(target.href);
+        return;
+      }
+      if (target.hash) {
+        var id;
+        try { id = decodeURIComponent(target.hash.slice(1)); } catch (err) { id = target.hash.slice(1); }
+        var section = document.getElementById(id);
+        if (section) {
+          lock = Date.now() + 1000;
+          current = i; markActive(); go(i);
+          section.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+          return;
+        }
+      }
+      pick(i, true);
+    });
     li.appendChild(a); list.appendChild(li);
     var ol = document.createElement('li');
     ol.className = 'gooey-nav__item' + (item.desk ? ' gooey-nav__item--desk' : '');
