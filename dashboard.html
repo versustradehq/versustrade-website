@@ -2852,7 +2852,15 @@ draw();
     var t=c.n.replace(/ Gift Card$/,'').replace(/ Gold$/,''),f=150;x.font='800 '+f+'px Inter, sans-serif';
     while(x.measureText(t).width>680&&f>40){f-=6;x.font='800 '+f+'px Inter, sans-serif'}
     x.fillText(t,400,513);return cv.toDataURL('image/png')}
-  VTCircularGallery($('gcGallery'),{items:CARDS.map(function(c){return{image:c.img||gcTile(c),fallback:gcTile(c),text:c.n.replace(/ Gift Card$/,'')}}),
+  var GALLERY_CARDS = [
+    {n:'Amazon',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/AMZAON.png'},
+    {n:'iTunes',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/ITUNES.png'},
+    {n:'PlayStation',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/PLAY%20STATION%20GALLERY.png'},
+    {n:'Sephora',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/SEPHORA.png'},
+    {n:'Visa',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/VISA.png'},
+    {n:'Razer',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/RAZOR.png'}
+  ];
+  VTCircularGallery($('gcGallery'),{items:GALLERY_CARDS.map(function(c){return{image:c.img,text:c.n}}),
     bend:2,textColor:'#71717a',borderRadius:.05,scrollEase:.05,fadeEdges:.3,scrollSpeed:1.9,autoScroll:1,snap:false,rotateAmplitude:12,scaleOnHover:1.05,glare:.5,shadow:.5});
   var giftItems=CARDS.map(function(c){var it={title:c.n,description:'Rate confirmed in chat',meta:'Sell',metaClass:'sell'};if(c.img)it.image=c.img;else it.tile={bg:c.c,text:c.t};return it});
   VTAnimatedList($('rtGift'),{items:giftItems,animation:'pop',width:560,maxHeight:348,fadeSize:28,
