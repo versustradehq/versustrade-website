@@ -1132,6 +1132,13 @@ window.VTCircularGallery=function(container,opts){
 </script>
 <style>
 #v-rates .rv{padding-top:4px;gap:8px;padding-bottom:calc(116px + env(safe-area-inset-bottom,0px))}
+/* Animated gift-card heading: text only, no surrounding container */
+#v-rates .vt-gift-heading{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:.22em;margin:10px auto 2px;padding:0 14px;text-align:center;font-size:clamp(19px,3.8vw,27px);font-weight:900;line-height:1.25;letter-spacing:-.025em}
+#v-rates .vt-gift-name{display:inline-flex;align-items:center;justify-content:center;flex-wrap:wrap;max-width:100%;padding:.10em .30em .13em;border-radius:.16em;background:#fe3a12;color:#fff;white-space:normal;overflow:visible;vertical-align:middle;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+#v-rates .vt-gift-name .vt-gift-char{display:inline-block;animation:vtGiftCharSlide .42s cubic-bezier(.22,1,.36,1) both}
+@keyframes vtGiftCharSlide{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+@media(prefers-reduced-motion:reduce){#v-rates .vt-gift-name .vt-gift-char{animation:none}}
+@media(max-width:380px){#v-rates .vt-gift-heading{font-size:clamp(16px,4.5vw,19px);gap:.16em}}
 /* Explicitly restore the Gift Cards view's layout when it is selected.
    The shared .view:not(.on) rule collapses inactive views to zero height. */
 #v-rates.on{position:relative!important;left:auto!important;right:auto!important;top:auto!important;height:auto!important;min-height:100vh;overflow:visible!important;visibility:visible!important;pointer-events:auto!important}
@@ -1220,6 +1227,7 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
   </section>
 </div>
 <div class="view" id="v-rates">
+  <h1 class="vt-gift-heading">Trade <span class="vt-gift-name" id="vtGiftRotatingName" aria-label="Amazon Gift Card">Amazon Gift Card</span> for Cash</h1>
   <div class="w rv">
     <div class="gcg" id="gcGallery" aria-label="Supported gift cards"></div>
     <div id="rtGift"></div>
@@ -2868,6 +2876,38 @@ draw();
     {n:'Visa',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/VISA.png'},
     {n:'Razer',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/RAZOR.png'}
   ];
+  (function rotateGiftHeading(){
+    var host=$('vtGiftRotatingName');if(!host)return;
+    var names=[
+      'Amazon Gift Card',
+      'Apple / iTunes Gift Card',
+      'Google Play Gift Card',
+      'Steam Gift Card',
+      'Razer Gold Gift Card',
+      'Sephora Gift Card',
+      'Target Gift Card',
+      'Walmart Gift Card',
+      'PlayStation Gift Card',
+      'Xbox Gift Card',
+      'eBay Gift Card',
+      'Visa Gift Card'
+    ];
+    var index=0;
+    function showName(name,animate){
+      host.replaceChildren();
+      Array.from(name).forEach(function(char,i){
+        var part=document.createElement('span');
+        part.className='vt-gift-char';
+        part.textContent=char===' '?'\u00A0':char;
+        if(animate)part.style.animationDelay=((name.length-1-i)*.018)+'s';
+        host.appendChild(part);
+      });
+      host.setAttribute('aria-label',name);
+    }
+    showName(names[0],false);
+    var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.setInterval(function(){index=(index+1)%names.length;showName(names[index],!reduced)},reduced?3000:2200);
+  })();
   (function renderGiftGallery(){
     var host=$('gcGallery');if(!host||!window.VTCircularGallery)return;
     host.replaceChildren();
