@@ -3155,6 +3155,16 @@ draw();
         track.appendChild(group);
       });
       host.appendChild(track);
+      /* Wheel scrolling scrubs the infinite animation's position without exposing a scrollbar. */
+      host.addEventListener('wheel',function(e){
+        if(!window.matchMedia('(min-width: 641px)').matches)return;
+        e.preventDefault();
+        var animations=track.getAnimations?track.getAnimations():[];
+        var animation=animations&&animations[0];
+        if(animation&&typeof animation.currentTime==='number'){
+          animation.currentTime+=e.deltaY*7;
+        }
+      },{passive:false});
     }
     function renderMobile(){
       host.className='gcg';
