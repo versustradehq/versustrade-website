@@ -1141,7 +1141,7 @@ window.VTCircularGallery=function(container,opts){
 #v-rates .vt-gift-heading{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:.22em;margin:10px auto 2px;padding:0 14px;text-align:center;font-size:clamp(19px,3.8vw,27px);font-weight:900;line-height:1.25;letter-spacing:-.025em}
 #v-rates .vt-gift-name{display:inline-flex;align-items:center;justify-content:center;flex-wrap:wrap;max-width:100%;padding:.10em .30em .13em;border-radius:.16em;background:#fe3a12;color:#fff;white-space:normal;overflow:visible;vertical-align:middle;box-decoration-break:clone;-webkit-box-decoration-break:clone}
 #v-rates .vt-gift-name .vt-gift-char{display:inline-block;animation:vtGiftCharSlide .42s cubic-bezier(.22,1,.36,1) both}
-@keyframes vtGiftCharSlide{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes vtGiftCharSlide{from{transform:translateX(-100%);opacity:0}to{transform:translateX(0);opacity:1}}
 @media(prefers-reduced-motion:reduce){#v-rates .vt-gift-name .vt-gift-char{animation:none}}
 @media(max-width:380px){#v-rates .vt-gift-heading{font-size:clamp(16px,4.5vw,19px);gap:.16em}}
 /* Explicitly restore the Gift Cards view's layout when it is selected.
@@ -3114,7 +3114,7 @@ draw();
         var part=document.createElement('span');
         part.className='vt-gift-char';
         part.textContent=char===' '?'\u00A0':char;
-        if(animate)part.style.animationDelay=((name.length-1-i)*.018)+'s';
+        if(animate)part.style.animationDelay=(i*.018)+'s';
         host.appendChild(part);
       });
       host.setAttribute('aria-label',name);
