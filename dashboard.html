@@ -1145,36 +1145,11 @@ window.VTCircularGallery=function(container,opts){
 #v-rates #rtGift{padding-bottom:12px}
 #v-rates #rtGift .animated-list{max-width:560px}
 #v-rates #rtGift .animated-list__viewport{overscroll-behavior:contain}
-/* Keep the original circular-gallery surface as the base; the 3D carousel is a separate overlay layer. */
-#v-rates #gcGallery.vt-3d-gallery{height:100%;min-height:0;width:100%;position:relative;display:block;overflow:hidden;touch-action:pan-y;user-select:none;-webkit-user-select:none;perspective:950px;perspective-origin:50% 48%;isolation:isolate;background:transparent}
-#v-rates #gcGallery.vt-3d-gallery::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit;background:radial-gradient(ellipse at 50% 48%,rgba(127,127,127,.10),transparent 68%)}
-#v-rates .vt-gc-gallery-base{position:absolute;inset:0;z-index:1;display:block!important;pointer-events:none;visibility:visible!important;opacity:1!important}
-#v-rates .vt-gc-gallery-base img{position:absolute;display:block!important;left:50%;top:50%;width:clamp(74px,11vw,98px);height:clamp(94px,14vw,122px);object-fit:contain;border-radius:10px;background:#fff;border:2px solid #fff;box-shadow:0 8px 20px rgba(0,0,0,.3);opacity:1!important;visibility:visible!important}
-#v-rates .vt-gc-gallery-base img:nth-child(1){z-index:1;transform:translate(-50%,-50%) translateX(-74px) rotate(-15deg)}
-#v-rates .vt-gc-gallery-base img:nth-child(2){z-index:2;transform:translate(-50%,-50%) translateX(-44px) rotate(-9deg)}
-#v-rates .vt-gc-gallery-base img:nth-child(3){z-index:3;transform:translate(-50%,-50%) translateX(-14px) rotate(-3deg)}
-#v-rates .vt-gc-gallery-base img:nth-child(4){z-index:4;transform:translate(-50%,-50%) translateX(16px) rotate(3deg)}
-#v-rates .vt-gc-gallery-base img:nth-child(5){z-index:5;transform:translate(-50%,-50%) translateX(46px) rotate(9deg)}
-#v-rates .vt-gc-gallery-base img:nth-child(6){z-index:6;transform:translate(-50%,-50%) translateX(76px) rotate(15deg)}
-#v-rates .vt-3d-gallery-ring{position:absolute;inset:0;z-index:2;transform-style:preserve-3d;animation:vtGift3DRotate 34s linear infinite;will-change:transform;pointer-events:none}
-#v-rates .vt-3d-gallery-card{position:absolute;left:50%;top:50%;width:clamp(132px,19vw,178px);height:clamp(158px,22vw,196px);margin:0;overflow:hidden;border-radius:14px;display:flex;align-items:center;justify-content:center;background:#191919;backface-visibility:hidden;transform:translate(-50%,-50%) rotateY(calc(var(--card-index)*60deg)) translateZ(clamp(170px,25vw,235px));box-shadow:0 14px 30px rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.12)}
-#v-rates .vt-3d-gallery-card img{display:block;width:100%;height:100%;object-fit:contain}
-#v-rates .vt-3d-gallery-card.image-unavailable{color:#fff;font-size:14px;font-weight:800}
-@keyframes vtGift3DRotate{from{transform:rotateY(0deg)}to{transform:rotateY(360deg)}}
-@media(prefers-reduced-motion:reduce){#v-rates .vt-3d-gallery-ring{animation:none}}
-@media(max-width:640px){#v-rates #gcGallery.vt-3d-gallery{perspective:720px}#v-rates .vt-3d-gallery-card{width:clamp(112px,34vw,150px);height:clamp(140px,42vw,174px);margin:0;transform:translate(-50%,-50%) rotateY(calc(var(--card-index)*60deg)) translateZ(clamp(142px,42vw,174px))}}
-@media(max-width:640px){
-  #v-rates>.dp-sm{padding-top:calc(8px + env(safe-area-inset-top,0px));padding-bottom:2px;border-radius:0!important;box-shadow:none!important}
-  #v-rates>.dp-sm>.w{display:block;width:100%!important;max-width:none!important;margin:0 auto!important;padding:0 16px!important;text-align:center!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;box-sizing:border-box}
-  #v-rates>.dp-sm>.w>h1,#v-rates>.dp-sm>.w>p{display:block;width:100%;margin-left:auto!important;margin-right:auto!important;text-align:center!important}
-  #v-rates .rv{padding-top:0;gap:5px;padding-bottom:calc(112px + env(safe-area-inset-bottom,0px))}
-  #v-rates .gcg{height:clamp(168px,29vh,205px)}
-  #v-rates #rtGift .animated-list__viewport{max-height:max(150px,calc(100vh - 370px))!important;max-height:max(150px,calc(100dvh - 370px))!important}
-}
-@media(max-height:700px) and (max-width:640px){
-  #v-rates .gcg{height:clamp(145px,25vh,175px)}
-  #v-rates #rtGift .animated-list__viewport{max-height:max(130px,calc(100vh - 325px))!important;max-height:max(130px,calc(100dvh - 325px))!important}
-}
+#v-rates #gcGallery.circular-gallery{height:280px;min-height:280px;width:100%;position:relative;display:block;overflow:hidden;border-radius:18px;background:radial-gradient(ellipse at 50% 52%,rgba(127,127,127,.09),transparent 70%);touch-action:pan-y}
+#v-rates #gcGallery .circular-gallery-canvas{width:100%;height:100%}
+#v-rates #gcGallery .circular-gallery-label{font-size:12px;font-weight:700;letter-spacing:.01em;text-shadow:0 1px 5px rgba(0,0,0,.24)}
+@media(max-width:640px){#v-rates #gcGallery.circular-gallery{height:250px;min-height:250px}}
+@media(prefers-reduced-motion:reduce){#v-rates #gcGallery.circular-gallery{scroll-behavior:auto}}
 </style>
 
 <style>
@@ -1242,16 +1217,7 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
 </div>
 <div class="view" id="v-rates"><section class="dp dp-sm"><div class="w"><h1>Trade Giftcard for Cash</h1><p>Pick a card to sell. Real people confirm your rate in chat.</p></div></section>
   <div class="w rv">
-    <div class="gcg" id="gcGallery" role="region" aria-label="Rotating gift card gallery">
-      <div class="vt-gc-gallery-base" aria-hidden="true">
-        <img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/AMZAON.png" alt="" loading="eager" decoding="async">
-        <img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/ITUNES.png" alt="" loading="eager" decoding="async">
-        <img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/PLAY%20STATION%20GALLERY.png" alt="" loading="eager" decoding="async">
-        <img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/SEPHORA.png" alt="" loading="eager" decoding="async">
-        <img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/VISA.png" alt="" loading="eager" decoding="async">
-        <img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/RAZOR.png" alt="" loading="eager" decoding="async">
-      </div>
-    </div>
+    <div class="gcg" id="gcGallery" aria-label="Supported gift cards"></div>
     <div id="rtGift"></div>
   </div>
 </div>
@@ -2899,22 +2865,16 @@ draw();
     {n:'Razer',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/RAZOR.png'}
   ];
   (function renderGiftGallery(){
-    var host=$('gcGallery');if(!host)return;
-    host.classList.add('circular-gallery','vt-3d-gallery');
-    var ring=document.createElement('div');ring.className='vt-3d-gallery-ring';
-    GALLERY_CARDS.forEach(function(card,index){
-      var tile=document.createElement('div');tile.className='vt-3d-gallery-card';
-      tile.style.setProperty('--card-index',index);
-      var img=document.createElement('img');img.src=card.img;img.alt=card.n+' gift card';img.loading=index<3?'eager':'lazy';img.decoding='async';
-      img.onerror=function(){tile.classList.add('image-unavailable');tile.textContent=card.n};
-      tile.appendChild(img);ring.appendChild(tile);
+    var host=$('gcGallery');if(!host||!window.VTCircularGallery)return;
+    host.replaceChildren();
+    window.VTCircularGallery(host,{
+      items:GALLERY_CARDS.map(function(card){return{image:card.img,text:card.n}}),
+      bend:3,textColor:'var(--vt-ink, #777777)',borderRadius:.055,
+      scrollSpeed:1.35,scrollEase:.065,itemSize:.88,itemAspect:.78,
+      gap:.28,wave:1,fadeEdges:.10,shadow:.28,showTitles:true,
+      snap:true,intro:true,scaleOnHover:1.045,rotateAmplitude:10,
+      smoothness:.62,glare:.35
     });
-    host.appendChild(ring);
-    host.setAttribute('role','region');host.setAttribute('aria-label','3D rotating gift card gallery');
-    host.addEventListener('mouseenter',function(){ring.style.animationPlayState='paused'});
-    host.addEventListener('mouseleave',function(){ring.style.animationPlayState='running'});
-    host.addEventListener('touchstart',function(){ring.style.animationPlayState='paused'},{passive:true});
-    host.addEventListener('touchend',function(){ring.style.animationPlayState='running'},{passive:true});
   })();
   var giftItems=CARDS.map(function(c){var it={title:c.n,description:'Rate confirmed in chat',meta:'Sell',metaClass:'sell'};if(c.img)it.image=c.img;else it.tile={bg:c.c,text:c.t};return it});
   VTAnimatedList($('rtGift'),{items:giftItems,animation:'pop',width:560,maxHeight:348,fadeSize:28,
