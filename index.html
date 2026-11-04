@@ -501,7 +501,7 @@ html.ac-on [data-ac]>*:not([data-ac-in]){opacity:0}
 .fb-stage{position:fixed;left:0;right:0;top:0;bottom:24px;width:auto;height:auto;z-index:125;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .45s ease,visibility 0s linear .45s}
 .fb-stage.on{opacity:1;visibility:visible;transition:opacity .45s ease}
 .fb-stage .flying-button__craft{pointer-events:auto}
-.flying-button__smoke{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+.flying-button__smoke{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;/* Feather the simulation boundary so the exhaust reads as drifting smoke, not a rectangular overlay. */-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 72%,rgba(0,0,0,.92) 82%,rgba(0,0,0,.55) 91%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0%,#000 72%,rgba(0,0,0,.92) 82%,rgba(0,0,0,.55) 91%,transparent 100%)}
 .flying-button__craft{position:absolute;left:0;top:0;z-index:1;display:inline-flex;align-items:center;justify-content:center;height:var(--fly-h);margin:0;padding:0 var(--fly-px);border:0;border-radius:calc(var(--fly-h)/2);background:var(--fly-bg);color:var(--fly-ink);font-family:inherit;font-size:var(--fly-fs);font-weight:500;line-height:1;letter-spacing:.01em;white-space:nowrap;cursor:pointer;outline:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;touch-action:none;transform-origin:50% 50%;will-change:transform;visibility:hidden}
 .flying-button[data-ready] .flying-button__craft{visibility:visible}
 .flying-button__craft:focus-visible{outline:2px solid color-mix(in srgb,var(--fly-ink) 60%,transparent);outline-offset:3px}
