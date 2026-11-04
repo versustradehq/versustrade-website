@@ -114,7 +114,7 @@
       '<div class="vc-rec"><button type="button" class="vc-attach" id="vcRecCancel" aria-label="Cancel recording">' + svg(P.trash) + '</button><span class="vc-recdot"></span><span class="vc-rect" id="vcRecTime">0:00</span><span class="vc-recl">Recording\u2026</span>' +
       '<button type="button" class="vc-send" id="vcRecSend" aria-label="Send voice note">' + svg(P.sendArrow, ' stroke-width="2.2"') + '</button></div></form>' +
       '<div class=\"vc-end\" id=\"vcEnd\"><span>Your conversation has ended</span><button type=\"button\" class=\"vc-act\" id=\"vcNew\">Start a new conversation</button></div>' +
-      '<p class="vc-note">Never share your password or seed phrase in chat.</p></div>' +
+      '</div>' +
     '<nav class="vc-tabs" aria-label="Chat sections"><button type="button" data-go="home">' + svg(P.home) + '<span>Home</span></button>' +
       '<button type="button" data-go="messages">' + svg(P.chat) + '<span>Messages</span><i class="vc-badge" id="vcBadge" hidden></i></button>' +
       '<button type="button" data-go="tickets">' + svg(P.ticket, ' class="vc-tkn"') + '<span>Tickets</span></button></nav>';
