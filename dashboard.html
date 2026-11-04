@@ -1668,6 +1668,53 @@ draw();
   })();
 </script>
 <script>
+// Reflective live-rate card: match the homepage's automatic sheen sweep and pointer response.
+(function () {
+  var c = document.getElementById('rtCard'); if (!c) return;
+  var still = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if (still) return;
+
+  var sweeping = false, hovering = false, timer = null, px = 0;
+  function sweep() {
+    if (sweeping || hovering) return;
+    var from = px, to = px >= .5 ? 0 : 1, t0 = performance.now(), dur = 2600;
+    sweeping = true; c.classList.add('sweeping');
+    (function step(now) {
+      if (!sweeping) { c.classList.remove('sweeping'); return; }
+      var p = Math.min(1, (now - t0) / dur), k = p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+      px = from + (to - from) * k;
+      c.style.setProperty('--px', px.toFixed(3));
+      c.style.setProperty('--mx', (-15 + px * 130).toFixed(1) + '%');
+      if (p < 1) requestAnimationFrame(step); else { sweeping = false; c.classList.remove('sweeping'); }
+    })(t0);
+  }
+  function startLoop() { if (timer) return; sweep(); timer = setInterval(sweep, 10000); }
+  function stopLoop() { clearInterval(timer); timer = null; sweeping = false; }
+  c.style.setProperty('--px', '0'); c.style.setProperty('--mx', '-15%'); c.style.setProperty('--my', '35%');
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (en) {
+      if (en[0].isIntersecting) startLoop(); else stopLoop();
+    }, { threshold: .6 }).observe(c);
+  } else { startLoop(); }
+
+  c.addEventListener('pointermove', function (e) {
+    if (e.pointerType === 'touch') return;
+    hovering = true; sweeping = false;
+    var r = c.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+    px = x;
+    c.style.setProperty('--px', x.toFixed(3));
+    c.style.setProperty('--mx', (x * 100).toFixed(1) + '%');
+    c.style.setProperty('--my', (y * 100).toFixed(1) + '%');
+    c.style.setProperty('--rx', ((.5 - y) * 6).toFixed(2) + 'deg');
+    c.style.setProperty('--ry', ((x - .5) * 8).toFixed(2) + 'deg');
+  });
+  c.addEventListener('pointerleave', function () {
+    hovering = false;
+    c.style.setProperty('--rx', '0deg'); c.style.setProperty('--ry', '0deg');
+  });
+})();
+</script>
+<script>
 
 (function () {
   // ---- Settings ----
