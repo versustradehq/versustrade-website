@@ -381,7 +381,7 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
   <p>Questions about this policy, or want to use your rights? Message us and tell us what you need. Please do not include passwords, PINs, OTPs or seed phrases.</p>
   <div class="contact">
     <a class="cbtn red" href="https://api.whatsapp.com/send?phone=2349015508108&amp;text=Hi%20VersusTrade%2C%20I%20have%20a%20privacy%20request" target="_blank" rel="noopener">Message us on WhatsApp</a>
-    <a class="cbtn" href="/support/">Open support</a>
+    <a class="cbtn" href="/#support">Open support</a>
   </div>
 </section>
 </article>
@@ -396,7 +396,7 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
       <a href="/terms/">Terms of Use</a>
       <a href="/privacy/">Privacy Policy</a>
       <a href="/security/">Security</a>
-      <a href="/support/">Support</a>
+      <a href="/#support">Support</a>
     </nav>
   </div>
 </footer>
@@ -410,7 +410,7 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
       { desk: true, label: 'Markets', href: '/#markets' },
       { desk: true, label: 'Rates', href: '/#rates' },
       { desk: true, label: 'Support', href: '/#support' },
-      { label: 'Log in', href: '/login/' }
+      (function () { try { if (localStorage.getItem('vt_auth_session') || sessionStorage.getItem('vt_auth_session')) return { label: 'Account', href: '/dashboard/' }; } catch (e) {} return { label: 'Log in', href: '/?login=1' }; })()
     ],
     initialActiveIndex: 0, size: 'md', frame: true, particleCount: 15, spread: 56,
     animationTime: 600, timeVariance: 300, gooeyness: 0.5, wobble: 0.5, hoverEffect: true,
