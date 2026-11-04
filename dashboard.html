@@ -1142,13 +1142,23 @@ window.VTCircularGallery=function(container,opts){
 #v-rates.on{position:relative!important;left:auto!important;right:auto!important;top:auto!important;height:auto!important;min-height:100vh;overflow:visible!important;visibility:visible!important;pointer-events:auto!important}
 #v-rates .rv{display:grid!important;grid-template-columns:minmax(0,1fr);width:min(100% - 32px,720px);margin:0 auto;min-width:0}
 #v-rates .gcg{display:block!important;position:relative!important;width:100%!important;height:210px!important;min-height:210px!important;flex:none!important;overflow:hidden!important;visibility:visible!important;opacity:1!important}
-#v-rates #rtGift{padding-bottom:12px}
-#v-rates #rtGift .animated-list{max-width:560px}
-#v-rates #rtGift .animated-list__viewport{overscroll-behavior:contain}
+#v-rates #rtGift{padding-bottom:0;position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom,0px) + 68px + 10px);transform:translateX(-50%);width:min(calc(100% - 32px),560px);max-width:560px;z-index:59;box-sizing:border-box;padding:10px 12px 8px;border:1px solid var(--line,rgba(127,127,127,.2));border-radius:16px;background:var(--card,var(--bg,#fff));box-shadow:0 12px 34px rgba(0,0,0,.16)}
+#v-rates #rtGift .animated-list{max-width:560px;width:100%}
+#v-rates #rtGift .animated-list__viewport{overscroll-behavior:contain;max-height:min(220px,34dvh)!important;overflow-y:auto}
 #v-rates #gcGallery.circular-gallery{height:320px;min-height:320px;width:100%;position:relative;display:block;overflow:hidden;border-radius:18px;background:radial-gradient(ellipse at 50% 52%,rgba(127,127,127,.09),transparent 70%);touch-action:pan-y}
 #v-rates #gcGallery .circular-gallery-canvas{width:100%;height:100%}
 #v-rates #gcGallery .circular-gallery-label{font-size:12px;font-weight:700;letter-spacing:.01em;text-shadow:0 1px 5px rgba(0,0,0,.24)}
-@media(max-width:640px){#v-rates #gcGallery.circular-gallery{height:250px;min-height:250px}}
+#v-rates .rv{padding-bottom:calc(330px + env(safe-area-inset-bottom,0px))}
+#v-rates.vt-gift-intro-dismissed>.dp-sm{display:none}
+@media(max-width:640px){
+  #v-rates .gcg{height:280px!important;min-height:280px!important}
+  #v-rates #gcGallery.circular-gallery{height:280px;min-height:280px}
+  #v-rates .rv{padding-bottom:calc(300px + env(safe-area-inset-bottom,0px))}
+  #v-rates #rtGift{bottom:calc(12px + env(safe-area-inset-bottom,0px) + 64px + 8px);width:calc(100% - 24px);padding:8px 9px 7px}
+  #v-rates #rtGift .animated-list__viewport{max-height:min(190px,30dvh)!important}
+}
+@media(max-width:360px){#v-rates #rtGift{bottom:calc(12px + env(safe-area-inset-bottom,0px) + 60px + 8px)}}
+@media(max-width:340px){#v-rates #rtGift{bottom:calc(12px + env(safe-area-inset-bottom,0px) + 58px + 8px)}}
 @media(prefers-reduced-motion:reduce){#v-rates #gcGallery.circular-gallery{scroll-behavior:auto}}
 </style>
 
@@ -1215,7 +1225,7 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
     </div>
   </section>
 </div>
-<div class="view" id="v-rates"><section class="dp dp-sm"><div class="w"><h1>Trade Giftcard for Cash</h1><p>Pick a card to sell. Real people confirm your rate in chat.</p></div></section>
+<div class="view" id="v-rates"><section class="dp dp-sm" id="vtGiftIntro"><div class="w"><h1>Trade Giftcard for Cash</h1><p>Pick a card to sell. Real people confirm your rate in chat.</p></div></section>
   <div class="w rv">
     <div class="gcg" id="gcGallery" aria-label="Supported gift cards"></div>
     <div id="rtGift"></div>
@@ -2864,13 +2874,29 @@ draw();
     {n:'Visa',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/VISA.png'},
     {n:'Razer',img:'https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/RAZOR.png'}
   ];
+  (function giftIntroMemory(){
+    var view=$('v-rates'),intro=$('vtGiftIntro');
+    if(!view||!intro||!window.matchMedia('(max-width: 640px)').matches)return;
+    var key='vtGiftIntroViewed';
+    try{if(localStorage.getItem(key)==='1')view.classList.add('vt-gift-intro-dismissed')}catch(e){}
+    if(!('IntersectionObserver' in window))return;
+    var observer=new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting&&entry.intersectionRatio>=.5){
+          try{localStorage.setItem(key,'1')}catch(e){}
+          observer.disconnect();
+        }
+      });
+    },{threshold:[.5]});
+    observer.observe(intro);
+  })();
   (function renderGiftGallery(){
     var host=$('gcGallery');if(!host||!window.VTCircularGallery)return;
     host.replaceChildren();
     window.VTCircularGallery(host,{
       items:GALLERY_CARDS.map(function(card){return{image:card.img,text:card.n}}),
       bend:3,textColor:'var(--vt-ink, #777777)',borderRadius:.055,
-      scrollSpeed:1.35,scrollEase:.065,autoScroll:1.05,itemSize:window.matchMedia('(min-width: 641px)').matches?1.08:.88,itemAspect:.78,
+      scrollSpeed:1.35,scrollEase:.065,autoScroll:1.05,itemSize:window.matchMedia('(min-width: 641px)').matches?1.08:1.08,itemAspect:.78,
       gap:.28,wave:1,fadeEdges:.10,shadow:.28,showTitles:true,
       snap:true,intro:true,scaleOnHover:1.045,rotateAmplitude:10,
       smoothness:.62,glare:.35,
