@@ -600,6 +600,12 @@ position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom,0px));tran
 .animated-list__frame-rim{position:absolute;inset:0;z-index:3;border-radius:inherit;box-shadow:inset 0 0 0 1px var(--al-frame-edge),inset 0 1px 0 var(--al-frame-highlight);pointer-events:none}
 .animated-list__viewport{--al-fade-top:0px;--al-fade-bottom:0px;position:relative;box-sizing:border-box;padding:6px;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;border-radius:calc(var(--al-radius) + 6px);outline:none;scrollbar-width:thin;scrollbar-color:var(--al-thumb) transparent}
 .animated-list__viewport::-webkit-scrollbar{width:6px}.animated-list__viewport::-webkit-scrollbar-track{background:transparent}.animated-list__viewport::-webkit-scrollbar-thumb{border-radius:3px;background:var(--al-thumb)}
+/* Keep the gift-card scrollbar hidden until the user starts scrolling. */
+#v-rates #rtGift .animated-list__viewport{scrollbar-width:none;scrollbar-color:transparent transparent}
+#v-rates #rtGift .animated-list__viewport::-webkit-scrollbar{width:0;height:0}
+#v-rates #rtGift .animated-list__viewport.is-scrolling{scrollbar-width:thin;scrollbar-color:var(--muted) transparent}
+#v-rates #rtGift .animated-list__viewport.is-scrolling::-webkit-scrollbar{width:6px}
+#v-rates #rtGift .animated-list__viewport.is-scrolling::-webkit-scrollbar-thumb{background:var(--muted);border-radius:20px}
 .animated-list__viewport--bare{scrollbar-width:none}.animated-list__viewport--bare::-webkit-scrollbar{display:none}
 .animated-list__track{position:relative;display:flex;flex-direction:column;gap:var(--al-gap)}
 .animated-list__item{position:relative;display:flex;align-items:center;gap:12px;min-width:0;padding:10px 14px 10px 10px;box-sizing:border-box;border-radius:var(--al-radius);background:var(--al-tile);box-shadow:var(--al-tile-shadow);color:var(--al-ink);cursor:pointer;user-select:none;-webkit-user-select:none}
@@ -799,6 +805,9 @@ window.VTAnimatedList=function(root,opts){
   viewport.setAttribute('role','listbox');viewport.tabIndex=0;viewport.style.maxHeight=px(o.maxHeight);
   if(o.showGradients){viewport.style.maskImage=FADE_MASK;viewport.style.webkitMaskImage=FADE_MASK}
   var track=el('div','animated-list__track');
+  var scrollFadeTimer=0;
+  function revealScrollbar(){viewport.classList.add('is-scrolling');clearTimeout(scrollFadeTimer);scrollFadeTimer=setTimeout(function(){viewport.classList.remove('is-scrolling')},900)}
+  ['scroll','wheel','touchmove','pointerdown','keydown'].forEach(function(type){viewport.addEventListener(type,revealScrollbar,{passive:type!=='keydown'})});
   var indicator=el('span','animated-list__indicator');indicator.setAttribute('aria-hidden','true');
   var ring=el('span','animated-list__ring');indicator.appendChild(ring);
 
