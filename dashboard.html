@@ -653,6 +653,8 @@ button.av-big:focus-visible{outline:2px solid var(--red);outline-offset:3px}
 .dock-item.trade .dock-face{background:linear-gradient(145deg,#F0384A,#C9121F);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.22),inset 0 1px 0 rgba(255,255,255,.35),0 8px 18px -8px rgba(225,29,46,.7)}
 .dock-item.on:after{content:"";position:absolute;left:50%;bottom:-6px;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--dock-ink);opacity:.6}
 @media(max-width:480px){.dock{--dock-base:46px;--dock-thickness:64px;--dock-pad:9px;--dock-gap:8px}}
+/* Bring the bottom dock closer to the market-price panel on the Trade view. */
+@media(max-width:640px){body:has(#v-trade.on) .dock{bottom:calc(32px + env(safe-area-inset-bottom,0px))}}
 @media(max-width:340px){.dock{--dock-base:40px;--dock-thickness:58px;--dock-pad:8px;--dock-gap:6px}}
 :root{--pill-bg-1:color-mix(in oklch,var(--text) 3%,transparent);--pill-bg-2:color-mix(in oklch,var(--text) 1%,transparent);--pill-shadow:color-mix(in oklch,var(--bg) 50%,transparent);--pill-hl:color-mix(in oklch,var(--text) 10%,transparent);--pill-inset:color-mix(in oklch,var(--bg) 80%,transparent);--pill-border:color-mix(in oklch,var(--text) 10%,transparent)}
 .vt-hp .tm-grid.solo{grid-template-columns:minmax(0,1fr)}
