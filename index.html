@@ -799,6 +799,27 @@ button, a, [role="button"], [role="tab"], [role="menuitem"], label, input[type="
 button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-user-select: none; user-select: none; }
 </style>
 
+<style id="vt-tutorial-player-styles">
+/* Website tutorial player: full-screen first, then a floating mini-player. */
+.vt-tutorial-player{position:fixed;inset:0;z-index:1500;display:grid;place-items:center;padding:64px 18px 18px;background:rgba(0,0,0,.96);color:#fff}
+.vt-tutorial-player video{display:block;width:min(94vw,1500px);height:min(84vh,calc(100dvh - 86px));object-fit:contain;background:#000}
+.vt-tutorial-bar{position:absolute;top:max(14px,env(safe-area-inset-top));left:18px;right:18px;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:12px;color:#fff;font-family:inherit;font-size:14px;font-weight:600;line-height:1.3}
+.vt-tutorial-controls{display:flex;align-items:center;gap:8px}
+.vt-tutorial-control{width:42px;height:42px;padding:0;border:1px solid rgba(255,255,255,.28);border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.14);color:#fff;font:700 25px/1 Arial,sans-serif;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.vt-tutorial-control:hover{background:rgba(255,255,255,.26)}
+.vt-tutorial-restore,.vt-tutorial-close{display:none}
+.vt-tutorial-player.is-mini{inset:auto 18px calc(100px + env(safe-area-inset-bottom,0px)) auto;width:min(360px,calc(100vw - 28px));height:auto;padding:10px;display:block;border:1px solid rgba(255,255,255,.16);border-radius:18px;background:#111;box-shadow:0 18px 55px rgba(0,0,0,.42);overflow:hidden}
+.vt-tutorial-player.is-mini video{width:100%;height:auto;max-height:none;aspect-ratio:16/9;object-fit:contain;border-radius:11px}
+.vt-tutorial-player.is-mini .vt-tutorial-bar{position:relative;inset:auto;margin:0 0 8px;font-size:12px}
+.vt-tutorial-player.is-mini .vt-tutorial-minimize{display:none}
+.vt-tutorial-player.is-mini .vt-tutorial-restore,.vt-tutorial-player.is-mini .vt-tutorial-close{display:grid}
+.vt-tutorial-player button:focus-visible{outline:2px solid #fe3a12;outline-offset:3px}
+@media(max-width:640px){
+ .vt-tutorial-player{padding:62px 10px 10px}
+ .vt-tutorial-player video{width:100%;height:calc(100dvh - 76px)}
+ .vt-tutorial-bar{left:12px;right:12px}
+ .vt-tutorial-player.is-mini{right:12px;bottom:calc(94px + env(safe-area-inset-bottom,0px));width:min(300px,calc(100vw - 24px))}
+}</style>
 </head>
 <body>
 
@@ -957,7 +978,7 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
         <div>
           <h2>How to use our site</h2>
           <p class="rt-text">Here&rsquo;s how easy it is to get started on our platform. Watch the video to get up and running fast.</p>
-          <button type="button" class="btn red rt-watch" id="rtWatch"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M6 4l14 8-14 8z"/></svg> Watch this video</button>
+          <button type="button" class="btn red rt-watch" id="rtWatch" data-vt-tutorial-open><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M6 4l14 8-14 8z"/></svg> Watch this video</button>
         </div>
       </div>
     </div>
@@ -1196,9 +1217,64 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
   document.addEventListener('fullscreenchange', function () { if (!document.fullscreenElement && box) closeVideo(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeVideo(); });
   v.addEventListener('click', openVideo);
-  document.getElementById('rtWatch').addEventListener('click', openVideo);
+  
 })();
 </script>
+
+<script id="vt-tutorial-player">
+(function(){
+  var URL="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/website%20demo.mp4",box=null,video=null,lastTrigger=null,previousOverflow='';
+  function makeButton(cls,label,content){
+    var b=document.createElement('button');
+    b.type='button';b.className='vt-tutorial-control '+cls;b.setAttribute('aria-label',label);b.title=label;b.innerHTML=content;
+    return b;
+  }
+  function minimize(){
+    if(!box||box.classList.contains('is-mini'))return;
+    box.classList.add('is-mini');box.setAttribute('aria-modal','false');
+    document.body.style.overflow=previousOverflow;
+    box.querySelector('.vt-tutorial-restore').focus({preventScroll:true});
+  }
+  function restore(){
+    if(!box||!box.classList.contains('is-mini'))return;
+    box.classList.remove('is-mini');box.setAttribute('aria-modal','true');
+    document.body.style.overflow='hidden';
+    box.querySelector('.vt-tutorial-minimize').focus({preventScroll:true});
+  }
+  function close(){
+    if(!box)return;
+    try{video.pause();video.removeAttribute('src');video.load()}catch(e){}
+    box.remove();box=null;video=null;document.body.style.overflow=previousOverflow;
+    if(lastTrigger&&lastTrigger.focus)lastTrigger.focus({preventScroll:true});
+    lastTrigger=null;
+  }
+  function open(trigger){
+    if(box){if(box.classList.contains('is-mini'))restore();return}
+    lastTrigger=trigger||null;previousOverflow=document.body.style.overflow;
+    box=document.createElement('div');box.className='vt-tutorial-player';
+    box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');box.setAttribute('aria-label','How to use the website video');
+    var bar=document.createElement('div');bar.className='vt-tutorial-bar';
+    var title=document.createElement('span');title.textContent='How to use the website';
+    var controls=document.createElement('div');controls.className='vt-tutorial-controls';
+    var mini=makeButton('vt-tutorial-minimize','Exit player and keep video playing in the corner','&minus;');
+    var expand=makeButton('vt-tutorial-restore','Expand video player','&#8599;');
+    var cancel=makeButton('vt-tutorial-close','Close video and stop playback','&times;');
+    mini.addEventListener('click',minimize);expand.addEventListener('click',restore);cancel.addEventListener('click',close);
+    controls.appendChild(mini);controls.appendChild(expand);controls.appendChild(cancel);bar.appendChild(title);bar.appendChild(controls);
+    video=document.createElement('video');video.src=URL;video.controls=true;video.autoplay=true;video.playsInline=true;video.preload='metadata';
+    video.setAttribute('playsinline','');video.setAttribute('aria-label','How to use the VersusTrade website');
+    box.appendChild(bar);box.appendChild(video);document.body.appendChild(box);document.body.style.overflow='hidden';
+    var p=video.play();if(p&&p.catch)p.catch(function(){});
+    mini.focus({preventScroll:true});
+  }
+  document.querySelectorAll('[data-vt-tutorial-open]').forEach(function(btn){btn.addEventListener('click',function(){open(btn)})});
+  document.addEventListener('keydown',function(e){
+    if(!box||e.key!=='Escape')return;
+    if(!box.classList.contains('is-mini')){e.preventDefault();minimize()}
+  });
+})();
+</script>
+
 <script>
 (function () {
   // ---- Settings ----
