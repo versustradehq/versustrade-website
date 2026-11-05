@@ -170,7 +170,11 @@
   function qtyStr(n) { return Number(n).toFixed(8).replace(/\.?0+$/, ''); }
   function waLink(text) { return 'https://api.whatsapp.com/send?phone=' + CHAT.whatsapp + '&text=' + encodeURIComponent(text || 'Hi VersusTrade'); }
   function telegramLink(text) { return 'https://t.me/+2349015508108?text=' + encodeURIComponent(text || 'Hi VersusTrade'); }
-  function tradeText(t) { if (t.custom) return t.custom; return 'Hi VersusTrade, I want to ' + t.side + ' ' + qtyStr(t.qty) + ' ' + t.asset + (t.network ? ' on ' + t.network : '') + ' (about ' + money(t.currency, t.amount) + ').'; }
+  function tradeText(t) {
+    if (t.card) return giftText(t);
+    if (t.custom) return t.custom;
+    return 'Hi VersusTrade,\nI want to ' + t.side + ' ' + qtyStr(t.qty) + ' ' + t.asset + (t.network ? '\non ' + t.network : '') + '\n(' + money(t.currency, t.amount) + ').';
+  }
   var lastTrade = null;
   function refreshWa() { var msg = lastTrade ? tradeText(lastTrade) : 'Hi VersusTrade'; wa.href = waLink(msg); if (tg) tg.href = telegramLink(msg); }
   function pause(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
@@ -517,7 +521,7 @@
   function who() { return window.VTAuth && window.VTAuth.user ? window.VTAuth.user() : null; }
   // the name the customer chose on the dashboard, or the first part of their email
   function shownName(u) { if (!u) return ''; if (u.name) return u.name; var n = u.email ? u.email.split('@')[0] : ''; return n ? n.charAt(0).toUpperCase() + n.slice(1) : ''; }
-  function tradeLine(t) { return t.side + ' ' + qtyStr(t.qty) + ' ' + t.asset + (t.network ? ' on ' + t.network : '') + ' (about ' + money(t.currency, t.amount) + ')'; }
+  function tradeLine(t) { return t.side + ' ' + qtyStr(t.qty) + ' ' + t.asset + (t.network ? ' on ' + t.network : '') + ' (' + money(t.currency, t.amount) + ')'; }
   function transcript() {
     var u = who(), lines = [];
     S.msgs.slice(-10).forEach(function (m) {
@@ -786,7 +790,7 @@
     pause(1100).then(function () {
       var word = t.side === 'buy' ? 'buy' : 'sell';
       if (CHAT.isLoggedIn()) botSay({ text: 'Thanks, I\u2019ve received your request to ' + word + ' ' + qtyStr(t.qty) + ' ' + t.asset + (t.network ? ' on ' + t.network : '') + '. Our team will confirm the payment details with you.', actions: [waAct(tradeText(t)), telegramAct(tradeText(t))] });
-      else botSay({ text: 'I\u2019ve received your request to ' + word + ' ' + qtyStr(t.qty) + ' ' + t.asset + (t.network ? ' on ' + t.network : '') + ' (about ' + money(t.currency, t.amount) + '). To continue this transaction with me, please log in first. You can also continue through either channel below.', actions: [loginAct(), waAct(tradeText(t)), telegramAct(tradeText(t))] });
+      else botSay({ text: 'I\u2019ve received your request to ' + word + ' ' + qtyStr(t.qty) + ' ' + t.asset + (t.network ? ' on ' + t.network : '') + ' (' + money(t.currency, t.amount) + '). To continue this transaction with me, please log in first. You can also continue through either channel below.', actions: [loginAct(), waAct(tradeText(t)), telegramAct(tradeText(t))] });
     });
   }
 
@@ -797,7 +801,7 @@
     if (details) { d.gkind = details.type; d.subcategory = details.subcategory; }
     var detailText = details ? ' (' + details.type + (details.subcategory ? ', ' + details.subcategory : '') + ')' : '';
     var requestText = 'I want to sell my ' + name + detailText + '.';
-    lastTrade = { custom: 'Hi VersusTrade, ' + requestText, card: name, giftType: details && details.type, subcategory: details && details.subcategory }; refreshWa();
+    lastTrade = { card: name, giftType: details && details.type, subcategory: details && details.subcategory }; refreshWa();
     open('chat');
     add({ role: 'user', text: requestText });
     if (S.mode !== 'ai') { toTeam('Got it, you want to sell your ' + name + detailText + '. Let me check and get back to you.', requestText); return; }
@@ -811,7 +815,7 @@
   var SYMS = ['BTC', 'ETH', 'USDT', 'USDC', 'BNB', 'XRP', 'DOGE', 'ADA', 'TRX', 'AVAX', 'LTC', 'SHIB', 'BCH', 'XLM', 'SOL'];
   var GK = [[/visa/, 'Visa Gift Card'], [/amazon/, 'Amazon Gift Card'], [/apple|itunes/, 'Apple / iTunes Gift Card'], [/google ?play|play ?store/, 'Google Play Gift Card'], [/steam/, 'Steam Gift Card'], [/razer/, 'Razer Gold'], [/sephora/, 'Sephora Gift Card'], [/target/, 'Target Gift Card'], [/walmart/, 'Walmart Gift Card'], [/playstation|psn|\bps ?[45]\b/, 'PlayStation Gift Card'], [/xbox/, 'Xbox Gift Card'], [/ebay/, 'eBay Gift Card']];
   var CANCEL = { label: 'Cancel', cmd: 'flow', arg: 'x:cancel' };
-  var GSYM = { USD: '$', GBP: '\u00A3', EUR: '\u20AC', CAD: 'CA$', AUD: 'A$' };
+  var GSYM = { USD: '
   function cap(t) { return t.charAt(0).toUpperCase() + t.slice(1); }
   function ask(text, actions) {
     S.busy = true; showTyping();
@@ -909,7 +913,7 @@
     var qd = v.quote(d.side, d.asset, ccy, cryp ? 'crypto' : 'fiat', d.value), acts = CHAT.isLoggedIn() ? [] : [loginAct()];
     S.flow = null; save();
     if (!qd || !(qd.qty > 0)) {
-      var txt = 'Hi VersusTrade, I want to ' + d.side + ' ' + d.asset + ' on ' + d.network + ' (' + d.value + ' ' + (cryp ? d.asset : ccy) + ').';
+      var txt = 'Hi VersusTrade,\nI want to ' + d.side + ' ' + (cryp ? qtyStr(d.value) + ' ' + d.asset : d.asset) + '\non ' + d.network + (cryp ? '' : '\n(' + money(ccy, d.value) + ')') + '.';
       lastTrade = { custom: txt, card: null }; refreshWa();
       return ask('I couldn\u2019t load live prices just now, so I can\u2019t show an estimate. I\u2019ve noted your request, and our team will confirm the exact amount with you.', acts.concat([waAct(txt), telegramAct(txt)]));
     }
@@ -985,12 +989,12 @@
     var d = f.d, val = (GSYM[d.ccy] || '') + Number(d.value).toLocaleString('en-US') + (GSYM[d.ccy] ? '' : ' ' + d.ccy);
     var isStructured = /visa|amazon|apple|itunes|steam|razer|sephora|target|walmart|playstation|xbox|ebay/i.test(d.card || '');
     var text = isStructured ? 'I want to sell my ' + d.card + ' (' + d.gkind + (d.subcategory ? ', ' + d.subcategory : '') + ', ' + val + ').' : 'I want to sell my ' + d.card + ' (' + d.gkind.toLowerCase() + ', ' + val + ', bought in ' + d.country + ').';
-    S.flow = null; lastTrade = { custom: 'Hi VersusTrade, ' + text, card: d.card, giftType: d.gkind, subcategory: d.subcategory || null }; refreshWa();
+    S.flow = null; lastTrade = { card: d.card, giftType: d.gkind, subcategory: d.subcategory || null, amountLabel: val, country: isStructured ? null : d.country }; refreshWa();
     var rows = [['Type', d.gkind]];
     if (isStructured && d.subcategory) rows.push(['Subcategory', d.subcategory]);
     rows.push(['Amount', val]);
     if (!isStructured) rows.push(['Country', d.country]);
-    add({ role: 'summary', summary: { tag: 'sell', title: d.card, rows: rows, text: text } });
+    add({ role: 'summary', summary: { tag: 'sell', title: d.card, rows: rows, text: text, giftType: d.gkind, subcategory: d.subcategory || null, amountLabel: val, country: isStructured ? null : d.country } });
     ask('Thanks, I\u2019ve noted all your gift card details. Our team will confirm the card and rate with you, and process everything.', (CHAT.isLoggedIn() ? [] : [loginAct()]).concat([waAct(lastTrade.custom), telegramAct(lastTrade.custom)]));
   }
 
@@ -1140,7 +1144,7 @@
   function redrawAll() {
     log.innerHTML = '<p class="vc-intro">Betty replies automatically. A team member can join any time.</p>';
     lastTrade = null;
-    S.msgs.forEach(function (m) { if (m.role === 'trade') lastTrade = m.trade; else if (m.role === 'summary') lastTrade = { custom: m.summary.text, card: m.summary.title }; drawMsg(m); });
+    S.msgs.forEach(function (m) { if (m.role === 'trade') lastTrade = m.trade; else if (m.role === 'summary') lastTrade = giftTradeFromSummary(m.summary); drawMsg(m); });
     refreshWa(); status(); badges(); drawHi(); drawRecent(); if (S.view === 'messages') drawList(); if (S.view === 'tickets') drawTix();
     if (CW && cw.conv && !cw.closing) startPolling();
     scrollDown();
@@ -1220,7 +1224,1315 @@
     else { S.pushed = false; close(); }
   });
 
-  S.msgs.forEach(function (m) { if (m.role === 'trade') lastTrade = m.trade; else if (m.role === 'summary') lastTrade = { custom: m.summary.text, card: m.summary.title }; drawMsg(m); });
+  S.msgs.forEach(function (m) { if (m.role === 'trade') lastTrade = m.trade; else if (m.role === 'summary') lastTrade = giftTradeFromSummary(m.summary); drawMsg(m); });
+  if (CW && cw.conv) startPolling();
+  refreshWa(); status(); drawHi(); drawRecent(); go('home'); badges();
+  window.VTChat = { open: open, close: close, toggle: toggle, sendTrade: sendTrade, sendGiftCard: sendGiftCard, config: CHAT };
+})();
+
+(function () {
+  var st = document.createElement('style'); st.setAttribute('data-vt-chat', 'media');
+  st.textContent = '.vc-b.vc-media{padding:5px;display:flex;flex-direction:column;gap:5px;max-width:78%}.vc-img{display:block;max-width:100%;width:230px;height:auto;border-radius:14px;background:rgba(127,127,127,.15)}.vc-mst{font-size:12px;opacity:.75;padding:0 6px 2px}.vc-mst.vc-bad{color:#ffb3bb;opacity:1}.vc-file{display:block;padding:8px 10px;font-size:14px;word-break:break-all;color:inherit;text-decoration:none}a.vc-file{text-decoration:underline}';
+  (document.head || document.documentElement).appendChild(st);
+})();
+
+// Link to open the chat on arrival, e.g. https://your-domain/?chat=1
+(function () {
+  if (!/[?&]chat=1(&|$)/.test(location.search) || !window.VTChat) return;
+  try { history.replaceState(null, '', location.pathname + location.hash); } catch (e) {}
+  setTimeout(function () { window.VTChat.open('chat'); }, 600);
+})();
+, GBP: '\u00A3', EUR: '\u20AC', CAD: 'CA
+  function cap(t) { return t.charAt(0).toUpperCase() + t.slice(1); }
+  function ask(text, actions) {
+    S.busy = true; showTyping();
+    pause(550).then(function () { S.busy = false; botSay({ text: text, actions: actions && actions.length ? actions : undefined }); });
+  }
+  function ch(label, arg) { return { label: label, cmd: 'flow', arg: arg }; }
+
+  function findCoin(q) {
+    var v = VT(); if (!v) return null; var coins = v.coins(), keys = Object.keys(ALIAS).sort(function (a, b) { return b.length - a.length; }), i;
+    for (i = 0; i < keys.length; i++) if (new RegExp('(^|[^a-z])' + keys[i] + '([^a-z]|$)').test(q) && coins.indexOf(ALIAS[keys[i]]) > -1) return ALIAS[keys[i]];
+    for (i = 0; i < SYMS.length; i++) if (new RegExp('(^|[^a-z])' + SYMS[i].toLowerCase() + '([^a-z]|$)').test(q) && coins.indexOf(SYMS[i]) > -1) return SYMS[i];
+    return null;
+  }
+  function findSide(q) {
+    var b = /\b(buy|buying|purchase|get|need|top ?up)\b/.test(q), s = /\b(sell|selling|cash ?out|offload|convert)\b/.test(q);
+    return b && !s ? 'buy' : s && !b ? 'sell' : null;
+  }
+  function findNet(q, asset) {
+    var l = VT().nets(asset), i, n, code, w;
+    for (i = 0; i < l.length; i++) {
+      n = l[i]; code = n.c.toLowerCase();
+      if (new RegExp('(^|[^a-z0-9])' + code.replace(/[^a-z0-9 ]/g, '') + '([^a-z0-9]|$)').test(q)) return n.c;
+      w = n.n.toLowerCase().split(' ')[0];
+      if (w.length > 3 && new RegExp('(on|via|using|through|network)\\s+' + w).test(q)) return n.c;
+      if (n.c === 'BEP20' && /\b(bsc|binance smart|bnb chain|bnb smart)\b/.test(q)) return n.c;
+    }
+    return null;
+  }
+  function parseAmt(raw) {
+    var q = raw.toLowerCase().replace(/,/g, '').replace(/\b(trc|erc|bep)\s?20\b/g, ' ');
+    var m = q.match(/(\d+(?:\.\d+)?)\s*(?:(k|m|million|thousand)(?![a-z]))?/); if (!m) return null;
+    var n = parseFloat(m[1]); if (m[2]) n *= (m[2] === 'k' || m[2] === 'thousand') ? 1e3 : 1e6;
+    if (!(n > 0)) return null;
+    var ccy = /\u20A6|\bngn\b|naira|(^|[^a-z])n\d/.test(q) ? 'NGN' : /\$|\busd\b|dollar|bucks/.test(q) ? 'USD' : null;
+    var coin = findCoin(q), worth = /(with|worth|for)\s*[\u20A6$]?\s*\d/.test(q);
+    return { v: n, ccy: ccy, coin: coin, kind: coin && !ccy && !worth ? 'crypto' : 'fiat' };
+  }
+  function rateLine() {
+    var v = VT(), R = v && v.rates && v.rates(); if (!R || !(R.buy > 0)) return '';
+    return 'Our rates today: you buy at ' + money('NGN', R.sell) + ' per $1 and sell at ' + money('NGN', R.buy) + ' per $1. They can change, so a representative confirms the final amount. ';
+  }
+  function detectIntent(q) {
+    var info = /^(what|why|how (does|do|is|are)|explain|tell me about|is |are )/.test(q) && !/rate|price|how much|worth|sell|buy/.test(q), s = findSide(q);
+    if (/gift ?card|giftcard|itunes|google ?play|steam|razer|sephora|walmart|playstation|xbox|ebay|amazon (card|voucher)|apple card|visa card/.test(q) && !(info && !s)) return 'gift';
+    var c = findCoin(q), generic = /\b(crypto|cryptocurrency|coins?)\b/.test(q);
+    if (info && !s) return null;
+    if ((c || generic) && (s || /rate|price|how much|worth|want|need|trade|swap|exchange/.test(q))) return 'crypto';
+    if (c && q.split(/\s+/).length <= 3) return 'crypto';
+    return null;
+  }
+
+  function fillCrypto(f, q, raw) {
+    var d = f.d, got = false, c = findCoin(q), sd = findSide(q), nw, a;
+    if (c && (!d.asset || f.step === 'asset')) { if (d.asset !== c) d.network = null; d.asset = c; got = true; }
+    if (sd && !d.side) { d.side = sd; got = true; }
+    if (d.asset && !d.network) { nw = findNet(q, d.asset); if (nw) { d.network = nw; got = true; } }
+    if (!d.value) {
+      a = parseAmt(raw);
+      if (a) {
+        d.value = a.v; d.kind = a.kind; d.ccy = a.kind === 'fiat' ? a.ccy : null; got = true;
+        if (a.kind === 'crypto' && a.coin && a.coin !== d.asset) { d.asset = a.coin; d.network = findNet(q, a.coin); }
+      }
+    } else if (d.kind === 'fiat' && !d.ccy) {
+      if (/\u20A6|\bngn\b|naira/.test(q)) { d.ccy = 'NGN'; got = true; }
+      else if (/\$|\busd\b|dollar/.test(q)) { d.ccy = 'USD'; got = true; }
+      else if (d.asset && findCoin(q) === d.asset) { d.kind = 'crypto'; got = true; }
+    }
+    return got;
+  }
+  function nextCrypto(f) {
+    var d = f.d, v = VT(), intro = f.intro ? rateLine() : '', l, verb;
+    f.intro = false;
+    if (!v) { S.flow = null; save(); ask('Use the trade box on the homepage to start a crypto order, or I can connect you with a representative.', [{ label: 'Open trade box', cmd: 'scroll', arg: 'markets', primary: true }, repAct()]); return; }
+    if (!d.side && !d.asset) { f.step = 'side'; return ask(intro + 'Sure. Would you like to buy or sell crypto?', [ch('Buy crypto', 'c:side=buy'), ch('Sell crypto', 'c:side=sell'), CANCEL]); }
+    if (!d.side) { f.step = 'side'; return ask(intro + 'Do you want to buy or sell ' + v.name(d.asset) + ' (' + d.asset + ')?', [ch('Buy ' + d.asset, 'c:side=buy'), ch('Sell ' + d.asset, 'c:side=sell'), CANCEL]); }
+    if (!d.asset) {
+      f.step = 'asset';
+      var top = ['USDT', 'BTC', 'ETH', 'USDC', 'SOL', 'BNB'].filter(function (x) { return v.coins().indexOf(x) > -1; }).map(function (x) { return ch(x, 'c:asset=' + x); });
+      return ask(intro + 'Which coin would you like to ' + d.side + '?', top.concat([ch('Other coin', 'c:asset=?'), CANCEL]));
+    }
+    if (!d.network) {
+      l = v.nets(d.asset);
+      if (l.length === 1) d.network = l[0].c;
+      else { f.step = 'network'; return ask('Which network should the ' + d.asset + ' use? Pick the one your wallet or exchange supports. Crypto sent on the wrong network can be lost.', l.map(function (n) { return ch(n.c, 'c:network=' + n.c); }).concat([CANCEL])); }
+    }
+    if (!d.value) {
+      f.step = 'value'; verb = d.side === 'buy' ? 'buy' : 'sell';
+      return ask('How much ' + d.asset + ' do you want to ' + verb + '? Type an amount in naira (\u20A650,000), dollars ($100) or ' + d.asset + ' (20 ' + d.asset + ').', [CANCEL]);
+    }
+    if (d.kind === 'fiat' && !d.ccy) { f.step = 'ccy'; return ask('Is ' + d.value.toLocaleString('en-US') + ' in naira (\u20A6), US dollars ($) or ' + d.asset + '?', [ch('Naira (\u20A6)', 'c:ccy=NGN'), ch('US dollars ($)', 'c:ccy=USD'), ch(d.asset, 'c:ccy=coin'), CANCEL]); }
+    finishCrypto(f);
+  }
+  function finishCrypto(f) {
+    var d = f.d, v = VT(), cryp = d.kind === 'crypto', ccy = cryp ? 'NGN' : (d.ccy || 'NGN');
+    var qd = v.quote(d.side, d.asset, ccy, cryp ? 'crypto' : 'fiat', d.value), acts = CHAT.isLoggedIn() ? [] : [loginAct()];
+    S.flow = null; save();
+    if (!qd || !(qd.qty > 0)) {
+      var txt = 'Hi VersusTrade,\nI want to ' + d.side + ' ' + (cryp ? qtyStr(d.value) + ' ' + d.asset : d.asset) + '\non ' + d.network + (cryp ? '' : '\n(' + money(ccy, d.value) + ')') + '.';
+      lastTrade = { custom: txt, card: null }; refreshWa();
+      return ask('I couldn\u2019t load live prices just now, so I can\u2019t show an estimate. I\u2019ve noted your request, and our team will confirm the exact amount with you.', acts.concat([waAct(txt), telegramAct(txt)]));
+    }
+    var trade = { side: d.side, asset: d.asset, name: v.name(d.asset), currency: ccy, network: d.network, amount: qd.fiat, qty: qd.qty };
+    lastTrade = trade; refreshWa(); add({ role: 'trade', trade: trade });
+    var more = [ch('Change amount', 'c:edit=value')]; if (v.nets(d.asset).length > 1) more.push(ch('Change network', 'c:edit=network'));
+    ask('Here\u2019s your request. It is an estimate, and our team will confirm the final amount before you pay. Make sure your wallet or exchange supports ' + d.network + '.', acts.concat([waAct(tradeText(trade)), telegramAct(tradeText(trade))]).concat(more));
+  }
+
+  function ccyOf(q) { return /\$|\busd\b|dollar|bucks/.test(q) ? 'USD' : /\u00A3|\bgbp\b|pound/.test(q) ? 'GBP' : /\u20AC|\beur\b|euro/.test(q) ? 'EUR' : /\bcad\b|canadian/.test(q) ? 'CAD' : /\baud\b|australian/.test(q) ? 'AUD' : null; }
+  function fillGift(f, q, raw) {
+    var d = f.d, got = false, i, a, m;
+    if (f.step === 'cardtext' && !d.card && raw.trim().length > 1 && raw.length < 40) { d.card = cap(raw.trim()); return true; }
+    if (!d.card) for (i = 0; i < GK.length; i++) if (GK[i][0].test(q)) { d.card = GK[i][1]; got = true; break; }
+    var isVisa = /visa/i.test(d.card || ''), isAmazon = /amazon/i.test(d.card || ''), isApple = /apple|itunes/i.test(d.card || ''), isSteam = /steam/i.test(d.card || ''), isRazer = /razer/i.test(d.card || ''), isSephora = /sephora/i.test(d.card || ''), isTarget = /target/i.test(d.card || ''), isWalmart = /walmart/i.test(d.card || ''), isPlayStation = /playstation/i.test(d.card || ''), isXbox = /xbox/i.test(d.card || ''), isEbay = /ebay/i.test(d.card || ''), isStructured = isVisa || isAmazon || isApple || isSteam || isRazer || isSephora || isTarget || isWalmart || isPlayStation || isXbox || isEbay;
+    if (isStructured) {
+      if (!d.gkind) {
+        if (/\bphysical\b|plastic|actual card/.test(q)) { d.gkind = 'Physical'; got = true; }
+        else if (/e-?code|digital|code only|email/.test(q)) { d.gkind = 'E-code'; got = true; }
+      }
+      if (d.gkind && !d.subcategory) {
+        var opts = window.VTVisaPicker && window.VTVisaPicker.getSubcategories ? window.VTVisaPicker.getSubcategories(d.card, d.gkind) : [];
+        for (i = 0; i < opts.length; i++) if (q.indexOf(opts[i].toLowerCase().trim()) !== -1) { d.subcategory = opts[i]; got = true; break; }
+      }
+      if (f.step === 'value' && !d.value) {
+        m = q.replace(/,/g, '').match(/(\d+(?:\.\d+)?)\s*(?:(k)(?![a-z]))?/);
+        if (m) {
+          a = parseFloat(m[1]) * (m[2] ? 1000 : 1);
+          if (a > 0) {
+            d.value = a;
+            var sub = (d.subcategory || '').toLowerCase();
+            d.ccy = /\(\$\)|^\$|usa/.test(sub) ? 'USD' : /\(£\)|^£|uk /.test(sub) ? 'GBP' : /\(€|^€|euro|germany|austria|belgium|finland|france|greece|ireland|italy|luxembourg|netherlands|portugal|spain/.test(sub) ? 'EUR' : /canada|\bCAD\b/.test(sub) ? 'CAD' : /australia|\bA\$\b/.test(sub) ? 'AUD' : /denmark/.test(sub) ? 'DKK' : /norway/.test(sub) ? 'NOK' : /swedish/.test(sub) ? 'SEK' : /\bNZD\b/.test(sub) ? 'NZD' : /singapore/.test(sub) ? 'SGD' : /CHF|switzerland/.test(sub) ? 'CHF' : /uae/.test(sub) ? 'AED' : /brazil/.test(sub) ? 'BRL' : /mexico/.test(sub) ? 'MXN' : /poland/.test(sub) ? 'PLN' : /malaysian/.test(sub) ? 'MYR' : ccyOf(q);
+            got = true;
+          }
+        }
+      } else if (d.value && !d.ccy && ccyOf(q)) { d.ccy = ccyOf(q); got = true; }
+      return got;
+    }
+    if (!d.gkind) {
+      if (/physical|plastic|actual card/.test(q)) { d.gkind = 'Physical card'; got = true; }
+      else if (/e-?code|digital|code only|email/.test(q)) { d.gkind = 'E-code'; got = true; }
+      else if (/receipt/.test(q)) { d.gkind = 'Receipt only'; got = true; }
+    }
+    if (!d.value) {
+      m = q.replace(/,/g, '').match(/(\d+(?:\.\d+)?)\s*(?:(k)(?![a-z]))?/);
+      if (m) { a = parseFloat(m[1]) * (m[2] ? 1000 : 1); if (a > 0) { d.value = a; d.ccy = ccyOf(q); got = true; } }
+    } else if (!d.ccy && ccyOf(q)) { d.ccy = ccyOf(q); got = true; }
+    if (!d.country && f.step === 'country' && raw.trim().length > 1 && raw.trim().length <= 40 && !/\d/.test(raw)) { d.country = cap(raw.trim()); got = true; }
+    return got;
+  }
+
+  function nextGift(f) {
+    var d = f.d, cards = (window.VTGiftCards && window.VTGiftCards.cards) || [], isVisa = /visa/i.test(d.card || ''), isAmazon = /amazon/i.test(d.card || ''), isApple = /apple|itunes/i.test(d.card || ''), isSteam = /steam/i.test(d.card || ''), isRazer = /razer/i.test(d.card || ''), isSephora = /sephora/i.test(d.card || ''), isTarget = /target/i.test(d.card || ''), isWalmart = /walmart/i.test(d.card || ''), isPlayStation = /playstation/i.test(d.card || ''), isXbox = /xbox/i.test(d.card || ''), isEbay = /ebay/i.test(d.card || ''), isStructured = isVisa || isAmazon || isApple || isSteam || isRazer || isSephora || isTarget || isWalmart || isPlayStation || isXbox || isEbay;
+    if (!d.card) { f.step = 'card'; return ask('Which gift card would you like to sell?', cards.map(function (c) { return ch(c.n.replace(' Gift Card', ''), 'g:card=' + c.n); }).concat([ch('Other card', 'g:card=?'), CANCEL])); }
+    if (isStructured) {
+      if (!d.gkind) { f.step = 'gkind'; return ask('Is your ' + (isVisa ? 'Visa' : isAmazon ? 'Amazon' : isApple ? 'Apple/iTunes' : isSteam ? 'Steam' : isRazer ? 'Razer Gold' : isSephora ? 'Sephora' : isTarget ? 'Target' : isWalmart ? 'Walmart' : isPlayStation ? 'PlayStation' : isEbay ? 'eBay' : 'Xbox') + ' gift card Physical or E-code?', [ch('Physical', 'g:gkind=Physical'), ch('E-code', 'g:gkind=E-code'), CANCEL]); }
+      if (!d.subcategory && !(isTarget && d.gkind === 'E-code')) {
+        f.step = 'subcategory';
+        var subs = window.VTVisaPicker && window.VTVisaPicker.getSubcategories ? window.VTVisaPicker.getSubcategories(d.card, d.gkind) : [];
+        return ask('Select Gift card Subcategory:', subs.map(function (s) { return ch(s, 'g:subcategory=' + s); }).concat([CANCEL]));
+      }
+      if (!d.value) { f.step = 'value'; return ask('What amount is on your ' + (d.subcategory || d.card) + '? For example, 25 or 100.', [CANCEL]); }
+      finishGift(f); return;
+    }
+    if (!d.gkind) { f.step = 'gkind'; return ask('Is your ' + d.card + ' a physical card, an e-code, or do you only have the receipt?', [ch('Physical card', 'g:gkind=Physical card'), ch('E-code', 'g:gkind=E-code'), ch('Receipt only', 'g:gkind=Receipt only'), CANCEL]); }
+    if (!d.value) { f.step = 'value'; return ask('What is the card value? For example $100, £50 or €25.', [CANCEL]); }
+    if (!d.ccy) { f.step = 'ccy'; return ask('Is ' + d.value.toLocaleString('en-US') + ' in US dollars, British pounds, euros or Canadian dollars?', [ch('US dollars ($)', 'g:ccy=USD'), ch('British pounds (£)', 'g:ccy=GBP'), ch('Euros (€)', 'g:ccy=EUR'), ch('Canadian dollars', 'g:ccy=CAD'), CANCEL]); }
+    if (!d.country) { f.step = 'country'; return ask('Which country was the card bought in?', [ch('United States', 'g:country=United States'), ch('United Kingdom', 'g:country=United Kingdom'), ch('Canada', 'g:country=Canada'), CANCEL]); }
+    finishGift(f);
+  }
+
+  function finishGift(f) {
+    var d = f.d, val = (GSYM[d.ccy] || '') + Number(d.value).toLocaleString('en-US') + (GSYM[d.ccy] ? '' : ' ' + d.ccy);
+    var isStructured = /visa|amazon|apple|itunes|steam|razer|sephora|target|walmart|playstation|xbox|ebay/i.test(d.card || '');
+    var text = isStructured ? 'I want to sell my ' + d.card + ' (' + d.gkind + (d.subcategory ? ', ' + d.subcategory : '') + ', ' + val + ').' : 'I want to sell my ' + d.card + ' (' + d.gkind.toLowerCase() + ', ' + val + ', bought in ' + d.country + ').';
+    S.flow = null; lastTrade = { card: d.card, giftType: d.gkind, subcategory: d.subcategory || null, amountLabel: val, country: isStructured ? null : d.country }; refreshWa();
+    var rows = [['Type', d.gkind]];
+    if (isStructured && d.subcategory) rows.push(['Subcategory', d.subcategory]);
+    rows.push(['Amount', val]);
+    if (!isStructured) rows.push(['Country', d.country]);
+    add({ role: 'summary', summary: { tag: 'sell', title: d.card, rows: rows, text: text, giftType: d.gkind, subcategory: d.subcategory || null, amountLabel: val, country: isStructured ? null : d.country } });
+    ask('Thanks, I\u2019ve noted all your gift card details. Our team will confirm the card and rate with you, and process everything.', (CHAT.isLoggedIn() ? [] : [loginAct()]).concat([waAct(lastTrade.custom), telegramAct(lastTrade.custom)]));
+  }
+
+  function flowNext() { var f = S.flow; if (!f) return; save(); if (f.type === 'crypto') nextCrypto(f); else nextGift(f); }
+  function flowCmd(arg, label) {
+    if (S.busy) return;
+    add({ role: 'user', text: label || arg });
+    var type = arg.charAt(0), kv = arg.slice(2).split('='), k = kv[0], val = kv.slice(1).join('=');
+    if (type === 'x') { S.flow = null; save(); ask('No problem, I\u2019ve cancelled that. Ask me anything, or start again whenever you like.'); return; }
+    var want = type === 'g' ? 'gift' : 'crypto';
+    if (!S.flow || S.flow.type !== want) S.flow = { type: want, d: {} };
+    var f = S.flow, d = f.d;
+    if (want === 'crypto') {
+      if (k === 'edit') { var lt = lastTrade && !lastTrade.custom ? lastTrade : null; if (lt) { d.side = lt.side; d.asset = lt.asset; d.network = val === 'network' ? null : lt.network; } }
+      else if (k === 'ccy') { if (val === 'coin') { d.kind = 'crypto'; d.ccy = null; } else d.ccy = val; }
+      else if (k === 'asset' && val === '?') { f.step = 'asset'; ask('Which coin? Type its name, for example Bitcoin or Solana.'); return; }
+      else { d[k] = val; if (k === 'asset') d.network = null; }
+    } else {
+      if (k === 'card' && val === '?') { f.step = 'cardtext'; ask('Type the name of the gift card you want to sell.'); return; }
+      d[k] = val;
+    }
+    flowNext();
+  }
+  function flowTry(text) {
+    var q = text.toLowerCase().trim(), f = S.flow;
+    if (/^(cancel|stop|start over|never ?mind|reset|forget it)\b/.test(q)) {
+      if (!f) return false;
+      S.flow = null; save(); ask('No problem, I\u2019ve cancelled that. Ask me anything, or start again whenever you like.'); return true;
+    }
+    if (/(human|agent|representative|real person|support team)/.test(q)) return false;
+    if (f) {
+      if ((f.type === 'crypto' ? fillCrypto(f, q, text) : fillGift(f, q, text))) { flowNext(); return true; }
+      if (/\?|^(what|why|how|can|do|is|are|who|when)\b/.test(q)) return false;
+      flowNext(); return true;
+    }
+    var intent = detectIntent(q); if (!intent) return false;
+    S.flow = { type: intent === 'gift' ? 'gift' : 'crypto', d: {}, intro: /rate|price|how much|worth/.test(q) };
+    if (S.flow.type === 'crypto') fillCrypto(S.flow, q, text); else fillGift(S.flow, q, text);
+    flowNext(); return true;
+  }
+
+  /* ---------- emoji and voice notes ---------- */
+  var pop = $('vcPop'), emojiBtn = $('vcEmojiBtn'), micBtn = $('vcMicBtn'), form = $('vcForm');
+  function dur(sec) { sec = Math.max(0, Math.round(sec || 0)); return Math.floor(sec / 60) + ':' + ('0' + (sec % 60)).slice(-2); }
+  function showPop(kind) {
+    var cur = pop.getAttribute('data-kind');
+    if (!kind || cur === kind) { pop.hidden = true; pop.removeAttribute('data-kind'); pop.innerHTML = ''; emojiBtn.setAttribute('aria-expanded', 'false'); return; }
+    pop.hidden = false; pop.setAttribute('data-kind', kind);
+    emojiBtn.setAttribute('aria-expanded', kind === 'emoji');
+    drawEmoji();
+  }
+  function insertText(t) {
+    var a = input.selectionStart == null ? input.value.length : input.selectionStart, b = input.selectionEnd == null ? a : input.selectionEnd;
+    input.setRangeText(t, a, b, 'end'); input.dispatchEvent(new Event('input')); input.focus({ preventScroll: true });
+  }
+  function drawEmoji() {
+    pop.innerHTML = ''; var g = el('div', 'vc-eg'); g.setAttribute('role', 'listbox'); g.setAttribute('aria-label', 'Emoji');
+    EMOJIS.forEach(function (e) { var b = el('button', 'vc-em', e); b.type = 'button'; b.setAttribute('aria-label', e); b.addEventListener('click', function () { insertText(e); }); g.appendChild(b); });
+    pop.appendChild(g);
+  }
+  var rec = { mr: null, chunks: [], t0: 0, timer: 0, stream: null };
+  function recUI(on) { form.classList.toggle('rec', on); if (!on) { clearInterval(rec.timer); $('vcRecTime').textContent = '0:00'; } }
+  function startRec() {
+    showPop(null);
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) { add({ role: 'system', text: 'Voice notes aren\u2019t supported in this browser.' }); return; }
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+      var types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus'], mime = '';
+      for (var i = 0; i < types.length; i++) { if (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(types[i])) { mime = types[i]; break; } }
+      rec.stream = stream; rec.chunks = []; rec.mr = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
+      rec.mr.ondataavailable = function (e) { if (e.data && e.data.size) rec.chunks.push(e.data); };
+      rec.mr.start(); rec.t0 = Date.now(); recUI(true);
+      rec.timer = setInterval(function () { var s = (Date.now() - rec.t0) / 1000; $('vcRecTime').textContent = dur(s); if (s >= 120) stopRec(true); }, 250);
+    }).catch(function () { add({ role: 'system', text: 'Microphone access was blocked. Allow it in your browser settings to send voice notes.' }); });
+  }
+  function stopRec(sendIt) {
+    if (!rec.mr) return;
+    var mr = rec.mr, secs = (Date.now() - rec.t0) / 1000, chunks = rec.chunks, stream = rec.stream; rec.mr = null; recUI(false);
+    mr.onstop = function () {
+      stream.getTracks().forEach(function (t) { t.stop(); });
+      if (sendIt && chunks.length && secs >= 1) sendVoice(URL.createObjectURL(new Blob(chunks, { type: mr.mimeType || 'audio/webm' })), secs);
+    };
+    try { mr.stop(); } catch (e) { stream.getTracks().forEach(function (t) { t.stop(); }); }
+  }
+  function sendVoice(url, secs) {
+    if (isEnded()) return;
+    // Front end only: the audio stays in this browser tab. Hook your upload here.
+    add({ role: 'user', kind: 'voice', dur: secs, url: url, text: 'Voice note' });
+    if (S.mode === 'ai') { showTyping(); pause(900).then(function () { botSay({ text: 'Thanks. I can\u2019t listen to voice notes myself, but a representative can. Want me to connect you?', actions: [repAct()] }); }); } else toTeam('Thanks, I\u2019ll listen to your voice note now.');
+  }
+  emojiBtn.addEventListener('click', function () { showPop('emoji'); });
+  micBtn.addEventListener('click', startRec);
+  $('vcRecCancel').addEventListener('click', function () { stopRec(false); });
+  $('vcRecSend').addEventListener('click', function () { stopRec(true); });
+  panel.addEventListener('click', function (e) { if (!pop.hidden && !e.target.closest('#vcPop, .vc-tools')) showPop(null); });
+
+  function greet() { add({ role: 'bot', text: 'Hi! I\u2019m Betty from VersusTrade customer support. Ask me anything about what we do, or pick a coin in the trade box and I\u2019ll take it from there. A representative is available any time you need one.' }); }
+  /* ---------- navigation ---------- */
+  function go(view) {
+    S.view = view; panel.setAttribute('data-view', view);
+    [].forEach.call(panel.querySelectorAll('.vc-tabs button'), function (b) { if (b.dataset.go === (view === 'home' ? 'home' : view === 'tickets' ? 'tickets' : 'messages')) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+    if (view === 'chat') {
+      S.unread = 0; badges();
+      status(); if (!S.msgs.length) greet();
+      scrollDown(); setTimeout(function () { if (S.open && S.view === 'chat') input.focus({ preventScroll: true }); }, 120);
+    } else if (view === 'messages') drawList();
+    else if (view === 'tickets') drawTix();
+    else if (view === 'home') { drawHi(); drawRecent(); }
+  }
+  function open(view) {
+    if (!S.open) {
+      S.open = true; panel.setAttribute('data-open', '');
+      if (fab) { fab.setAttribute('data-open', ''); fab.setAttribute('aria-expanded', 'true'); }
+      if (window.matchMedia('(max-width:560px)').matches) {
+        document.documentElement.classList.add('vc-lock');
+        // full-screen on phones: add a history step so the phone's Back button closes the chat instead of leaving the page
+        try { history.pushState({ vtChat: 1 }, ''); S.pushed = true; } catch (e) {}
+      }
+    }
+    go(view || S.view); badges();
+  }
+  function close() {
+    if (!S.open) return; S.open = false;
+    stopRec(false); showPop(null);
+    if (S.pushed) { S.pushed = false; S.skipPop = true; try { history.back(); } catch (e) { S.skipPop = false; } setTimeout(function () { S.skipPop = false; }, 500); }
+    panel.removeAttribute('data-open'); if (fab) { fab.removeAttribute('data-open'); fab.setAttribute('aria-expanded', 'false'); }
+    document.documentElement.classList.remove('vc-lock'); badges();
+  }
+  function toggle() { S.open ? close() : open('home'); }
+
+  function startOrResumeChat() { if (S.closedAt || isEnded()) resetChat(true); go('chat'); }
+  panel.addEventListener('click', function (e) {
+    var a = e.target.closest('[data-act]'), g = e.target.closest('[data-go]');
+    if (a) { var k = a.dataset.act; if (k === 'close') close(); else if (k === 'chat-home') { if (/^\/dashboard(?:\/|$)/.test(location.pathname)) go('home'); else close(); } else if (k === 'new' || k === 'chat') startOrResumeChat(); else go('messages'); }
+    else if (g) go(g.dataset.go);
+  });
+  document.addEventListener('keydown', function (e) { if (S.open && e.key === 'Escape') { if (!pop.hidden) { showPop(null); return; } close(); if (fab) fab.focus(); } });
+  input.addEventListener('input', function () { send.disabled = !input.value.trim(); input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 112) + 'px'; });
+  input.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('vcForm').requestSubmit(); } });
+  $('vcForm').addEventListener('submit', function (e) { e.preventDefault(); if (form.classList.contains('rec')) return; if (S.busy) return; showPop(null); var v = input.value; input.value = ''; input.style.height = 'auto'; send.disabled = true; userSay(v); });
+  $('vcFile').addEventListener('change', function (e) { attach(e.target.files[0]); e.target.value = ''; });
+  [].forEach.call(document.querySelectorAll('a[href="/support/"]'), function (a) {
+    if (/chat with us/i.test(a.textContent)) a.addEventListener('click', function (e) { e.preventDefault(); open('chat'); });
+  });
+
+  // When someone logs in, let them know in the chat so the transaction can continue
+  /* ---------- logged-in customers: chat saved to the account, Chatwoot contact linked ---------- */
+  function redrawAll() {
+    log.innerHTML = '<p class="vc-intro">Betty replies automatically. A team member can join any time.</p>';
+    lastTrade = null;
+    S.msgs.forEach(function (m) { if (m.role === 'trade') lastTrade = m.trade; else if (m.role === 'summary') lastTrade = giftTradeFromSummary(m.summary); drawMsg(m); });
+    refreshWa(); status(); badges(); drawHi(); drawRecent(); if (S.view === 'messages') drawList(); if (S.view === 'tickets') drawTix();
+    if (CW && cw.conv && !cw.closing) startPolling();
+    scrollDown();
+  }
+  // empty the chat. keepAccount = start a new conversation but stay linked to the same customer
+  function resetChat(keepAccount) {
+    hideTyping(); clearTimeout(sync.timer);
+    S.msgs = []; S.mode = 'ai'; S.agentReplied = false; S.flow = null; S.closedAt = 0; S.busy = false; lastTrade = null; S.tixAt = 0; S.tixConv = null;
+    if (!keepAccount) { S.uid = null; S.tix = []; }
+    if (CW) {
+      clearTimeout(cw.wait); clearTimeout(cw.closeTimer); clearInterval(cw.timer); cw.timer = 0; cw.conv = null; cw.seen = 0; cw.closing = false;
+      if (!keepAccount) { cw.src = null; cw.linked = null; cw.linkedName = null; }
+      cwSave();
+    }
+    if (!keepAccount) { try { localStorage.removeItem(KEY); } catch (e) {} }
+    redrawAll();
+    if (S.view === 'chat') greet(); else save();
+  }
+  function adopt(st) {
+    S.msgs = st.msgs; S.mode = (st.mode === 'pending' && !CHAT.live) ? 'agent' : (st.mode || 'ai'); S.agentReplied = !!st.agentReplied; S.flow = st.flow || null; S.closedAt = st.closedAt || 0; S.t0 = st.t || 0; S.tixAt = st.tixAt || 0; S.tixConv = st.tixConv || null;
+    if (CW && st.cw) { cw.src = st.cw.src || null; cw.conv = st.cw.conv || null; cw.seen = st.cw.seen || 0; cw.closing = false; cwSave(); }
+    S.tix = mergeTix(S.tix, st.tix); redrawAll();
+  }
+  // tell Chatwoot who this visitor is, so the team sees the customer's email on the conversation
+  function linkContact() {
+    var u = who();
+    var name = shownName(u);
+    if (!CW || !cw.src || !u || !u.email || (cw.linked === u.id && cw.linkedName === name)) return Promise.resolve();
+    var path = '/contacts/' + encodeURIComponent(cw.src), renamed = cw.linked === u.id;
+    return cwCall('PATCH', path, { name: name, email: u.email, identifier: u.id })
+      .catch(function () { return cwCall('PATCH', path, { name: name, email: u.email }); })
+      .then(function () {
+        cw.linked = u.id; cw.linkedName = name; cwSave();
+        var idle = (CHAT.newThreadAfterHours || 0) * 3600 * 1000, quiet = idle && cw.last && Date.now() - cw.last > idle;
+        if (cw.conv && !cw.closing && !quiet) return cwCall('POST', cwConv('/messages'), { content: renamed ? 'The customer changed their name to ' + name + '.' : 'The customer signed in on the website as ' + name + ' (' + u.email + ').' });
+      }).catch(function () {});
+  }
+  function accountSync(u) {
+    var A = window.VTAuth;
+    if (!A || !A.rest || !u || !u.id) return Promise.resolve(false);
+    if (S.uid && S.uid !== u.id) resetChat();   // this browser still held another account's chat
+    var had = S.msgs.some(isCust), adopted = false;
+    return A.rest('GET', '/chat_state?select=state&user_id=eq.' + encodeURIComponent(u.id) + '&limit=1').then(function (rows) {
+      var st = rows && rows[0] && rows[0].state;
+      if (st && st.tix) S.tix = mergeTix(S.tix, st.tix);
+      // use the saved chat if this browser has none, or if it was updated on another device since
+      if (usable(st) && st.msgs.length && (!had || (S.uid === u.id && st.t > (S.t0 || 0)))) { adopt(st); adopted = true; }
+      S.uid = u.id; sync.ready = true; sync.off = false;
+      save();
+      return linkContact().then(function () { return adopted; });
+    }).catch(function (err) {
+      if (err && (err.status === 400 || err.status === 401 || err.status === 403 || err.status === 404)) sync.off = true;
+      S.uid = u.id; save();
+      return linkContact().then(function () { return false; });
+    });
+  }
+  $('vcNew').addEventListener('click', function () { resetChat(true); });
+  window.addEventListener('vt-profile', function () { drawHi(); linkContact(); });
+
+  window.addEventListener('vt-auth', function (e) {
+    var d = e.detail || {};
+    drawHi();
+    if (!d.loggedIn) { sync.ready = false; if (S.uid) resetChat(); return; }   // logged out: the next person on this device starts clean
+    accountSync(who()).then(function (adopted) {
+      if (adopted || d.initial || !S.msgs.length) return;
+      var tr = lastTrade && !lastTrade.custom ? lastTrade : null;
+      add({ role: 'bot', text: tr ? 'You\u2019re logged in as ' + d.email + '. Your request to ' + tr.side + ' ' + qtyStr(tr.qty) + ' ' + tr.asset + (tr.network ? ' on ' + tr.network : '') + ' is still here, and a representative can confirm the payment details with you.' : lastTrade ? 'You\u2019re logged in as ' + d.email + '. Your request is still here, and a representative can confirm the details with you.' : 'You\u2019re logged in as ' + d.email + '. You can continue your transaction here, and your chats are now saved to your account.', actions: lastTrade ? [waAct(tradeText(lastTrade)), telegramAct(tradeText(lastTrade))] : [] });
+    });
+  });
+
+  // Phone Back button: one screen at a time (conversation, messages, home), then it closes the chat
+  window.addEventListener('popstate', function () {
+    if (S.skipPop) { S.skipPop = false; return; }
+    if (!S.open) return;
+    if (S.view === 'chat') { showPop(null); go('messages'); try { history.pushState({ vtChat: 1 }, ''); } catch (e) {} }
+    else if (S.view === 'messages' || S.view === 'tickets') { go('home'); try { history.pushState({ vtChat: 1 }, ''); } catch (e) {} }
+    else { S.pushed = false; close(); }
+  });
+
+  S.msgs.forEach(function (m) { if (m.role === 'trade') lastTrade = m.trade; else if (m.role === 'summary') lastTrade = giftTradeFromSummary(m.summary); drawMsg(m); });
+  if (CW && cw.conv) startPolling();
+  refreshWa(); status(); drawHi(); drawRecent(); go('home'); badges();
+  window.VTChat = { open: open, close: close, toggle: toggle, sendTrade: sendTrade, sendGiftCard: sendGiftCard, config: CHAT };
+})();
+
+(function () {
+  var st = document.createElement('style'); st.setAttribute('data-vt-chat', 'media');
+  st.textContent = '.vc-b.vc-media{padding:5px;display:flex;flex-direction:column;gap:5px;max-width:78%}.vc-img{display:block;max-width:100%;width:230px;height:auto;border-radius:14px;background:rgba(127,127,127,.15)}.vc-mst{font-size:12px;opacity:.75;padding:0 6px 2px}.vc-mst.vc-bad{color:#ffb3bb;opacity:1}.vc-file{display:block;padding:8px 10px;font-size:14px;word-break:break-all;color:inherit;text-decoration:none}a.vc-file{text-decoration:underline}';
+  (document.head || document.documentElement).appendChild(st);
+})();
+
+// Link to open the chat on arrival, e.g. https://your-domain/?chat=1
+(function () {
+  if (!/[?&]chat=1(&|$)/.test(location.search) || !window.VTChat) return;
+  try { history.replaceState(null, '', location.pathname + location.hash); } catch (e) {}
+  setTimeout(function () { window.VTChat.open('chat'); }, 600);
+})();
+, AUD: 'A
+  function cap(t) { return t.charAt(0).toUpperCase() + t.slice(1); }
+  function ask(text, actions) {
+    S.busy = true; showTyping();
+    pause(550).then(function () { S.busy = false; botSay({ text: text, actions: actions && actions.length ? actions : undefined }); });
+  }
+  function ch(label, arg) { return { label: label, cmd: 'flow', arg: arg }; }
+
+  function findCoin(q) {
+    var v = VT(); if (!v) return null; var coins = v.coins(), keys = Object.keys(ALIAS).sort(function (a, b) { return b.length - a.length; }), i;
+    for (i = 0; i < keys.length; i++) if (new RegExp('(^|[^a-z])' + keys[i] + '([^a-z]|$)').test(q) && coins.indexOf(ALIAS[keys[i]]) > -1) return ALIAS[keys[i]];
+    for (i = 0; i < SYMS.length; i++) if (new RegExp('(^|[^a-z])' + SYMS[i].toLowerCase() + '([^a-z]|$)').test(q) && coins.indexOf(SYMS[i]) > -1) return SYMS[i];
+    return null;
+  }
+  function findSide(q) {
+    var b = /\b(buy|buying|purchase|get|need|top ?up)\b/.test(q), s = /\b(sell|selling|cash ?out|offload|convert)\b/.test(q);
+    return b && !s ? 'buy' : s && !b ? 'sell' : null;
+  }
+  function findNet(q, asset) {
+    var l = VT().nets(asset), i, n, code, w;
+    for (i = 0; i < l.length; i++) {
+      n = l[i]; code = n.c.toLowerCase();
+      if (new RegExp('(^|[^a-z0-9])' + code.replace(/[^a-z0-9 ]/g, '') + '([^a-z0-9]|$)').test(q)) return n.c;
+      w = n.n.toLowerCase().split(' ')[0];
+      if (w.length > 3 && new RegExp('(on|via|using|through|network)\\s+' + w).test(q)) return n.c;
+      if (n.c === 'BEP20' && /\b(bsc|binance smart|bnb chain|bnb smart)\b/.test(q)) return n.c;
+    }
+    return null;
+  }
+  function parseAmt(raw) {
+    var q = raw.toLowerCase().replace(/,/g, '').replace(/\b(trc|erc|bep)\s?20\b/g, ' ');
+    var m = q.match(/(\d+(?:\.\d+)?)\s*(?:(k|m|million|thousand)(?![a-z]))?/); if (!m) return null;
+    var n = parseFloat(m[1]); if (m[2]) n *= (m[2] === 'k' || m[2] === 'thousand') ? 1e3 : 1e6;
+    if (!(n > 0)) return null;
+    var ccy = /\u20A6|\bngn\b|naira|(^|[^a-z])n\d/.test(q) ? 'NGN' : /\$|\busd\b|dollar|bucks/.test(q) ? 'USD' : null;
+    var coin = findCoin(q), worth = /(with|worth|for)\s*[\u20A6$]?\s*\d/.test(q);
+    return { v: n, ccy: ccy, coin: coin, kind: coin && !ccy && !worth ? 'crypto' : 'fiat' };
+  }
+  function rateLine() {
+    var v = VT(), R = v && v.rates && v.rates(); if (!R || !(R.buy > 0)) return '';
+    return 'Our rates today: you buy at ' + money('NGN', R.sell) + ' per $1 and sell at ' + money('NGN', R.buy) + ' per $1. They can change, so a representative confirms the final amount. ';
+  }
+  function detectIntent(q) {
+    var info = /^(what|why|how (does|do|is|are)|explain|tell me about|is |are )/.test(q) && !/rate|price|how much|worth|sell|buy/.test(q), s = findSide(q);
+    if (/gift ?card|giftcard|itunes|google ?play|steam|razer|sephora|walmart|playstation|xbox|ebay|amazon (card|voucher)|apple card|visa card/.test(q) && !(info && !s)) return 'gift';
+    var c = findCoin(q), generic = /\b(crypto|cryptocurrency|coins?)\b/.test(q);
+    if (info && !s) return null;
+    if ((c || generic) && (s || /rate|price|how much|worth|want|need|trade|swap|exchange/.test(q))) return 'crypto';
+    if (c && q.split(/\s+/).length <= 3) return 'crypto';
+    return null;
+  }
+
+  function fillCrypto(f, q, raw) {
+    var d = f.d, got = false, c = findCoin(q), sd = findSide(q), nw, a;
+    if (c && (!d.asset || f.step === 'asset')) { if (d.asset !== c) d.network = null; d.asset = c; got = true; }
+    if (sd && !d.side) { d.side = sd; got = true; }
+    if (d.asset && !d.network) { nw = findNet(q, d.asset); if (nw) { d.network = nw; got = true; } }
+    if (!d.value) {
+      a = parseAmt(raw);
+      if (a) {
+        d.value = a.v; d.kind = a.kind; d.ccy = a.kind === 'fiat' ? a.ccy : null; got = true;
+        if (a.kind === 'crypto' && a.coin && a.coin !== d.asset) { d.asset = a.coin; d.network = findNet(q, a.coin); }
+      }
+    } else if (d.kind === 'fiat' && !d.ccy) {
+      if (/\u20A6|\bngn\b|naira/.test(q)) { d.ccy = 'NGN'; got = true; }
+      else if (/\$|\busd\b|dollar/.test(q)) { d.ccy = 'USD'; got = true; }
+      else if (d.asset && findCoin(q) === d.asset) { d.kind = 'crypto'; got = true; }
+    }
+    return got;
+  }
+  function nextCrypto(f) {
+    var d = f.d, v = VT(), intro = f.intro ? rateLine() : '', l, verb;
+    f.intro = false;
+    if (!v) { S.flow = null; save(); ask('Use the trade box on the homepage to start a crypto order, or I can connect you with a representative.', [{ label: 'Open trade box', cmd: 'scroll', arg: 'markets', primary: true }, repAct()]); return; }
+    if (!d.side && !d.asset) { f.step = 'side'; return ask(intro + 'Sure. Would you like to buy or sell crypto?', [ch('Buy crypto', 'c:side=buy'), ch('Sell crypto', 'c:side=sell'), CANCEL]); }
+    if (!d.side) { f.step = 'side'; return ask(intro + 'Do you want to buy or sell ' + v.name(d.asset) + ' (' + d.asset + ')?', [ch('Buy ' + d.asset, 'c:side=buy'), ch('Sell ' + d.asset, 'c:side=sell'), CANCEL]); }
+    if (!d.asset) {
+      f.step = 'asset';
+      var top = ['USDT', 'BTC', 'ETH', 'USDC', 'SOL', 'BNB'].filter(function (x) { return v.coins().indexOf(x) > -1; }).map(function (x) { return ch(x, 'c:asset=' + x); });
+      return ask(intro + 'Which coin would you like to ' + d.side + '?', top.concat([ch('Other coin', 'c:asset=?'), CANCEL]));
+    }
+    if (!d.network) {
+      l = v.nets(d.asset);
+      if (l.length === 1) d.network = l[0].c;
+      else { f.step = 'network'; return ask('Which network should the ' + d.asset + ' use? Pick the one your wallet or exchange supports. Crypto sent on the wrong network can be lost.', l.map(function (n) { return ch(n.c, 'c:network=' + n.c); }).concat([CANCEL])); }
+    }
+    if (!d.value) {
+      f.step = 'value'; verb = d.side === 'buy' ? 'buy' : 'sell';
+      return ask('How much ' + d.asset + ' do you want to ' + verb + '? Type an amount in naira (\u20A650,000), dollars ($100) or ' + d.asset + ' (20 ' + d.asset + ').', [CANCEL]);
+    }
+    if (d.kind === 'fiat' && !d.ccy) { f.step = 'ccy'; return ask('Is ' + d.value.toLocaleString('en-US') + ' in naira (\u20A6), US dollars ($) or ' + d.asset + '?', [ch('Naira (\u20A6)', 'c:ccy=NGN'), ch('US dollars ($)', 'c:ccy=USD'), ch(d.asset, 'c:ccy=coin'), CANCEL]); }
+    finishCrypto(f);
+  }
+  function finishCrypto(f) {
+    var d = f.d, v = VT(), cryp = d.kind === 'crypto', ccy = cryp ? 'NGN' : (d.ccy || 'NGN');
+    var qd = v.quote(d.side, d.asset, ccy, cryp ? 'crypto' : 'fiat', d.value), acts = CHAT.isLoggedIn() ? [] : [loginAct()];
+    S.flow = null; save();
+    if (!qd || !(qd.qty > 0)) {
+      var txt = 'Hi VersusTrade,\nI want to ' + d.side + ' ' + (cryp ? qtyStr(d.value) + ' ' + d.asset : d.asset) + '\non ' + d.network + (cryp ? '' : '\n(' + money(ccy, d.value) + ')') + '.';
+      lastTrade = { custom: txt, card: null }; refreshWa();
+      return ask('I couldn\u2019t load live prices just now, so I can\u2019t show an estimate. I\u2019ve noted your request, and our team will confirm the exact amount with you.', acts.concat([waAct(txt), telegramAct(txt)]));
+    }
+    var trade = { side: d.side, asset: d.asset, name: v.name(d.asset), currency: ccy, network: d.network, amount: qd.fiat, qty: qd.qty };
+    lastTrade = trade; refreshWa(); add({ role: 'trade', trade: trade });
+    var more = [ch('Change amount', 'c:edit=value')]; if (v.nets(d.asset).length > 1) more.push(ch('Change network', 'c:edit=network'));
+    ask('Here\u2019s your request. It is an estimate, and our team will confirm the final amount before you pay. Make sure your wallet or exchange supports ' + d.network + '.', acts.concat([waAct(tradeText(trade)), telegramAct(tradeText(trade))]).concat(more));
+  }
+
+  function ccyOf(q) { return /\$|\busd\b|dollar|bucks/.test(q) ? 'USD' : /\u00A3|\bgbp\b|pound/.test(q) ? 'GBP' : /\u20AC|\beur\b|euro/.test(q) ? 'EUR' : /\bcad\b|canadian/.test(q) ? 'CAD' : /\baud\b|australian/.test(q) ? 'AUD' : null; }
+  function fillGift(f, q, raw) {
+    var d = f.d, got = false, i, a, m;
+    if (f.step === 'cardtext' && !d.card && raw.trim().length > 1 && raw.length < 40) { d.card = cap(raw.trim()); return true; }
+    if (!d.card) for (i = 0; i < GK.length; i++) if (GK[i][0].test(q)) { d.card = GK[i][1]; got = true; break; }
+    var isVisa = /visa/i.test(d.card || ''), isAmazon = /amazon/i.test(d.card || ''), isApple = /apple|itunes/i.test(d.card || ''), isSteam = /steam/i.test(d.card || ''), isRazer = /razer/i.test(d.card || ''), isSephora = /sephora/i.test(d.card || ''), isTarget = /target/i.test(d.card || ''), isWalmart = /walmart/i.test(d.card || ''), isPlayStation = /playstation/i.test(d.card || ''), isXbox = /xbox/i.test(d.card || ''), isEbay = /ebay/i.test(d.card || ''), isStructured = isVisa || isAmazon || isApple || isSteam || isRazer || isSephora || isTarget || isWalmart || isPlayStation || isXbox || isEbay;
+    if (isStructured) {
+      if (!d.gkind) {
+        if (/\bphysical\b|plastic|actual card/.test(q)) { d.gkind = 'Physical'; got = true; }
+        else if (/e-?code|digital|code only|email/.test(q)) { d.gkind = 'E-code'; got = true; }
+      }
+      if (d.gkind && !d.subcategory) {
+        var opts = window.VTVisaPicker && window.VTVisaPicker.getSubcategories ? window.VTVisaPicker.getSubcategories(d.card, d.gkind) : [];
+        for (i = 0; i < opts.length; i++) if (q.indexOf(opts[i].toLowerCase().trim()) !== -1) { d.subcategory = opts[i]; got = true; break; }
+      }
+      if (f.step === 'value' && !d.value) {
+        m = q.replace(/,/g, '').match(/(\d+(?:\.\d+)?)\s*(?:(k)(?![a-z]))?/);
+        if (m) {
+          a = parseFloat(m[1]) * (m[2] ? 1000 : 1);
+          if (a > 0) {
+            d.value = a;
+            var sub = (d.subcategory || '').toLowerCase();
+            d.ccy = /\(\$\)|^\$|usa/.test(sub) ? 'USD' : /\(£\)|^£|uk /.test(sub) ? 'GBP' : /\(€|^€|euro|germany|austria|belgium|finland|france|greece|ireland|italy|luxembourg|netherlands|portugal|spain/.test(sub) ? 'EUR' : /canada|\bCAD\b/.test(sub) ? 'CAD' : /australia|\bA\$\b/.test(sub) ? 'AUD' : /denmark/.test(sub) ? 'DKK' : /norway/.test(sub) ? 'NOK' : /swedish/.test(sub) ? 'SEK' : /\bNZD\b/.test(sub) ? 'NZD' : /singapore/.test(sub) ? 'SGD' : /CHF|switzerland/.test(sub) ? 'CHF' : /uae/.test(sub) ? 'AED' : /brazil/.test(sub) ? 'BRL' : /mexico/.test(sub) ? 'MXN' : /poland/.test(sub) ? 'PLN' : /malaysian/.test(sub) ? 'MYR' : ccyOf(q);
+            got = true;
+          }
+        }
+      } else if (d.value && !d.ccy && ccyOf(q)) { d.ccy = ccyOf(q); got = true; }
+      return got;
+    }
+    if (!d.gkind) {
+      if (/physical|plastic|actual card/.test(q)) { d.gkind = 'Physical card'; got = true; }
+      else if (/e-?code|digital|code only|email/.test(q)) { d.gkind = 'E-code'; got = true; }
+      else if (/receipt/.test(q)) { d.gkind = 'Receipt only'; got = true; }
+    }
+    if (!d.value) {
+      m = q.replace(/,/g, '').match(/(\d+(?:\.\d+)?)\s*(?:(k)(?![a-z]))?/);
+      if (m) { a = parseFloat(m[1]) * (m[2] ? 1000 : 1); if (a > 0) { d.value = a; d.ccy = ccyOf(q); got = true; } }
+    } else if (!d.ccy && ccyOf(q)) { d.ccy = ccyOf(q); got = true; }
+    if (!d.country && f.step === 'country' && raw.trim().length > 1 && raw.trim().length <= 40 && !/\d/.test(raw)) { d.country = cap(raw.trim()); got = true; }
+    return got;
+  }
+
+  function nextGift(f) {
+    var d = f.d, cards = (window.VTGiftCards && window.VTGiftCards.cards) || [], isVisa = /visa/i.test(d.card || ''), isAmazon = /amazon/i.test(d.card || ''), isApple = /apple|itunes/i.test(d.card || ''), isSteam = /steam/i.test(d.card || ''), isRazer = /razer/i.test(d.card || ''), isSephora = /sephora/i.test(d.card || ''), isTarget = /target/i.test(d.card || ''), isWalmart = /walmart/i.test(d.card || ''), isPlayStation = /playstation/i.test(d.card || ''), isXbox = /xbox/i.test(d.card || ''), isEbay = /ebay/i.test(d.card || ''), isStructured = isVisa || isAmazon || isApple || isSteam || isRazer || isSephora || isTarget || isWalmart || isPlayStation || isXbox || isEbay;
+    if (!d.card) { f.step = 'card'; return ask('Which gift card would you like to sell?', cards.map(function (c) { return ch(c.n.replace(' Gift Card', ''), 'g:card=' + c.n); }).concat([ch('Other card', 'g:card=?'), CANCEL])); }
+    if (isStructured) {
+      if (!d.gkind) { f.step = 'gkind'; return ask('Is your ' + (isVisa ? 'Visa' : isAmazon ? 'Amazon' : isApple ? 'Apple/iTunes' : isSteam ? 'Steam' : isRazer ? 'Razer Gold' : isSephora ? 'Sephora' : isTarget ? 'Target' : isWalmart ? 'Walmart' : isPlayStation ? 'PlayStation' : isEbay ? 'eBay' : 'Xbox') + ' gift card Physical or E-code?', [ch('Physical', 'g:gkind=Physical'), ch('E-code', 'g:gkind=E-code'), CANCEL]); }
+      if (!d.subcategory && !(isTarget && d.gkind === 'E-code')) {
+        f.step = 'subcategory';
+        var subs = window.VTVisaPicker && window.VTVisaPicker.getSubcategories ? window.VTVisaPicker.getSubcategories(d.card, d.gkind) : [];
+        return ask('Select Gift card Subcategory:', subs.map(function (s) { return ch(s, 'g:subcategory=' + s); }).concat([CANCEL]));
+      }
+      if (!d.value) { f.step = 'value'; return ask('What amount is on your ' + (d.subcategory || d.card) + '? For example, 25 or 100.', [CANCEL]); }
+      finishGift(f); return;
+    }
+    if (!d.gkind) { f.step = 'gkind'; return ask('Is your ' + d.card + ' a physical card, an e-code, or do you only have the receipt?', [ch('Physical card', 'g:gkind=Physical card'), ch('E-code', 'g:gkind=E-code'), ch('Receipt only', 'g:gkind=Receipt only'), CANCEL]); }
+    if (!d.value) { f.step = 'value'; return ask('What is the card value? For example $100, £50 or €25.', [CANCEL]); }
+    if (!d.ccy) { f.step = 'ccy'; return ask('Is ' + d.value.toLocaleString('en-US') + ' in US dollars, British pounds, euros or Canadian dollars?', [ch('US dollars ($)', 'g:ccy=USD'), ch('British pounds (£)', 'g:ccy=GBP'), ch('Euros (€)', 'g:ccy=EUR'), ch('Canadian dollars', 'g:ccy=CAD'), CANCEL]); }
+    if (!d.country) { f.step = 'country'; return ask('Which country was the card bought in?', [ch('United States', 'g:country=United States'), ch('United Kingdom', 'g:country=United Kingdom'), ch('Canada', 'g:country=Canada'), CANCEL]); }
+    finishGift(f);
+  }
+
+  function finishGift(f) {
+    var d = f.d, val = (GSYM[d.ccy] || '') + Number(d.value).toLocaleString('en-US') + (GSYM[d.ccy] ? '' : ' ' + d.ccy);
+    var isStructured = /visa|amazon|apple|itunes|steam|razer|sephora|target|walmart|playstation|xbox|ebay/i.test(d.card || '');
+    var text = isStructured ? 'I want to sell my ' + d.card + ' (' + d.gkind + (d.subcategory ? ', ' + d.subcategory : '') + ', ' + val + ').' : 'I want to sell my ' + d.card + ' (' + d.gkind.toLowerCase() + ', ' + val + ', bought in ' + d.country + ').';
+    S.flow = null; lastTrade = { card: d.card, giftType: d.gkind, subcategory: d.subcategory || null, amountLabel: val, country: isStructured ? null : d.country }; refreshWa();
+    var rows = [['Type', d.gkind]];
+    if (isStructured && d.subcategory) rows.push(['Subcategory', d.subcategory]);
+    rows.push(['Amount', val]);
+    if (!isStructured) rows.push(['Country', d.country]);
+    add({ role: 'summary', summary: { tag: 'sell', title: d.card, rows: rows, text: text, giftType: d.gkind, subcategory: d.subcategory || null, amountLabel: val, country: isStructured ? null : d.country } });
+    ask('Thanks, I\u2019ve noted all your gift card details. Our team will confirm the card and rate with you, and process everything.', (CHAT.isLoggedIn() ? [] : [loginAct()]).concat([waAct(lastTrade.custom), telegramAct(lastTrade.custom)]));
+  }
+
+  function flowNext() { var f = S.flow; if (!f) return; save(); if (f.type === 'crypto') nextCrypto(f); else nextGift(f); }
+  function flowCmd(arg, label) {
+    if (S.busy) return;
+    add({ role: 'user', text: label || arg });
+    var type = arg.charAt(0), kv = arg.slice(2).split('='), k = kv[0], val = kv.slice(1).join('=');
+    if (type === 'x') { S.flow = null; save(); ask('No problem, I\u2019ve cancelled that. Ask me anything, or start again whenever you like.'); return; }
+    var want = type === 'g' ? 'gift' : 'crypto';
+    if (!S.flow || S.flow.type !== want) S.flow = { type: want, d: {} };
+    var f = S.flow, d = f.d;
+    if (want === 'crypto') {
+      if (k === 'edit') { var lt = lastTrade && !lastTrade.custom ? lastTrade : null; if (lt) { d.side = lt.side; d.asset = lt.asset; d.network = val === 'network' ? null : lt.network; } }
+      else if (k === 'ccy') { if (val === 'coin') { d.kind = 'crypto'; d.ccy = null; } else d.ccy = val; }
+      else if (k === 'asset' && val === '?') { f.step = 'asset'; ask('Which coin? Type its name, for example Bitcoin or Solana.'); return; }
+      else { d[k] = val; if (k === 'asset') d.network = null; }
+    } else {
+      if (k === 'card' && val === '?') { f.step = 'cardtext'; ask('Type the name of the gift card you want to sell.'); return; }
+      d[k] = val;
+    }
+    flowNext();
+  }
+  function flowTry(text) {
+    var q = text.toLowerCase().trim(), f = S.flow;
+    if (/^(cancel|stop|start over|never ?mind|reset|forget it)\b/.test(q)) {
+      if (!f) return false;
+      S.flow = null; save(); ask('No problem, I\u2019ve cancelled that. Ask me anything, or start again whenever you like.'); return true;
+    }
+    if (/(human|agent|representative|real person|support team)/.test(q)) return false;
+    if (f) {
+      if ((f.type === 'crypto' ? fillCrypto(f, q, text) : fillGift(f, q, text))) { flowNext(); return true; }
+      if (/\?|^(what|why|how|can|do|is|are|who|when)\b/.test(q)) return false;
+      flowNext(); return true;
+    }
+    var intent = detectIntent(q); if (!intent) return false;
+    S.flow = { type: intent === 'gift' ? 'gift' : 'crypto', d: {}, intro: /rate|price|how much|worth/.test(q) };
+    if (S.flow.type === 'crypto') fillCrypto(S.flow, q, text); else fillGift(S.flow, q, text);
+    flowNext(); return true;
+  }
+
+  /* ---------- emoji and voice notes ---------- */
+  var pop = $('vcPop'), emojiBtn = $('vcEmojiBtn'), micBtn = $('vcMicBtn'), form = $('vcForm');
+  function dur(sec) { sec = Math.max(0, Math.round(sec || 0)); return Math.floor(sec / 60) + ':' + ('0' + (sec % 60)).slice(-2); }
+  function showPop(kind) {
+    var cur = pop.getAttribute('data-kind');
+    if (!kind || cur === kind) { pop.hidden = true; pop.removeAttribute('data-kind'); pop.innerHTML = ''; emojiBtn.setAttribute('aria-expanded', 'false'); return; }
+    pop.hidden = false; pop.setAttribute('data-kind', kind);
+    emojiBtn.setAttribute('aria-expanded', kind === 'emoji');
+    drawEmoji();
+  }
+  function insertText(t) {
+    var a = input.selectionStart == null ? input.value.length : input.selectionStart, b = input.selectionEnd == null ? a : input.selectionEnd;
+    input.setRangeText(t, a, b, 'end'); input.dispatchEvent(new Event('input')); input.focus({ preventScroll: true });
+  }
+  function drawEmoji() {
+    pop.innerHTML = ''; var g = el('div', 'vc-eg'); g.setAttribute('role', 'listbox'); g.setAttribute('aria-label', 'Emoji');
+    EMOJIS.forEach(function (e) { var b = el('button', 'vc-em', e); b.type = 'button'; b.setAttribute('aria-label', e); b.addEventListener('click', function () { insertText(e); }); g.appendChild(b); });
+    pop.appendChild(g);
+  }
+  var rec = { mr: null, chunks: [], t0: 0, timer: 0, stream: null };
+  function recUI(on) { form.classList.toggle('rec', on); if (!on) { clearInterval(rec.timer); $('vcRecTime').textContent = '0:00'; } }
+  function startRec() {
+    showPop(null);
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) { add({ role: 'system', text: 'Voice notes aren\u2019t supported in this browser.' }); return; }
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+      var types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus'], mime = '';
+      for (var i = 0; i < types.length; i++) { if (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(types[i])) { mime = types[i]; break; } }
+      rec.stream = stream; rec.chunks = []; rec.mr = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
+      rec.mr.ondataavailable = function (e) { if (e.data && e.data.size) rec.chunks.push(e.data); };
+      rec.mr.start(); rec.t0 = Date.now(); recUI(true);
+      rec.timer = setInterval(function () { var s = (Date.now() - rec.t0) / 1000; $('vcRecTime').textContent = dur(s); if (s >= 120) stopRec(true); }, 250);
+    }).catch(function () { add({ role: 'system', text: 'Microphone access was blocked. Allow it in your browser settings to send voice notes.' }); });
+  }
+  function stopRec(sendIt) {
+    if (!rec.mr) return;
+    var mr = rec.mr, secs = (Date.now() - rec.t0) / 1000, chunks = rec.chunks, stream = rec.stream; rec.mr = null; recUI(false);
+    mr.onstop = function () {
+      stream.getTracks().forEach(function (t) { t.stop(); });
+      if (sendIt && chunks.length && secs >= 1) sendVoice(URL.createObjectURL(new Blob(chunks, { type: mr.mimeType || 'audio/webm' })), secs);
+    };
+    try { mr.stop(); } catch (e) { stream.getTracks().forEach(function (t) { t.stop(); }); }
+  }
+  function sendVoice(url, secs) {
+    if (isEnded()) return;
+    // Front end only: the audio stays in this browser tab. Hook your upload here.
+    add({ role: 'user', kind: 'voice', dur: secs, url: url, text: 'Voice note' });
+    if (S.mode === 'ai') { showTyping(); pause(900).then(function () { botSay({ text: 'Thanks. I can\u2019t listen to voice notes myself, but a representative can. Want me to connect you?', actions: [repAct()] }); }); } else toTeam('Thanks, I\u2019ll listen to your voice note now.');
+  }
+  emojiBtn.addEventListener('click', function () { showPop('emoji'); });
+  micBtn.addEventListener('click', startRec);
+  $('vcRecCancel').addEventListener('click', function () { stopRec(false); });
+  $('vcRecSend').addEventListener('click', function () { stopRec(true); });
+  panel.addEventListener('click', function (e) { if (!pop.hidden && !e.target.closest('#vcPop, .vc-tools')) showPop(null); });
+
+  function greet() { add({ role: 'bot', text: 'Hi! I\u2019m Betty from VersusTrade customer support. Ask me anything about what we do, or pick a coin in the trade box and I\u2019ll take it from there. A representative is available any time you need one.' }); }
+  /* ---------- navigation ---------- */
+  function go(view) {
+    S.view = view; panel.setAttribute('data-view', view);
+    [].forEach.call(panel.querySelectorAll('.vc-tabs button'), function (b) { if (b.dataset.go === (view === 'home' ? 'home' : view === 'tickets' ? 'tickets' : 'messages')) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+    if (view === 'chat') {
+      S.unread = 0; badges();
+      status(); if (!S.msgs.length) greet();
+      scrollDown(); setTimeout(function () { if (S.open && S.view === 'chat') input.focus({ preventScroll: true }); }, 120);
+    } else if (view === 'messages') drawList();
+    else if (view === 'tickets') drawTix();
+    else if (view === 'home') { drawHi(); drawRecent(); }
+  }
+  function open(view) {
+    if (!S.open) {
+      S.open = true; panel.setAttribute('data-open', '');
+      if (fab) { fab.setAttribute('data-open', ''); fab.setAttribute('aria-expanded', 'true'); }
+      if (window.matchMedia('(max-width:560px)').matches) {
+        document.documentElement.classList.add('vc-lock');
+        // full-screen on phones: add a history step so the phone's Back button closes the chat instead of leaving the page
+        try { history.pushState({ vtChat: 1 }, ''); S.pushed = true; } catch (e) {}
+      }
+    }
+    go(view || S.view); badges();
+  }
+  function close() {
+    if (!S.open) return; S.open = false;
+    stopRec(false); showPop(null);
+    if (S.pushed) { S.pushed = false; S.skipPop = true; try { history.back(); } catch (e) { S.skipPop = false; } setTimeout(function () { S.skipPop = false; }, 500); }
+    panel.removeAttribute('data-open'); if (fab) { fab.removeAttribute('data-open'); fab.setAttribute('aria-expanded', 'false'); }
+    document.documentElement.classList.remove('vc-lock'); badges();
+  }
+  function toggle() { S.open ? close() : open('home'); }
+
+  function startOrResumeChat() { if (S.closedAt || isEnded()) resetChat(true); go('chat'); }
+  panel.addEventListener('click', function (e) {
+    var a = e.target.closest('[data-act]'), g = e.target.closest('[data-go]');
+    if (a) { var k = a.dataset.act; if (k === 'close') close(); else if (k === 'chat-home') { if (/^\/dashboard(?:\/|$)/.test(location.pathname)) go('home'); else close(); } else if (k === 'new' || k === 'chat') startOrResumeChat(); else go('messages'); }
+    else if (g) go(g.dataset.go);
+  });
+  document.addEventListener('keydown', function (e) { if (S.open && e.key === 'Escape') { if (!pop.hidden) { showPop(null); return; } close(); if (fab) fab.focus(); } });
+  input.addEventListener('input', function () { send.disabled = !input.value.trim(); input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 112) + 'px'; });
+  input.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('vcForm').requestSubmit(); } });
+  $('vcForm').addEventListener('submit', function (e) { e.preventDefault(); if (form.classList.contains('rec')) return; if (S.busy) return; showPop(null); var v = input.value; input.value = ''; input.style.height = 'auto'; send.disabled = true; userSay(v); });
+  $('vcFile').addEventListener('change', function (e) { attach(e.target.files[0]); e.target.value = ''; });
+  [].forEach.call(document.querySelectorAll('a[href="/support/"]'), function (a) {
+    if (/chat with us/i.test(a.textContent)) a.addEventListener('click', function (e) { e.preventDefault(); open('chat'); });
+  });
+
+  // When someone logs in, let them know in the chat so the transaction can continue
+  /* ---------- logged-in customers: chat saved to the account, Chatwoot contact linked ---------- */
+  function redrawAll() {
+    log.innerHTML = '<p class="vc-intro">Betty replies automatically. A team member can join any time.</p>';
+    lastTrade = null;
+    S.msgs.forEach(function (m) { if (m.role === 'trade') lastTrade = m.trade; else if (m.role === 'summary') lastTrade = giftTradeFromSummary(m.summary); drawMsg(m); });
+    refreshWa(); status(); badges(); drawHi(); drawRecent(); if (S.view === 'messages') drawList(); if (S.view === 'tickets') drawTix();
+    if (CW && cw.conv && !cw.closing) startPolling();
+    scrollDown();
+  }
+  // empty the chat. keepAccount = start a new conversation but stay linked to the same customer
+  function resetChat(keepAccount) {
+    hideTyping(); clearTimeout(sync.timer);
+    S.msgs = []; S.mode = 'ai'; S.agentReplied = false; S.flow = null; S.closedAt = 0; S.busy = false; lastTrade = null; S.tixAt = 0; S.tixConv = null;
+    if (!keepAccount) { S.uid = null; S.tix = []; }
+    if (CW) {
+      clearTimeout(cw.wait); clearTimeout(cw.closeTimer); clearInterval(cw.timer); cw.timer = 0; cw.conv = null; cw.seen = 0; cw.closing = false;
+      if (!keepAccount) { cw.src = null; cw.linked = null; cw.linkedName = null; }
+      cwSave();
+    }
+    if (!keepAccount) { try { localStorage.removeItem(KEY); } catch (e) {} }
+    redrawAll();
+    if (S.view === 'chat') greet(); else save();
+  }
+  function adopt(st) {
+    S.msgs = st.msgs; S.mode = (st.mode === 'pending' && !CHAT.live) ? 'agent' : (st.mode || 'ai'); S.agentReplied = !!st.agentReplied; S.flow = st.flow || null; S.closedAt = st.closedAt || 0; S.t0 = st.t || 0; S.tixAt = st.tixAt || 0; S.tixConv = st.tixConv || null;
+    if (CW && st.cw) { cw.src = st.cw.src || null; cw.conv = st.cw.conv || null; cw.seen = st.cw.seen || 0; cw.closing = false; cwSave(); }
+    S.tix = mergeTix(S.tix, st.tix); redrawAll();
+  }
+  // tell Chatwoot who this visitor is, so the team sees the customer's email on the conversation
+  function linkContact() {
+    var u = who();
+    var name = shownName(u);
+    if (!CW || !cw.src || !u || !u.email || (cw.linked === u.id && cw.linkedName === name)) return Promise.resolve();
+    var path = '/contacts/' + encodeURIComponent(cw.src), renamed = cw.linked === u.id;
+    return cwCall('PATCH', path, { name: name, email: u.email, identifier: u.id })
+      .catch(function () { return cwCall('PATCH', path, { name: name, email: u.email }); })
+      .then(function () {
+        cw.linked = u.id; cw.linkedName = name; cwSave();
+        var idle = (CHAT.newThreadAfterHours || 0) * 3600 * 1000, quiet = idle && cw.last && Date.now() - cw.last > idle;
+        if (cw.conv && !cw.closing && !quiet) return cwCall('POST', cwConv('/messages'), { content: renamed ? 'The customer changed their name to ' + name + '.' : 'The customer signed in on the website as ' + name + ' (' + u.email + ').' });
+      }).catch(function () {});
+  }
+  function accountSync(u) {
+    var A = window.VTAuth;
+    if (!A || !A.rest || !u || !u.id) return Promise.resolve(false);
+    if (S.uid && S.uid !== u.id) resetChat();   // this browser still held another account's chat
+    var had = S.msgs.some(isCust), adopted = false;
+    return A.rest('GET', '/chat_state?select=state&user_id=eq.' + encodeURIComponent(u.id) + '&limit=1').then(function (rows) {
+      var st = rows && rows[0] && rows[0].state;
+      if (st && st.tix) S.tix = mergeTix(S.tix, st.tix);
+      // use the saved chat if this browser has none, or if it was updated on another device since
+      if (usable(st) && st.msgs.length && (!had || (S.uid === u.id && st.t > (S.t0 || 0)))) { adopt(st); adopted = true; }
+      S.uid = u.id; sync.ready = true; sync.off = false;
+      save();
+      return linkContact().then(function () { return adopted; });
+    }).catch(function (err) {
+      if (err && (err.status === 400 || err.status === 401 || err.status === 403 || err.status === 404)) sync.off = true;
+      S.uid = u.id; save();
+      return linkContact().then(function () { return false; });
+    });
+  }
+  $('vcNew').addEventListener('click', function () { resetChat(true); });
+  window.addEventListener('vt-profile', function () { drawHi(); linkContact(); });
+
+  window.addEventListener('vt-auth', function (e) {
+    var d = e.detail || {};
+    drawHi();
+    if (!d.loggedIn) { sync.ready = false; if (S.uid) resetChat(); return; }   // logged out: the next person on this device starts clean
+    accountSync(who()).then(function (adopted) {
+      if (adopted || d.initial || !S.msgs.length) return;
+      var tr = lastTrade && !lastTrade.custom ? lastTrade : null;
+      add({ role: 'bot', text: tr ? 'You\u2019re logged in as ' + d.email + '. Your request to ' + tr.side + ' ' + qtyStr(tr.qty) + ' ' + tr.asset + (tr.network ? ' on ' + tr.network : '') + ' is still here, and a representative can confirm the payment details with you.' : lastTrade ? 'You\u2019re logged in as ' + d.email + '. Your request is still here, and a representative can confirm the details with you.' : 'You\u2019re logged in as ' + d.email + '. You can continue your transaction here, and your chats are now saved to your account.', actions: lastTrade ? [waAct(tradeText(lastTrade)), telegramAct(tradeText(lastTrade))] : [] });
+    });
+  });
+
+  // Phone Back button: one screen at a time (conversation, messages, home), then it closes the chat
+  window.addEventListener('popstate', function () {
+    if (S.skipPop) { S.skipPop = false; return; }
+    if (!S.open) return;
+    if (S.view === 'chat') { showPop(null); go('messages'); try { history.pushState({ vtChat: 1 }, ''); } catch (e) {} }
+    else if (S.view === 'messages' || S.view === 'tickets') { go('home'); try { history.pushState({ vtChat: 1 }, ''); } catch (e) {} }
+    else { S.pushed = false; close(); }
+  });
+
+  S.msgs.forEach(function (m) { if (m.role === 'trade') lastTrade = m.trade; else if (m.role === 'summary') lastTrade = giftTradeFromSummary(m.summary); drawMsg(m); });
+  if (CW && cw.conv) startPolling();
+  refreshWa(); status(); drawHi(); drawRecent(); go('home'); badges();
+  window.VTChat = { open: open, close: close, toggle: toggle, sendTrade: sendTrade, sendGiftCard: sendGiftCard, config: CHAT };
+})();
+
+(function () {
+  var st = document.createElement('style'); st.setAttribute('data-vt-chat', 'media');
+  st.textContent = '.vc-b.vc-media{padding:5px;display:flex;flex-direction:column;gap:5px;max-width:78%}.vc-img{display:block;max-width:100%;width:230px;height:auto;border-radius:14px;background:rgba(127,127,127,.15)}.vc-mst{font-size:12px;opacity:.75;padding:0 6px 2px}.vc-mst.vc-bad{color:#ffb3bb;opacity:1}.vc-file{display:block;padding:8px 10px;font-size:14px;word-break:break-all;color:inherit;text-decoration:none}a.vc-file{text-decoration:underline}';
+  (document.head || document.documentElement).appendChild(st);
+})();
+
+// Link to open the chat on arrival, e.g. https://your-domain/?chat=1
+(function () {
+  if (!/[?&]chat=1(&|$)/.test(location.search) || !window.VTChat) return;
+  try { history.replaceState(null, '', location.pathname + location.hash); } catch (e) {}
+  setTimeout(function () { window.VTChat.open('chat'); }, 600);
+})();
+, NGN: '\u20A6' };
+  function giftText(t) {
+    var detail = t.giftType || '';
+    if (t.subcategory) detail += (detail ? ', ' : '') + t.subcategory;
+    var amount = t.amountLabel || '';
+    if (!amount && Number(t.amount) > 0) {
+      var symbol = GSYM[t.currency] || '';
+      amount = symbol + Number(t.amount).toLocaleString('en-US', { maximumFractionDigits: 2 }) + (symbol || !t.currency ? '' : ' ' + t.currency);
+    }
+    if (amount) detail += (detail ? ',\\n' : '') + String(amount).replace(/\\s*worth$/i, '') + ' worth';
+    if (t.country) detail += (detail ? ',\\n' : '') + 'bought in ' + t.country;
+    return 'Hi VersusTrade,\\nI want to sell my ' + t.card + (detail ? '\\n(' + detail + ').' : '.');
+  }
+  function giftTradeFromSummary(summary) {
+    summary = summary || {};
+    var rows = summary.rows || [];
+    function value(label) {
+      for (var i = 0; i < rows.length; i++) if (rows[i] && rows[i][0] === label) return rows[i][1];
+      return '';
+    }
+    return {
+      card: summary.title || '',
+      giftType: summary.giftType || value('Type'),
+      subcategory: summary.subcategory || value('Subcategory'),
+      amountLabel: summary.amountLabel || value('Amount'),
+      country: summary.country || value('Country')
+    };
+  }
+  function cap(t) { return t.charAt(0).toUpperCase() + t.slice(1); }
+  function ask(text, actions) {
+    S.busy = true; showTyping();
+    pause(550).then(function () { S.busy = false; botSay({ text: text, actions: actions && actions.length ? actions : undefined }); });
+  }
+  function ch(label, arg) { return { label: label, cmd: 'flow', arg: arg }; }
+
+  function findCoin(q) {
+    var v = VT(); if (!v) return null; var coins = v.coins(), keys = Object.keys(ALIAS).sort(function (a, b) { return b.length - a.length; }), i;
+    for (i = 0; i < keys.length; i++) if (new RegExp('(^|[^a-z])' + keys[i] + '([^a-z]|$)').test(q) && coins.indexOf(ALIAS[keys[i]]) > -1) return ALIAS[keys[i]];
+    for (i = 0; i < SYMS.length; i++) if (new RegExp('(^|[^a-z])' + SYMS[i].toLowerCase() + '([^a-z]|$)').test(q) && coins.indexOf(SYMS[i]) > -1) return SYMS[i];
+    return null;
+  }
+  function findSide(q) {
+    var b = /\b(buy|buying|purchase|get|need|top ?up)\b/.test(q), s = /\b(sell|selling|cash ?out|offload|convert)\b/.test(q);
+    return b && !s ? 'buy' : s && !b ? 'sell' : null;
+  }
+  function findNet(q, asset) {
+    var l = VT().nets(asset), i, n, code, w;
+    for (i = 0; i < l.length; i++) {
+      n = l[i]; code = n.c.toLowerCase();
+      if (new RegExp('(^|[^a-z0-9])' + code.replace(/[^a-z0-9 ]/g, '') + '([^a-z0-9]|$)').test(q)) return n.c;
+      w = n.n.toLowerCase().split(' ')[0];
+      if (w.length > 3 && new RegExp('(on|via|using|through|network)\\s+' + w).test(q)) return n.c;
+      if (n.c === 'BEP20' && /\b(bsc|binance smart|bnb chain|bnb smart)\b/.test(q)) return n.c;
+    }
+    return null;
+  }
+  function parseAmt(raw) {
+    var q = raw.toLowerCase().replace(/,/g, '').replace(/\b(trc|erc|bep)\s?20\b/g, ' ');
+    var m = q.match(/(\d+(?:\.\d+)?)\s*(?:(k|m|million|thousand)(?![a-z]))?/); if (!m) return null;
+    var n = parseFloat(m[1]); if (m[2]) n *= (m[2] === 'k' || m[2] === 'thousand') ? 1e3 : 1e6;
+    if (!(n > 0)) return null;
+    var ccy = /\u20A6|\bngn\b|naira|(^|[^a-z])n\d/.test(q) ? 'NGN' : /\$|\busd\b|dollar|bucks/.test(q) ? 'USD' : null;
+    var coin = findCoin(q), worth = /(with|worth|for)\s*[\u20A6$]?\s*\d/.test(q);
+    return { v: n, ccy: ccy, coin: coin, kind: coin && !ccy && !worth ? 'crypto' : 'fiat' };
+  }
+  function rateLine() {
+    var v = VT(), R = v && v.rates && v.rates(); if (!R || !(R.buy > 0)) return '';
+    return 'Our rates today: you buy at ' + money('NGN', R.sell) + ' per $1 and sell at ' + money('NGN', R.buy) + ' per $1. They can change, so a representative confirms the final amount. ';
+  }
+  function detectIntent(q) {
+    var info = /^(what|why|how (does|do|is|are)|explain|tell me about|is |are )/.test(q) && !/rate|price|how much|worth|sell|buy/.test(q), s = findSide(q);
+    if (/gift ?card|giftcard|itunes|google ?play|steam|razer|sephora|walmart|playstation|xbox|ebay|amazon (card|voucher)|apple card|visa card/.test(q) && !(info && !s)) return 'gift';
+    var c = findCoin(q), generic = /\b(crypto|cryptocurrency|coins?)\b/.test(q);
+    if (info && !s) return null;
+    if ((c || generic) && (s || /rate|price|how much|worth|want|need|trade|swap|exchange/.test(q))) return 'crypto';
+    if (c && q.split(/\s+/).length <= 3) return 'crypto';
+    return null;
+  }
+
+  function fillCrypto(f, q, raw) {
+    var d = f.d, got = false, c = findCoin(q), sd = findSide(q), nw, a;
+    if (c && (!d.asset || f.step === 'asset')) { if (d.asset !== c) d.network = null; d.asset = c; got = true; }
+    if (sd && !d.side) { d.side = sd; got = true; }
+    if (d.asset && !d.network) { nw = findNet(q, d.asset); if (nw) { d.network = nw; got = true; } }
+    if (!d.value) {
+      a = parseAmt(raw);
+      if (a) {
+        d.value = a.v; d.kind = a.kind; d.ccy = a.kind === 'fiat' ? a.ccy : null; got = true;
+        if (a.kind === 'crypto' && a.coin && a.coin !== d.asset) { d.asset = a.coin; d.network = findNet(q, a.coin); }
+      }
+    } else if (d.kind === 'fiat' && !d.ccy) {
+      if (/\u20A6|\bngn\b|naira/.test(q)) { d.ccy = 'NGN'; got = true; }
+      else if (/\$|\busd\b|dollar/.test(q)) { d.ccy = 'USD'; got = true; }
+      else if (d.asset && findCoin(q) === d.asset) { d.kind = 'crypto'; got = true; }
+    }
+    return got;
+  }
+  function nextCrypto(f) {
+    var d = f.d, v = VT(), intro = f.intro ? rateLine() : '', l, verb;
+    f.intro = false;
+    if (!v) { S.flow = null; save(); ask('Use the trade box on the homepage to start a crypto order, or I can connect you with a representative.', [{ label: 'Open trade box', cmd: 'scroll', arg: 'markets', primary: true }, repAct()]); return; }
+    if (!d.side && !d.asset) { f.step = 'side'; return ask(intro + 'Sure. Would you like to buy or sell crypto?', [ch('Buy crypto', 'c:side=buy'), ch('Sell crypto', 'c:side=sell'), CANCEL]); }
+    if (!d.side) { f.step = 'side'; return ask(intro + 'Do you want to buy or sell ' + v.name(d.asset) + ' (' + d.asset + ')?', [ch('Buy ' + d.asset, 'c:side=buy'), ch('Sell ' + d.asset, 'c:side=sell'), CANCEL]); }
+    if (!d.asset) {
+      f.step = 'asset';
+      var top = ['USDT', 'BTC', 'ETH', 'USDC', 'SOL', 'BNB'].filter(function (x) { return v.coins().indexOf(x) > -1; }).map(function (x) { return ch(x, 'c:asset=' + x); });
+      return ask(intro + 'Which coin would you like to ' + d.side + '?', top.concat([ch('Other coin', 'c:asset=?'), CANCEL]));
+    }
+    if (!d.network) {
+      l = v.nets(d.asset);
+      if (l.length === 1) d.network = l[0].c;
+      else { f.step = 'network'; return ask('Which network should the ' + d.asset + ' use? Pick the one your wallet or exchange supports. Crypto sent on the wrong network can be lost.', l.map(function (n) { return ch(n.c, 'c:network=' + n.c); }).concat([CANCEL])); }
+    }
+    if (!d.value) {
+      f.step = 'value'; verb = d.side === 'buy' ? 'buy' : 'sell';
+      return ask('How much ' + d.asset + ' do you want to ' + verb + '? Type an amount in naira (\u20A650,000), dollars ($100) or ' + d.asset + ' (20 ' + d.asset + ').', [CANCEL]);
+    }
+    if (d.kind === 'fiat' && !d.ccy) { f.step = 'ccy'; return ask('Is ' + d.value.toLocaleString('en-US') + ' in naira (\u20A6), US dollars ($) or ' + d.asset + '?', [ch('Naira (\u20A6)', 'c:ccy=NGN'), ch('US dollars ($)', 'c:ccy=USD'), ch(d.asset, 'c:ccy=coin'), CANCEL]); }
+    finishCrypto(f);
+  }
+  function finishCrypto(f) {
+    var d = f.d, v = VT(), cryp = d.kind === 'crypto', ccy = cryp ? 'NGN' : (d.ccy || 'NGN');
+    var qd = v.quote(d.side, d.asset, ccy, cryp ? 'crypto' : 'fiat', d.value), acts = CHAT.isLoggedIn() ? [] : [loginAct()];
+    S.flow = null; save();
+    if (!qd || !(qd.qty > 0)) {
+      var txt = 'Hi VersusTrade,\nI want to ' + d.side + ' ' + (cryp ? qtyStr(d.value) + ' ' + d.asset : d.asset) + '\non ' + d.network + (cryp ? '' : '\n(' + money(ccy, d.value) + ')') + '.';
+      lastTrade = { custom: txt, card: null }; refreshWa();
+      return ask('I couldn\u2019t load live prices just now, so I can\u2019t show an estimate. I\u2019ve noted your request, and our team will confirm the exact amount with you.', acts.concat([waAct(txt), telegramAct(txt)]));
+    }
+    var trade = { side: d.side, asset: d.asset, name: v.name(d.asset), currency: ccy, network: d.network, amount: qd.fiat, qty: qd.qty };
+    lastTrade = trade; refreshWa(); add({ role: 'trade', trade: trade });
+    var more = [ch('Change amount', 'c:edit=value')]; if (v.nets(d.asset).length > 1) more.push(ch('Change network', 'c:edit=network'));
+    ask('Here\u2019s your request. It is an estimate, and our team will confirm the final amount before you pay. Make sure your wallet or exchange supports ' + d.network + '.', acts.concat([waAct(tradeText(trade)), telegramAct(tradeText(trade))]).concat(more));
+  }
+
+  function ccyOf(q) { return /\$|\busd\b|dollar|bucks/.test(q) ? 'USD' : /\u00A3|\bgbp\b|pound/.test(q) ? 'GBP' : /\u20AC|\beur\b|euro/.test(q) ? 'EUR' : /\bcad\b|canadian/.test(q) ? 'CAD' : /\baud\b|australian/.test(q) ? 'AUD' : null; }
+  function fillGift(f, q, raw) {
+    var d = f.d, got = false, i, a, m;
+    if (f.step === 'cardtext' && !d.card && raw.trim().length > 1 && raw.length < 40) { d.card = cap(raw.trim()); return true; }
+    if (!d.card) for (i = 0; i < GK.length; i++) if (GK[i][0].test(q)) { d.card = GK[i][1]; got = true; break; }
+    var isVisa = /visa/i.test(d.card || ''), isAmazon = /amazon/i.test(d.card || ''), isApple = /apple|itunes/i.test(d.card || ''), isSteam = /steam/i.test(d.card || ''), isRazer = /razer/i.test(d.card || ''), isSephora = /sephora/i.test(d.card || ''), isTarget = /target/i.test(d.card || ''), isWalmart = /walmart/i.test(d.card || ''), isPlayStation = /playstation/i.test(d.card || ''), isXbox = /xbox/i.test(d.card || ''), isEbay = /ebay/i.test(d.card || ''), isStructured = isVisa || isAmazon || isApple || isSteam || isRazer || isSephora || isTarget || isWalmart || isPlayStation || isXbox || isEbay;
+    if (isStructured) {
+      if (!d.gkind) {
+        if (/\bphysical\b|plastic|actual card/.test(q)) { d.gkind = 'Physical'; got = true; }
+        else if (/e-?code|digital|code only|email/.test(q)) { d.gkind = 'E-code'; got = true; }
+      }
+      if (d.gkind && !d.subcategory) {
+        var opts = window.VTVisaPicker && window.VTVisaPicker.getSubcategories ? window.VTVisaPicker.getSubcategories(d.card, d.gkind) : [];
+        for (i = 0; i < opts.length; i++) if (q.indexOf(opts[i].toLowerCase().trim()) !== -1) { d.subcategory = opts[i]; got = true; break; }
+      }
+      if (f.step === 'value' && !d.value) {
+        m = q.replace(/,/g, '').match(/(\d+(?:\.\d+)?)\s*(?:(k)(?![a-z]))?/);
+        if (m) {
+          a = parseFloat(m[1]) * (m[2] ? 1000 : 1);
+          if (a > 0) {
+            d.value = a;
+            var sub = (d.subcategory || '').toLowerCase();
+            d.ccy = /\(\$\)|^\$|usa/.test(sub) ? 'USD' : /\(£\)|^£|uk /.test(sub) ? 'GBP' : /\(€|^€|euro|germany|austria|belgium|finland|france|greece|ireland|italy|luxembourg|netherlands|portugal|spain/.test(sub) ? 'EUR' : /canada|\bCAD\b/.test(sub) ? 'CAD' : /australia|\bA\$\b/.test(sub) ? 'AUD' : /denmark/.test(sub) ? 'DKK' : /norway/.test(sub) ? 'NOK' : /swedish/.test(sub) ? 'SEK' : /\bNZD\b/.test(sub) ? 'NZD' : /singapore/.test(sub) ? 'SGD' : /CHF|switzerland/.test(sub) ? 'CHF' : /uae/.test(sub) ? 'AED' : /brazil/.test(sub) ? 'BRL' : /mexico/.test(sub) ? 'MXN' : /poland/.test(sub) ? 'PLN' : /malaysian/.test(sub) ? 'MYR' : ccyOf(q);
+            got = true;
+          }
+        }
+      } else if (d.value && !d.ccy && ccyOf(q)) { d.ccy = ccyOf(q); got = true; }
+      return got;
+    }
+    if (!d.gkind) {
+      if (/physical|plastic|actual card/.test(q)) { d.gkind = 'Physical card'; got = true; }
+      else if (/e-?code|digital|code only|email/.test(q)) { d.gkind = 'E-code'; got = true; }
+      else if (/receipt/.test(q)) { d.gkind = 'Receipt only'; got = true; }
+    }
+    if (!d.value) {
+      m = q.replace(/,/g, '').match(/(\d+(?:\.\d+)?)\s*(?:(k)(?![a-z]))?/);
+      if (m) { a = parseFloat(m[1]) * (m[2] ? 1000 : 1); if (a > 0) { d.value = a; d.ccy = ccyOf(q); got = true; } }
+    } else if (!d.ccy && ccyOf(q)) { d.ccy = ccyOf(q); got = true; }
+    if (!d.country && f.step === 'country' && raw.trim().length > 1 && raw.trim().length <= 40 && !/\d/.test(raw)) { d.country = cap(raw.trim()); got = true; }
+    return got;
+  }
+
+  function nextGift(f) {
+    var d = f.d, cards = (window.VTGiftCards && window.VTGiftCards.cards) || [], isVisa = /visa/i.test(d.card || ''), isAmazon = /amazon/i.test(d.card || ''), isApple = /apple|itunes/i.test(d.card || ''), isSteam = /steam/i.test(d.card || ''), isRazer = /razer/i.test(d.card || ''), isSephora = /sephora/i.test(d.card || ''), isTarget = /target/i.test(d.card || ''), isWalmart = /walmart/i.test(d.card || ''), isPlayStation = /playstation/i.test(d.card || ''), isXbox = /xbox/i.test(d.card || ''), isEbay = /ebay/i.test(d.card || ''), isStructured = isVisa || isAmazon || isApple || isSteam || isRazer || isSephora || isTarget || isWalmart || isPlayStation || isXbox || isEbay;
+    if (!d.card) { f.step = 'card'; return ask('Which gift card would you like to sell?', cards.map(function (c) { return ch(c.n.replace(' Gift Card', ''), 'g:card=' + c.n); }).concat([ch('Other card', 'g:card=?'), CANCEL])); }
+    if (isStructured) {
+      if (!d.gkind) { f.step = 'gkind'; return ask('Is your ' + (isVisa ? 'Visa' : isAmazon ? 'Amazon' : isApple ? 'Apple/iTunes' : isSteam ? 'Steam' : isRazer ? 'Razer Gold' : isSephora ? 'Sephora' : isTarget ? 'Target' : isWalmart ? 'Walmart' : isPlayStation ? 'PlayStation' : isEbay ? 'eBay' : 'Xbox') + ' gift card Physical or E-code?', [ch('Physical', 'g:gkind=Physical'), ch('E-code', 'g:gkind=E-code'), CANCEL]); }
+      if (!d.subcategory && !(isTarget && d.gkind === 'E-code')) {
+        f.step = 'subcategory';
+        var subs = window.VTVisaPicker && window.VTVisaPicker.getSubcategories ? window.VTVisaPicker.getSubcategories(d.card, d.gkind) : [];
+        return ask('Select Gift card Subcategory:', subs.map(function (s) { return ch(s, 'g:subcategory=' + s); }).concat([CANCEL]));
+      }
+      if (!d.value) { f.step = 'value'; return ask('What amount is on your ' + (d.subcategory || d.card) + '? For example, 25 or 100.', [CANCEL]); }
+      finishGift(f); return;
+    }
+    if (!d.gkind) { f.step = 'gkind'; return ask('Is your ' + d.card + ' a physical card, an e-code, or do you only have the receipt?', [ch('Physical card', 'g:gkind=Physical card'), ch('E-code', 'g:gkind=E-code'), ch('Receipt only', 'g:gkind=Receipt only'), CANCEL]); }
+    if (!d.value) { f.step = 'value'; return ask('What is the card value? For example $100, £50 or €25.', [CANCEL]); }
+    if (!d.ccy) { f.step = 'ccy'; return ask('Is ' + d.value.toLocaleString('en-US') + ' in US dollars, British pounds, euros or Canadian dollars?', [ch('US dollars ($)', 'g:ccy=USD'), ch('British pounds (£)', 'g:ccy=GBP'), ch('Euros (€)', 'g:ccy=EUR'), ch('Canadian dollars', 'g:ccy=CAD'), CANCEL]); }
+    if (!d.country) { f.step = 'country'; return ask('Which country was the card bought in?', [ch('United States', 'g:country=United States'), ch('United Kingdom', 'g:country=United Kingdom'), ch('Canada', 'g:country=Canada'), CANCEL]); }
+    finishGift(f);
+  }
+
+  function finishGift(f) {
+    var d = f.d, val = (GSYM[d.ccy] || '') + Number(d.value).toLocaleString('en-US') + (GSYM[d.ccy] ? '' : ' ' + d.ccy);
+    var isStructured = /visa|amazon|apple|itunes|steam|razer|sephora|target|walmart|playstation|xbox|ebay/i.test(d.card || '');
+    var text = isStructured ? 'I want to sell my ' + d.card + ' (' + d.gkind + (d.subcategory ? ', ' + d.subcategory : '') + ', ' + val + ').' : 'I want to sell my ' + d.card + ' (' + d.gkind.toLowerCase() + ', ' + val + ', bought in ' + d.country + ').';
+    S.flow = null; lastTrade = { card: d.card, giftType: d.gkind, subcategory: d.subcategory || null, amountLabel: val, country: isStructured ? null : d.country }; refreshWa();
+    var rows = [['Type', d.gkind]];
+    if (isStructured && d.subcategory) rows.push(['Subcategory', d.subcategory]);
+    rows.push(['Amount', val]);
+    if (!isStructured) rows.push(['Country', d.country]);
+    add({ role: 'summary', summary: { tag: 'sell', title: d.card, rows: rows, text: text, giftType: d.gkind, subcategory: d.subcategory || null, amountLabel: val, country: isStructured ? null : d.country } });
+    ask('Thanks, I\u2019ve noted all your gift card details. Our team will confirm the card and rate with you, and process everything.', (CHAT.isLoggedIn() ? [] : [loginAct()]).concat([waAct(lastTrade.custom), telegramAct(lastTrade.custom)]));
+  }
+
+  function flowNext() { var f = S.flow; if (!f) return; save(); if (f.type === 'crypto') nextCrypto(f); else nextGift(f); }
+  function flowCmd(arg, label) {
+    if (S.busy) return;
+    add({ role: 'user', text: label || arg });
+    var type = arg.charAt(0), kv = arg.slice(2).split('='), k = kv[0], val = kv.slice(1).join('=');
+    if (type === 'x') { S.flow = null; save(); ask('No problem, I\u2019ve cancelled that. Ask me anything, or start again whenever you like.'); return; }
+    var want = type === 'g' ? 'gift' : 'crypto';
+    if (!S.flow || S.flow.type !== want) S.flow = { type: want, d: {} };
+    var f = S.flow, d = f.d;
+    if (want === 'crypto') {
+      if (k === 'edit') { var lt = lastTrade && !lastTrade.custom ? lastTrade : null; if (lt) { d.side = lt.side; d.asset = lt.asset; d.network = val === 'network' ? null : lt.network; } }
+      else if (k === 'ccy') { if (val === 'coin') { d.kind = 'crypto'; d.ccy = null; } else d.ccy = val; }
+      else if (k === 'asset' && val === '?') { f.step = 'asset'; ask('Which coin? Type its name, for example Bitcoin or Solana.'); return; }
+      else { d[k] = val; if (k === 'asset') d.network = null; }
+    } else {
+      if (k === 'card' && val === '?') { f.step = 'cardtext'; ask('Type the name of the gift card you want to sell.'); return; }
+      d[k] = val;
+    }
+    flowNext();
+  }
+  function flowTry(text) {
+    var q = text.toLowerCase().trim(), f = S.flow;
+    if (/^(cancel|stop|start over|never ?mind|reset|forget it)\b/.test(q)) {
+      if (!f) return false;
+      S.flow = null; save(); ask('No problem, I\u2019ve cancelled that. Ask me anything, or start again whenever you like.'); return true;
+    }
+    if (/(human|agent|representative|real person|support team)/.test(q)) return false;
+    if (f) {
+      if ((f.type === 'crypto' ? fillCrypto(f, q, text) : fillGift(f, q, text))) { flowNext(); return true; }
+      if (/\?|^(what|why|how|can|do|is|are|who|when)\b/.test(q)) return false;
+      flowNext(); return true;
+    }
+    var intent = detectIntent(q); if (!intent) return false;
+    S.flow = { type: intent === 'gift' ? 'gift' : 'crypto', d: {}, intro: /rate|price|how much|worth/.test(q) };
+    if (S.flow.type === 'crypto') fillCrypto(S.flow, q, text); else fillGift(S.flow, q, text);
+    flowNext(); return true;
+  }
+
+  /* ---------- emoji and voice notes ---------- */
+  var pop = $('vcPop'), emojiBtn = $('vcEmojiBtn'), micBtn = $('vcMicBtn'), form = $('vcForm');
+  function dur(sec) { sec = Math.max(0, Math.round(sec || 0)); return Math.floor(sec / 60) + ':' + ('0' + (sec % 60)).slice(-2); }
+  function showPop(kind) {
+    var cur = pop.getAttribute('data-kind');
+    if (!kind || cur === kind) { pop.hidden = true; pop.removeAttribute('data-kind'); pop.innerHTML = ''; emojiBtn.setAttribute('aria-expanded', 'false'); return; }
+    pop.hidden = false; pop.setAttribute('data-kind', kind);
+    emojiBtn.setAttribute('aria-expanded', kind === 'emoji');
+    drawEmoji();
+  }
+  function insertText(t) {
+    var a = input.selectionStart == null ? input.value.length : input.selectionStart, b = input.selectionEnd == null ? a : input.selectionEnd;
+    input.setRangeText(t, a, b, 'end'); input.dispatchEvent(new Event('input')); input.focus({ preventScroll: true });
+  }
+  function drawEmoji() {
+    pop.innerHTML = ''; var g = el('div', 'vc-eg'); g.setAttribute('role', 'listbox'); g.setAttribute('aria-label', 'Emoji');
+    EMOJIS.forEach(function (e) { var b = el('button', 'vc-em', e); b.type = 'button'; b.setAttribute('aria-label', e); b.addEventListener('click', function () { insertText(e); }); g.appendChild(b); });
+    pop.appendChild(g);
+  }
+  var rec = { mr: null, chunks: [], t0: 0, timer: 0, stream: null };
+  function recUI(on) { form.classList.toggle('rec', on); if (!on) { clearInterval(rec.timer); $('vcRecTime').textContent = '0:00'; } }
+  function startRec() {
+    showPop(null);
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) { add({ role: 'system', text: 'Voice notes aren\u2019t supported in this browser.' }); return; }
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+      var types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus'], mime = '';
+      for (var i = 0; i < types.length; i++) { if (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(types[i])) { mime = types[i]; break; } }
+      rec.stream = stream; rec.chunks = []; rec.mr = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
+      rec.mr.ondataavailable = function (e) { if (e.data && e.data.size) rec.chunks.push(e.data); };
+      rec.mr.start(); rec.t0 = Date.now(); recUI(true);
+      rec.timer = setInterval(function () { var s = (Date.now() - rec.t0) / 1000; $('vcRecTime').textContent = dur(s); if (s >= 120) stopRec(true); }, 250);
+    }).catch(function () { add({ role: 'system', text: 'Microphone access was blocked. Allow it in your browser settings to send voice notes.' }); });
+  }
+  function stopRec(sendIt) {
+    if (!rec.mr) return;
+    var mr = rec.mr, secs = (Date.now() - rec.t0) / 1000, chunks = rec.chunks, stream = rec.stream; rec.mr = null; recUI(false);
+    mr.onstop = function () {
+      stream.getTracks().forEach(function (t) { t.stop(); });
+      if (sendIt && chunks.length && secs >= 1) sendVoice(URL.createObjectURL(new Blob(chunks, { type: mr.mimeType || 'audio/webm' })), secs);
+    };
+    try { mr.stop(); } catch (e) { stream.getTracks().forEach(function (t) { t.stop(); }); }
+  }
+  function sendVoice(url, secs) {
+    if (isEnded()) return;
+    // Front end only: the audio stays in this browser tab. Hook your upload here.
+    add({ role: 'user', kind: 'voice', dur: secs, url: url, text: 'Voice note' });
+    if (S.mode === 'ai') { showTyping(); pause(900).then(function () { botSay({ text: 'Thanks. I can\u2019t listen to voice notes myself, but a representative can. Want me to connect you?', actions: [repAct()] }); }); } else toTeam('Thanks, I\u2019ll listen to your voice note now.');
+  }
+  emojiBtn.addEventListener('click', function () { showPop('emoji'); });
+  micBtn.addEventListener('click', startRec);
+  $('vcRecCancel').addEventListener('click', function () { stopRec(false); });
+  $('vcRecSend').addEventListener('click', function () { stopRec(true); });
+  panel.addEventListener('click', function (e) { if (!pop.hidden && !e.target.closest('#vcPop, .vc-tools')) showPop(null); });
+
+  function greet() { add({ role: 'bot', text: 'Hi! I\u2019m Betty from VersusTrade customer support. Ask me anything about what we do, or pick a coin in the trade box and I\u2019ll take it from there. A representative is available any time you need one.' }); }
+  /* ---------- navigation ---------- */
+  function go(view) {
+    S.view = view; panel.setAttribute('data-view', view);
+    [].forEach.call(panel.querySelectorAll('.vc-tabs button'), function (b) { if (b.dataset.go === (view === 'home' ? 'home' : view === 'tickets' ? 'tickets' : 'messages')) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+    if (view === 'chat') {
+      S.unread = 0; badges();
+      status(); if (!S.msgs.length) greet();
+      scrollDown(); setTimeout(function () { if (S.open && S.view === 'chat') input.focus({ preventScroll: true }); }, 120);
+    } else if (view === 'messages') drawList();
+    else if (view === 'tickets') drawTix();
+    else if (view === 'home') { drawHi(); drawRecent(); }
+  }
+  function open(view) {
+    if (!S.open) {
+      S.open = true; panel.setAttribute('data-open', '');
+      if (fab) { fab.setAttribute('data-open', ''); fab.setAttribute('aria-expanded', 'true'); }
+      if (window.matchMedia('(max-width:560px)').matches) {
+        document.documentElement.classList.add('vc-lock');
+        // full-screen on phones: add a history step so the phone's Back button closes the chat instead of leaving the page
+        try { history.pushState({ vtChat: 1 }, ''); S.pushed = true; } catch (e) {}
+      }
+    }
+    go(view || S.view); badges();
+  }
+  function close() {
+    if (!S.open) return; S.open = false;
+    stopRec(false); showPop(null);
+    if (S.pushed) { S.pushed = false; S.skipPop = true; try { history.back(); } catch (e) { S.skipPop = false; } setTimeout(function () { S.skipPop = false; }, 500); }
+    panel.removeAttribute('data-open'); if (fab) { fab.removeAttribute('data-open'); fab.setAttribute('aria-expanded', 'false'); }
+    document.documentElement.classList.remove('vc-lock'); badges();
+  }
+  function toggle() { S.open ? close() : open('home'); }
+
+  function startOrResumeChat() { if (S.closedAt || isEnded()) resetChat(true); go('chat'); }
+  panel.addEventListener('click', function (e) {
+    var a = e.target.closest('[data-act]'), g = e.target.closest('[data-go]');
+    if (a) { var k = a.dataset.act; if (k === 'close') close(); else if (k === 'chat-home') { if (/^\/dashboard(?:\/|$)/.test(location.pathname)) go('home'); else close(); } else if (k === 'new' || k === 'chat') startOrResumeChat(); else go('messages'); }
+    else if (g) go(g.dataset.go);
+  });
+  document.addEventListener('keydown', function (e) { if (S.open && e.key === 'Escape') { if (!pop.hidden) { showPop(null); return; } close(); if (fab) fab.focus(); } });
+  input.addEventListener('input', function () { send.disabled = !input.value.trim(); input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 112) + 'px'; });
+  input.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('vcForm').requestSubmit(); } });
+  $('vcForm').addEventListener('submit', function (e) { e.preventDefault(); if (form.classList.contains('rec')) return; if (S.busy) return; showPop(null); var v = input.value; input.value = ''; input.style.height = 'auto'; send.disabled = true; userSay(v); });
+  $('vcFile').addEventListener('change', function (e) { attach(e.target.files[0]); e.target.value = ''; });
+  [].forEach.call(document.querySelectorAll('a[href="/support/"]'), function (a) {
+    if (/chat with us/i.test(a.textContent)) a.addEventListener('click', function (e) { e.preventDefault(); open('chat'); });
+  });
+
+  // When someone logs in, let them know in the chat so the transaction can continue
+  /* ---------- logged-in customers: chat saved to the account, Chatwoot contact linked ---------- */
+  function redrawAll() {
+    log.innerHTML = '<p class="vc-intro">Betty replies automatically. A team member can join any time.</p>';
+    lastTrade = null;
+    S.msgs.forEach(function (m) { if (m.role === 'trade') lastTrade = m.trade; else if (m.role === 'summary') lastTrade = giftTradeFromSummary(m.summary); drawMsg(m); });
+    refreshWa(); status(); badges(); drawHi(); drawRecent(); if (S.view === 'messages') drawList(); if (S.view === 'tickets') drawTix();
+    if (CW && cw.conv && !cw.closing) startPolling();
+    scrollDown();
+  }
+  // empty the chat. keepAccount = start a new conversation but stay linked to the same customer
+  function resetChat(keepAccount) {
+    hideTyping(); clearTimeout(sync.timer);
+    S.msgs = []; S.mode = 'ai'; S.agentReplied = false; S.flow = null; S.closedAt = 0; S.busy = false; lastTrade = null; S.tixAt = 0; S.tixConv = null;
+    if (!keepAccount) { S.uid = null; S.tix = []; }
+    if (CW) {
+      clearTimeout(cw.wait); clearTimeout(cw.closeTimer); clearInterval(cw.timer); cw.timer = 0; cw.conv = null; cw.seen = 0; cw.closing = false;
+      if (!keepAccount) { cw.src = null; cw.linked = null; cw.linkedName = null; }
+      cwSave();
+    }
+    if (!keepAccount) { try { localStorage.removeItem(KEY); } catch (e) {} }
+    redrawAll();
+    if (S.view === 'chat') greet(); else save();
+  }
+  function adopt(st) {
+    S.msgs = st.msgs; S.mode = (st.mode === 'pending' && !CHAT.live) ? 'agent' : (st.mode || 'ai'); S.agentReplied = !!st.agentReplied; S.flow = st.flow || null; S.closedAt = st.closedAt || 0; S.t0 = st.t || 0; S.tixAt = st.tixAt || 0; S.tixConv = st.tixConv || null;
+    if (CW && st.cw) { cw.src = st.cw.src || null; cw.conv = st.cw.conv || null; cw.seen = st.cw.seen || 0; cw.closing = false; cwSave(); }
+    S.tix = mergeTix(S.tix, st.tix); redrawAll();
+  }
+  // tell Chatwoot who this visitor is, so the team sees the customer's email on the conversation
+  function linkContact() {
+    var u = who();
+    var name = shownName(u);
+    if (!CW || !cw.src || !u || !u.email || (cw.linked === u.id && cw.linkedName === name)) return Promise.resolve();
+    var path = '/contacts/' + encodeURIComponent(cw.src), renamed = cw.linked === u.id;
+    return cwCall('PATCH', path, { name: name, email: u.email, identifier: u.id })
+      .catch(function () { return cwCall('PATCH', path, { name: name, email: u.email }); })
+      .then(function () {
+        cw.linked = u.id; cw.linkedName = name; cwSave();
+        var idle = (CHAT.newThreadAfterHours || 0) * 3600 * 1000, quiet = idle && cw.last && Date.now() - cw.last > idle;
+        if (cw.conv && !cw.closing && !quiet) return cwCall('POST', cwConv('/messages'), { content: renamed ? 'The customer changed their name to ' + name + '.' : 'The customer signed in on the website as ' + name + ' (' + u.email + ').' });
+      }).catch(function () {});
+  }
+  function accountSync(u) {
+    var A = window.VTAuth;
+    if (!A || !A.rest || !u || !u.id) return Promise.resolve(false);
+    if (S.uid && S.uid !== u.id) resetChat();   // this browser still held another account's chat
+    var had = S.msgs.some(isCust), adopted = false;
+    return A.rest('GET', '/chat_state?select=state&user_id=eq.' + encodeURIComponent(u.id) + '&limit=1').then(function (rows) {
+      var st = rows && rows[0] && rows[0].state;
+      if (st && st.tix) S.tix = mergeTix(S.tix, st.tix);
+      // use the saved chat if this browser has none, or if it was updated on another device since
+      if (usable(st) && st.msgs.length && (!had || (S.uid === u.id && st.t > (S.t0 || 0)))) { adopt(st); adopted = true; }
+      S.uid = u.id; sync.ready = true; sync.off = false;
+      save();
+      return linkContact().then(function () { return adopted; });
+    }).catch(function (err) {
+      if (err && (err.status === 400 || err.status === 401 || err.status === 403 || err.status === 404)) sync.off = true;
+      S.uid = u.id; save();
+      return linkContact().then(function () { return false; });
+    });
+  }
+  $('vcNew').addEventListener('click', function () { resetChat(true); });
+  window.addEventListener('vt-profile', function () { drawHi(); linkContact(); });
+
+  window.addEventListener('vt-auth', function (e) {
+    var d = e.detail || {};
+    drawHi();
+    if (!d.loggedIn) { sync.ready = false; if (S.uid) resetChat(); return; }   // logged out: the next person on this device starts clean
+    accountSync(who()).then(function (adopted) {
+      if (adopted || d.initial || !S.msgs.length) return;
+      var tr = lastTrade && !lastTrade.custom ? lastTrade : null;
+      add({ role: 'bot', text: tr ? 'You\u2019re logged in as ' + d.email + '. Your request to ' + tr.side + ' ' + qtyStr(tr.qty) + ' ' + tr.asset + (tr.network ? ' on ' + tr.network : '') + ' is still here, and a representative can confirm the payment details with you.' : lastTrade ? 'You\u2019re logged in as ' + d.email + '. Your request is still here, and a representative can confirm the details with you.' : 'You\u2019re logged in as ' + d.email + '. You can continue your transaction here, and your chats are now saved to your account.', actions: lastTrade ? [waAct(tradeText(lastTrade)), telegramAct(tradeText(lastTrade))] : [] });
+    });
+  });
+
+  // Phone Back button: one screen at a time (conversation, messages, home), then it closes the chat
+  window.addEventListener('popstate', function () {
+    if (S.skipPop) { S.skipPop = false; return; }
+    if (!S.open) return;
+    if (S.view === 'chat') { showPop(null); go('messages'); try { history.pushState({ vtChat: 1 }, ''); } catch (e) {} }
+    else if (S.view === 'messages' || S.view === 'tickets') { go('home'); try { history.pushState({ vtChat: 1 }, ''); } catch (e) {} }
+    else { S.pushed = false; close(); }
+  });
+
+  S.msgs.forEach(function (m) { if (m.role === 'trade') lastTrade = m.trade; else if (m.role === 'summary') lastTrade = giftTradeFromSummary(m.summary); drawMsg(m); });
   if (CW && cw.conv) startPolling();
   refreshWa(); status(); drawHi(); drawRecent(); go('home'); badges();
   window.VTChat = { open: open, close: close, toggle: toggle, sendTrade: sendTrade, sendGiftCard: sendGiftCard, config: CHAT };
