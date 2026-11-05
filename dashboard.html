@@ -3358,7 +3358,26 @@ draw();
 
 <script id="vt-tutorial-player">
 (function(){
-  var URL="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/website%20demo.mp4",box=null,video=null,lastTrigger=null,previousOverflow='';
+  var URL="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/website%20demo.mp4",
+      box=null,video=null,lastTrigger=null,previousOverflow='',
+      historyEntryActive=false,ignoreNextPopState=false,historySequence=0;
+
+  function addHistoryGuard(){
+    if(historyEntryActive)return;
+    try{
+      var current=window.history.state;
+      var next=current&&typeof current==='object'?Object.assign({},current):{};
+      next.__vtTutorialPlayer='tutorial-'+Date.now()+'-'+(++historySequence);
+      window.history.pushState(next,'',window.location.href);
+      historyEntryActive=true;
+    }catch(e){historyEntryActive=false}
+  }
+  function releaseHistoryGuard(){
+    if(!historyEntryActive)return;
+    historyEntryActive=false;
+    ignoreNextPopState=true;
+    try{window.history.back()}catch(e){ignoreNextPopState=false}
+  }
   function makeButton(cls,label,content){
     var b=document.createElement('button');
     b.type='button';b.className='vt-tutorial-control '+cls;b.setAttribute('aria-label',label);b.title=label;b.innerHTML=content;
@@ -3372,12 +3391,14 @@ draw();
   }
   function restore(){
     if(!box||!box.classList.contains('is-mini'))return;
+    addHistoryGuard();
     box.classList.remove('is-mini');box.setAttribute('aria-modal','true');
     document.body.style.overflow='hidden';
     box.querySelector('.vt-tutorial-minimize').focus({preventScroll:true});
   }
   function close(){
     if(!box)return;
+    releaseHistoryGuard();
     try{video.pause();video.removeAttribute('src');video.load()}catch(e){}
     box.remove();box=null;video=null;document.body.style.overflow=previousOverflow;
     if(lastTrigger&&lastTrigger.focus)lastTrigger.focus({preventScroll:true});
@@ -3386,12 +3407,13 @@ draw();
   function open(trigger){
     if(box){if(box.classList.contains('is-mini'))restore();return}
     lastTrigger=trigger||null;previousOverflow=document.body.style.overflow;
+    addHistoryGuard();
     box=document.createElement('div');box.className='vt-tutorial-player';
     box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');box.setAttribute('aria-label','How to use the website video');
     var bar=document.createElement('div');bar.className='vt-tutorial-bar';
     var title=document.createElement('span');title.textContent='How to use the website';
     var controls=document.createElement('div');controls.className='vt-tutorial-controls';
-    var mini=makeButton('vt-tutorial-minimize','Exit player and keep video playing in the corner','&minus;');
+    var mini=makeButton('vt-tutorial-minimize','Minimize video and keep playing','&minus;');
     var expand=makeButton('vt-tutorial-restore','Expand video player','&#8599;');
     var cancel=makeButton('vt-tutorial-close','Close video and stop playback','&times;');
     mini.addEventListener('click',minimize);expand.addEventListener('click',restore);cancel.addEventListener('click',close);
@@ -3402,7 +3424,18 @@ draw();
     var p=video.play();if(p&&p.catch)p.catch(function(){});
     mini.focus({preventScroll:true});
   }
-  document.querySelectorAll('[data-vt-tutorial-open]').forEach(function(btn){btn.addEventListener('click',function(){open(btn)})});
+
+  // Android/browser Back: consume the first Back action while the large player is open.
+  window.addEventListener('popstate',function(){
+    if(ignoreNextPopState){ignoreNextPopState=false;return}
+    if(!historyEntryActive||!box)return;
+    historyEntryActive=false;
+    if(!box.classList.contains('is-mini'))minimize();
+  });
+
+  document.querySelectorAll('[data-vt-tutorial-open]').forEach(function(btn){
+    btn.addEventListener('click',function(){open(btn)});
+  });
   document.addEventListener('keydown',function(e){
     if(!box||e.key!=='Escape')return;
     if(!box.classList.contains('is-mini')){e.preventDefault();minimize()}
