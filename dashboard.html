@@ -3167,7 +3167,7 @@ draw();
         raf=0;if(!host.isConnected)return;
         if(!last)last=now;
         var dt=Math.min(40,now-last);last=now;
-        if(!dragging&&!reduce&&loopHeight){offset=wrap(offset+dt*.035);paint();}
+        if(!dragging&&!reduce&&loopHeight){var speed=window.matchMedia('(min-width:1025px)').matches?.07:.035;offset=wrap(offset+dt*speed);paint();}
         raf=requestAnimationFrame(tick);
       }
       measure();offset=-loopHeight;paint();
