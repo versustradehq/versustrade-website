@@ -3072,15 +3072,16 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
     } catch (e) {}
   }
   function now() { return Math.floor(Date.now() / 1000); }
+  function redirectAfterAuth() {
+    // Redirect only after a successful sign-in or sign-up, never just because an existing session visits the homepage.
+    if (location.pathname === '/' && String(location.search || '').indexOf('account=1') < 0) {
+      window.location.replace('/dashboard/');
+    }
+  }
   function announce(initial) {
     var li = !!session;
     if (window.VTNav) window.VTNav.setLabel(li ? 'Account' : 'Log in');
     window.dispatchEvent(new CustomEvent('vt-auth', { detail: { loggedIn: li, email: session && session.email, initial: !!initial } }));
-    // Keep authenticated customers on their dashboard instead of returning them to the public homepage.
-    if (li && location.pathname === '/' && String(location.search || '').indexOf('account=1') < 0) {
-      window.location.replace('/dashboard/');
-      return;
-    }
     if (li) {
       askProfile();
       getToken().then(function (tok) {
@@ -3340,7 +3341,7 @@ function nameOf(u) {
     busy = true; st.email = email.toLowerCase(); var b = $('#vaGo'); lock(b, 'Signing in\u2026'); setErr('');
     call('/token?grant_type=password', { body: { email: st.email, password: password } }).then(function (r) {
       busy = false;
-      if (r.ok && r.data.access_token) { setSession(r.data); announce(); close(); return; }
+      if (r.ok && r.data.access_token) { setSession(r.data); announce(); redirectAfterAuth(); close(); return; }
       unlock(b);
       if (lower(r).indexOf('not confirmed') > -1) { st.mode = 'signup'; call('/resend', { body: { type: 'signup', email: st.email } }); view('code'); return; }
       setErr(friendly(r, 'login'));
@@ -3384,7 +3385,7 @@ function nameOf(u) {
     var vb = $('#vaVerify'); lock(vb, 'Checking\u2026');
     call('/verify', { body: { type: st.mode === 'signup' ? 'signup' : 'email', email: st.email, token: token } }).then(function (r) {
       busy = false;
-      if (r.ok && r.data.access_token) { setSession(r.data); announce(); if (st.afterNewPass) view('newpass'); else close(); return; }
+      if (r.ok && r.data.access_token) { setSession(r.data); announce(); redirectAfterAuth(); if (st.afterNewPass) view('newpass'); else close(); return; }
       unlock(vb); setErr(friendly(r, 'code'));
     }, function () { busy = false; unlock(vb); setErr(NET); });
   }
@@ -3536,6 +3537,7 @@ function askProfile() {
       if (!r.ok) return;
       setSession({ access_token: p.access_token, refresh_token: p.refresh_token, expires_in: Number(p.expires_in) || 3600, user: r.data });
       announce();
+      redirectAfterAuth();
     });
   })();
 
