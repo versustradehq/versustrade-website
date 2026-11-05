@@ -3080,7 +3080,7 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
   }
   function announce(initial) {
     var li = !!session;
-    if (window.VTNav) window.VTNav.setLabel(li ? 'Account' : 'Log in');
+    if (window.VTNav) window.VTNav.setLabel(li ? 'Dashboard' : 'Log in');
     window.dispatchEvent(new CustomEvent('vt-auth', { detail: { loggedIn: li, email: session && session.email, initial: !!initial } }));
     if (li) {
       askProfile();
