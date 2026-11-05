@@ -1098,6 +1098,25 @@ function initPickers(){Object.keys(ICONS).forEach(function(id){if($(id))pickers[
 function refreshPickers(){Object.keys(pickers).forEach(function(k){pickers[k].refresh()})}
 initPickers();
 
+// Reveal each scrollable area's scrollbar only while it is actively being scrolled.
+(function(){
+  var hideDelay = 850;
+  function revealScrollbar(target){
+    if(!target || !target.classList) target = document.scrollingElement || document.documentElement;
+    if(target === document.body || target === document.documentElement) target = document.scrollingElement || document.documentElement;
+    target.classList.add('scrollbar-active');
+    if(target._vtScrollbarTimer) clearTimeout(target._vtScrollbarTimer);
+    target._vtScrollbarTimer = setTimeout(function(){
+      target.classList.remove('scrollbar-active');
+      target._vtScrollbarTimer = null;
+    }, hideDelay);
+  }
+  // Capture scroll events because scroll events from nested panels do not bubble.
+  document.addEventListener('scroll', function(event){
+    revealScrollbar(event.target);
+  }, true);
+})();
+
 // START
 function start(){
   if(PREVIEW){cacheCustomers(mockCustomers);session={email:'Preview mode · sample data'};$('gate').classList.add('hidden');$('app').classList.remove('hidden');$('adminEmail').textContent=session.email;document.title='Preview | VersusTrade Admin';load();return}
