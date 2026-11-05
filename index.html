@@ -3076,6 +3076,11 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
     var li = !!session;
     if (window.VTNav) window.VTNav.setLabel(li ? 'Account' : 'Log in');
     window.dispatchEvent(new CustomEvent('vt-auth', { detail: { loggedIn: li, email: session && session.email, initial: !!initial } }));
+    // Keep authenticated customers on their dashboard instead of returning them to the public homepage.
+    if (li && location.pathname === '/' && String(location.search || '').indexOf('account=1') < 0) {
+      window.location.replace('/dashboard/');
+      return;
+    }
     if (li) {
       askProfile();
       getToken().then(function (tok) {
