@@ -707,7 +707,7 @@ $('vtTheme').addEventListener('click', function () {
       { desk: true, label: 'Rates', href: '/#rates' },
       { desk: true, label: 'Support', href: '/#support' },
       { desk: true, label: 'Blog', href: '/blog/' },
-      (function () { try { if (localStorage.getItem('vt_auth_session') || sessionStorage.getItem('vt_auth_session')) return { label: 'Account', href: '/dashboard/' }; } catch (e) {} return { label: 'Log in', href: '/?login=1' }; })()
+      (function () { try { if (localStorage.getItem('vt_auth_session') || sessionStorage.getItem('vt_auth_session')) return { label: 'Dashboard', href: '/dashboard/' }; } catch (e) {} return { label: 'Log in', href: '/?login=1' }; })()
     ],
     initialActiveIndex: 4, size: 'md', frame: true, particleCount: 15, spread: 56,
     animationTime: 600, timeVariance: 300, gooeyness: 0.5, wobble: 0.5, hoverEffect: true,
