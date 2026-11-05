@@ -3048,7 +3048,7 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
 </script>
 
 <script src="/giftcards.js?v=20261102-8"></script>
-<script src="/chat.js?v=20261105-2"></script>
+<script src="/chat.js?v=20261105-3"></script>
 <script>
 /* VersusTrade sign in / sign up popup (Supabase Auth over REST). The key below is the PUBLIC publishable key. */
 (function () {
@@ -5376,8 +5376,8 @@ function createSim(gl) {
   function go(name, details) {
     if (window.VTChat && window.VTChat.sendGiftCard) window.VTChat.sendGiftCard(name, details || null);
     else {
-      var message = 'Hi VersusTrade, I want to sell my ' + name + '.';
-      if (details) message += ' Type: ' + details.type + '. Subcategory: ' + details.subcategory + '.';
+      var message = 'Hi VersusTrade,\nI want to sell my ' + name + '.';
+      if (details) message += '\n(' + details.type + (details.subcategory ? ', ' + details.subcategory : '') + ').';
       window.open('https://api.whatsapp.com/send?phone=2349015508108&text=' + encodeURIComponent(message), '_blank', 'noopener');
     }
   }
