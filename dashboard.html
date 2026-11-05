@@ -1498,7 +1498,7 @@ body:has(#v-rates.on){overflow:hidden!important;overscroll-behavior:none}
   <button class="dock-item" type="button" data-view="rates" aria-label="Gift cards"><span class="dock-tile"><span class="dock-face"><img class="dock-img" src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/gift%20(2).png" alt="" width="24" height="24" draggable="false"></span></span><span class="dock-label" aria-hidden="true">Gift cards</span></button>
   <button class="dock-item trade" type="button" data-view="trade" aria-label="Trade"><span class="dock-tile"><span class="dock-face"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3 4 7l4 4M4 7h16M16 21l4-4-4-4M20 17H4"/></svg></span></span><span class="dock-label" aria-hidden="true">Trade</span></button>
   <button class="dock-item" type="button" data-view="chat" aria-label="Chat with Betty"><span class="dock-tile"><span class="dock-face"><img class="dock-img" src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/chat%20(1).png" alt="" width="24" height="24" draggable="false"></span><span class="dock-badge" id="dkBadge" hidden></span></span><span class="dock-label" aria-hidden="true">Chat</span></button>
-  <button class="dock-item" type="button" data-view="account" aria-label="Account"><span class="dock-tile"><span class="dock-face"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span></span><span class="dock-label" aria-hidden="true">Account</span></button>
+  <button class="dock-item" type="button" data-view="account" aria-label="Dashboard"><span class="dock-tile"><span class="dock-face"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span></span><span class="dock-label" aria-hidden="true">Dashboard</span></button>
 </nav>
 
 
@@ -2527,7 +2527,7 @@ draw();
   function now() { return Math.floor(Date.now() / 1000); }
   function announce(initial) {
     var li = !!session;
-    if (window.VTNav) window.VTNav.setLabel(li ? 'Account' : 'Log in');
+    if (window.VTNav) window.VTNav.setLabel(li ? 'Dashboard' : 'Log in');
     window.dispatchEvent(new CustomEvent('vt-auth', { detail: { loggedIn: li, email: session && session.email, initial: !!initial } }));
     if (li) askProfile();
   }
