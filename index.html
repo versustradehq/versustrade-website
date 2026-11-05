@@ -1192,39 +1192,24 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
     c.addEventListener('pointerleave', function () { hovering = false; c.style.setProperty('--rx', '0deg'); c.style.setProperty('--ry', '0deg'); });
   })();
 
-  // CEO video: tapping the poster (or "Watch this video") opens the video in a full-screen pop-up.
-  var v = document.getElementById('vtVideo'), box = null;
-  function closeVideo() {
-    if (!box) return;
-    var el = box.querySelector('video');
-    try { el.pause(); el.removeAttribute('src'); el.load(); } catch (e) {}
-    box.remove(); box = null; document.body.style.overflow = '';
-    if (document.fullscreenElement) { try { document.exitFullscreen(); } catch (e) {} }
-  }
+  // CEO video uses the shared player, including minimize, Android Back and replacement playback.
+  var v = document.getElementById('vtVideo');
   function openVideo() {
-    var src = v.getAttribute('data-src'); if (!src || box) return;
-    box = document.createElement('div'); box.className = 'vmodal';
-    box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-label', 'Video from the CEO');
-    var x = document.createElement('button'); x.type = 'button'; x.className = 'vclose'; x.setAttribute('aria-label', 'Close video'); x.innerHTML = '&times;';
-    x.addEventListener('click', closeVideo);
-    var el = document.createElement('video');
-    el.src = src; el.poster = v.getAttribute('data-poster') || ''; el.controls = true; el.autoplay = true; el.preload = 'auto';
-    el.playsInline = true; el.setAttribute('playsinline', '');
-    box.appendChild(el); box.appendChild(x); document.body.appendChild(box); document.body.style.overflow = 'hidden';
-    try { var rf = box.requestFullscreen || box.webkitRequestFullscreen; if (rf) { var pr = rf.call(box); if (pr && pr.catch) pr.catch(function () {}); } } catch (e) {}
-    x.focus();
+    if (!v || !window.VTVideoPlayer) return;
+    window.VTVideoPlayer.open(
+      v.getAttribute('data-src'),
+      'Hear What the CEO Has to Say',
+      v.getAttribute('data-poster') || '',
+      v
+    );
   }
-  document.addEventListener('fullscreenchange', function () { if (!document.fullscreenElement && box) closeVideo(); });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeVideo(); });
   v.addEventListener('click', openVideo);
-  
 })();
 </script>
 
 <script id="vt-tutorial-player">
 (function(){
-  var URL="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/website%20demo.mp4",
-      box=null,video=null,lastTrigger=null,previousOverflow='',
+  var DEFAULT_URL="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/website%20demo.mp4",box=null,video=null,lastTrigger=null,previousOverflow='',
       historyEntryActive=false,ignoreNextPopState=false,historySequence=0;
 
   function addHistoryGuard(){
@@ -1232,7 +1217,7 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
     try{
       var current=window.history.state;
       var next=current&&typeof current==='object'?Object.assign({},current):{};
-      next.__vtTutorialPlayer='tutorial-'+Date.now()+'-'+(++historySequence);
+      next.__vtTutorialPlayer='player-'+Date.now()+'-'+(++historySequence);
       window.history.pushState(next,'',window.location.href);
       historyEntryActive=true;
     }catch(e){historyEntryActive=false}
@@ -1261,6 +1246,13 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
     document.body.style.overflow='hidden';
     box.querySelector('.vt-tutorial-minimize').focus({preventScroll:true});
   }
+  function stopForReplacement(){
+    if(!box)return;
+    try{video.pause();video.removeAttribute('src');video.load()}catch(e){}
+    box.remove();box=null;video=null;
+    document.body.style.overflow=previousOverflow;
+    // Keep the current Back-button history guard; the replacement player inherits it.
+  }
   function close(){
     if(!box)return;
     releaseHistoryGuard();
@@ -1269,28 +1261,31 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
     if(lastTrigger&&lastTrigger.focus)lastTrigger.focus({preventScroll:true});
     lastTrigger=null;
   }
-  function open(trigger){
-    if(box){if(box.classList.contains('is-mini'))restore();return}
-    lastTrigger=trigger||null;previousOverflow=document.body.style.overflow;
+  function open(src,title,poster,trigger){
+    src=src||DEFAULT_URL;
+    if(box)stopForReplacement();
+    else previousOverflow=document.body.style.overflow;
+    lastTrigger=trigger||null;
     addHistoryGuard();
     box=document.createElement('div');box.className='vt-tutorial-player';
-    box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');box.setAttribute('aria-label','How to use the website video');
+    box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');box.setAttribute('aria-label',title||'VersusTrade video');
     var bar=document.createElement('div');bar.className='vt-tutorial-bar';
-    var title=document.createElement('span');title.textContent='How to use the website';
+    var heading=document.createElement('span');heading.textContent=title||'How to use the website';
     var controls=document.createElement('div');controls.className='vt-tutorial-controls';
     var mini=makeButton('vt-tutorial-minimize','Minimize video and keep playing','&minus;');
     var expand=makeButton('vt-tutorial-restore','Expand video player','&#8599;');
     var cancel=makeButton('vt-tutorial-close','Close video and stop playback','&times;');
     mini.addEventListener('click',minimize);expand.addEventListener('click',restore);cancel.addEventListener('click',close);
-    controls.appendChild(mini);controls.appendChild(expand);controls.appendChild(cancel);bar.appendChild(title);bar.appendChild(controls);
-    video=document.createElement('video');video.src=URL;video.controls=true;video.autoplay=true;video.playsInline=true;video.preload='metadata';
-    video.setAttribute('playsinline','');video.setAttribute('aria-label','How to use the VersusTrade website');
+    controls.appendChild(mini);controls.appendChild(expand);controls.appendChild(cancel);bar.appendChild(heading);bar.appendChild(controls);
+    video=document.createElement('video');video.src=src;video.controls=true;video.autoplay=true;video.playsInline=true;video.preload='metadata';
+    if(poster)video.poster=poster;
+    video.setAttribute('playsinline','');video.setAttribute('aria-label',title||'VersusTrade video');
     box.appendChild(bar);box.appendChild(video);document.body.appendChild(box);document.body.style.overflow='hidden';
     var p=video.play();if(p&&p.catch)p.catch(function(){});
     mini.focus({preventScroll:true});
   }
 
-  // Android/browser Back: consume the first Back action while the large player is open.
+  // Android/browser Back minimizes the active full-screen player instead of navigating away.
   window.addEventListener('popstate',function(){
     if(ignoreNextPopState){ignoreNextPopState=false;return}
     if(!historyEntryActive||!box)return;
@@ -1299,8 +1294,9 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
   });
 
   document.querySelectorAll('[data-vt-tutorial-open]').forEach(function(btn){
-    btn.addEventListener('click',function(){open(btn)});
+    btn.addEventListener('click',function(){open(DEFAULT_URL,'How to use the website','',btn)});
   });
+  window.VTVideoPlayer={open:open,close:close,minimize:minimize,restore:restore,isPlaying:function(){return !!(video&&!video.paused&&!video.ended)}};
   document.addEventListener('keydown',function(e){
     if(!box||e.key!=='Escape')return;
     if(!box.classList.contains('is-mini')){e.preventDefault();minimize()}
