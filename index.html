@@ -1059,12 +1059,12 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
         <h3>Customer Support</h3>
         <p>Not sure how to trade or stuck on a chart? Ask our assistant, or talk to a representative.</p>
         <div class="btns support-glass-actions">
-          <a class="support-glass-btn" href="/#support" aria-label="Chat with VersusTrade support">
+          <a class="support-glass-btn" id="supportChatBtn" href="#vtChat" aria-label="Open VersusTrade chat support">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="12" width="4" height="7" rx="2"/><rect x="17" y="12" width="4" height="7" rx="2"/><path d="M17 19a5 5 0 0 1-5 3h-1"/></svg>
             <span>Chat with us</span>
           </a>
           <a class="support-glass-btn" href="https://api.whatsapp.com/send?phone=2349015508108&amp;text=Hi%20VersusTrade" target="_blank" rel="noopener" aria-label="Chat with VersusTrade on WhatsApp">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.2 11.7a8.2 8.2 0 0 1-12.1 7.2L3 20l1.2-4.8a8.2 8.2 0 1 1 16-3.5Z"/><path d="M8.8 8.1c.2-.5.4-.5.7-.5h.5c.2 0 .4.1.5.4l.7 1.6c.1.2.1.4-.1.6l-.6.7c-.2.2-.2.4 0 .7.5.9 1.2 1.6 2.1 2.1.3.2.5.2.7 0l.8-.9c.2-.2.4-.2.7-.1l1.5.7c.3.1.4.3.4.5 0 .3-.2 1.1-.7 1.5-.5.5-1.2.7-2 .5-1-.2-2.2-.8-3.4-1.9-1.2-1-2-2.3-2.3-3.3-.3-1 .1-1.9.5-2.6Z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.173-1.289.173-1.413-.074-.124-.272-.347-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
             <span>Chat on WhatsApp</span>
           </a>
           <a class="support-glass-btn" href="https://t.me/+2349015508108" target="_blank" rel="noopener" aria-label="Chat with VersusTrade on Telegram">
@@ -3196,6 +3196,21 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
 
 <script src="/giftcards.js?v=20261102-8"></script>
 <script src="/chat.js?v=20261105-3"></script>
+<script id="vt-support-chat-launch">
+(function(){
+  var btn=document.getElementById('supportChatBtn');
+  if(!btn)return;
+  btn.addEventListener('click',function(e){
+    e.preventDefault();
+    if(window.VTChat&&typeof window.VTChat.open==='function'){
+      window.VTChat.open('home');
+      return;
+    }
+    var fab=document.getElementById('vtFab');
+    if(fab)fab.click();
+  });
+})();
+</script>
 <script>
 /* VersusTrade sign in / sign up popup (Supabase Auth over REST). The key below is the PUBLIC publishable key. */
 (function () {
