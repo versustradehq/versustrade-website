@@ -1206,13 +1206,12 @@
     var u = who();
     var name = shownName(u);
     if (!CW || !cw.src || !u || !u.email || (cw.linked === u.id && cw.linkedName === name)) return Promise.resolve();
-    var path = '/contacts/' + encodeURIComponent(cw.src), renamed = cw.linked === u.id;
+    var path = '/contacts/' + encodeURIComponent(cw.src);
     return cwCall('PATCH', path, { name: name, email: u.email, identifier: u.id })
       .catch(function () { return cwCall('PATCH', path, { name: name, email: u.email }); })
       .then(function () {
+        // Keep Chatwoot contact details in sync silently; never create login/profile-change messages.
         cw.linked = u.id; cw.linkedName = name; cwSave();
-        var idle = (CHAT.newThreadAfterHours || 0) * 3600 * 1000, quiet = idle && cw.last && Date.now() - cw.last > idle;
-        if (cw.conv && !cw.closing && !quiet) return cwCall('POST', cwConv('/messages'), { content: renamed ? 'The customer changed their name to ' + name + '.' : 'The customer signed in on the website as ' + name + ' (' + u.email + ').' });
       }).catch(function () {});
   }
   function accountSync(u) {
