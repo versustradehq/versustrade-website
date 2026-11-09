@@ -294,7 +294,7 @@
     }
     var preview = last.role === 'trade' ? 'Trade request: ' + last.trade.side + ' ' + last.trade.asset : last.role === 'summary' ? last.summary.title : (last.text || plain(last));
     var item = el('button', 'vc-li'); item.type = 'button';
-    item.innerHTML = S.mode === 'agent' ? '<span class="vc-av">' + svg(P.head) + '</span>' : '<span class="vc-pfp">' + BETTY + '</span>';
+    item.innerHTML = '<span class="vc-pfp">' + BETTY + '</span>';
     var t = el('span', 'vc-li-t'), b = el('b', '', S.mode === 'agent' ? 'Support team' : 'Betty');
     t.appendChild(b); t.appendChild(el('span', '', (last.role === 'user' || last.role === 'trade' ? 'You: ' : '') + preview)); item.appendChild(t);
     if (S.unread) item.appendChild(el('i', 'vc-dot'));
@@ -335,7 +335,7 @@
     card.innerHTML = '';
     card.appendChild(el('span', 'vc-rec-h', 'Recent message'));
     var row = el('span', 'vc-rrow');
-    row.innerHTML = human ? '<span class="vc-av">' + svg(P.head) + '</span>' : '<span class="vc-pfp">' + BETTY.split('bty').join('btyH') + '</span>';
+    row.innerHTML = '<span class="vc-pfp">' + BETTY + '</span>';
     var tx = el('span', 'vc-rt'); tx.appendChild(el('b', '', title)); tx.appendChild(el('span', '', prev));
     row.appendChild(tx); row.appendChild(el('span', 'vc-ago', ago(when)));
     card.appendChild(row); card.style.display = '';
