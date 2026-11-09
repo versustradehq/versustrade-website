@@ -401,6 +401,7 @@
   function repAct() { return null; } // Representatives are notified through Chatwoot when the customer sends their first message.
   function waAct(text) { return { label: 'Continue on WhatsApp', href: waLink(text), external: true }; }
   function telegramAct(text) { return { label: 'Continue on Telegram', href: telegramLink(text), external: true }; }
+  function channelActs() { var text = lastTrade ? tradeText(lastTrade) : ''; return [waAct(text), telegramAct(text)]; }
   function mockAI(text) {
     var q = text.toLowerCase();
     if (/^(hi|hello|hey|good (morning|afternoon|evening))\b/.test(q)) return { text: 'Hello! I\u2019m Betty from VersusTrade customer support. I can explain what we do, how trading works and where to find rates, or connect you with a representative. What would you like to know?' };
@@ -463,7 +464,7 @@
     function done() {
       clearTimeout(idle); S.busy = false; if (row) row.remove(); hideTyping();
       var r = parseTags(full);
-      if (/\[\[HANDOFF\]\]/.test(full)) { add({ role: 'bot', text: 'One moment please...' }); handoff(); return; } // Betty is not sure: the team takes over
+      if (/\[\[HANDOFF\]\]/.test(full)) { add({ role: 'bot', text: 'One moment please...', actions: channelActs() }); handoff(); return; } // Betty is not sure: the team takes over
       if (!r.text) { fail(new Error('the AI sent an empty reply')); return; }
       add({ role: 'bot', text: r.text, actions: r.actions.concat(extra || []) });
     }
@@ -474,7 +475,7 @@
         var why = err && err.name === 'AbortError' ? 'no reply within 30 seconds' : (err instanceof TypeError ? 'could not reach the Worker (site address not allowed, or wrong address)' : raw);
         add({ role: 'system', text: 'Debug: ' + why + (why === raw ? '' : ' [' + raw + ']') });
       }
-      if (CW) { add({ role: 'bot', text: 'One moment please...' }); handoff(); return; }
+      if (CW) { add({ role: 'bot', text: 'One moment please...', actions: channelActs() }); handoff(); return; }
       add({ role: 'bot', text: 'I\u2019m having trouble answering right now. Would you like a representative to help?', actions: [repAct(), waAct(lastTrade ? tradeText(lastTrade) : '')].concat(extra || []) });
     }
     bump();
@@ -503,7 +504,7 @@
   }
 
   /* ---------- conversation flow ---------- */
-  function botSay(r) { hideTyping(); if (r && r.handoff) { add({ role: 'bot', text: 'One moment please...' }); handoff(); return; } add({ role: 'bot', text: r.text, actions: r.actions }); }
+  function botSay(r) { hideTyping(); if (r && r.handoff) { add({ role: 'bot', text: 'One moment please...', actions: channelActs() }); handoff(); return; } add({ role: 'bot', text: r.text, actions: r.actions }); }
   // ---------- real representatives (Chatwoot, API inbox) ----------
   var CW = CHAT.live, cw = { src: null, conv: null, seen: 0, timer: 0, wait: 0 };
   try { var cs = JSON.parse(localStorage.getItem('vt_cw_v1') || 'null'); if (CW && cs && cs.inbox === CW.inbox) { cw.src = cs.src; cw.conv = cs.conv; cw.seen = cs.seen || 0; cw.linked = cs.linked || null; cw.linkedName = cs.linkedName || null; cw.last = cs.last || 0; cw.prev = cs.prev || null; } } catch (e) {}
@@ -733,7 +734,7 @@
     }).then(function (url) {
       m.url = url; m.up = 0; save(); repaintMedia(m);
       cwPost(m.kind === 'image' ? '\uD83D\uDCF7 Picture from the customer\n![picture](' + url + ')\n' + url : '\uD83D\uDCCE File from the customer: ' + m.name + '\n' + url);
-      if (S.mode === 'ai') { showTyping(); pause(700).then(function () { botSay({ text: 'One moment please...' }); handoff(); }); }
+      if (S.mode === 'ai') { showTyping(); pause(700).then(function () { botSay({ text: 'One moment please...', actions: channelActs() }); handoff(); }); }
     }).catch(function (err) {
       if (!S.msgs.some(function (x) { return x === m; })) { add({ role: 'system', text: (err && err.message) || 'That picture could not be prepared.' }); return; }
       m.up = 0; m.err = 1; save(); repaintMedia(m);
