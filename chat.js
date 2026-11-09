@@ -989,7 +989,8 @@
       m = q.replace(/,/g, '').match(/(\d+(?:\.\d+)?)\s*(?:(k)(?![a-z]))?/);
       if (m) { a = parseFloat(m[1]) * (m[2] ? 1000 : 1); if (a > 0) { d.value = a; d.ccy = ccyOf(q); got = true; } }
     } else if (!d.ccy && ccyOf(q)) { d.ccy = ccyOf(q); got = true; }
-    if (!d.country && f.step === 'country' && raw.trim().length > 1 && raw.trim().length <= 40 && !/\d/.test(raw)) { d.country = cap(raw.trim()); got = true; }
+    if (!d.country && (f.step === 'country' || f.step === 'countrytext') && raw.trim().length > 1 && raw.trim().length <= 60 && !/\d/.test(raw)) { d.country = cap(raw.trim()); got = true; }
+    if (!d.ccy && f.step === 'ccytext' && raw.trim().length > 1 && raw.trim().length <= 40) { d.ccy = ccyOf(raw) || raw.trim().toUpperCase(); got = true; }
     return got;
   }
 
@@ -1008,8 +1009,8 @@
     }
     if (!d.gkind) { f.step = 'gkind'; return ask('Is your ' + d.card + ' a physical card, an e-code, or do you only have the receipt?', [ch('Physical card', 'g:gkind=Physical card'), ch('E-code', 'g:gkind=E-code'), ch('Receipt only', 'g:gkind=Receipt only'), CANCEL]); }
     if (!d.value) { f.step = 'value'; return ask('What is the card value?', [CANCEL]); }
-    if (!d.ccy) { f.step = 'ccy'; return ask('Is ' + d.value.toLocaleString('en-US') + ' in US dollars, British pounds, euros or Canadian dollars?', [ch('US dollars ($)', 'g:ccy=USD'), ch('British pounds (£)', 'g:ccy=GBP'), ch('Euros (€)', 'g:ccy=EUR'), ch('Canadian dollars', 'g:ccy=CAD'), CANCEL]); }
-    if (!d.country) { f.step = 'country'; return ask('Which country was the card bought in?', [ch('United States', 'g:country=United States'), ch('United Kingdom', 'g:country=United Kingdom'), ch('Canada', 'g:country=Canada'), CANCEL]); }
+    if (!d.ccy) { f.step = 'ccy'; var currencyChoices = [ch('US dollars ($)', 'g:ccy=USD'), ch('British pounds (£)', 'g:ccy=GBP'), ch('Euros (€)', 'g:ccy=EUR'), ch('Canadian dollars', 'g:ccy=CAD')]; if (/google ?play/i.test(d.card || '')) currencyChoices.push(ch('Other', 'g:ccy=?')); return ask('Is ' + d.value.toLocaleString('en-US') + ' in US dollars, British pounds, euros or Canadian dollars?', currencyChoices.concat([CANCEL])); }
+    if (!d.country) { f.step = 'country'; var countryChoices = [ch('United States', 'g:country=United States'), ch('United Kingdom', 'g:country=United Kingdom'), ch('Canada', 'g:country=Canada')]; if (/google ?play/i.test(d.card || '')) countryChoices.push(ch('Other', 'g:country=?')); return ask('Which country was the card bought in?', countryChoices.concat([CANCEL])); }
     finishGift(f);
   }
 
@@ -1042,6 +1043,8 @@
       else { d[k] = val; if (k === 'asset') d.network = null; }
     } else {
       if (k === 'card' && val === '?') { f.step = 'cardtext'; ask('Type the name of the gift card you want to sell.'); return; }
+      if (/google ?play/i.test(d.card || '') && k === 'country' && val === '?') { f.step = 'countrytext'; ask('Type the country where the Google Play gift card was bought.'); return; }
+      if (/google ?play/i.test(d.card || '') && k === 'ccy' && val === '?') { f.step = 'ccytext'; ask('Type the currency of your Google Play gift card, for example Australian dollars (AUD) or Japanese yen (JPY).'); return; }
       d[k] = val;
     }
     flowNext();
