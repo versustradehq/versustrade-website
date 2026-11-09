@@ -182,8 +182,10 @@
   function status() {
     panel.setAttribute('data-mode', S.mode);
     sub.textContent = 'Online';
-    nameEl.textContent = S.mode === 'agent' ? 'Support team' : 'Betty';
-    pfpEl.innerHTML = S.mode === 'agent' ? '<span class="vc-av">' + svg(P.head) + '</span>' : BETTY;
+    // Keep Betty's identity in the conversation header even after a human representative takes over.
+    // The takeover changes message handling, not the chatbot's visible identity.
+    nameEl.textContent = 'Betty';
+    pfpEl.innerHTML = BETTY;
     var ended = isEnded(), fm = $('vcForm'), nt = panel.querySelector('.vc-note'), en = $('vcEnd');
     if (fm) fm.style.display = ended ? 'none' : ''; if (nt) nt.style.display = ended ? 'none' : ''; if (en) en.style.display = ended ? 'block' : 'none';
     drawChips();
