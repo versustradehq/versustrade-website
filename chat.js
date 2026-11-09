@@ -540,13 +540,22 @@
       (lines.length ? '\nRecent chat:\n' + lines.join('\n') : '');
   }
   function ctxText() {
-    var u = who();
-    return 'New chat from the VersusTrade website.\n' +
-      (u && u.email ? 'Signed in on the site as ' + (u.name ? u.name + ' (' + u.email + ')' : u.email) + ' (not yet verified by Chatwoot).\n' : 'Not signed in.\n') +
-      (lastTrade ? 'Latest request: ' + tradeText(lastTrade) + '\n' : '') +
-      (cw.prev ? 'Earlier conversation with this customer: #' + cw.prev + ' (check whether it needs closing).\n' : '') +
-      'Page: ' + String(location.href).slice(0, 200) + '\n' +
-      'Betty (the automated assistant) is answering the customer until someone from the team replies here.';
+    var u = who(), customer = u && (u.name || u.email) ? (u.name ? u.name + (u.email ? ' (' + u.email + ')' : '') : u.email) : 'Guest';
+    var latest = null;
+    for (var i = S.msgs.length - 1; i >= 0; i--) {
+      var m = S.msgs[i];
+      if (m.role === 'user' && m.text) { latest = m.text; break; }
+      if (m.role === 'trade') { latest = 'Trade request: ' + tradeLine(m.trade); break; }
+      if (m.role === 'summary') { latest = 'Gift card request: ' + (m.summary && m.summary.text || 'Details submitted'); break; }
+    }
+    return 'New VersusTrade chat\\n' +
+      'Customer: ' + customer + '\\n' +
+      'Account: ' + (u ? 'Signed in' : 'Not signed in') + '\\n' +
+      'Page: ' + String(location.href).slice(0, 200) + '\\n' +
+      (cw.prev ? 'Previous conversation: #' + cw.prev + '\\n' : '') +
+      (latest ? 'Latest message: ' + latest + '\\n' : '') +
+      (lastTrade ? 'Transaction: ' + tradeText(lastTrade) + '\\n' : '') +
+      'Betty is assisting. Reply here to take over.';
   }
   // makes sure a Chatwoot contact and conversation exist (created on the customer's first message)
   function cwOpen() {
