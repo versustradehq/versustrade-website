@@ -548,13 +548,13 @@
       if (m.role === 'trade') { latest = 'Trade request: ' + tradeLine(m.trade); break; }
       if (m.role === 'summary') { latest = 'Gift card request: ' + (m.summary && m.summary.text || 'Details submitted'); break; }
     }
-    return 'New VersusTrade chat\\n' +
-      'Customer: ' + customer + '\\n' +
-      'Account: ' + (u ? 'Signed in' : 'Not signed in') + '\\n' +
-      'Page: ' + String(location.href).slice(0, 200) + '\\n' +
-      (cw.prev ? 'Previous conversation: #' + cw.prev + '\\n' : '') +
-      (latest ? 'Latest message: ' + latest + '\\n' : '') +
-      (lastTrade ? 'Transaction: ' + tradeText(lastTrade) + '\\n' : '') +
+    return 'New VersusTrade chat\n' +
+      'Customer: ' + customer + '\n' +
+      'Account: ' + (u ? 'Signed in' : 'Not signed in') + '\n' +
+      'Page: ' + String(location.href).slice(0, 200) + '\n' +
+      (cw.prev ? 'Previous conversation: #' + cw.prev + '\n' : '') +
+      (latest ? 'Latest message: ' + latest + '\n' : '') +
+      (lastTrade ? 'Transaction: ' + tradeText(lastTrade) + '\n' : '') +
       'Betty is assisting. Reply here to take over.';
   }
   // makes sure a Chatwoot contact and conversation exist (created on the customer's first message)
