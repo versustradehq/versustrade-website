@@ -951,7 +951,7 @@
     ask('Here\u2019s your request. It is an estimate, and our team will confirm the final amount before you pay. Make sure your wallet or exchange supports ' + d.network + '.', acts.concat([waAct(tradeText(trade)), telegramAct(tradeText(trade))]).concat(more));
   }
 
-  function ccyOf(q) { return /\$|\busd\b|dollar|bucks/.test(q) ? 'USD' : /\u00A3|\bgbp\b|pound/.test(q) ? 'GBP' : /\u20AC|\beur\b|euro/.test(q) ? 'EUR' : /\bcad\b|canadian/.test(q) ? 'CAD' : /\baud\b|australian/.test(q) ? 'AUD' : null; }
+  function ccyOf(q) { return /\baud\b|australian/.test(q) ? 'AUD' : /\bnzd\b|new zealand dollar/.test(q) ? 'NZD' : /\bcad\b|canadian/.test(q) ? 'CAD' : /\bgbp\b|\u00A3|british pound|pound sterling/.test(q) ? 'GBP' : /\beur\b|\u20AC|euro/.test(q) ? 'EUR' : /\busd\b|\$|us dollar|bucks/.test(q) ? 'USD' : /\bjpy\b|yen/.test(q) ? 'JPY' : /\bchf\b|swiss franc/.test(q) ? 'CHF' : /\bhkd\b|hong kong dollar/.test(q) ? 'HKD' : /\binr\b|indian rupee/.test(q) ? 'INR' : /\bidr\b|rupiah/.test(q) ? 'IDR' : /\bkrw\b|south korean won/.test(q) ? 'KRW' : /\btry\b|turkish lira/.test(q) ? 'TRY' : /\baed\b|uae dirham/.test(q) ? 'AED' : /\bsar\b|saudi riyal/.test(q) ? 'SAR' : /\bzar\b|south african rand/.test(q) ? 'ZAR' : /\bbrl\b|brazilian real/.test(q) ? 'BRL' : /\bmxn\b|mexican peso/.test(q) ? 'MXN' : /\bpln\b|polish zloty/.test(q) ? 'PLN' : /\bcop\b|colombian peso/.test(q) ? 'COP' : /\biqd\b|iraqi dinar/.test(q) ? 'IQD' : /\bvnd\b|vietnamese dong/.test(q) ? 'VND' : null; }
   function fillGift(f, q, raw) {
     var d = f.d, got = false, i, a, m;
     if (f.step === 'cardtext' && !d.card && raw.trim().length > 1 && raw.length < 40) { d.card = cap(raw.trim()); return true; }
