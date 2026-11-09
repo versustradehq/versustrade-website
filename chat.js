@@ -103,7 +103,7 @@
     '<div class="vc-v vc-chat"><div class="vc-bar"><button type="button" class="vc-back" data-act="messages" aria-label="Back to messages">' + svg(P.back) + '</button><span class="vc-pfp" id="vcPfp"></span>' +
       '<div class="vc-who2"><b id="vcName">Betty</b><span><span class="vc-online-text" id="vcSub">Online</span><i class="vc-online" aria-hidden="true"></i></span></div>' +
       '<button type="button" class="vc-x" data-act="chat-home" aria-label="Back to chat home">' + svg(P.x) + '</button></div>' +
-      '<div class="vc-log" id="vcLog" role="log" aria-live="polite"><p class="vc-intro">Betty replies automatically. A team member can join any time.</p></div>' +
+      '<div class="vc-log" id="vcLog" role="log" aria-live="polite"></div>' +
       '<div class="vc-chips" id="vcChips"></div>' +
       '<div class="vc-pop" id="vcPop" hidden></div>' +
       '<form class="vc-comp" id="vcForm" autocomplete="off"><textarea class="vc-in" id="vcIn" rows="1" maxlength="1000" placeholder="Message\u2026" aria-label="Message"></textarea>' +
@@ -1167,7 +1167,7 @@
   // When someone logs in, let them know in the chat so the transaction can continue
   /* ---------- logged-in customers: chat saved to the account, Chatwoot contact linked ---------- */
   function redrawAll() {
-    log.innerHTML = '<p class="vc-intro">Betty replies automatically. A team member can join any time.</p>';
+    log.innerHTML = '';
     lastTrade = null;
     S.msgs.forEach(function (m) { if (m.role === 'trade') lastTrade = m.trade; else if (m.role === 'summary') lastTrade = giftTradeFromSummary(m.summary); drawMsg(m); });
     refreshWa(); status(); badges(); drawHi(); drawRecent(); if (S.view === 'messages') drawList(); if (S.view === 'tickets') drawTix();
