@@ -778,7 +778,7 @@
     }).then(function (url) {
       m.url = url; m.up = 0; save(); repaintMedia(m);
       var delivery = m.kind === 'image'
-        ? cwPostImage(chatwootBlob, (file.name.replace(/\\.[^.]*$/, '') || 'picture') + '.jpg')
+        ? cwPostImage(chatwootBlob, (file.name.split('.').slice(0, -1).join('.') || 'picture') + '.jpg')
         : cwPost('📎 File from the customer: ' + m.name + '\n' + url).then(function () { return true; });
       return delivery.then(function (sent) {
         if (sent && S.mode === 'ai') { showTyping(); pause(700).then(function () { botSay({ text: 'One moment please...', actions: channelActs() }); handoff(); }); }
