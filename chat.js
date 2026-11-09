@@ -545,8 +545,6 @@
     for (var i = S.msgs.length - 1; i >= 0; i--) {
       var m = S.msgs[i];
       if (m.role === 'user' && m.text) { latest = m.text; break; }
-      if (m.role === 'trade') { latest = 'Trade request: ' + tradeLine(m.trade); break; }
-      if (m.role === 'summary') { latest = 'Gift card request: ' + (m.summary && m.summary.text || 'Details submitted'); break; }
     }
     return 'New VersusTrade chat\n' +
       'Customer: ' + customer + '\n' +
