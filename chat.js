@@ -761,7 +761,7 @@
     if (CW) {
       cwStart().then(function () {
         hideTyping();
-        add({ role: 'bot', text: 'The team has been notified. You can keep typing here and they\u2019ll reply as soon as they can.' });
+        add({ role: 'bot', text: 'The team has been notified and they\u2019ll reply as soon as they can.' });
         clearTimeout(cw.wait);
         cw.wait = setTimeout(function () {
           if (S.mode === 'pending') add({ role: 'bot', text: 'Our team hasn\u2019t replied yet. You can keep waiting here, or continue on WhatsApp.', actions: [waAct(lastTrade ? tradeText(lastTrade) : '')] });
