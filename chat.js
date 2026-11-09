@@ -222,7 +222,7 @@
     var prevRow = log.lastElementChild, sameRun = !!(prevRow && prevRow.getAttribute('data-r') === m.role);
     if ((m.role === 'bot' || m.role === 'agent') && !sameRun) {
       var who = el('div', 'vc-who'); who.appendChild(el('span', '', m.role === 'agent' ? 'Support team' : 'Betty'));
-      if (m.role === 'agent') who.appendChild(el('span', 'vc-tag', 'Representative')); row.appendChild(who);
+      row.appendChild(who);
     }
     var b = el('div', 'vc-b');
     if (m.role === 'trade') {
@@ -295,7 +295,7 @@
     var preview = last.role === 'trade' ? 'Trade request: ' + last.trade.side + ' ' + last.trade.asset : last.role === 'summary' ? last.summary.title : (last.text || plain(last));
     var item = el('button', 'vc-li'); item.type = 'button';
     item.innerHTML = S.mode === 'agent' ? '<span class="vc-av">' + svg(P.head) + '</span>' : '<span class="vc-pfp">' + BETTY + '</span>';
-    var t = el('span', 'vc-li-t'), b = el('b', '', S.mode === 'agent' ? 'Support team' : 'Betty'); if (S.mode === 'agent') b.appendChild(el('span', 'vc-tag', 'Representative'));
+    var t = el('span', 'vc-li-t'), b = el('b', '', S.mode === 'agent' ? 'Support team' : 'Betty');
     t.appendChild(b); t.appendChild(el('span', '', (last.role === 'user' || last.role === 'trade' ? 'You: ' : '') + preview)); item.appendChild(t);
     if (S.unread) item.appendChild(el('i', 'vc-dot'));
     item.addEventListener('click', function () { go('chat'); });
