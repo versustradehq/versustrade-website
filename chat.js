@@ -244,7 +244,7 @@
     if (m.role === 'agent' && ((m.imgs && m.imgs.length) || (m.files && m.files.length))) {
       if (!m.text) b.textContent = '';
       b.classList.add('vc-media');
-      (m.imgs || []).forEach(function (g) { var a = el('a'); a.href = g.url; a.target = '_blank'; a.rel = 'noopener'; var im = el('img', 'vc-img'); im.alt = 'Picture'; im.src = g.thumb || g.url; im.loading = 'lazy'; a.appendChild(im); b.appendChild(a); });
+      (m.imgs || []).forEach(function (g) { var im = el('img', 'vc-img'); im.alt = 'Picture'; im.src = g.thumb || g.url; im.loading = 'lazy'; im.dataset.full = g.url || g.thumb || ''; im.tabIndex = 0; im.setAttribute('role', 'button'); im.setAttribute('aria-label', 'Open picture'); im.addEventListener('click', function () { openImageViewer(im.dataset.full || im.src); }); im.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openImageViewer(im.dataset.full || im.src); } }); b.appendChild(im); });
       (m.files || []).forEach(function (f) { var a = el('a', 'vc-file', '\uD83D\uDCCE ' + f.name); a.href = f.url; a.target = '_blank'; a.rel = 'noopener'; b.appendChild(a); });
     }
     row.appendChild(b);
@@ -601,6 +601,29 @@
     });
     return cw.q;
   }
+  // Send customer images as native Chatwoot attachments (multipart), not Markdown URLs.
+  function cwPostImage(blob, filename) {
+    cw.q = cw.q.then(function () {
+      if (cw.closing) endConv();
+      return cwOpen().then(function () {
+        var data = new FormData();
+        data.append('content', 'Picture from the customer');
+        data.append('attachments[]', blob, filename || 'picture.jpg');
+        return fetch(cwPath(cwConv('/messages')), { method: 'POST', body: data }).then(function (r) {
+          return r.text().then(function (t) {
+            if (!r.ok) { var er = new Error('Chatwoot HTTP ' + r.status + (t ? ' ' + String(t).slice(0, 140) : '')); er.status = r.status; throw er; }
+            try { return t ? JSON.parse(t) : null; } catch (e) { return null; }
+          });
+        });
+      });
+    }).then(function () { cw.last = Date.now(); cwSave(); setTimeout(poll, 1500); return true; }, function (err) {
+      try { console.warn('VersusTrade chat: could not send image attachment to Chatwoot', err); } catch (e) {}
+      add({ role: 'system', text: 'Your picture is visible here, but it could not be delivered to our support team. Please try again.' });
+      if (CHAT.debug) add({ role: 'system', text: 'Debug: ' + (err && err.message || err) });
+      return false;
+    });
+    return cw.q;
+  }
   // called for every message the customer sends, whether Betty or a team member answers it
   function mirror(m) {
     if (!CW) return;
@@ -720,11 +743,23 @@
     b.textContent = '';
     if (m.kind === 'image') {
       var im = el('img', 'vc-img'); im.alt = 'Picture'; im.src = m.thumb || m.url || ''; im.loading = 'lazy';
-      if (m.url) { var a = el('a'); a.href = m.url; a.target = '_blank'; a.rel = 'noopener'; a.appendChild(im); b.appendChild(a); } else b.appendChild(im);
+      im.dataset.full = m.url || m.thumb || ''; im.tabIndex = 0; im.setAttribute('role', 'button'); im.setAttribute('aria-label', 'Open picture');
+      im.addEventListener('click', function () { openImageViewer(im.dataset.full || im.src); });
+      im.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openImageViewer(im.dataset.full || im.src); } });
+      b.appendChild(im);
     } else { b.appendChild(el('span', 'vc-file', '\uD83D\uDCCE ' + (m.name || 'File'))); }
     if (m.up) b.appendChild(el('small', 'vc-mst', 'Sending\u2026'));
     else if (m.err) b.appendChild(el('small', 'vc-mst vc-bad', 'Not sent'));
   }
+  // Images open in an in-chat viewer; never navigate to the raw image URL.
+  var imageViewer = el('div', 'vc-image-viewer');
+  imageViewer.hidden = true; imageViewer.setAttribute('role', 'dialog'); imageViewer.setAttribute('aria-modal', 'true'); imageViewer.setAttribute('aria-label', 'Image preview');
+  var imageViewerClose = el('button', 'vc-image-viewer-close', '\u00D7'); imageViewerClose.type = 'button'; imageViewerClose.setAttribute('aria-label', 'Close image preview');
+  var imageViewerImg = el('img', 'vc-image-viewer-img'); imageViewerImg.alt = 'Enlarged picture';
+  imageViewer.appendChild(imageViewerClose); imageViewer.appendChild(imageViewerImg); document.body.appendChild(imageViewer);
+  function closeImageViewer() { imageViewer.hidden = true; imageViewerImg.removeAttribute('src'); }
+  function openImageViewer(url) { if (!url) return; imageViewerImg.src = url; imageViewer.hidden = false; imageViewerClose.focus(); }
+  imageViewer.addEventListener('click', function (e) { if (e.target === imageViewer || e.target === imageViewerClose) closeImageViewer(); });
   function attach(file) {
     if (!file || isEnded()) return;
     var isImg = /^image\//.test(file.type), isPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
@@ -733,15 +768,21 @@
     if (!CW || !window.VTAuth || !window.VTAuth.upload) { add({ role: 'system', text: 'Pictures can\u2019t be sent from this page right now.' }); return; }
     if (!CHAT.isLoggedIn()) { botSay({ text: 'Please log in to send pictures. It lets our team match them to your account.', actions: [loginAct()] }); return; }
     var m = { role: 'user', kind: isImg ? 'image' : 'file', text: isImg ? 'Picture' : file.name, name: file.name, up: 1 };
+    var chatwootBlob = null;
     var prep = isImg ? decode(file).then(function (im) { return shrink(im, 1600, 0.82).then(function (full) { return shrink(im, 240, 0.7).then(function (th) { m.thumb = th.url; return { blob: full.blob, ext: '.jpg', type: 'image/jpeg' }; }); }); })
                      : Promise.resolve({ blob: file, ext: '.pdf', type: 'application/pdf' });
     prep.then(function (f) {
+      chatwootBlob = f.blob;
       add(m);
       return window.VTAuth.upload(f.blob, f.ext, f.type);
     }).then(function (url) {
       m.url = url; m.up = 0; save(); repaintMedia(m);
-      cwPost(m.kind === 'image' ? '\uD83D\uDCF7 Picture from the customer\n![picture](' + url + ')\n' + url : '\uD83D\uDCCE File from the customer: ' + m.name + '\n' + url);
-      if (S.mode === 'ai') { showTyping(); pause(700).then(function () { botSay({ text: 'One moment please...', actions: channelActs() }); handoff(); }); }
+      var delivery = m.kind === 'image'
+        ? cwPostImage(chatwootBlob, (file.name.split('.').slice(0, -1).join('.') || 'picture') + '.jpg')
+        : cwPost('📎 File from the customer: ' + m.name + '\n' + url).then(function () { return true; });
+      return delivery.then(function (sent) {
+        if (sent && S.mode === 'ai') { showTyping(); pause(700).then(function () { botSay({ text: 'One moment please...', actions: channelActs() }); handoff(); }); }
+      });
     }).catch(function (err) {
       if (!S.msgs.some(function (x) { return x === m; })) { add({ role: 'system', text: (err && err.message) || 'That picture could not be prepared.' }); return; }
       m.up = 0; m.err = 1; save(); repaintMedia(m);
@@ -1161,7 +1202,7 @@
     if (a) { var k = a.dataset.act; if (k === 'close') close(); else if (k === 'chat-home') { if (/^\/dashboard(?:\/|$)/.test(location.pathname)) go('home'); else close(); } else if (k === 'new' || k === 'chat') startOrResumeChat(); else go('messages'); }
     else if (g) go(g.dataset.go);
   });
-  document.addEventListener('keydown', function (e) { if (S.open && e.key === 'Escape') { if (!pop.hidden) { showPop(null); return; } close(); if (fab) fab.focus(); } });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !imageViewer.hidden) { closeImageViewer(); return; } if (S.open && e.key === 'Escape') { if (!pop.hidden) { showPop(null); return; } close(); if (fab) fab.focus(); } });
   input.addEventListener('input', function () { send.disabled = !input.value.trim(); input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 112) + 'px'; });
   input.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('vcForm').requestSubmit(); } });
   $('vcForm').addEventListener('submit', function (e) { e.preventDefault(); if (form.classList.contains('rec')) return; if (S.busy) return; showPop(null); var v = input.value; input.value = ''; input.style.height = 'auto'; send.disabled = true; userSay(v); });
@@ -1262,7 +1303,7 @@
 
 (function () {
   var st = document.createElement('style'); st.setAttribute('data-vt-chat', 'media');
-  st.textContent = '.vc-b.vc-media{padding:5px;display:flex;flex-direction:column;gap:5px;max-width:78%}.vc-img{display:block;max-width:100%;width:230px;height:auto;border-radius:14px;background:rgba(127,127,127,.15)}.vc-mst{font-size:12px;opacity:.75;padding:0 6px 2px}.vc-mst.vc-bad{color:#ffb3bb;opacity:1}.vc-file{display:block;padding:8px 10px;font-size:14px;word-break:break-all;color:inherit;text-decoration:none}a.vc-file{text-decoration:underline}';
+  st.textContent = '.vc-b.vc-media{padding:5px;display:flex;flex-direction:column;gap:5px;max-width:78%}.vc-img{display:block;max-width:100%;width:230px;height:auto;border-radius:14px;background:rgba(127,127,127,.15);cursor:zoom-in}.vc-image-viewer[hidden]{display:none}.vc-image-viewer{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(0,0,0,.88);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}.vc-image-viewer-img{display:block;max-width:min(94vw,1400px);max-height:88dvh;object-fit:contain;border-radius:12px}.vc-image-viewer-close{position:absolute;top:max(16px,env(safe-area-inset-top));right:max(16px,env(safe-area-inset-right));width:44px;height:44px;border:1px solid rgba(255,255,255,.3);border-radius:50%;background:rgba(30,30,30,.8);color:#fff;font-size:30px;line-height:1;cursor:pointer}.vc-mst{font-size:12px;opacity:.75;padding:0 6px 2px}.vc-mst.vc-bad{color:#ffb3bb;opacity:1}.vc-file{display:block;padding:8px 10px;font-size:14px;word-break:break-all;color:inherit;text-decoration:none}a.vc-file{text-decoration:underline}';
   (document.head || document.documentElement).appendChild(st);
 })();
 
