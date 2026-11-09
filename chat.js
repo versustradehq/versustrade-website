@@ -553,8 +553,7 @@
       'Account: ' + (u ? 'Signed in' : 'Not signed in') + '\n' +
       'Page: ' + String(location.href).slice(0, 200) + '\n' +
       (cw.prev ? 'Previous conversation: #' + cw.prev + '\n' : '') +
-      (latest ? 'Latest message: ' + latest + '\n' : '') +
-      (lastTrade ? 'Transaction: ' + tradeText(lastTrade) + '\n' : '') +
+      (lastTrade ? 'Transaction: ' + tradeText(lastTrade) + '\n' : (latest ? 'Latest message: ' + latest + '\n' : '')) +
       'Betty is assisting. Reply here to take over.';
   }
   // makes sure a Chatwoot contact and conversation exist (created on the customer's first message)
