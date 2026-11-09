@@ -553,8 +553,8 @@
       'Account: ' + (u ? 'Signed in' : 'Not signed in') + '\n' +
       'Page: ' + String(location.href).slice(0, 200) + '\n' +
       (cw.prev ? 'Previous conversation: #' + cw.prev + '\n' : '') +
-      (lastTrade ? 'Transaction: ' + tradeText(lastTrade) + '\n' : (latest ? 'Latest message: ' + latest + '\n' : '')) +
-      'Betty is assisting. Reply here to take over.';
+      (latest ? 'Latest message: ' + latest + '\n' : '') +
+      '*Betty is assisting. Reply here to take over.*';
   }
   // makes sure a Chatwoot contact and conversation exist (created on the customer's first message)
   function cwOpen() {
@@ -615,7 +615,7 @@
   // "Talk to a representative": same conversation, plus a note asking the team to take over
   function cwStart() {
     var p = cw.q.then(function () { return cwOpen(); }).then(function () {
-      return cwCall('POST', cwConv('/messages'), { content: 'The customer asked to speak with a representative. Please reply here.' });
+      return cwCall('POST', cwConv('/messages'), { content: '*The customer asked to speak with a representative. Please reply here.*' });
     }).then(function () { startPolling(); });
     cw.q = p.catch(function () {});
     return p;
