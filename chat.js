@@ -1009,11 +1009,11 @@
         var subs = window.VTVisaPicker && window.VTVisaPicker.getSubcategories ? window.VTVisaPicker.getSubcategories(d.card, d.gkind) : [];
         return ask('Select Gift card Subcategory:', subs.map(function (s) { return ch(s, 'g:subcategory=' + s); }).concat([CANCEL]));
       }
-      if (!d.value) { f.step = 'value'; return ask('What amount is on your ' + (d.subcategory || d.card) + '? For example, 25 or 100.', [CANCEL]); }
+      if (!d.value) { f.step = 'value'; return ask('What amount is on your ' + (d.subcategory || d.card) + '?', [CANCEL]); }
       finishGift(f); return;
     }
     if (!d.gkind) { f.step = 'gkind'; return ask('Is your ' + d.card + ' a physical card, an e-code, or do you only have the receipt?', [ch('Physical card', 'g:gkind=Physical card'), ch('E-code', 'g:gkind=E-code'), ch('Receipt only', 'g:gkind=Receipt only'), CANCEL]); }
-    if (!d.value) { f.step = 'value'; return ask('What is the card value? For example $100, £50 or €25.', [CANCEL]); }
+    if (!d.value) { f.step = 'value'; return ask('What is the card value?', [CANCEL]); }
     if (!d.ccy) { f.step = 'ccy'; return ask('Is ' + d.value.toLocaleString('en-US') + ' in US dollars, British pounds, euros or Canadian dollars?', [ch('US dollars ($)', 'g:ccy=USD'), ch('British pounds (£)', 'g:ccy=GBP'), ch('Euros (€)', 'g:ccy=EUR'), ch('Canadian dollars', 'g:ccy=CAD'), CANCEL]); }
     if (!d.country) { f.step = 'country'; return ask('Which country was the card bought in?', [ch('United States', 'g:country=United States'), ch('United Kingdom', 'g:country=United Kingdom'), ch('Canada', 'g:country=Canada'), CANCEL]); }
     finishGift(f);
