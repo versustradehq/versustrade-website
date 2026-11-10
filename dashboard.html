@@ -1723,6 +1723,8 @@ $('transactionEvidenceDialog').addEventListener('click',function(e){if(e.target=
 $('prev').onclick=function(){page--;draw()};$('next').onclick=function(){page++;draw()};
 try{var sn=localStorage.getItem('vt-username');if(sn)USER.name=sn}catch(e){}
 function setName(n){n=String(n==null?'':n).replace(/\s+/g,' ').trim().slice(0,16).trim();if(!n)return;document.documentElement.style.setProperty('--nl',n.length);USER.name=n;if($('uname'))$('uname').textContent=n;$('avatar').textContent=n.split(/\s+/).filter(Boolean).map(function(w){return w.charAt(0)}).join('').slice(0,2).toUpperCase();$('aName').textContent=n;if($('avName'))$('avName').textContent=n;[].forEach.call(document.querySelectorAll('.js-name'),function(e){e.textContent=n});[].forEach.call(document.querySelectorAll('.js-ini'),function(e){e.textContent=$('avatar').textContent})}
+function syncAccountProfile(e){var d=e&&e.detail||{};if(d.name)setName(d.name);if(d.email){USER.email=d.email;$('aMail').textContent=d.email}if(d.phone!==undefined){USER.phone=d.phone||'';$('aPhone').textContent=USER.phone||'—'}if(d.created){USER.since=dt(d.created);$('aSince').textContent=USER.since}}
+window.addEventListener('vt-profile',syncAccountProfile);
 setName(USER.name);
 var dlg=$('nameDlg');
 $('editName').onclick=function(){$('nameIn').value=USER.name;$('nameErr').textContent='';if(dlg.showModal)dlg.showModal();else dlg.setAttribute('open','');$('nameIn').focus();$('nameIn').select()};
@@ -2596,6 +2598,22 @@ draw();
     window.dispatchEvent(new CustomEvent('vt-auth', { detail: { loggedIn: li, email: session && session.email, initial: !!initial } }));
     if (li) {
       askProfile();
+      // Refresh profile metadata because a saved browser session may contain an old or empty name.
+      getToken().then(function (tok) {
+        if (!tok) return;
+        return call('/user', { method: 'GET', token: tok }).then(function (r) {
+          if (!r.ok || !r.data) return;
+          var u = r.data, m = u.user_metadata || {};
+          session.name = nameOf(u) || session.name || '';
+          session.email = u.email || session.email || '';
+          session.phone = m.phone || '';
+          session.created = (u.created_at && Date.parse(u.created_at)) || session.created || 0;
+          persist();
+          window.dispatchEvent(new CustomEvent('vt-profile', { detail: {
+            name: session.name, email: session.email, phone: session.phone, created: session.created
+          } }));
+        }).catch(function () {});
+      }).catch(function () {});
       getToken().then(function (tok) {
         if (!tok) return;
         return fetch('https://versustrade-admin-api.versustradehq.workers.dev/admin/verify', {
