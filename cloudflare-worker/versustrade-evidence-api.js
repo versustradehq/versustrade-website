@@ -1,4 +1,8 @@
 const ALLOWED_ORIGINS = new Set(["https://versustrade.co", "https://www.versustrade.co"]);
+function isAllowedOrigin(origin) {
+  return ALLOWED_ORIGINS.has(origin) ||
+    /^https:\/\/[a-z0-9-]+\.versustrade-website\.pages\.dev$/i.test(origin);
+}
 const MAX_BYTES = 10 * 1024 * 1024;
 const MIME_EXT = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/gif": "gif" };
 
@@ -29,7 +33,7 @@ async function readImage(request) {
 export default {
   async fetch(request, env) {
     const origin = request.headers.get("Origin") || "";
-    const cors = ALLOWED_ORIGINS.has(origin) ? {
+    const cors = isAllowedOrigin(origin) ? {
       "Access-Control-Allow-Origin": origin,
       "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
       "Access-Control-Allow-Headers": "Authorization, Content-Type, X-Transaction-Reference, X-File-Name",
