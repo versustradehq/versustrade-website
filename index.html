@@ -3238,9 +3238,18 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
   }
   function now() { return Math.floor(Date.now() / 1000); }
   function redirectAfterAuth() {
-    // Redirect only after a successful sign-in or sign-up, never just because an existing session visits the homepage.
+    // Route newly authenticated admins to the admin workspace; customers go to their dashboard.
     if (location.pathname === '/' && String(location.search || '').indexOf('account=1') < 0) {
-      window.location.replace('/dashboard/');
+      getToken().then(function (tok) {
+        if (!tok) { window.location.replace('/dashboard/'); return; }
+        return fetch('https://versustrade-admin-api.versustradehq.workers.dev/admin/verify', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' },
+          body: '{}'
+        }).then(function (r) { return r.json(); }).then(function (d) {
+          window.location.replace(d && d.authorized === true ? '/admin' : '/dashboard/');
+        }).catch(function () { window.location.replace('/dashboard/'); });
+      }).catch(function () { window.location.replace('/dashboard/'); });
     }
   }
   function announce(initial) {
