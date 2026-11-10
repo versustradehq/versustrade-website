@@ -1,0 +1,7 @@
+name = "versustrade-evidence-api"
+main = "versustrade-evidence-api.js"
+compatibility_date = "2026-11-10"
+
+[[r2_buckets]]
+binding = "TRANSACTION_EVIDENCE"
+bucket_name = "versustrade-transaction-evidence"
