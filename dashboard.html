@@ -1639,7 +1639,7 @@ function list(){return TRADES.filter(function(t){
 function draw(){
   var l=list(),pages=Math.max(1,Math.ceil(l.length/PER));page=Math.min(page,pages);
   var s=l.slice((page-1)*PER,page*PER);
-  $('rows').innerHTML=s.length?s.map(function(t){var ic=t.name==='Gift card'?'':'<img src="https://assets.coincap.io/assets/icons/'+esc(t.asset.toLowerCase())+'@2x.png" alt="" loading="lazy" onerror="this.remove()">';return '<div class="tr"><div class="co"><span class="av">'+esc(t.asset.charAt(0))+ic+'</span><span style="min-width:0"><b><span class="'+t.side+'">'+(t.side==='buy'?'Buy':'Sell')+'</span> '+esc(t.asset)+'</b><small>'+esc(t.id)+'</small></span></div><div class="r"><span class="am amt">'+ngn(t.ngn)+'</span><small class="amt">'+esc(t.qty)+'</small></div><span class="hd3">Date: '+dt(t.date)+'</span><span><span class="pill '+t.status+'"><span>'+LABEL[t.status]+'</span></span></span>'+(t.status==='done'?'<button type="button" class="bt sm" data-evidence-ref="'+esc(t.id)+'" style="grid-column:1/-1;justify-self:start;margin:0 0 8px">View transaction details</button>':'')+'</div>'}).join(''):'<div class="empty">No trades found. Start one with Buy &amp; sell crypto above.</div>';
+  $('rows').innerHTML=s.length?s.map(function(t){var ic=t.name==='Gift card'?'':'<img src="https://assets.coincap.io/assets/icons/'+esc(t.asset.toLowerCase())+'@2x.png" alt="" loading="lazy" onerror="this.remove()">';return '<div class="tr"><div class="co"><span class="av">'+esc(t.asset.charAt(0))+ic+'</span><span style="min-width:0"><b><span class="'+t.side+'">'+(t.side==='buy'?'Buy':'Sell')+'</span> '+esc(t.asset)+'</b><small>'+esc(t.id)+'</small></span></div><div class="r"><span class="am amt">'+ngn(t.ngn)+'</span><small class="amt">'+esc(t.qty)+'</small></div><span class="hd3">Date: '+dt(t.date)+'</span><span><span class="pill '+t.status+'"><span>'+LABEL[t.status]+'</span></span></span>'+'<button type="button" class="bt sm" data-evidence-ref="'+esc(t.id)+'" style="grid-column:1/-1;justify-self:start;margin:0 0 8px">View transaction details</button></div>'}).join(''):'<div class="empty">No trades found. Start one with Buy &amp; sell crypto above.</div>';
   $('pgi').textContent='Page '+page+' of '+pages;$('prev').disabled=page<=1;$('next').disabled=page>=pages;
 }
 function updateStats(){
@@ -1657,7 +1657,7 @@ function mapTransaction(t){
   else if(t.payout_amount!=null)amount=t.payout_amount;
   else amount=t.fiat_amount;
   var status=t.status==='VT-DONE'?'done':t.status==='VT-DEC'?'fail':'wait';
-  return {id:t.reference,side:side,asset:asset,name:gift?'Gift card':asset,transactionType:gift?'gift_sell':(t.transaction_type==='CRYPTO_BUY'?'crypto_buy':'crypto_sell'),ngn:Number(amount)||0,qty:qty||'—',date:t.created_at||'',status:status};
+  return {id:t.reference,side:side,asset:asset,name:gift?'Gift card':asset,transactionType:gift?'gift_sell':(t.transaction_type==='CRYPTO_BUY'?'crypto_buy':'crypto_sell'),ngn:Number(amount)||0,qty:qty||'—',date:t.created_at||'',status:status,raw:t};
 }
 var tradesLoading=false;
 function loadCustomerTrades(){
@@ -1665,7 +1665,7 @@ function loadCustomerTrades(){
   if(tradesLoading||!currentUser||!currentUser.id)return;
   tradesLoading=true;
   var customerFilter=encodeURIComponent('eq.'+currentUser.id);
-  VTAuth.rest('GET','/transactions?select=reference,transaction_type,status,asset,network,crypto_amount,card_brand,card_type,card_region,fiat_currency,fiat_amount,payout_amount,payout_currency,created_at&customer_id='+customerFilter+'&archived_at=is.null&order=created_at.desc&limit=200').then(function(rows){
+  VTAuth.rest('GET','/transactions?select=id,reference,transaction_type,status,asset,network,crypto_amount,card_brand,card_type,card_region,card_value,card_currency,fiat_currency,fiat_amount,exchange_rate,payout_amount,payout_currency,customer_note,created_at,updated_at&customer_id='+customerFilter+'&archived_at=is.null&order=created_at.desc&limit=200').then(function(rows){
     TRADES=(Array.isArray(rows)?rows:[]).map(mapTransaction);
     page=1;draw();updateStats();
   }).catch(function(err){
@@ -1680,16 +1680,41 @@ $('chips').addEventListener('click',function(e){var b=e.target.closest('button')
 $('q').addEventListener('input',function(){term=this.value.trim().toLowerCase();page=1;draw()});
 $('rows').addEventListener('click',function(e){var b=e.target.closest('[data-evidence-ref]');if(!b)return;openCustomerEvidence(b.dataset.evidenceRef)});
 function openCustomerEvidence(reference){
-  var dlg=$('transactionEvidenceDialog');$('transactionEvidenceTitle').textContent='Transaction evidence';$('transactionEvidenceRef').textContent=reference;$('transactionEvidenceContent').innerHTML='<div class="sub">Loading evidence…</div>';
+  var dlg=$('transactionEvidenceDialog'),trade=TRADES.find(function(x){return x.id===reference}),t=trade&&trade.raw||{};
+  $('transactionEvidenceTitle').textContent='Transaction details';
+  $('transactionEvidenceRef').textContent=reference;
+  var statusLabel=t.status==='VT-DONE'?'Completed':t.status==='VT-DEC'?'Declined':'Processing';
+  var gift=t.transaction_type==='GIFT_CARD_SELL';
+  var fields=[
+    ['Transaction type',gift?'Gift card sale':(t.transaction_type==='CRYPTO_BUY'?'Crypto buy':'Crypto sell')],
+    ['Status',statusLabel],
+    ['Date',t.created_at?dt(t.created_at):'—'],
+    ['Asset / card',gift?(t.card_brand||'Gift card'):(t.asset||'—')],
+    ['Network',t.network||'—'],
+    ['Crypto amount',t.crypto_amount!=null?String(t.crypto_amount)+' '+(t.asset||''):'—'],
+    ['Card type',t.card_type||'—'],
+    ['Card region',t.card_region||'—'],
+    ['Card value',t.card_value!=null?String(t.card_value)+' '+(t.card_currency||''):'—'],
+    ['Amount (USD)',t.fiat_amount!=null?String(t.fiat_amount)+' '+(t.fiat_currency||'USD'):'—'],
+    ['Exchange rate',t.exchange_rate!=null?'₦'+Number(t.exchange_rate).toLocaleString('en-NG')+' per $1':'—'],
+    ['Payout',t.payout_amount!=null?Number(t.payout_amount).toLocaleString('en-NG')+' '+(t.payout_currency||''):'—'],
+    ['Customer note',t.customer_note||'—']
+  ];
+  var host=$('transactionEvidenceContent');
+  host.style.display='block';
+  host.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px">'+fields.map(function(f){return '<div class="detail-item" style="padding:12px"><small class="muted">'+esc(f[0])+'</small><strong style="display:block;margin-top:5px;overflow-wrap:anywhere">'+esc(f[1])+'</strong></div>'}).join('')+'</div><h3 style="margin:20px 0 8px">Attached evidence</h3><div id="customerEvidenceGallery" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:12px"><div class="sub">Loading evidence…</div></div>';
   if(dlg.showModal)dlg.showModal();else dlg.setAttribute('open','');
-  var user=window.VTAuth&&VTAuth.user&&VTAuth.user();if(!user)return;
+  var gallery=$('customerEvidenceGallery');
+  if(t.status!=='VT-DONE'){gallery.innerHTML='<div class="sub">Evidence will be available here once this transaction is marked completed.</div>';return}
+  var user=window.VTAuth&&VTAuth.user&&VTAuth.user();if(!user){gallery.textContent='Please sign in again to view evidence.';return}
   Promise.resolve(VTAuth.getToken()).then(function(token){
-    return fetch('https://versustrade-evidence-api.versustradehq.workers.dev/customer/transactions/images/list',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({reference:reference})});
-  }).then(function(r){return r.json().then(function(d){if(!r.ok)throw new Error(d.error||'Could not load transaction evidence');return d})}).then(function(d){
-    var images=d.images||[];if(!images.length){$('transactionEvidenceContent').innerHTML='<div class="sub">No evidence is available for this transaction yet.</div>';return}
-    $('transactionEvidenceContent').innerHTML=images.map(function(x){return '<div class="detail-item" style="padding:9px"><div id="customer-evi-'+esc(x.id)+'" style="height:135px;background:var(--panel2);border-radius:8px;display:grid;place-items:center" class="sub">Loading…</div><strong style="display:block;margin-top:7px;font-size:12px;overflow-wrap:anywhere">'+esc(x.original_filename)+'</strong><small class="muted">'+esc(dt(x.created_at))+'</small></div>'}).join('');
-    images.forEach(function(x){fetch('https://versustrade-evidence-api.versustradehq.workers.dev/images/view',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({image_id:x.id})}).then(function(r){if(!r.ok)throw new Error();return r.blob()}).then(function(blob){var host=$('customer-evi-'+x.id);if(host){var im=document.createElement('img');im.src=URL.createObjectURL(blob);im.alt='Transaction evidence';im.style.cssText='width:100%;height:135px;object-fit:cover;border-radius:8px';host.replaceChildren(im)}}).catch(function(){var host=$('customer-evi-'+x.id);if(host)host.textContent='Image unavailable'})});
-  }).catch(function(err){$('transactionEvidenceContent').innerHTML='<div class="sub">'+esc(err.message)+'</div>'});
+    return fetch('https://versustrade-evidence-api.versustradehq.workers.dev/customer/transactions/images/list',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({reference:reference})}).then(function(r){return r.json().then(function(d){if(!r.ok)throw new Error(d.error||'Could not load transaction evidence');return {token:token,data:d}})});
+  }).then(function(result){
+    var images=result.data.images||[];
+    if(!images.length){gallery.innerHTML='<div class="sub">No evidence has been attached to this transaction.</div>';return}
+    gallery.innerHTML=images.map(function(x){return '<div class="detail-item" style="padding:9px"><div id="customer-evi-'+esc(x.id)+'" style="height:155px;background:var(--panel2);border-radius:8px;display:grid;place-items:center" class="sub">Loading image…</div><strong style="display:block;margin-top:7px;font-size:12px;overflow-wrap:anywhere">'+esc(x.original_filename)+'</strong><small class="muted">'+esc(dt(x.created_at))+'</small></div>'}).join('');
+    images.forEach(function(x){fetch('https://versustrade-evidence-api.versustradehq.workers.dev/images/view',{method:'POST',headers:{Authorization:'Bearer '+result.token,'Content-Type':'application/json'},body:JSON.stringify({image_id:x.id})}).then(function(r){if(!r.ok)throw new Error();return r.blob()}).then(function(blob){var node=$('customer-evi-'+x.id);if(node){var im=document.createElement('img');im.src=URL.createObjectURL(blob);im.alt='Transaction evidence';im.style.cssText='width:100%;height:155px;object-fit:contain;border-radius:8px';node.replaceChildren(im)}}).catch(function(){var node=$('customer-evi-'+x.id);if(node)node.textContent='Image unavailable'})});
+  }).catch(function(err){gallery.textContent=err.message});
 }
 $('transactionEvidenceClose').addEventListener('click',function(){ $('transactionEvidenceDialog').close ? $('transactionEvidenceDialog').close() : $('transactionEvidenceDialog').removeAttribute('open')});
 $('transactionEvidenceDialog').addEventListener('click',function(e){if(e.target===this)this.close()});
