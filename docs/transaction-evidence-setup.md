@@ -18,7 +18,7 @@ The R2 bucket is private. The Worker streams images only after verifying the Sup
 All POST requests use `Authorization: Bearer <Supabase access token>`.
 - `/admin/images/chat/list` — recent image attachments from the selected customer's currently linked Chatwoot conversation.
 - `/admin/images/chat/import` — re-verifies the attachment belongs to that customer's linked conversation, downloads it, and copies it to R2.
-- `/admin/images/upload` — multipart upload is not used; this route accepts a JSON request only in this first cut and will be extended with a raw image body and transaction reference header before UI integration.
+- `/admin/images/upload` — raw image body with the image MIME type in `Content-Type`, transaction reference in `X-Transaction-Reference`, and filename in `X-File-Name`.
 - `/admin/images/list` — list evidence metadata for an admin-selected transaction.
 - `/customer/transactions/images/list` — list evidence for the customer's own completed transaction.
 - `/images/view` — authenticated image stream (fetch with Bearer token and display as a blob URL).
