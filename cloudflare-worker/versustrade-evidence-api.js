@@ -32,7 +32,7 @@ export default {
     const cors = ALLOWED_ORIGINS.has(origin) ? {
       "Access-Control-Allow-Origin": origin,
       "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Authorization, Content-Type",
+      "Access-Control-Allow-Headers": "Authorization, Content-Type, X-Transaction-Reference, X-File-Name",
       "Vary": "Origin"
     } : {};
     const headers = { "Content-Type": "application/json", ...cors };
@@ -108,85 +108,16 @@ export default {
         }
       };
 
-      if (path === "/admin/images/chat/list") {
-        if (!isAdmin) return respond({ error: "Admin access denied" }, 403);
-        if (!env.CHATWOOT_API_TOKEN || !env.CHATWOOT_ACCOUNT_ID) return respond({ error: "Chatwoot API credentials are not configured" }, 503);
-        const transaction = await transactionForAdmin(body.reference);
-        const states = await dbGet("chat_state", "user_id=eq." + encodeURIComponent(transaction.customer_id) + "&select=state&limit=1");
-        const state = states[0] && states[0].state || {};
-        const conversationId = state.cw && state.cw.conv || state.tixConv || state.conversation_id;
-        if (!conversationId) return respond({ ok: true, conversations: [], images: [], message: "No linked Chatwoot conversation was found in this customer's saved chat state." });
-        const endpoint = env.CHATWOOT_BASE_URL || "https://app.chatwoot.com";
-        const messagesRes = await fetch(endpoint + "/api/v1/accounts/" + encodeURIComponent(env.CHATWOOT_ACCOUNT_ID) + "/conversations/" + encodeURIComponent(conversationId) + "/messages", {
-          headers: { "api_access_token": env.CHATWOOT_API_TOKEN }
-        });
-        if (!messagesRes.ok) return respond({ error: "Could not retrieve the customer's Chatwoot messages" }, 502);
-        const payload = await messagesRes.json();
-        const messages = payload.payload || payload.messages || [];
-        const images = [];
-        for (const message of messages) for (const attachment of (message.attachments || [])) {
-          const mime = String(attachment.file_type || attachment.content_type || "").toLowerCase();
-          const url = attachment.data_url || attachment.download_url || attachment.url;
-          if (!url || (mime && !mime.startsWith("image"))) continue;
-          images.push({
-            conversation_id: String(conversationId),
-            message_id: String(message.id),
-            attachment_id: String(attachment.id || attachment.file_id || url),
-            filename: safeName(attachment.filename || attachment.file_name || "chat-image"),
-            mime_type: mime || "image",
-            created_at: message.created_at || message.created_at_timestamp || null,
-            url
-          });
-        }
-        images.sort((a,b)=>new Date(b.created_at || 0)-new Date(a.created_at || 0));
-        return respond({ ok: true, conversation_id: String(conversationId), images: images.slice(0,80) });
-      }
-
-      if (path === "/admin/images/chat/import") {
-        if (!isAdmin) return respond({ error: "Admin access denied" }, 403);
-        if (!env.CHATWOOT_API_TOKEN || !env.CHATWOOT_ACCOUNT_ID) return respond({ error: "Chatwoot API credentials are not configured" }, 503);
-        const transaction = await transactionForAdmin(body.reference);
-        if (transaction.archived_at) return respond({ error: "Restore this transaction before adding evidence" }, 409);
-        const states = await dbGet("chat_state", "user_id=eq." + encodeURIComponent(transaction.customer_id) + "&select=state&limit=1");
-        const state = states[0] && states[0].state || {};
-        const conversationId = String(state.cw && state.cw.conv || state.tixConv || state.conversation_id || "");
-        if (!conversationId || conversationId !== String(body.conversation_id)) return respond({ error: "That conversation is not linked to this customer" }, 403);
-        const duplicate = await dbGet("transaction_images", "transaction_id=eq." + encodeURIComponent(transaction.id) + "&chatwoot_attachment_id=eq." + encodeURIComponent(String(body.attachment_id)) + "&deleted_at=is.null&select=id&limit=1");
-        if (duplicate.length) return respond({ ok: true, duplicate: true, image: { id: duplicate[0].id } });
-        const endpoint = env.CHATWOOT_BASE_URL || "https://app.chatwoot.com";
-        const messagesRes = await fetch(endpoint + "/api/v1/accounts/" + encodeURIComponent(env.CHATWOOT_ACCOUNT_ID) + "/conversations/" + encodeURIComponent(conversationId) + "/messages", { headers: { "api_access_token": env.CHATWOOT_API_TOKEN } });
-        if (!messagesRes.ok) return respond({ error: "Could not verify the Chatwoot attachment" }, 502);
-        const payload = await messagesRes.json();
-        const messages = payload.payload || payload.messages || [];
-        let selected = null;
-        for (const message of messages) for (const attachment of (message.attachments || [])) {
-          const id = String(attachment.id || attachment.file_id || attachment.data_url || attachment.url || "");
-          if (id === String(body.attachment_id)) selected = { message, attachment };
-        }
-        if (!selected) return respond({ error: "The selected attachment is no longer available in this conversation" }, 404);
-        const attachment = selected.attachment;
-        const fileUrl = attachment.data_url || attachment.download_url || attachment.url;
-        const fileRes = await fetch(fileUrl, { headers: { "api_access_token": env.CHATWOOT_API_TOKEN } });
-        if (!fileRes.ok) return respond({ error: "Could not download the Chatwoot image" }, 502);
-        const contentType = (fileRes.headers.get("Content-Type") || attachment.content_type || "image/jpeg").split(";")[0].toLowerCase();
-        const bytes = new Uint8Array(await fileRes.arrayBuffer());
-        if (bytes.byteLength > MAX_BYTES || !isImage(bytes, contentType)) return respond({ error: "Chatwoot attachment is not a supported image under 10 MB" }, 400);
-        const image = { bytes, mime: contentType, ext: MIME_EXT[contentType] };
-        const saved = await saveBytes(transaction, image, "chatwoot", {
-          filename: attachment.filename || attachment.file_name || "chat-image",
-          conversation_id: conversationId,
-          message_id: selected.message.id,
-          attachment_id: String(body.attachment_id)
-        }, user.id);
-        return respond({ ok: true, image: saved }, 201);
-      }
-
       if (path === "/admin/images/upload") {
         if (!isAdmin) return respond({ error: "Admin access denied" }, 403);
-        const transaction = await transactionForAdmin(body.reference);
+        const reference = request.headers.get("X-Transaction-Reference") || "";
+        const filenameHeader = request.headers.get("X-File-Name") || "admin-evidence";
+        let filename = "admin-evidence";
+        try { filename = decodeURIComponent(filenameHeader); } catch (_) { filename = filenameHeader; }
+        const transaction = await transactionForAdmin(reference);
         if (transaction.archived_at) return respond({ error: "Restore this transaction before adding evidence" }, 409);
         const image = await readImage(request);
-        const saved = await saveBytes(transaction, image, "admin_upload", { filename: body.filename || "admin-evidence" }, user.id);
+        const saved = await saveBytes(transaction, image, "admin_upload", { filename }, user.id);
         return respond({ ok: true, image: saved }, 201);
       }
 
