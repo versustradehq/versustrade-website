@@ -2567,7 +2567,19 @@ draw();
     var li = !!session;
     if (window.VTNav) window.VTNav.setLabel(li ? 'Dashboard' : 'Log in');
     window.dispatchEvent(new CustomEvent('vt-auth', { detail: { loggedIn: li, email: session && session.email, initial: !!initial } }));
-    if (li) askProfile();
+    if (li) {
+      askProfile();
+      getToken().then(function (tok) {
+        if (!tok) return;
+        return fetch('https://versustrade-admin-api.versustradehq.workers.dev/admin/verify', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' },
+          body: '{}'
+        }).then(function (r) { return r.json(); }).then(function (d) {
+          if (d && d.authorized === true && window.VTNav) window.VTNav.setLabel('Admin');
+        }).catch(function () {});
+      }).catch(function () {});
+    }
   }
   window.addEventListener('storage', function (e) {
     if (e.key !== STORE) return;
@@ -2936,7 +2948,19 @@ draw();
   window.VTAuth = {
     rest: rest,
     upload: upload,
-    open: open, click: function () { if (session) window.location.href = '/dashboard/'; else open(); },
+    open: open, click: function () {
+      if (!session) { open(); return; }
+      getToken().then(function (tok) {
+        if (!tok) { window.location.href = '/dashboard/'; return; }
+        return fetch('https://versustrade-admin-api.versustradehq.workers.dev/admin/verify', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' },
+          body: '{}'
+        }).then(function (r) { return r.json(); }).then(function (d) {
+          window.location.href = d && d.authorized === true ? '/admin' : '/dashboard/';
+        }).catch(function () { window.location.href = '/dashboard/'; });
+      }).catch(function () { window.location.href = '/dashboard/'; });
+    },
     isLoggedIn: function () { return !!session; },
     getToken: getToken,
     email: function () { return session ? session.email : ''; },
