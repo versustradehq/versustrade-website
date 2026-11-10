@@ -1679,8 +1679,8 @@ accountFilterState=bindFilterPanel('account',function(s){accountFilterState=s;pa
 $('tabs').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;filt=b.dataset.f;page=1;[].forEach.call($('tabs').children,function(x){x.setAttribute('aria-selected',x===b)});draw()});
 $('chips').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;stat=b.dataset.s;page=1;[].forEach.call($('chips').children,function(x){x.setAttribute('aria-pressed',x===b)});draw()});
 $('q').addEventListener('input',function(){term=this.value.trim().toLowerCase();page=1;draw()});
-$('rows').addEventListener('click',function(e){var row=e.target.closest('.tr[data-evidence-ref]');if(!row)return;openCustomerEvidence(row.dataset.evidenceRef)});
-$('rows').addEventListener('keydown',function(e){var row=e.target.closest('.tr[data-evidence-ref]');if(!row||(e.key!=='Enter'&&e.key!==' '))return;e.preventDefault();openCustomerEvidence(row.dataset.evidenceRef)});
+document.addEventListener('click',function(e){var row=e.target.closest('#rows .tr[data-evidence-ref]');if(!row)return;openCustomerEvidence(row.getAttribute('data-evidence-ref'))},true);
+document.addEventListener('keydown',function(e){var row=e.target.closest&&e.target.closest('#rows .tr[data-evidence-ref]');if(!row||(e.key!=='Enter'&&e.key!==' '))return;e.preventDefault();openCustomerEvidence(row.getAttribute('data-evidence-ref'))},true);
 function openCustomerEvidence(reference){
   var dlg=$('transactionEvidenceDialog'),trade=TRADES.find(function(x){return x.id===reference}),t=trade&&trade.raw||{};
   $('transactionEvidenceTitle').textContent='Transaction details';
