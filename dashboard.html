@@ -2601,13 +2601,19 @@ draw();
       // Refresh profile metadata because a saved browser session may contain an old or empty name.
       getToken().then(function (tok) {
         if (!tok) return;
-        return call('/user', { method: 'GET', token: tok }).then(function (r) {
-          if (!r.ok || !r.data) return;
-          var u = r.data, m = u.user_metadata || {};
-          session.name = nameOf(u) || session.name || '';
-          session.email = u.email || session.email || '';
-          session.phone = m.phone || '';
-          session.created = (u.created_at && Date.parse(u.created_at)) || session.created || 0;
+        return Promise.all([
+          call('/user', { method: 'GET', token: tok }),
+          fetch(SB.url + '/rest/v1/profiles?user_id=eq.' + encodeURIComponent(session.id) + '&select=user_id,email,full_name,phone,created_at&limit=1', {
+            method: 'GET', headers: { apikey: SB.key, Authorization: 'Bearer ' + tok }
+          }).then(function (r) { return r.ok ? r.json() : []; }).catch(function () { return []; })
+        ]).then(function (results) {
+          var auth = results[0], rows = results[1] || [];
+          var u = auth && auth.ok ? auth.data : {}, m = u.user_metadata || {};
+          var p = rows[0] || {};
+          session.name = String(p.full_name || m.full_name || m.name || m.username || session.name || '').trim();
+          session.email = p.email || u.email || session.email || '';
+          session.phone = p.phone || m.phone || '';
+          session.created = (p.created_at && Date.parse(p.created_at)) || (u.created_at && Date.parse(u.created_at)) || session.created || 0;
           persist();
           window.dispatchEvent(new CustomEvent('vt-profile', { detail: {
             name: session.name, email: session.email, phone: session.phone, created: session.created
