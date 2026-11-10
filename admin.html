@@ -955,7 +955,7 @@ $('registerForm').addEventListener('submit',function(e){
   e.preventDefault();
   var form=this,btn=$('registerBtn'),msg=$('registerMessage'),evidenceFile=$('registerEvidenceFile').files&&$('registerEvidenceFile').files[0];
   if(!$('customerId').value){msg.className='message error';msg.textContent='Please search for and select a customer first.';$('customerSearch').focus();return}
-  if(evidenceFile&&(!/^image\\/(jpeg|png|webp|gif)$/.test(evidenceFile.type)||evidenceFile.size>10*1024*1024)){msg.className='message error';msg.textContent='Choose a JPEG, PNG, WEBP or GIF image no larger than 10 MB.';return}
+  if(evidenceFile&&(!/^image\/(jpeg|png|webp|gif)$/.test(evidenceFile.type)||evidenceFile.size>10*1024*1024)){msg.className='message error';msg.textContent='Choose a JPEG, PNG, WEBP or GIF image no larger than 10 MB.';return}
   var f=new FormData(form),data={};
   f.forEach(function(v,k){if(v!=='')data[k]=v});
   data.fiat_currency='USD';data.payout_currency='NGN';
