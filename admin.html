@@ -438,6 +438,7 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * {
             <div class="form-field"><label for="exchangeRateInput">Exchange rate (₦ per $1)</label><input class="field" name="exchange_rate" id="exchangeRateInput" type="number" min="0" step="any" value="1350"></div>
             <div class="form-field" id="payoutAmountField"><label for="payoutAmountInput" id="payoutAmountLabel">Payout amount (NGN)</label><input class="field" name="payout_amount" id="payoutAmountInput" type="number" min="0" step="any" readonly placeholder="Calculated automatically"></div>
             <div class="form-field span2"><label for="customerNote">Customer note</label><textarea class="area" name="customer_note" id="customerNote" rows="3" placeholder="Optional transaction note"></textarea></div>
+            <div class="form-field span2"><label for="registerEvidenceFile">Transaction evidence (optional)</label><input class="field" type="file" id="registerEvidenceFile" accept="image/jpeg,image/png,image/webp,image/gif"><small class="sub">Attach the transaction screenshot or receipt now. JPEG, PNG, WEBP or GIF · maximum 10 MB.</small><div id="registerEvidenceName" class="message" role="status"></div></div>
             <div class="span2"><button class="primary" id="registerBtn" type="submit">Register transaction</button><div id="registerMessage" class="message" role="status"></div></div>
           </form>
         </div></div>
@@ -513,7 +514,7 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * {
 <div id="detailOverlay" class="hidden">
   <div class="panel" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
     <div class="panel-head"><h2 id="detailTitle">Transaction details</h2><button class="icon-btn" id="detailClose" aria-label="Close">✕</button></div>
-    <div class="panel-body"><div id="detailBody"></div><div class="toolbar" style="margin-top:18px"><label class="muted" for="detailStatus">Update status</label><select id="detailStatus" class="select" style="max-width:190px"><option value="VT-PRO">Processing</option><option value="VT-DONE">Completed</option><option value="VT-DEC">Declined</option></select><button id="detailUpdate" class="primary">Save status</button><button id="detailArchive" class="ghost">Archive transaction</button></div><div id="detailMessage" class="message" role="status"></div><div style="margin-top:22px"><h3 style="font-size:14px">Audit history</h3><div id="detailEvents" class="events"></div></div></div>
+    <div class="panel-body"><div id="detailBody"></div><section id="evidencePanel" style="margin-top:22px;padding-top:18px;border-top:1px solid var(--line)"><div><h3 style="font-size:14px;margin:0">Transaction evidence</h3><p class="sub" style="margin:4px 0 0">Download the image from Chatwoot, then upload it here to store it permanently.</p></div><div class="toolbar" style="margin-top:13px"><label class="ghost" id="evidenceFileLabel">Choose image<input type="file" id="evidenceFile" accept="image/jpeg,image/png,image/webp,image/gif" hidden></label><button type="button" class="primary" id="evidenceUploadBtn" disabled>Upload image</button></div><div id="evidenceMessage" class="message" role="status"></div><div id="savedEvidenceGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-top:14px"></div></section><div class="toolbar" style="margin-top:18px"><label class="muted" for="detailStatus">Update status</label><select id="detailStatus" class="select" style="max-width:190px"><option value="VT-PRO">Processing</option><option value="VT-DONE">Completed</option><option value="VT-DEC">Declined</option></select><button id="detailUpdate" class="primary">Save status</button><button id="detailArchive" class="ghost">Archive transaction</button></div><div id="detailMessage" class="message" role="status"></div><div style="margin-top:22px"><h3 style="font-size:14px">Audit history</h3><div id="detailEvents" class="events"></div></div></div>
   </div>
 </div>
 <div id="statusConfirm" class="hidden" role="presentation"><section class="confirm-card" role="dialog" aria-modal="true" aria-labelledby="statusConfirmTitle" aria-describedby="statusConfirmCopy"><div class="confirm-top"><div class="confirm-brand">VersusTrade · Admin</div><button type="button" class="confirm-close" id="statusConfirmClose" aria-label="Close">×</button></div><div class="confirm-content"><div class="confirm-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.8 20h18.4L12 3Z"/><path d="M12 9v5m0 3h.01"/></svg></div><h2 class="confirm-title" id="statusConfirmTitle">Confirm status change</h2><div class="confirm-ref" id="statusConfirmRef"></div><p class="confirm-copy" id="statusConfirmCopy">This change will be recorded in the audit log.</p></div><div class="confirm-actions"><button type="button" class="confirm-cancel" id="statusConfirmCancel">Cancel</button><button type="button" class="confirm-accept" id="statusConfirmAccept">Confirm update</button></div></section></div>
@@ -521,6 +522,7 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * {
 (function(){
 'use strict';
 var API='https://versustrade-admin-api.versustradehq.workers.dev';
+var EVIDENCE_API='https://versustrade-evidence-api.versustradehq.workers.dev';
 var SB='https://axldgaxsdgeycinxqbem.supabase.co';
 var KEY='sb_publishable_eU9t7DqMTbeAOIdsXhcYmg_wwvmwm3j';
 var STORE='vt_auth_session', CUST_STORE='vt_admin_customers', session=null, transactions=[], archiveTransactions=[], selected=null, pageSize=50, lastFocus=null;
@@ -536,6 +538,8 @@ function saveSession(){try{localStorage.setItem(STORE,JSON.stringify(session))}c
 function authCall(path,body){return fetch(SB+'/auth/v1'+path,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(r){return r.json().then(function(d){if(!r.ok)throw new Error(d.msg||d.message||'Session refresh failed');return d})})}
 function token(){if(!session)return Promise.reject(new Error('Please log in again.'));var now=Math.floor(Date.now()/1000);if(session.expires_at-60>now)return Promise.resolve(session.access_token);return authCall('/token?grant_type=refresh_token',{refresh_token:session.refresh_token}).then(function(d){session.access_token=d.access_token;session.refresh_token=d.refresh_token;session.expires_at=d.expires_at||(now+(d.expires_in||3600));saveSession();return session.access_token})}
 function api(path,body){if(PREVIEW)return mockApi(path,body);return token().then(function(t){return fetch(API+path,{method:'POST',headers:{Authorization:'Bearer '+t,'Content-Type':'application/json'},body:JSON.stringify(body||{})})}).then(function(r){return r.json().then(function(d){if(!r.ok)throw new Error(d.error||d.message||'Request failed');return d})})}
+function evidenceApi(path,body){return token().then(function(t){return fetch(EVIDENCE_API+path,{method:'POST',headers:{Authorization:'Bearer '+t,'Content-Type':'application/json'},body:JSON.stringify(body||{})})}).then(function(r){return r.json().then(function(d){if(!r.ok)throw new Error(d.error||d.message||'Evidence request failed');return d})})}
+function evidenceView(id){return token().then(function(t){return fetch(EVIDENCE_API+'/images/view',{method:'POST',headers:{Authorization:'Bearer '+t,'Content-Type':'application/json'},body:JSON.stringify({image_id:id})})}).then(function(r){if(!r.ok)throw new Error('Could not load evidence image');return r.blob()}).then(function(blob){return URL.createObjectURL(blob)})}
 
 // PREVIEW MODE (?preview): sample data, no login, no network calls. Remove before deploying.
 var PREVIEW=/[?&]preview\b/.test(location.search);
@@ -933,15 +937,25 @@ updateTransactionFields();
 
 // REGISTER
 function resetRegisterForm(form){
-  form.reset();populateAdminNetworks();clearCustomerSelection();
+  form.reset();$('registerEvidenceName').textContent='';populateAdminNetworks();clearCustomerSelection();
   $('customerSearch').value='';$('customerSearchMessage').textContent='Type at least 2 characters to find a customer.';$('customerSearchMessage').className='message';
   $('cryptoPriceMessage').textContent=PRICE_HINT;
   updateTransactionFields();refreshPickers();
 }
+$('registerEvidenceFile').addEventListener('change',function(){
+  var file=this.files&&this.files[0];
+  $('registerEvidenceName').textContent=file?file.name+' selected.':'No evidence attached.';
+});
+function uploadEvidenceFile(file,reference){
+  return token().then(function(t){
+    return fetch(EVIDENCE_API+'/admin/images/upload',{method:'POST',headers:{Authorization:'Bearer '+t,'Content-Type':file.type,'X-Transaction-Reference':reference,'X-File-Name':encodeURIComponent(file.name)},body:file});
+  }).then(function(r){return r.json().then(function(d){if(!r.ok)throw new Error(d.error||'Evidence upload failed');return d})});
+}
 $('registerForm').addEventListener('submit',function(e){
   e.preventDefault();
-  var form=this,btn=$('registerBtn'),msg=$('registerMessage');
+  var form=this,btn=$('registerBtn'),msg=$('registerMessage'),evidenceFile=$('registerEvidenceFile').files&&$('registerEvidenceFile').files[0];
   if(!$('customerId').value){msg.className='message error';msg.textContent='Please search for and select a customer first.';$('customerSearch').focus();return}
+  if(evidenceFile&&(!/^image\/(jpeg|png|webp|gif)$/.test(evidenceFile.type)||evidenceFile.size>10*1024*1024)){msg.className='message error';msg.textContent='Choose a JPEG, PNG, WEBP or GIF image no larger than 10 MB.';return}
   var f=new FormData(form),data={};
   f.forEach(function(v,k){if(v!=='')data[k]=v});
   data.fiat_currency='USD';data.payout_currency='NGN';
@@ -957,8 +971,17 @@ $('registerForm').addEventListener('submit',function(e){
     msg.textContent='Registering…';
     return api('/admin/transactions',data);
   }).then(function(d){
-    msg.className='message success';msg.textContent='Transaction registered: '+d.transaction.reference;
-    var newRef=d.transaction.reference;resetRegisterForm(form);showView('transactions');load().then(function(){if(transactions.some(function(t){return t.reference===newRef})){openDetail(newRef)}else{$('searchInput').value=newRef;paint()}});
+    var newRef=d.transaction.reference;
+    msg.className='message';msg.textContent=evidenceFile?'Transaction registered. Uploading evidence…':'Transaction registered: '+newRef;
+    var upload=evidenceFile?uploadEvidenceFile(evidenceFile,newRef):Promise.resolve();
+    return upload.then(function(){
+      msg.className='message success';msg.textContent=evidenceFile?'Transaction '+newRef+' registered with evidence attached.':'Transaction registered: '+newRef;
+      resetRegisterForm(form);showView('transactions');
+      return load().then(function(){if(transactions.some(function(t){return t.reference===newRef})){openDetail(newRef)}else{$('searchInput').value=newRef;paint()}});
+    }).catch(function(err){
+      msg.className='message error';msg.textContent='Transaction '+newRef+' was registered, but evidence upload failed: '+err.message+'. You can add it from transaction details.';
+      showView('transactions');return load().then(function(){if(transactions.some(function(t){return t.reference===newRef}))openDetail(newRef);else{$('searchInput').value=newRef;paint()}});
+    });
   }).catch(function(err){msg.className='message error';msg.textContent=err.message}).then(function(){btn.disabled=false});
 });
 
@@ -973,8 +996,28 @@ function openDetail(ref){
   pairs=pairs.filter(function(p){return !isGift&&(p[0]!=='Card type'&&p[0]!=='Card currency')||isGift||p[0]!=='Card type'&&p[0]!=='Card currency'});
   $('detailBody').innerHTML='<div class="detail-list">'+pairs.map(function(p){if((p[0]==='Card type'||p[0]==='Card currency')&&!isGift)return '';return '<div class="detail-item"><small>'+esc(p[0])+'</small><strong class="amt">'+(p[2]?smIco(p[2]):'')+esc(p[1]||'—')+'</strong></div>'}).join('')+'</div>';
   $('detailOverlay').classList.remove('hidden');$('detailClose').focus();
+  resetEvidencePanel();
+  loadEvidence(ref);
   loadEvents(ref,'detailEvents');
 }
+var evidenceFile=null;
+function evidenceMessage(text,error){$('evidenceMessage').className='message'+(error?' error':'');$('evidenceMessage').textContent=text||''}
+function resetEvidencePanel(){evidenceFile=null;$('evidenceFile').value='';$('savedEvidenceGrid').innerHTML='';$('evidenceMessage').textContent='';$('evidenceUploadBtn').disabled=true}
+function loadEvidence(ref){
+  evidenceMessage('Loading saved evidence…');$('savedEvidenceGrid').innerHTML='';
+  evidenceApi('/admin/images/list',{reference:ref}).then(function(d){
+    var images=d.images||[];if(!images.length){$('savedEvidenceGrid').innerHTML='<div class="sub">No evidence has been added to this transaction yet.</div>';return}
+    $('savedEvidenceGrid').innerHTML=images.map(function(x){return '<div class="detail-item" style="padding:8px"><div id="evi-'+esc(x.id)+'" style="height:110px;border-radius:7px;background:var(--panel2);display:grid;place-items:center" class="sub">Loading image…</div><strong style="display:block;margin-top:7px;font-size:11px;overflow-wrap:anywhere">'+esc(x.original_filename)+'</strong><small class="muted">'+esc(x.source)+' · '+esc(fmtDate(x.created_at))+'</small></div>'}).join('');
+    images.forEach(function(x){evidenceView(x.id).then(function(src){var host=$('evi-'+x.id);if(host){var im=document.createElement('img');im.src=src;im.alt='Transaction evidence';im.style.cssText='width:100%;height:110px;object-fit:cover;border-radius:7px';host.replaceChildren(im)}}).catch(function(){var host=$('evi-'+x.id);if(host)host.textContent='Image unavailable'})});
+  }).catch(function(e){evidenceMessage(e.message,true)});
+}
+$('evidenceFile').addEventListener('change',function(){evidenceFile=this.files&&this.files[0]||null;$('evidenceUploadBtn').disabled=!evidenceFile;evidenceMessage(evidenceFile?evidenceFile.name+' selected.':'No image selected.')});
+$('evidenceUploadBtn').addEventListener('click',function(){
+  if(!selected||!evidenceFile)return evidenceMessage('Choose an image first.',true);
+  var btn=this;btn.disabled=true;evidenceMessage('Uploading image to secure storage…');
+  token().then(function(t){return fetch(EVIDENCE_API+'/admin/images/upload',{method:'POST',headers:{Authorization:'Bearer '+t,'Content-Type':evidenceFile.type,'X-Transaction-Reference':selected.reference,'X-File-Name':encodeURIComponent(evidenceFile.name)},body:evidenceFile})}).then(function(r){return r.json().then(function(d){if(!r.ok)throw new Error(d.error||'Upload failed');return d})}).then(function(){evidenceFile=null;$('evidenceFile').value='';evidenceMessage('Image added to transaction evidence.');loadEvidence(selected.reference)}).catch(function(e){evidenceMessage(e.message,true)}).then(function(){btn.disabled=!evidenceFile});
+});
+
 function closeDetail(){$('detailOverlay').classList.add('hidden');if(lastFocus&&lastFocus.focus)lastFocus.focus()}
 function loadEvents(ref,target){
   $(target).innerHTML='<div class="muted">Loading history…</div>';

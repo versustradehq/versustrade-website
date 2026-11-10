@@ -75,8 +75,9 @@ a{color:inherit;text-decoration:none}button{font:inherit;color:inherit;cursor:po
 .chip[aria-pressed="true"]{border-color:var(--text);color:var(--text);background:var(--bg);box-shadow:0 1px 4px rgba(0,0,0,.1)}
 .th,.tr{display:grid;grid-template-columns:1.5fr 1.1fr .9fr .9fr;gap:12px;align-items:center}
 .th{font-size:13px;color:var(--muted);padding:20px 8px 10px}
-.tr{padding:14px 8px;border-top:1px solid var(--line)}
+.tr{padding:14px 8px;border-top:1px solid var(--line);cursor:pointer}
 .tr:hover{background:var(--soft)}
+.tr:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;border-radius:8px}
 .r{text-align:right}
 .co{display:flex;align-items:center;gap:12px;min-width:0}
 .av{position:relative;width:38px;height:38px;border-radius:999px;background:var(--pill);display:grid;place-items:center;font-weight:800;font-size:14px;flex:none;overflow:hidden}
@@ -1514,6 +1515,7 @@ body:has(#v-rates.on){overflow:hidden!important;overscroll-behavior:none}
 </div></main>
 </div>
 
+<dialog id="transactionEvidenceDialog" class="vt-filter-dialog" aria-labelledby="transactionEvidenceTitle"><div class="vt-filter-box" style="width:min(100%,720px);max-height:85vh;overflow:auto"><div class="vt-filter-head"><h2 id="transactionEvidenceTitle">Transaction details</h2><button type="button" class="vt-filter-reset" id="transactionEvidenceClose">Close</button></div><p class="sub" id="transactionEvidenceRef"></p><div id="transactionEvidenceContent" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:12px;padding:12px 0"><div class="sub">Loading evidence…</div></div></div></dialog>
 <a class="fab-h" id="vtFab" href="#" aria-label="Chat with us" aria-expanded="false" tabindex="-1"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg></a>
 <nav class="dock" id="dock" aria-label="Main navigation">
   <button class="dock-item" type="button" data-view="home" aria-label="Home"><span class="dock-tile"><span class="dock-face"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5"/><path d="M9.5 21v-6h5v6"/></svg></span></span><span class="dock-label" aria-hidden="true">Home</span></button>
@@ -1638,7 +1640,7 @@ function list(){return TRADES.filter(function(t){
 function draw(){
   var l=list(),pages=Math.max(1,Math.ceil(l.length/PER));page=Math.min(page,pages);
   var s=l.slice((page-1)*PER,page*PER);
-  $('rows').innerHTML=s.length?s.map(function(t){var ic=t.name==='Gift card'?'':'<img src="https://assets.coincap.io/assets/icons/'+esc(t.asset.toLowerCase())+'@2x.png" alt="" loading="lazy" onerror="this.remove()">';return '<div class="tr"><div class="co"><span class="av">'+esc(t.asset.charAt(0))+ic+'</span><span style="min-width:0"><b><span class="'+t.side+'">'+(t.side==='buy'?'Buy':'Sell')+'</span> '+esc(t.asset)+'</b><small>'+esc(t.id)+'</small></span></div><div class="r"><span class="am amt">'+ngn(t.ngn)+'</span><small class="amt">'+esc(t.qty)+'</small></div><span class="hd3">Date: '+dt(t.date)+'</span><span><span class="pill '+t.status+'"><span>'+LABEL[t.status]+'</span></span></span></div>'}).join(''):'<div class="empty">No trades found. Start one with Buy &amp; sell crypto above.</div>';
+  $('rows').innerHTML=s.length?s.map(function(t){var ic=t.name==='Gift card'?'':'<img src="https://assets.coincap.io/assets/icons/'+esc(t.asset.toLowerCase())+'@2x.png" alt="" loading="lazy" onerror="this.remove()">';return '<div class="tr" data-evidence-ref="'+esc(t.id)+'" role="button" tabindex="0" aria-label="View transaction details for '+esc(t.id)+'"><div class="co"><span class="av">'+esc(t.asset.charAt(0))+ic+'</span><span style="min-width:0"><b><span class="'+t.side+'">'+(t.side==='buy'?'Buy':'Sell')+'</span> '+esc(t.asset)+'</b><small>'+esc(t.id)+'</small></span></div><div class="r"><span class="am amt">'+ngn(t.ngn)+'</span><small class="amt">'+esc(t.qty)+'</small></div><span class="hd3">Date: '+dt(t.date)+'</span><span><span class="pill '+t.status+'"><span>'+LABEL[t.status]+'</span></span></span>+'</div>'}).join(''):'<div class="empty">No trades found. Start one with Buy &amp; sell crypto above.</div>';
   $('pgi').textContent='Page '+page+' of '+pages;$('prev').disabled=page<=1;$('next').disabled=page>=pages;
 }
 function updateStats(){
@@ -1656,7 +1658,7 @@ function mapTransaction(t){
   else if(t.payout_amount!=null)amount=t.payout_amount;
   else amount=t.fiat_amount;
   var status=t.status==='VT-DONE'?'done':t.status==='VT-DEC'?'fail':'wait';
-  return {id:t.reference,side:side,asset:asset,name:gift?'Gift card':asset,transactionType:gift?'gift_sell':(t.transaction_type==='CRYPTO_BUY'?'crypto_buy':'crypto_sell'),ngn:Number(amount)||0,qty:qty||'—',date:t.created_at||'',status:status};
+  return {id:t.reference,side:side,asset:asset,name:gift?'Gift card':asset,transactionType:gift?'gift_sell':(t.transaction_type==='CRYPTO_BUY'?'crypto_buy':'crypto_sell'),ngn:Number(amount)||0,qty:qty||'—',date:t.created_at||'',status:status,raw:t};
 }
 var tradesLoading=false;
 function loadCustomerTrades(){
@@ -1664,7 +1666,7 @@ function loadCustomerTrades(){
   if(tradesLoading||!currentUser||!currentUser.id)return;
   tradesLoading=true;
   var customerFilter=encodeURIComponent('eq.'+currentUser.id);
-  VTAuth.rest('GET','/transactions?select=reference,transaction_type,status,asset,network,crypto_amount,card_brand,card_type,card_region,fiat_currency,fiat_amount,payout_amount,payout_currency,created_at&customer_id='+customerFilter+'&archived_at=is.null&order=created_at.desc&limit=200').then(function(rows){
+  VTAuth.rest('GET','/transactions?select=id,reference,transaction_type,status,asset,network,crypto_amount,card_brand,card_type,card_region,card_value,card_currency,fiat_currency,fiat_amount,exchange_rate,payout_amount,payout_currency,customer_note,created_at,updated_at&customer_id='+customerFilter+'&archived_at=is.null&order=created_at.desc&limit=200').then(function(rows){
     TRADES=(Array.isArray(rows)?rows:[]).map(mapTransaction);
     page=1;draw();updateStats();
   }).catch(function(err){
@@ -1677,6 +1679,47 @@ accountFilterState=bindFilterPanel('account',function(s){accountFilterState=s;pa
 $('tabs').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;filt=b.dataset.f;page=1;[].forEach.call($('tabs').children,function(x){x.setAttribute('aria-selected',x===b)});draw()});
 $('chips').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;stat=b.dataset.s;page=1;[].forEach.call($('chips').children,function(x){x.setAttribute('aria-pressed',x===b)});draw()});
 $('q').addEventListener('input',function(){term=this.value.trim().toLowerCase();page=1;draw()});
+document.addEventListener('click',function(e){var row=e.target.closest('#rows .tr[data-evidence-ref]');if(!row)return;openCustomerEvidence(row.getAttribute('data-evidence-ref'))},true);
+document.addEventListener('keydown',function(e){var row=e.target.closest&&e.target.closest('#rows .tr[data-evidence-ref]');if(!row||(e.key!=='Enter'&&e.key!==' '))return;e.preventDefault();openCustomerEvidence(row.getAttribute('data-evidence-ref'))},true);
+function openCustomerEvidence(reference){
+  var dlg=$('transactionEvidenceDialog'),trade=TRADES.find(function(x){return x.id===reference}),t=trade&&trade.raw||{};
+  $('transactionEvidenceTitle').textContent='Transaction details';
+  $('transactionEvidenceRef').textContent=reference;
+  var statusLabel=t.status==='VT-DONE'?'Completed':t.status==='VT-DEC'?'Declined':'Processing';
+  var gift=t.transaction_type==='GIFT_CARD_SELL';
+  var fields=[
+    ['Transaction type',gift?'Gift card sale':(t.transaction_type==='CRYPTO_BUY'?'Crypto buy':'Crypto sell')],
+    ['Status',statusLabel],
+    ['Date',t.created_at?dt(t.created_at):'—'],
+    ['Asset / card',gift?(t.card_brand||'Gift card'):(t.asset||'—')],
+    ['Network',t.network||'—'],
+    ['Crypto amount',t.crypto_amount!=null?String(t.crypto_amount)+' '+(t.asset||''):'—'],
+    ['Card type',t.card_type||'—'],
+    ['Card region',t.card_region||'—'],
+    ['Card value',t.card_value!=null?String(t.card_value)+' '+(t.card_currency||''):'—'],
+    ['Amount (USD)',t.fiat_amount!=null?String(t.fiat_amount)+' '+(t.fiat_currency||'USD'):'—'],
+    ['Exchange rate',t.exchange_rate!=null?'₦'+Number(t.exchange_rate).toLocaleString('en-NG')+' per $1':'—'],
+    ['Payout',t.payout_amount!=null?Number(t.payout_amount).toLocaleString('en-NG')+' '+(t.payout_currency||''):'—'],
+    ['Customer note',t.customer_note||'—']
+  ];
+  var host=$('transactionEvidenceContent');
+  host.style.display='block';
+  host.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px">'+fields.map(function(f){return '<div class="detail-item" style="padding:12px"><small class="muted">'+esc(f[0])+'</small><strong style="display:block;margin-top:5px;overflow-wrap:anywhere">'+esc(f[1])+'</strong></div>'}).join('')+'</div><h3 style="margin:20px 0 8px">Attached evidence</h3><div id="customerEvidenceGallery" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:12px"><div class="sub">Loading evidence…</div></div>';
+  if(dlg.showModal)dlg.showModal();else dlg.setAttribute('open','');
+  var gallery=$('customerEvidenceGallery');
+  if(t.status!=='VT-DONE'){gallery.innerHTML='<div class="sub">Evidence will be available here once this transaction is marked completed.</div>';return}
+  var user=window.VTAuth&&VTAuth.user&&VTAuth.user();if(!user){gallery.textContent='Please sign in again to view evidence.';return}
+  Promise.resolve(VTAuth.getToken()).then(function(token){
+    return fetch('https://versustrade-evidence-api.versustradehq.workers.dev/customer/transactions/images/list',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({reference:reference})}).then(function(r){return r.json().then(function(d){if(!r.ok)throw new Error(d.error||'Could not load transaction evidence');return {token:token,data:d}})});
+  }).then(function(result){
+    var images=result.data.images||[];
+    if(!images.length){gallery.innerHTML='<div class="sub">No evidence has been attached to this transaction.</div>';return}
+    gallery.innerHTML=images.map(function(x){return '<div class="detail-item" style="padding:9px"><div id="customer-evi-'+esc(x.id)+'" style="height:155px;background:var(--panel2);border-radius:8px;display:grid;place-items:center" class="sub">Loading image…</div><strong style="display:block;margin-top:7px;font-size:12px;overflow-wrap:anywhere">'+esc(x.original_filename)+'</strong><small class="muted">'+esc(dt(x.created_at))+'</small></div>'}).join('');
+    images.forEach(function(x){fetch('https://versustrade-evidence-api.versustradehq.workers.dev/images/view',{method:'POST',headers:{Authorization:'Bearer '+result.token,'Content-Type':'application/json'},body:JSON.stringify({image_id:x.id})}).then(function(r){if(!r.ok)throw new Error();return r.blob()}).then(function(blob){var node=$('customer-evi-'+x.id);if(node){var im=document.createElement('img');im.src=URL.createObjectURL(blob);im.alt='Transaction evidence';im.style.cssText='width:100%;height:155px;object-fit:contain;border-radius:8px';node.replaceChildren(im)}}).catch(function(){var node=$('customer-evi-'+x.id);if(node)node.textContent='Image unavailable'})});
+  }).catch(function(err){gallery.textContent=err.message});
+}
+$('transactionEvidenceClose').addEventListener('click',function(){ $('transactionEvidenceDialog').close ? $('transactionEvidenceDialog').close() : $('transactionEvidenceDialog').removeAttribute('open')});
+$('transactionEvidenceDialog').addEventListener('click',function(e){if(e.target===this)this.close()});
 $('prev').onclick=function(){page--;draw()};$('next').onclick=function(){page++;draw()};
 try{var sn=localStorage.getItem('vt-username');if(sn)USER.name=sn}catch(e){}
 function setName(n){n=String(n==null?'':n).replace(/\s+/g,' ').trim().slice(0,16).trim();if(!n)return;document.documentElement.style.setProperty('--nl',n.length);USER.name=n;if($('uname'))$('uname').textContent=n;$('avatar').textContent=n.split(/\s+/).filter(Boolean).map(function(w){return w.charAt(0)}).join('').slice(0,2).toUpperCase();$('aName').textContent=n;if($('avName'))$('avName').textContent=n;[].forEach.call(document.querySelectorAll('.js-name'),function(e){e.textContent=n});[].forEach.call(document.querySelectorAll('.js-ini'),function(e){e.textContent=$('avatar').textContent})}
@@ -2551,7 +2594,19 @@ draw();
     var li = !!session;
     if (window.VTNav) window.VTNav.setLabel(li ? 'Dashboard' : 'Log in');
     window.dispatchEvent(new CustomEvent('vt-auth', { detail: { loggedIn: li, email: session && session.email, initial: !!initial } }));
-    if (li) askProfile();
+    if (li) {
+      askProfile();
+      getToken().then(function (tok) {
+        if (!tok) return;
+        return fetch('https://versustrade-admin-api.versustradehq.workers.dev/admin/verify', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' },
+          body: '{}'
+        }).then(function (r) { return r.json(); }).then(function (d) {
+          if (d && d.authorized === true && window.VTNav) window.VTNav.setLabel('Admin');
+        }).catch(function () {});
+      }).catch(function () {});
+    }
   }
   window.addEventListener('storage', function (e) {
     if (e.key !== STORE) return;
@@ -2747,6 +2802,25 @@ draw();
   function lock(btn, text) { if (btn) { btn.disabled = true; btn.setAttribute('data-t', btn.textContent); btn.textContent = text; } }
   function unlock(btn) { if (btn) { btn.disabled = false; btn.textContent = btn.getAttribute('data-t') || btn.textContent; } }
 
+  function redirectAdminAfterLogin() {
+    return getToken().then(function (tok) {
+      if (!tok) return false;
+      return fetch('https://versustrade-admin-api.versustradehq.workers.dev/admin/verify', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' },
+        body: '{}'
+      }).then(function (r) {
+        return r.json().then(function (d) {
+          if (r.ok && d && d.authorized === true) {
+            window.location.replace('/admin');
+            return true;
+          }
+          return false;
+        });
+      }).catch(function () { return false; });
+    }).catch(function () { return false; });
+  }
+
   function doLogin(email, password) {
     if (busy) return;
     if (!validEmail(email)) { setErr('Please enter a valid email address.'); return; }
@@ -2754,7 +2828,7 @@ draw();
     busy = true; st.email = email.toLowerCase(); var b = $('#vaGo'); lock(b, 'Signing in\u2026'); setErr('');
     call('/token?grant_type=password', { body: { email: st.email, password: password } }).then(function (r) {
       busy = false;
-      if (r.ok && r.data.access_token) { setSession(r.data); announce(); close(); return; }
+      if (r.ok && r.data.access_token) { setSession(r.data); announce(); redirectAdminAfterLogin().then(function (isAdmin) { if (!isAdmin) close(); }); return; }
       unlock(b);
       if (lower(r).indexOf('not confirmed') > -1) { st.mode = 'signup'; call('/resend', { body: { type: 'signup', email: st.email } }); view('code'); return; }
       setErr(friendly(r, 'login'));
@@ -2798,7 +2872,7 @@ draw();
     var vb = $('#vaVerify'); lock(vb, 'Checking\u2026');
     call('/verify', { body: { type: st.mode === 'signup' ? 'signup' : 'email', email: st.email, token: token } }).then(function (r) {
       busy = false;
-      if (r.ok && r.data.access_token) { setSession(r.data); announce(); if (st.afterNewPass) view('newpass'); else close(); return; }
+      if (r.ok && r.data.access_token) { setSession(r.data); announce(); if (st.afterNewPass) { view('newpass'); return; } redirectAdminAfterLogin().then(function (isAdmin) { if (!isAdmin) close(); }); return; }
       unlock(vb); setErr(friendly(r, 'code'));
     }, function () { busy = false; unlock(vb); setErr(NET); });
   }
@@ -2920,7 +2994,19 @@ draw();
   window.VTAuth = {
     rest: rest,
     upload: upload,
-    open: open, click: function () { if (session) window.location.href = '/dashboard/'; else open(); },
+    open: open, click: function () {
+      if (!session) { open(); return; }
+      getToken().then(function (tok) {
+        if (!tok) { window.location.href = '/dashboard/'; return; }
+        return fetch('https://versustrade-admin-api.versustradehq.workers.dev/admin/verify', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' },
+          body: '{}'
+        }).then(function (r) { return r.json(); }).then(function (d) {
+          window.location.href = d && d.authorized === true ? '/admin' : '/dashboard/';
+        }).catch(function () { window.location.href = '/dashboard/'; });
+      }).catch(function () { window.location.href = '/dashboard/'; });
+    },
     isLoggedIn: function () { return !!session; },
     getToken: getToken,
     email: function () { return session ? session.email : ''; },
