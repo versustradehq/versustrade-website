@@ -3,13 +3,19 @@ const allowedOrigins = [
   "https://www.versustrade.co"
 ];
 
+// Allow only this project's Cloudflare Pages preview deployments as well as production.
+function isAllowedOrigin(origin) {
+  return allowedOrigins.includes(origin) ||
+    /^https:\/\/[a-z0-9-]+\.versustrade-website\.pages\.dev$/i.test(origin);
+}
+
 const VALID_TYPES = ["CRYPTO_BUY", "CRYPTO_SELL", "GIFT_CARD_SELL"];
 const VALID_STATUSES = ["VT-PRO", "VT-DONE", "VT-DEC"];
 
 export default {
   async fetch(request, env) {
     const origin = request.headers.get("Origin") || "";
-    const corsOrigin = allowedOrigins.includes(origin) ? origin : "";
+    const corsOrigin = isAllowedOrigin(origin) ? origin : "";
     const headers = {
       "Content-Type": "application/json",
       ...(corsOrigin ? {
