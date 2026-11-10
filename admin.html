@@ -438,6 +438,7 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * {
             <div class="form-field"><label for="exchangeRateInput">Exchange rate (₦ per $1)</label><input class="field" name="exchange_rate" id="exchangeRateInput" type="number" min="0" step="any" value="1350"></div>
             <div class="form-field" id="payoutAmountField"><label for="payoutAmountInput" id="payoutAmountLabel">Payout amount (NGN)</label><input class="field" name="payout_amount" id="payoutAmountInput" type="number" min="0" step="any" readonly placeholder="Calculated automatically"></div>
             <div class="form-field span2"><label for="customerNote">Customer note</label><textarea class="area" name="customer_note" id="customerNote" rows="3" placeholder="Optional transaction note"></textarea></div>
+            <div class="form-field span2"><label for="registerEvidenceFile">Transaction evidence (optional)</label><input class="field" type="file" id="registerEvidenceFile" accept="image/jpeg,image/png,image/webp,image/gif"><small class="sub">Attach the transaction screenshot or receipt now. JPEG, PNG, WEBP or GIF · maximum 10 MB.</small><div id="registerEvidenceName" class="message" role="status"></div></div>
             <div class="span2"><button class="primary" id="registerBtn" type="submit">Register transaction</button><div id="registerMessage" class="message" role="status"></div></div>
           </form>
         </div></div>
@@ -936,15 +937,25 @@ updateTransactionFields();
 
 // REGISTER
 function resetRegisterForm(form){
-  form.reset();populateAdminNetworks();clearCustomerSelection();
+  form.reset();$('registerEvidenceName').textContent='';populateAdminNetworks();clearCustomerSelection();
   $('customerSearch').value='';$('customerSearchMessage').textContent='Type at least 2 characters to find a customer.';$('customerSearchMessage').className='message';
   $('cryptoPriceMessage').textContent=PRICE_HINT;
   updateTransactionFields();refreshPickers();
 }
+$('registerEvidenceFile').addEventListener('change',function(){
+  var file=this.files&&this.files[0];
+  $('registerEvidenceName').textContent=file?file.name+' selected.':'No evidence attached.';
+});
+function uploadEvidenceFile(file,reference){
+  return token().then(function(t){
+    return fetch(EVIDENCE_API+'/admin/images/upload',{method:'POST',headers:{Authorization:'Bearer '+t,'Content-Type':file.type,'X-Transaction-Reference':reference,'X-File-Name':encodeURIComponent(file.name)},body:file});
+  }).then(function(r){return r.json().then(function(d){if(!r.ok)throw new Error(d.error||'Evidence upload failed');return d})});
+}
 $('registerForm').addEventListener('submit',function(e){
   e.preventDefault();
-  var form=this,btn=$('registerBtn'),msg=$('registerMessage');
+  var form=this,btn=$('registerBtn'),msg=$('registerMessage'),evidenceFile=$('registerEvidenceFile').files&&$('registerEvidenceFile').files[0];
   if(!$('customerId').value){msg.className='message error';msg.textContent='Please search for and select a customer first.';$('customerSearch').focus();return}
+  if(evidenceFile&&(!/^image\\/(jpeg|png|webp|gif)$/.test(evidenceFile.type)||evidenceFile.size>10*1024*1024)){msg.className='message error';msg.textContent='Choose a JPEG, PNG, WEBP or GIF image no larger than 10 MB.';return}
   var f=new FormData(form),data={};
   f.forEach(function(v,k){if(v!=='')data[k]=v});
   data.fiat_currency='USD';data.payout_currency='NGN';
@@ -960,8 +971,17 @@ $('registerForm').addEventListener('submit',function(e){
     msg.textContent='Registering…';
     return api('/admin/transactions',data);
   }).then(function(d){
-    msg.className='message success';msg.textContent='Transaction registered: '+d.transaction.reference;
-    var newRef=d.transaction.reference;resetRegisterForm(form);showView('transactions');load().then(function(){if(transactions.some(function(t){return t.reference===newRef})){openDetail(newRef)}else{$('searchInput').value=newRef;paint()}});
+    var newRef=d.transaction.reference;
+    msg.className='message';msg.textContent=evidenceFile?'Transaction registered. Uploading evidence…':'Transaction registered: '+newRef;
+    var upload=evidenceFile?uploadEvidenceFile(evidenceFile,newRef):Promise.resolve();
+    return upload.then(function(){
+      msg.className='message success';msg.textContent=evidenceFile?'Transaction '+newRef+' registered with evidence attached.':'Transaction registered: '+newRef;
+      resetRegisterForm(form);showView('transactions');
+      return load().then(function(){if(transactions.some(function(t){return t.reference===newRef})){openDetail(newRef)}else{$('searchInput').value=newRef;paint()}});
+    }).catch(function(err){
+      msg.className='message error';msg.textContent='Transaction '+newRef+' was registered, but evidence upload failed: '+err.message+'. You can add it from transaction details.';
+      showView('transactions');return load().then(function(){if(transactions.some(function(t){return t.reference===newRef}))openDetail(newRef);else{$('searchInput').value=newRef;paint()}});
+    });
   }).catch(function(err){msg.className='message error';msg.textContent=err.message}).then(function(){btn.disabled=false});
 });
 
