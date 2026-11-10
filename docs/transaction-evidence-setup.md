@@ -11,14 +11,12 @@ The R2 bucket is private. The Worker streams images only after verifying the Sup
 1. Create a **private** R2 bucket named `versustrade-transaction-evidence` (or change the Wrangler bucket name).
 2. Apply the SQL migration in Supabase.
 3. Deploy from `cloudflare-worker` with the evidence Wrangler config.
-4. Set Worker secrets/vars: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `CHATWOOT_API_TOKEN`, `CHATWOOT_ACCOUNT_ID`; optionally `CHATWOOT_BASE_URL`.
-5. Verify the actual Chatwoot API message/attachment payload and attachment download authentication before enabling chat import in production.
+4. Set Worker configuration: `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`. Bind the private R2 bucket as `TRANSACTION_EVIDENCE`.
+5. Staff download the relevant image from the existing Chatwoot conversation and upload it through the admin transaction detail panel. No Chatwoot API token or paid Chatwoot API access is required.
 
 ## API
 All POST requests use `Authorization: Bearer <Supabase access token>`.
-- `/admin/images/chat/list` — recent image attachments from the selected customer's currently linked Chatwoot conversation.
-- `/admin/images/chat/import` — re-verifies the attachment belongs to that customer's linked conversation, downloads it, and copies it to R2.
-- `/admin/images/upload` — raw image body with the image MIME type in `Content-Type`, transaction reference in `X-Transaction-Reference`, and filename in `X-File-Name`.
+- `/admin/images/upload` — raw image body with the image MIME type in `Content-Type`, transaction reference in `X-Transaction-Reference`, and filename in `X-File-Name`. Staff use this endpoint after downloading the image from Chatwoot.
 - `/admin/images/list` — list evidence metadata for an admin-selected transaction.
 - `/customer/transactions/images/list` — list evidence for the customer's own completed transaction.
 - `/images/view` — authenticated image stream (fetch with Bearer token and display as a blob URL).
