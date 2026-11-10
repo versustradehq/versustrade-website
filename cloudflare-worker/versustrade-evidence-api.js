@@ -75,7 +75,7 @@ export default {
       };
       const adminRows = await dbGet("admin_users", "user_id=eq." + encodeURIComponent(user.id) + "&select=user_id&limit=1");
       const isAdmin = adminRows.length > 0;
-      const body = await request.json().catch(()=>({}));
+      const body = path === "/admin/images/upload" ? {} : await request.json().catch(()=>({}));
 
       const transactionForAdmin = async (reference) => {
         const rows = await dbGet("transactions", "reference=eq." + encodeURIComponent(reference) + "&select=id,reference,customer_id,status,archived_at&limit=1");
