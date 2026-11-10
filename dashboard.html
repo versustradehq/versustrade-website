@@ -2775,6 +2775,25 @@ draw();
   function lock(btn, text) { if (btn) { btn.disabled = true; btn.setAttribute('data-t', btn.textContent); btn.textContent = text; } }
   function unlock(btn) { if (btn) { btn.disabled = false; btn.textContent = btn.getAttribute('data-t') || btn.textContent; } }
 
+  function redirectAdminAfterLogin() {
+    return getToken().then(function (tok) {
+      if (!tok) return false;
+      return fetch('https://versustrade-admin-api.versustradehq.workers.dev/admin/verify', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' },
+        body: '{}'
+      }).then(function (r) {
+        return r.json().then(function (d) {
+          if (r.ok && d && d.authorized === true) {
+            window.location.replace('/admin');
+            return true;
+          }
+          return false;
+        });
+      }).catch(function () { return false; });
+    }).catch(function () { return false; });
+  }
+
   function doLogin(email, password) {
     if (busy) return;
     if (!validEmail(email)) { setErr('Please enter a valid email address.'); return; }
@@ -2782,7 +2801,7 @@ draw();
     busy = true; st.email = email.toLowerCase(); var b = $('#vaGo'); lock(b, 'Signing in\u2026'); setErr('');
     call('/token?grant_type=password', { body: { email: st.email, password: password } }).then(function (r) {
       busy = false;
-      if (r.ok && r.data.access_token) { setSession(r.data); announce(); close(); return; }
+      if (r.ok && r.data.access_token) { setSession(r.data); announce(); redirectAdminAfterLogin().then(function (isAdmin) { if (!isAdmin) close(); }); return; }
       unlock(b);
       if (lower(r).indexOf('not confirmed') > -1) { st.mode = 'signup'; call('/resend', { body: { type: 'signup', email: st.email } }); view('code'); return; }
       setErr(friendly(r, 'login'));
@@ -2826,7 +2845,7 @@ draw();
     var vb = $('#vaVerify'); lock(vb, 'Checking\u2026');
     call('/verify', { body: { type: st.mode === 'signup' ? 'signup' : 'email', email: st.email, token: token } }).then(function (r) {
       busy = false;
-      if (r.ok && r.data.access_token) { setSession(r.data); announce(); if (st.afterNewPass) view('newpass'); else close(); return; }
+      if (r.ok && r.data.access_token) { setSession(r.data); announce(); if (st.afterNewPass) { view('newpass'); return; } redirectAdminAfterLogin().then(function (isAdmin) { if (!isAdmin) close(); }); return; }
       unlock(vb); setErr(friendly(r, 'code'));
     }, function () { busy = false; unlock(vb); setErr(NET); });
   }
