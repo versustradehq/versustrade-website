@@ -976,6 +976,8 @@ function openDetail(ref){
   pairs=pairs.filter(function(p){return !isGift&&(p[0]!=='Card type'&&p[0]!=='Card currency')||isGift||p[0]!=='Card type'&&p[0]!=='Card currency'});
   $('detailBody').innerHTML='<div class="detail-list">'+pairs.map(function(p){if((p[0]==='Card type'||p[0]==='Card currency')&&!isGift)return '';return '<div class="detail-item"><small>'+esc(p[0])+'</small><strong class="amt">'+(p[2]?smIco(p[2]):'')+esc(p[1]||'—')+'</strong></div>'}).join('')+'</div>';
   $('detailOverlay').classList.remove('hidden');$('detailClose').focus();
+  resetEvidencePanel();
+  loadEvidence(ref);
   loadEvents(ref,'detailEvents');
 }
 var evidenceFile=null;
