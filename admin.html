@@ -439,7 +439,7 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * {
             <div class="form-field"><label for="exchangeRateInput">Exchange rate (₦ per $1)</label><input class="field" name="exchange_rate" id="exchangeRateInput" type="number" min="0" step="any" value="1350"></div>
             <div class="form-field" id="payoutAmountField"><label for="payoutAmountInput" id="payoutAmountLabel">Payout amount (NGN)</label><input class="field" name="payout_amount" id="payoutAmountInput" type="number" min="0" step="any" readonly placeholder="Calculated automatically"></div>
             <div class="form-field span2"><label for="customerNote">Customer note</label><textarea class="area" name="customer_note" id="customerNote" rows="3" placeholder="Optional transaction note"></textarea></div>
-            <div class="form-field span2"><label for="registerEvidenceFile">Transaction evidence (optional)</label><input class="field" type="file" id="registerEvidenceFile" accept="image/jpeg,image/png,image/webp,image/gif"><small class="sub">Attach the transaction screenshot or receipt now. JPEG, PNG, WEBP or GIF · maximum 10 MB.</small><div id="registerEvidenceName" class="message" role="status"></div></div>
+            <div class="form-field span2"><label for="registerEvidenceFile">Transaction evidence (optional)</label><input class="field" type="file" id="registerEvidenceFile" accept="image/jpeg,image/png,image/webp,image/gif"><small class="sub">Attach the transaction screenshot or receipt now. JPEG, PNG, WEBP or GIF · maximum 10 MB.</small><div id="registerEvidenceName" class="message" role="status"></div></div><div class="form-field span2" id="registerChatImagePanel"><label>Images from customer chat (optional)</label><div class="sub">Choose images the selected customer previously uploaded through the VersusTrade website chat. They will be attached after this transaction is registered.</div><div id="registerChatImageMessage" class="message" role="status">Select a customer to check for chat images.</div><div id="registerChatImageGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-top:10px"></div></div>
             <div class="span2"><button class="primary" id="registerBtn" type="submit">Register transaction</button><div id="registerMessage" class="message" role="status"></div></div>
           </form>
         </div></div>
@@ -583,7 +583,13 @@ function custCell(t){var c=custInfo(t);if(c.name||c.email)return '<div class="cu
 
 // CUSTOMER SEARCH AND SELECTION
 var customerSearchTimer=null, customerSearchRequest=0;
-function clearCustomerSelection(){$('customerId').value='';$('selectedCustomer').classList.add('hidden');$('selectedCustomer').innerHTML=''}
+var registerChatImageCustomer='',registerChatImageSelections=[];
+function clearCustomerSelection(){$('customerId').value='';$('selectedCustomer').classList.add('hidden');$('selectedCustomer').innerHTML='';if(typeof clearRegisterChatImages==='function')clearRegisterChatImages()}
+function registerChatMessage(message,error){var n=$('registerChatImageMessage');if(!n)return;n.className='message'+(error?' error':'');n.textContent=message||''}
+function clearRegisterChatImages(){registerChatImageCustomer='';registerChatImageSelections=[];$('registerChatImageGrid').innerHTML='';registerChatMessage('Select a customer to check for chat images.')}
+function loadRegisterChatImages(customerId){registerChatImageCustomer=customerId;registerChatImageSelections=[];var grid=$('registerChatImageGrid');grid.innerHTML='';registerChatMessage('Checking this customer\u2019s website chat images…');token().then(function(t){return fetch(EVIDENCE_API+'/admin/chat-images/list',{method:'POST',headers:{Authorization:'Bearer '+t,'Content-Type':'application/json'},body:JSON.stringify({customer_id:customerId})})}).then(function(r){return r.json().then(function(d){if(!r.ok)throw new Error(d.error||'Could not load customer chat images');return d})}).then(function(d){if(registerChatImageCustomer!==customerId)return;var images=d.images||[];if(!images.length){registerChatMessage('No images found in this customer\u2019s saved website chat history.');return}registerChatMessage(images.length+' image'+(images.length===1?'':'s')+' found. Select one or more images to attach.');grid.innerHTML=images.map(function(x){return '<div class="detail-item" style="padding:8px"><div id="register-chat-img-'+x.index+'" style="height:110px;border-radius:7px;background:var(--panel2);display:grid;place-items:center" class="sub">Loading image…</div><strong style="display:block;margin-top:7px;font-size:11px;overflow-wrap:anywhere">'+esc(x.filename)+'</strong><small class="muted">'+esc(x.created_at?fmtDate(x.created_at):'Website chat')+'</small><button type="button" class="ghost register-chat-image-select" data-register-chat-index="'+x.index+'" style="width:100%;margin-top:8px">Select image</button></div>'}).join('');images.forEach(function(x){token().then(function(t){return fetch(EVIDENCE_API+'/admin/chat-images/view',{method:'POST',headers:{Authorization:'Bearer '+t,'Content-Type':'application/json'},body:JSON.stringify({customer_id:customerId,index:x.index})})}).then(function(r){if(!r.ok)throw new Error();return r.blob()}).then(function(blob){var host=$('register-chat-img-'+x.index);if(host&&registerChatImageCustomer===customerId){var im=document.createElement('img');im.src=URL.createObjectURL(blob);im.alt='Customer chat image';im.style.cssText='width:100%;height:110px;object-fit:cover;border-radius:7px';host.replaceChildren(im)}}).catch(function(){var host=$('register-chat-img-'+x.index);if(host)host.textContent='Image unavailable'})})}).catch(function(e){registerChatMessage(e.message,true)})}
+$('registerChatImageGrid').addEventListener('click',function(e){var btn=e.target.closest('.register-chat-image-select');if(!btn)return;var index=Number(btn.dataset.registerChatIndex),at=registerChatImageSelections.indexOf(index);if(at>=0){registerChatImageSelections.splice(at,1);btn.textContent='Select image';btn.classList.remove('primary')}else{registerChatImageSelections.push(index);btn.textContent='Selected ✓';btn.classList.add('primary')}registerChatMessage(registerChatImageSelections.length+' image'+(registerChatImageSelections.length===1?'':'s')+' selected. They will be attached after registration.')});
+function attachRegisterChatImages(customerId,reference){var picks=registerChatImageSelections.slice();return picks.reduce(function(chain,index){return chain.then(function(){return token().then(function(t){return fetch(EVIDENCE_API+'/admin/chat-images/attach',{method:'POST',headers:{Authorization:'Bearer '+t,'Content-Type':'application/json'},body:JSON.stringify({customer_id:customerId,index:index,reference:reference})})}).then(function(r){return r.json().then(function(d){if(!r.ok)throw new Error(d.error||'Could not attach a selected chat image');return d})})})},Promise.resolve())}
 function searchCustomers(query){
   var requestId=++customerSearchRequest;
   $('customerResults').classList.remove('hidden');
@@ -605,6 +611,7 @@ function searchCustomers(query){
         $('customerResults').classList.add('hidden');
         $('customerSearchMessage').textContent='Customer selected.';
         $('customerSearchMessage').className='message success';
+        loadRegisterChatImages(button.dataset.customerId);
         $('clearCustomer').addEventListener('click',function(){
           clearCustomerSelection();
           $('customerSearch').value='';
@@ -938,7 +945,7 @@ updateTransactionFields();
 
 // REGISTER
 function resetRegisterForm(form){
-  form.reset();$('registerEvidenceName').textContent='';populateAdminNetworks();clearCustomerSelection();
+  form.reset();$('registerEvidenceName').textContent='';populateAdminNetworks();clearCustomerSelection();clearRegisterChatImages();
   $('customerSearch').value='';$('customerSearchMessage').textContent='Type at least 2 characters to find a customer.';$('customerSearchMessage').className='message';
   $('cryptoPriceMessage').textContent=PRICE_HINT;
   updateTransactionFields();refreshPickers();
@@ -955,6 +962,7 @@ function uploadEvidenceFile(file,reference){
 $('registerForm').addEventListener('submit',function(e){
   e.preventDefault();
   var form=this,btn=$('registerBtn'),msg=$('registerMessage'),evidenceFile=$('registerEvidenceFile').files&&$('registerEvidenceFile').files[0];
+  var chatImageCustomer=$('customerId').value,chatImageCount=registerChatImageSelections.length;
   if(!$('customerId').value){msg.className='message error';msg.textContent='Please search for and select a customer first.';$('customerSearch').focus();return}
   if(evidenceFile&&(!/^image\/(jpeg|png|webp|gif)$/.test(evidenceFile.type)||evidenceFile.size>10*1024*1024)){msg.className='message error';msg.textContent='Choose a JPEG, PNG, WEBP or GIF image no larger than 10 MB.';return}
   var f=new FormData(form),data={};
@@ -975,8 +983,8 @@ $('registerForm').addEventListener('submit',function(e){
     var newRef=d.transaction.reference;
     msg.className='message';msg.textContent=evidenceFile?'Transaction registered. Uploading evidence…':'Transaction registered: '+newRef;
     var upload=evidenceFile?uploadEvidenceFile(evidenceFile,newRef):Promise.resolve();
-    return upload.then(function(){
-      msg.className='message success';msg.textContent=evidenceFile?'Transaction '+newRef+' registered with evidence attached.':'Transaction registered: '+newRef;
+    return upload.then(function(){return attachRegisterChatImages(chatImageCustomer,newRef)}).then(function(){
+      msg.className='message success';msg.textContent='Transaction '+newRef+' registered'+(evidenceFile?' with evidence':'')+(chatImageCount?' and '+chatImageCount+' customer chat image'+(chatImageCount===1?'':'s'):'')+'.';
       resetRegisterForm(form);showView('transactions');
       return load().then(function(){if(transactions.some(function(t){return t.reference===newRef})){openDetail(newRef)}else{$('searchInput').value=newRef;paint()}});
     }).catch(function(err){
