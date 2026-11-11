@@ -566,7 +566,7 @@ function mockApi(path,body){
     if(path==='/admin/customers/search'){var q=(body.query||'').toLowerCase();return res({customers:mockCustomers.filter(function(c){return (c.name+c.email).toLowerCase().includes(q)})})}
     if(path==='/admin/transactions/events')return res({events:mockEvents[body.reference]||[]});
     if(path==='/admin/transactions/status'){var t=mockTx.find(function(x){return x.reference===body.reference});if(!t)return rej(new Error('Not found'));t.status=body.status;mockEvents[t.reference].unshift({event_type:'status_changed',new_status:body.status,created_at:new Date().toISOString(),actor_user_id:'admin-preview'});return res({ok:true})}
-    if(path==='/admin/transactions'){var n=Object.assign({reference:'VT-'+(24200+mockTx.length),status:'VT-PRO',created_at:new Date().toISOString()},body);mockTx.unshift(n);mockEvents[n.reference]=[{event_type:'transaction_created',new_status:'VT-PRO',created_at:n.created_at,actor_user_id:'admin-preview'}];return res({transaction:n})}
+    if(path==='/admin/transactions'){var n=Object.assign({reference:'VT-'+(24200+mockTx.length),status:'VT-DONE',created_at:new Date().toISOString()},body);mockTx.unshift(n);mockEvents[n.reference]=[{event_type:'transaction_created',new_status:'VT-DONE',created_at:n.created_at,actor_user_id:'admin-preview'}];return res({transaction:n})}
     rej(new Error('Not available in preview'));
   },250)});
 }
@@ -987,7 +987,7 @@ $('registerForm').addEventListener('submit',function(e){
     return upload.then(function(){return attachRegisterChatImages(chatImageCustomer,newRef)}).then(function(){
       msg.className='message success';msg.textContent='Transaction '+newRef+' registered'+(evidenceFile?' with evidence':'')+(chatImageCount?' and '+chatImageCount+' customer chat image'+(chatImageCount===1?'':'s'):'')+'.';
       resetRegisterForm(form);showView('transactions');
-      return load().then(function(){if(transactions.some(function(t){return t.reference===newRef})){openDetail(newRef)}else{$('searchInput').value=newRef;paint()}});
+      return load().then(function(){$('searchInput').value=newRef;paint()});
     }).catch(function(err){
       msg.className='message error';msg.textContent='Transaction '+newRef+' was registered, but evidence upload failed: '+err.message+'. You can add it from transaction details.';
       showView('transactions');return load().then(function(){$('searchInput').value=newRef;paint()});
