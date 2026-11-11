@@ -1760,6 +1760,18 @@ document.addEventListener('click',function(e){if(!e.target.closest('.avm'))close
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeAcct();$('pop').classList.remove('on')}});
 $('editName').addEventListener('click',closeAcct);
 draw();
+
+// Reliable delegated controls: keep account and trade-history actions responsive
+// even if a dashboard component is re-rendered after authentication.
+document.addEventListener('click',function(e){
+  var avatar=e.target.closest('#avatar');
+  if(avatar){e.preventDefault();e.stopImmediatePropagation();var panel=$('acct'),open=!panel.classList.contains('on');panel.classList.toggle('on',open);avatar.setAttribute('aria-expanded',String(open));if(open)$('pop').classList.remove('on');return}
+  var filter=e.target.closest('#accountFilterOpen');
+  if(filter){e.preventDefault();e.stopImmediatePropagation();paintAccountFilter();return}
+  var tab=e.target.closest('#tabs button[data-f]');
+  if(tab){e.preventDefault();e.stopImmediatePropagation();filt=tab.dataset.f;page=1;[].forEach.call($('tabs').children,function(x){x.setAttribute('aria-selected',String(x===tab))});draw();return}
+},true);
+function paintAccountFilter(){var d=$('accountFilterDialog');if(!d)return;var state=accountFilterState||{period:'all',from:'',to:'',types:[],crypto:[],failed:[],progress:[]};d.querySelectorAll('[data-period]').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.period===state.period))});if(d.showModal&&!d.open)d.showModal();else d.setAttribute('open','')}
 </script>
 <script>
 // Pointer highlight: draws the box and pointer around the hero tagline when it comes into view
@@ -2621,7 +2633,7 @@ draw();
           var auth = results[0], rows = results[1] || [];
           var u = auth && auth.ok ? auth.data : {}, m = u.user_metadata || {};
           var p = rows[0] || {};
-          session.name = String(p.full_name || m.full_name || m.name || m.username || session.name || '').trim();
+          session.name = String(p.full_name || m.full_name || m.name || m.username || (u.email || session.email || '').split('@')[0] || '').trim();
           session.email = p.email || u.email || session.email || '';
           session.phone = p.phone || m.phone || '';
           session.created = (p.created_at && Date.parse(p.created_at)) || (u.created_at && Date.parse(u.created_at)) || session.created || 0;
