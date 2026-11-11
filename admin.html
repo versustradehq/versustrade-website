@@ -566,7 +566,7 @@ function mockApi(path,body){
     if(path==='/admin/customers/search'){var q=(body.query||'').toLowerCase();return res({customers:mockCustomers.filter(function(c){return (c.name+c.email).toLowerCase().includes(q)})})}
     if(path==='/admin/transactions/events')return res({events:mockEvents[body.reference]||[]});
     if(path==='/admin/transactions/status'){var t=mockTx.find(function(x){return x.reference===body.reference});if(!t)return rej(new Error('Not found'));t.status=body.status;mockEvents[t.reference].unshift({event_type:'status_changed',new_status:body.status,created_at:new Date().toISOString(),actor_user_id:'admin-preview'});return res({ok:true})}
-    if(path==='/admin/transactions'){var n=Object.assign({reference:'VT-'+(24200+mockTx.length),status:'VT-PRO',created_at:new Date().toISOString()},body);mockTx.unshift(n);mockEvents[n.reference]=[{event_type:'transaction_created',new_status:'VT-PRO',created_at:n.created_at,actor_user_id:'admin-preview'}];return res({transaction:n})}
+    if(path==='/admin/transactions'){var n=Object.assign({reference:'VT-'+(24200+mockTx.length),status:'VT-DONE',created_at:new Date().toISOString()},body);mockTx.unshift(n);mockEvents[n.reference]=[{event_type:'transaction_created',new_status:'VT-DONE',created_at:n.created_at,actor_user_id:'admin-preview'}];return res({transaction:n})}
     rej(new Error('Not available in preview'));
   },250)});
 }
@@ -737,7 +737,7 @@ function renderArchives(){
   if(!rows.length){$('archiveTable').innerHTML='<div class="empty">No archived transactions.</div>';return}
   var html='<div class="table-wrap"><table><thead><tr><th>Reference</th><th>Customer</th><th class="hide-sm">Type</th><th>Amount</th><th>Status</th><th class="hide-sm">Archived</th><th>Actions</th></tr></thead><tbody>';
   rows.forEach(function(t){
-    var amount=t.transaction_type==='GIFT_CARD_SELL'?money(t.fiat_amount,t.fiat_currency):money(t.crypto_amount,t.asset);
+    var amount=t.transaction_type==='GIFT_CARD_SELL'?money(t.card_value,t.card_currency):money(t.crypto_amount,t.asset);
     html+='<tr><td><span class="ref">'+esc(t.reference)+'</span></td><td>'+custCell(t)+'</td><td class="hide-sm"><span class="type">'+esc(typeLabel(t.transaction_type))+'</span></td><td>'+esc(amount)+'</td><td><span class="status '+statusClass(t.status)+'">'+esc(statusLabel(t.status))+'</span></td><td class="hide-sm">'+esc(fmtDate(t.archived_at))+'</td><td><div class="toolbar"><button class="row-action" data-archive-open="'+esc(t.reference)+'">Open</button><button class="row-action" data-restore="'+esc(t.reference)+'">Restore</button><button class="row-action" data-delete="'+esc(t.reference)+'">Delete</button></div></td></tr>';
   });
   html+='</tbody></table></div>';
@@ -987,10 +987,10 @@ $('registerForm').addEventListener('submit',function(e){
     return upload.then(function(){return attachRegisterChatImages(chatImageCustomer,newRef)}).then(function(){
       msg.className='message success';msg.textContent='Transaction '+newRef+' registered'+(evidenceFile?' with evidence':'')+(chatImageCount?' and '+chatImageCount+' customer chat image'+(chatImageCount===1?'':'s'):'')+'.';
       resetRegisterForm(form);showView('transactions');
-      return load().then(function(){if(transactions.some(function(t){return t.reference===newRef})){openDetail(newRef)}else{$('searchInput').value=newRef;paint()}});
+      return load().then(function(){$('searchInput').value=newRef;paint()});
     }).catch(function(err){
       msg.className='message error';msg.textContent='Transaction '+newRef+' was registered, but evidence upload failed: '+err.message+'. You can add it from transaction details.';
-      showView('transactions');return load().then(function(){if(transactions.some(function(t){return t.reference===newRef}))openDetail(newRef);else{$('searchInput').value=newRef;paint()}});
+      showView('transactions');return load().then(function(){$('searchInput').value=newRef;paint()});
     });
   }).catch(function(err){msg.className='message error';msg.textContent=err.message}).then(function(){btn.disabled=false});
 });
@@ -1047,7 +1047,7 @@ function loadEvidence(ref){
   evidenceApi('/admin/images/list',{reference:ref}).then(function(d){
     var images=d.images||[];if(!images.length){$('savedEvidenceGrid').innerHTML='<div class="sub">No evidence has been added to this transaction yet.</div>';return}
     $('savedEvidenceGrid').innerHTML=images.map(function(x){return '<div class="detail-item" style="padding:8px"><div id="evi-'+esc(x.id)+'" style="height:110px;border-radius:7px;background:var(--panel2);display:grid;place-items:center" class="sub">Loading image…</div><strong style="display:block;margin-top:7px;font-size:11px;overflow-wrap:anywhere">'+esc(x.original_filename)+'</strong><small class="muted">'+esc(x.source)+' · '+esc(fmtDate(x.created_at))+'</small></div>'}).join('');
-    images.forEach(function(x){evidenceView(x.id).then(function(src){var host=$('evi-'+x.id);if(host){var im=document.createElement('img');im.src=src;im.alt='Transaction evidence';im.style.cssText='width:100%;height:110px;object-fit:cover;border-radius:7px';host.replaceChildren(im)}}).catch(function(){var host=$('evi-'+x.id);if(host)host.textContent='Image unavailable'})});
+    images.forEach(function(x){evidenceView(x.id).then(function(src){var host=$('evi-'+x.id);if(host){var im=document.createElement('img');im.src=src;im.alt='Transaction evidence';im.style.cssText='width:100%;height:110px;object-fit:contain;border-radius:7px';host.replaceChildren(im)}}).catch(function(){var host=$('evi-'+x.id);if(host)host.textContent='Image unavailable'})});
   }).catch(function(e){evidenceMessage(e.message,true)});
 }
 $('evidenceFile').addEventListener('change',function(){evidenceFile=this.files&&this.files[0]||null;$('evidenceUploadBtn').disabled=!evidenceFile;evidenceMessage(evidenceFile?evidenceFile.name+' selected.':'No image selected.')});

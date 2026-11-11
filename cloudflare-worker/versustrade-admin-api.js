@@ -238,7 +238,7 @@ export default {
         if (!customerResponse.ok) return respond({ error: "Customer account not found" }, 404);
 
         const transaction = {
-          reference, customer_id, transaction_type, status: "VT-PRO",
+          reference, customer_id, transaction_type, status: "VT-DONE",
           asset: asset || null, network: network || null, crypto_amount: crypto_amount ?? null,
           card_brand: card_brand || null, card_type: card_type || null,
           card_region: card_region || null, card_value: card_value ?? null,
@@ -273,7 +273,7 @@ export default {
             transaction_id: created.id,
             event_type: "CREATED",
             previous_status: null,
-            new_status: "VT-PRO",
+            new_status: "VT-DONE",
             actor_user_id: user.id,
             details: { reference }
           })
