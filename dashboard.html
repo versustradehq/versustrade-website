@@ -3163,7 +3163,7 @@ function paintAccountFilter(){var d=$('accountFilterDialog');if(!d)return;var st
     if(chatUp()||window.__vtChatLoading)return;
     window.__vtChatLoading=true;
     var s=document.createElement('script');
-    s.src='/chat.js?v=20261109-17&retry='+(chatRetryCount+1);
+    s.src='/chat.js?v=20261111-1&retry='+(chatRetryCount+1);
     s.async=true;
     s.onload=function(){
       window.__vtChatLoading=false;window.__vtChatLoaded=1;chatRetrying=false;chatRetryCount=0;
@@ -3401,7 +3401,9 @@ function paintAccountFilter(){var d=$('accountFilterDialog');if(!d)return;var st
     var done=TRADES.filter(function(t){return t.status==='done'});
   
   window.vtChatReady=function(){
-    var p=document.getElementById('vtChat'),host=$('chatHost');if(!p||!host)return;host.appendChild(p);
+    var p=document.getElementById('vtChat'),host=$('chatHost');if(!p||!host)return;
+    if(p.dataset.vtDashboardReady==='1'){if(p.parentNode!==host)host.appendChild(p);return;}
+    p.dataset.vtDashboardReady='1';host.appendChild(p);
     new MutationObserver(function(){var open=p.hasAttribute('data-open');if(open&&cur!=='chat')showView('chat',true);else if(!open&&cur==='chat')showView('home')}).observe(p,{attributes:true,attributeFilter:['data-open']});
     var fb=document.querySelector('#vtFab .fab-badge'),db=$('dkBadge');
     if(fb&&db){var sync=function(){db.hidden=fb.hidden||!fb.textContent;db.textContent=fb.textContent};new MutationObserver(sync).observe(fb,{attributes:true,childList:true,characterData:true,subtree:true});sync()}
@@ -3446,7 +3448,7 @@ function paintAccountFilter(){var d=$('accountFilterDialog');if(!d)return;var st
 })();
 </script>
 <script src="/giftcards.js?v=20261102-8"></script>
-<script id="vt-chat-script" src="/chat.js?v=20261109-17" onload="window.__vtChatLoading=false;window.__vtChatLoaded=1;if(window.VTChat&&window.VTChat.open){window.vtChatReady&&window.vtChatReady()}else{window.__vtChatLoaded=0;window.vtChatFail&&window.vtChatFail()}" onerror="window.__vtChatLoading=false;window.__vtChatLoaded=0;window.vtChatFail&&window.vtChatFail()"></script>
+<script id="vt-chat-script" src="/chat.js?v=20261111-1" onload="window.__vtChatLoading=false;window.__vtChatLoaded=1;if(window.VTChat&&window.VTChat.open){window.vtChatReady&&window.vtChatReady()}else{window.__vtChatLoaded=0;window.vtChatFail&&window.vtChatFail()}" onerror="window.__vtChatLoading=false;window.__vtChatLoaded=0;window.vtChatFail&&window.vtChatFail()"></script>
 
 <script id="vt-gift-gallery-spacing">
 (function(){
