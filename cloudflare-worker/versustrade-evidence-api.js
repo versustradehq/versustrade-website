@@ -30,7 +30,51 @@ async function readImage(request) {
   return { bytes, mime: type, ext: MIME_EXT[type] };
 }
 
+async function cleanupCopiedChatUploads(env) {
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
+    throw new Error("Cleanup configuration is incomplete");
+  }
+  const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+  const headers = {
+    apikey: env.SUPABASE_SERVICE_ROLE_KEY,
+    Authorization: "Bearer " + env.SUPABASE_SERVICE_ROLE_KEY,
+    "Content-Type": "application/json"
+  };
+  const query = "source=eq.customer_chat&created_at=lt." + encodeURIComponent(cutoff) +
+    "&description=not.is.null&select=id,description&limit=500";
+  const rowsRes = await fetch(env.SUPABASE_URL + "/rest/v1/transaction_images?" + query, { headers });
+  if (!rowsRes.ok) throw new Error("Could not retrieve eligible chat evidence records (" + rowsRes.status + ")");
+  const rows = await rowsRes.json();
+  let deleted = 0;
+  let skipped = 0;
+  for (const row of rows) {
+    let marker;
+    try { marker = JSON.parse(row.description || ""); } catch (_) { skipped++; continue; }
+    const key = String(marker && marker.cleanup_source === "chat-uploads" ? marker.source_key || "" : "");
+    if (!/^[0-9a-f-]{36}\\/[A-Za-z0-9._/-]+$/i.test(key) ||
+        key.split("/").some(part => !part || part === "." || part === "..") ||
+        key.includes("\\\\") || key.length > 500) { skipped++; continue; }
+    const objectPath = key.split("/").map(encodeURIComponent).join("/");
+    const deleteRes = await fetch(env.SUPABASE_URL + "/storage/v1/object/chat-uploads/" + objectPath, {
+      method: "DELETE",
+      headers
+    });
+    if (!deleteRes.ok) continue;
+    const clearRes = await fetch(env.SUPABASE_URL + "/rest/v1/transaction_images?id=eq." +
+      encodeURIComponent(row.id), {
+      method: "PATCH",
+      headers: { ...headers, Prefer: "return=minimal" },
+      body: JSON.stringify({ description: null })
+    });
+    if (clearRes.ok) deleted++;
+  }
+  return { eligible: rows.length, deleted, skipped };
+}
+
 export default {
+  async scheduled(controller, env, ctx) {
+    ctx.waitUntil(cleanupCopiedChatUploads(env));
+  },
   async fetch(request, env) {
     const origin = request.headers.get("Origin") || "";
     const cors = isAllowedOrigin(origin) ? {
@@ -103,7 +147,7 @@ export default {
             chatwoot_message_id: meta.message_id || null,
             chatwoot_attachment_id: meta.attachment_id || null,
             uploaded_by: actorId || null,
-            description: meta.description || null
+            description: source === "customer_chat" && meta.source_key ? JSON.stringify({ cleanup_source: "chat-uploads", source_key: meta.source_key }) : (meta.description || null)
           });
           return { id: row.id, filename: row.original_filename, mime_type: row.mime_type, file_size: row.file_size, source: row.source, created_at: row.created_at };
         } catch (e) {
@@ -166,7 +210,7 @@ export default {
         if (transaction.archived_at) return respond({ error: "Restore this transaction before adding evidence" }, 409);
         if (transaction.customer_id !== body.customer_id) return respond({ error: "This image does not belong to the selected transaction customer" }, 403);
         const image = await chatImageAt(body.customer_id, body.image_key);
-        const saved = await saveBytes(transaction, image, "customer_chat", { filename: image.filename }, user.id);
+        const saved = await saveBytes(transaction, image, "customer_chat", { filename: image.filename, source_key: image.key }, user.id);
         return respond({ ok: true, image: saved }, 201);
       }
 
