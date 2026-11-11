@@ -51,9 +51,9 @@ async function cleanupCopiedChatUploads(env) {
     let marker;
     try { marker = JSON.parse(row.description || ""); } catch (_) { skipped++; continue; }
     const key = String(marker && marker.cleanup_source === "chat-uploads" ? marker.source_key || "" : "");
-    if (!/^[0-9a-f-]{36}\\/[A-Za-z0-9._/-]+$/i.test(key) ||
+    if (!/^[0-9a-f-]{36}\/[A-Za-z0-9._/-]+$/i.test(key) ||
         key.split("/").some(part => !part || part === "." || part === "..") ||
-        key.includes("\\\\") || key.length > 500) { skipped++; continue; }
+        key.includes("\\") || key.length > 500) { skipped++; continue; }
     const objectPath = key.split("/").map(encodeURIComponent).join("/");
     const deleteRes = await fetch(env.SUPABASE_URL + "/storage/v1/object/chat-uploads/" + objectPath, {
       method: "DELETE",
