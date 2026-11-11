@@ -1778,6 +1778,12 @@ $('pop').addEventListener('click',function(e){
   if(action)action.then(loadNotifications).catch(function(err){console.error('Notification action failed:',err);alert('Could not update notifications. Please try again.')});
 });
 loadNotifications();
+// The dashboard notification block is defined before VTAuth later in this file.
+// Reload after auth initializes or the customer signs in, and clear stale data on sign-out.
+window.addEventListener('vt-auth',function(e){
+  if(e.detail&&e.detail.loggedIn)loadNotifications();
+  else renderNotifications([]);
+});
 
 $('bell').onclick=function(e){e.stopPropagation();var on=$('pop').classList.toggle('on');this.setAttribute('aria-expanded',on)};
 document.addEventListener('click',function(e){if(!e.target.closest('.bellw')){$('pop').classList.remove('on');$('bell').setAttribute('aria-expanded','false')}});
