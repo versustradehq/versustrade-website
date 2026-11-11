@@ -390,7 +390,7 @@ body.hide .r .amt{text-align:right}
 @media(max-width:640px){.thumbs img{height:30px;max-width:46px}.thumbs img+img{margin-left:-10px}.cn{width:30px;height:30px}.sw-r{gap:8px}}
 .avw{position:relative;flex:none}
 .acct{display:none;position:absolute;left:0;top:52px;width:min(340px,calc(100vw - 32px));background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:24px;box-shadow:0 24px 48px -20px rgba(0,0,0,.45);padding:18px 20px 20px;z-index:40;font-weight:400}
-.acct.on{display:block}
+.acct.on{display:block;visibility:visible;opacity:1;pointer-events:auto;z-index:1000}
 .acct h2{margin:0;font-size:18px;font-weight:900;letter-spacing:-.03em}
 .acct dl div:first-child{border-top:0}
 
@@ -1365,7 +1365,7 @@ body:has(#v-rates.on){overflow:hidden!important;overscroll-behavior:none}
       <div class="pop" id="pop" role="dialog" aria-label="Notifications"></div></div>
   </div>
   <div class="dp-bal">
-    <div class="hm-id"><div class="hm-hi"><svg class="hello" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 638 200" fill="none" stroke="currentColor" stroke-width="14.8883" stroke-linecap="round" role="img" aria-label="hello"><title>hello</title><path pathLength="1" d="M8.69214 166.553C36.2393 151.239 61.3409 131.548 89.8191 98.0295C109.203 75.1488 119.625 49.0228 120.122 31.0026C120.37 17.6036 113.836 7.43883 101.759 7.43883C88.3598 7.43883 79.9231 17.6036 74.7122 40.9363C69.005 66.5793 64.7866 96.0036 54.1166 190.356"/><path pathLength="1" d="M55.1624 181.135C60.6251 133.114 81.4118 98.0479 107.963 98.0479C123.844 98.0479 133.937 110.703 131.071 128.817C129.457 139.487 127.587 150.405 125.408 163.06C122.869 178.941 130.128 191.348 152.122 191.348C184.197 191.348 219.189 173.523 237.097 145.915C243.198 136.509 245.68 128.073 245.928 119.884C246.176 104.996 237.739 93.8296 222.851 93.8296C203.992 93.8296 189.6 115.17 189.6 142.465C189.6 171.745 205.481 192.341 239.208 192.341C285.066 192.341 335.86 137.292 359.199 75.8585C365.788 58.513 368.26 42.4065 368.26 31.1512C368.26 17.8057 364.042 7.55823 352.131 7.55823C340.469 7.55823 332.777 16.6141 325.829 30.9129C317.688 47.4967 311.667 71.4162 309.203 98.4549C303 166.301 316.896 191.348 349.936 191.348C390 191.348 434.542 135.534 457.286 75.6686C463.803 58.513 466.275 42.4065 466.275 31.1512C466.275 17.8057 462.057 7.55823 450.146 7.55823C438.484 7.55823 430.792 16.6141 423.844 30.9129C415.703 47.4967 409.682 71.4162 407.218 98.4549C401.015 166.301 414.911 191.348 444.416 191.348C473.874 191.348 489.877 165.67 499.471 138.402C508.955 111.447 520.618 94.8221 544.935 94.8221C565.035 94.8221 580.916 109.71 580.916 137.75C580.916 168.768 560.792 192.093 535.362 192.341C512.984 192.589 498.285 174.475 499.774 147.179C501.511 116.907 519.873 94.8221 543.943 94.8221C557.839 94.8221 569.51 100.999 578.682 107.725C603.549 125.866 622.709 114.656 630.047 96.7186"/></svg><b class="js-name">Mr Reliable</b></div></div>
+    <div class="hm-id"><div class="hm-hi"><svg class="hello" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 638 200" fill="none" stroke="currentColor" stroke-width="14.8883" stroke-linecap="round" role="img" aria-label="hello"><title>hello</title><path pathLength="1" d="M8.69214 166.553C36.2393 151.239 61.3409 131.548 89.8191 98.0295C109.203 75.1488 119.625 49.0228 120.122 31.0026C120.37 17.6036 113.836 7.43883 101.759 7.43883C88.3598 7.43883 79.9231 17.6036 74.7122 40.9363C69.005 66.5793 64.7866 96.0036 54.1166 190.356"/><path pathLength="1" d="M55.1624 181.135C60.6251 133.114 81.4118 98.0479 107.963 98.0479C123.844 98.0479 133.937 110.703 131.071 128.817C129.457 139.487 127.587 150.405 125.408 163.06C122.869 178.941 130.128 191.348 152.122 191.348C184.197 191.348 219.189 173.523 237.097 145.915C243.198 136.509 245.68 128.073 245.928 119.884C246.176 104.996 237.739 93.8296 222.851 93.8296C203.992 93.8296 189.6 115.17 189.6 142.465C189.6 171.745 205.481 192.341 239.208 192.341C285.066 192.341 335.86 137.292 359.199 75.8585C365.788 58.513 368.26 42.4065 368.26 31.1512C368.26 17.8057 364.042 7.55823 352.131 7.55823C340.469 7.55823 332.777 16.6141 325.829 30.9129C317.688 47.4967 311.667 71.4162 309.203 98.4549C303 166.301 316.896 191.348 349.936 191.348C390 191.348 434.542 135.534 457.286 75.6686C463.803 58.513 466.275 42.4065 466.275 31.1512C466.275 17.8057 462.057 7.55823 450.146 7.55823C438.484 7.55823 430.792 16.6141 423.844 30.9129C415.703 47.4967 409.682 71.4162 407.218 98.4549C401.015 166.301 414.911 191.348 444.416 191.348C473.874 191.348 489.877 165.67 499.471 138.402C508.955 111.447 520.618 94.8221 544.935 94.8221C565.035 94.8221 580.916 109.71 580.916 137.75C580.916 168.768 560.792 192.093 535.362 192.341C512.984 192.589 498.285 174.475 499.774 147.179C501.511 116.907 519.873 94.8221 543.943 94.8221C557.839 94.8221 569.51 100.999 578.682 107.725C603.549 125.866 622.709 114.656 630.047 96.7186"/></svg><b class="js-name">Account</b></div></div>
     <div class="acts">
       <a class="act red" href="#trade" data-go="trade"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></i>Trade</a>
       <a class="act out" href="#rates" data-go="rates:gift"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18M12 8c-2 0-4-1-4-3s3-2 4 3c1-5 4-5 4-3s-2 3-4 3"/></svg></i>Gift cards</a>
@@ -1657,7 +1657,7 @@ function updateStats(){
   $('sDone').textContent=String(done.length);$('sWait').textContent=String(wait.length);$('sFail').textContent=String(fail.length);var waitIcon=document.querySelector('.oc i.wt');if(waitIcon)waitIcon.classList.toggle('active',wait.length>0);
 }
 function mapTransaction(t){
-  var gift=t.transaction_type==='GIFT_CARD_SELL',side=t.transaction_type==='CRYPTO_BUY'?'buy':'sell';
+  var gift=t.type==='GIFT_CARD_SELL',side=t.type==='CRYPTO_BUY'?'buy':'sell';
   var asset=gift?(t.card_brand||'Gift card'):(t.asset||'Crypto');
   var qty=gift?([t.card_type,t.card_region].filter(Boolean).join(' · ')):((t.crypto_amount==null?'':t.crypto_amount)+' '+(t.asset||'')).trim();
   var amount=null;
@@ -1666,7 +1666,7 @@ function mapTransaction(t){
   else if(t.payout_amount!=null)amount=t.payout_amount;
   else amount=t.fiat_amount;
   var status=t.status==='VT-DONE'?'done':t.status==='VT-DEC'?'fail':'wait';
-  return {id:t.reference,side:side,asset:asset,name:gift?'Gift card':asset,transactionType:gift?'gift_sell':(t.transaction_type==='CRYPTO_BUY'?'crypto_buy':'crypto_sell'),ngn:Number(amount)||0,qty:qty||'—',date:t.created_at||'',status:status,raw:t};
+  return {id:t.reference,side:side,asset:asset,name:gift?'Gift card':asset,transactionType:gift?'gift_sell':(t.type==='CRYPTO_BUY'?'crypto_buy':'crypto_sell'),ngn:Number(amount)||0,qty:qty||'—',date:t.created_at||'',status:status,raw:t};
 }
 var tradesLoading=false;
 function loadCustomerTrades(){
@@ -1674,7 +1674,7 @@ function loadCustomerTrades(){
   if(tradesLoading||!currentUser||!currentUser.id)return;
   tradesLoading=true;
   var customerFilter=encodeURIComponent('eq.'+currentUser.id);
-  VTAuth.rest('GET','/transactions?select=id,reference,transaction_type,status,asset,network,crypto_amount,card_brand,card_type,card_region,card_value,card_currency,fiat_currency,fiat_amount,exchange_rate,payout_amount,payout_currency,customer_note,created_at,updated_at&customer_id='+customerFilter+'&archived_at=is.null&order=created_at.desc&limit=200').then(function(rows){
+  VTAuth.rest('GET','/transactions?select=id,reference,type,status,asset,network,crypto_amount,card_brand,card_type,card_region,card_value,card_currency,fiat_currency,fiat_amount,exchange_rate,payout_amount,payout_currency,customer_note,created_at,updated_at&customer_id='+customerFilter+'&archived_at=is.null&order=created_at.desc&limit=200').then(function(rows){
     TRADES=(Array.isArray(rows)?rows:[]).map(mapTransaction);
     page=1;draw();updateStats();
   }).catch(function(err){
@@ -1694,9 +1694,9 @@ function openCustomerEvidence(reference){
   $('transactionEvidenceTitle').textContent='Transaction details';
   $('transactionEvidenceRef').textContent=reference;
   var statusLabel=t.status==='VT-DONE'?'Completed':t.status==='VT-DEC'?'Declined':'Processing';
-  var gift=t.transaction_type==='GIFT_CARD_SELL';
+  var gift=t.type==='GIFT_CARD_SELL';
   var fields=[
-    ['Transaction type',gift?'Gift card sale':(t.transaction_type==='CRYPTO_BUY'?'Crypto buy':'Crypto sell')],
+    ['Transaction type',gift?'Gift card sale':(t.type==='CRYPTO_BUY'?'Crypto buy':'Crypto sell')],
     ['Status',statusLabel],
     ['Date',t.created_at?dt(t.created_at):'—'],
     ['Asset / card',gift?(t.card_brand||'Gift card'):(t.asset||'—')],
@@ -1729,7 +1729,7 @@ function openCustomerEvidence(reference){
 $('transactionEvidenceClose').addEventListener('click',function(){ $('transactionEvidenceDialog').close ? $('transactionEvidenceDialog').close() : $('transactionEvidenceDialog').removeAttribute('open')});
 $('transactionEvidenceDialog').addEventListener('click',function(e){if(e.target===this)this.close()});
 $('prev').onclick=function(){page--;draw()};$('next').onclick=function(){page++;draw()};
-try{var sn=localStorage.getItem('vt-username');if(sn)USER.name=sn}catch(e){}
+
 function setName(n){n=String(n==null?'':n).replace(/\s+/g,' ').trim().slice(0,16).trim();if(!n)return;document.documentElement.style.setProperty('--nl',n.length);USER.name=n;if($('uname'))$('uname').textContent=n;$('avatar').textContent=n.split(/\s+/).filter(Boolean).map(function(w){return w.charAt(0)}).join('').slice(0,2).toUpperCase();$('aName').textContent=n;if($('avName'))$('avName').textContent=n;[].forEach.call(document.querySelectorAll('.js-name'),function(e){e.textContent=n});[].forEach.call(document.querySelectorAll('.js-ini'),function(e){e.textContent=$('avatar').textContent})}
 function syncAccountProfile(e){var d=e&&e.detail||{};if(d.name)setName(d.name);if(d.email){USER.email=d.email;$('aMail').textContent=d.email}if(d.phone!==undefined){USER.phone=d.phone||'';$('aPhone').textContent=USER.phone||'—'}if(d.created){USER.since=dt(d.created);$('aSince').textContent=USER.since}}
 window.addEventListener('vt-profile',syncAccountProfile);
@@ -1741,7 +1741,7 @@ $('nameX').onclick=closeDlg;
 dlg.addEventListener('click',function(e){if(e.target===dlg)closeDlg()});
 $('nameForm').addEventListener('submit',function(e){e.preventDefault();var v=$('nameIn').value.replace(/\s+/g,' ').trim();
   if(v.length<2){$('nameErr').textContent='Enter at least 2 characters.';return}
-  var done=function(){setName(v);try{localStorage.setItem('vt-username',v)}catch(x){}closeDlg()};
+  var done=function(){setName(v);closeDlg()};
   if(window.VTAuth&&VTAuth.user&&VTAuth.user()&&VTAuth.setName){VTAuth.setName(v).then(done,function(err){$('nameErr').textContent=(err&&err.message)||'Could not save your name.'})}else done()});$('aMail').textContent=USER.email;$('aPhone').textContent=USER.phone;$('aSince').textContent=USER.since;
 $('pop').innerHTML='<p><b>No new notifications</b><small>Your trade updates will appear here.</small></p>';
 $('badge').style.display='none';
