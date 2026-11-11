@@ -318,6 +318,17 @@ dt{color:var(--muted)}dd{margin:0;font-weight:600;text-align:right;overflow-wrap
 .bellw{position:relative}
 .pop{display:none;position:absolute;right:0;top:50px;width:min(330px,calc(100vw - 32px));background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:20px;box-shadow:0 24px 48px -20px rgba(0,0,0,.4);padding:8px;z-index:40}
 .pop.on{display:block}.pop p{margin:0;padding:12px;border-radius:14px}.pop p:hover{background:var(--soft)}.pop small{display:block;color:var(--muted)}
+.notif-head{display:flex;align-items:center;justify-content:space-between;padding:4px 5px 8px;font-size:13px}
+.notif-head button,.notif-actions button{border:0;background:none;color:var(--red);font:inherit;font-size:11px;font-weight:600;padding:4px 3px;cursor:pointer}
+.notif-item{display:flex;flex-direction:column;gap:5px;padding:9px 7px;border-top:1px solid var(--line);border-radius:0;font-size:12px;line-height:1.35;overflow-wrap:anywhere}
+.notif-item.unread{background:var(--soft);border-radius:9px}
+.notif-trade{font-size:12px;font-weight:650;line-height:1.35;color:var(--text)}
+.notif-amount{font-size:14px;font-weight:750;letter-spacing:-.02em;color:var(--text);line-height:1.2}
+.notif-foot{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.notif-event{font-size:10px!important;line-height:1.3;color:var(--muted);margin:0}
+.notif-actions{display:flex;gap:10px;flex-shrink:0}
+.notif-actions button{font-size:10px;padding:2px 0}
+.pop{max-height:min(430px,70vh);overflow-y:auto}
 .dp-bal{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-top:30px}
 .dp-bal small{display:block;opacity:.78;font-size:14px}
 .dp-bal b{display:flex;align-items:center;gap:10px;font-size:clamp(28px,6vw,46px);font-weight:800;letter-spacing:-.02em;line-height:1.15;font-variant-numeric:tabular-nums;margin:2px 0}
@@ -1759,12 +1770,16 @@ function renderNotifications(rows){
   $('badge').style.display=unread?'':'none';
   if(!rows.length){$('pop').innerHTML='<p><b>No notifications</b><small>Your trade updates will appear here.</small></p>';return}
   $('pop').innerHTML='<div class="notif-head"><b>Notifications</b><button type="button" id="clearAllNotifications">Clear all</button></div>'+rows.map(function(n){
-    return '<article class="notif-item'+(n.is_read?'':' unread')+'"><div><b>'+escapeNotificationText(n.title)+'</b><small>'+escapeNotificationText(n.message)+'</small><small>'+escapeNotificationText(n.reference)+' · '+new Date(n.created_at).toLocaleString()+'</small></div><div class="notif-actions">'+(n.is_read?'':'<button type="button" data-notif-read="'+escapeNotificationText(n.id)+'">Mark read</button>')+'<button type="button" data-notif-delete="'+escapeNotificationText(n.id)+'">Clear</button></div></article>';
+    var gift=n.trade_category==='Gift Card',asset=gift?(n.asset_name||'Gift Card'):(n.asset_name||'Crypto');
+    var category=gift?'Gift Card':'Crypto',action=n.trade_action||(gift?'Sell':'Trade');
+    var amount=n.amount_value!==null&&n.amount_value!==undefined&&n.amount_value!==''?Number(n.amount_value).toLocaleString(undefined,{maximumFractionDigits:8})+(n.amount_currency?' '+n.amount_currency:''):'';
+    var event=n.event_type==='TRADE_CREATED'?'Trade received':n.status==='VT-DONE'?'Trade completed':n.status==='VT-DEC'?'Trade declined':'Trade processing';
+    return '<article class="notif-item'+(n.is_read?'':' unread')+'"><div class="notif-trade">'+escapeNotificationText(asset)+' · '+category+' · '+escapeNotificationText(action)+'</div><div class="notif-amount">'+escapeNotificationText(amount)+'</div><div class="notif-foot"><small class="notif-event">'+event+'</small><div class="notif-actions">'+(n.is_read?'':'<button type="button" data-notif-read="'+escapeNotificationText(n.id)+'">Mark read</button>')+'<button type="button" data-notif-delete="'+escapeNotificationText(n.id)+'">Clear</button></div></div></article>';
   }).join('');
 }
 function loadNotifications(){
   if(!window.VTAuth||!VTAuth.rest||!VTAuth.user||!VTAuth.user())return;
-  VTAuth.rest('GET','/customer_notifications?select=id,reference,event_type,title,message,status,is_read,created_at&order=created_at.desc&limit=50').then(function(rows){renderNotifications(Array.isArray(rows)?rows:[])}).catch(function(err){console.error('Notification load failed:',err)});
+  VTAuth.rest('GET','/customer_notifications?select=id,reference,event_type,title,message,status,is_read,created_at,asset_name,trade_category,trade_action,amount_value,amount_currency&order=created_at.desc&limit=50').then(function(rows){renderNotifications(Array.isArray(rows)?rows:[])}).catch(function(err){console.error('Notification load failed:',err)});
 }
 $('pop').innerHTML='<p><b>Loading notifications…</b></p>';
 $('badge').style.display='none';
