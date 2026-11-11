@@ -1660,7 +1660,7 @@ function updateStats(){
   $('sDone').textContent=String(done.length);$('sWait').textContent=String(wait.length);$('sFail').textContent=String(fail.length);var waitIcon=document.querySelector('.oc i.wt');if(waitIcon)waitIcon.classList.toggle('active',wait.length>0);
 }
 function mapTransaction(t){
-  var gift=t.type==='GIFT_CARD_SELL',side=t.type==='CRYPTO_BUY'?'buy':'sell';
+  var gift=t.transaction_type==='GIFT_CARD_SELL',side=t.transaction_type==='CRYPTO_BUY'?'buy':'sell';
   var asset=gift?(t.card_brand||'Gift card'):(t.asset||'Crypto');
   var qty=gift?([t.card_type,t.card_region].filter(Boolean).join(' · ')):((t.crypto_amount==null?'':t.crypto_amount)+' '+(t.asset||'')).trim();
   var amount=null;
@@ -1669,7 +1669,7 @@ function mapTransaction(t){
   else if(t.payout_amount!=null)amount=t.payout_amount;
   else amount=t.fiat_amount;
   var status=t.status==='VT-DONE'?'done':t.status==='VT-DEC'?'fail':'wait';
-  return {id:t.reference,side:side,asset:asset,name:gift?'Gift card':asset,transactionType:gift?'gift_sell':(t.type==='CRYPTO_BUY'?'crypto_buy':'crypto_sell'),ngn:Number(amount)||0,qty:qty||'—',date:t.created_at||'',status:status,raw:t};
+  return {id:t.reference,side:side,asset:asset,name:gift?'Gift card':asset,transactionType:gift?'gift_sell':(t.transaction_type==='CRYPTO_BUY'?'crypto_buy':'crypto_sell'),ngn:Number(amount)||0,qty:qty||'—',date:t.created_at||'',status:status,raw:t};
 }
 var tradesLoading=false;
 function loadCustomerTrades(){
@@ -1677,7 +1677,7 @@ function loadCustomerTrades(){
   if(tradesLoading||!currentUser||!currentUser.id)return;
   tradesLoading=true;
   var customerFilter=encodeURIComponent('eq.'+currentUser.id);
-  VTAuth.rest('GET','/transactions?select=id,reference,type,status,asset,network,crypto_amount,card_brand,card_type,card_region,card_value,card_currency,fiat_currency,fiat_amount,exchange_rate,payout_amount,payout_currency,customer_note,created_at,updated_at&customer_id='+customerFilter+'&archived_at=is.null&order=created_at.desc&limit=200').then(function(rows){
+  VTAuth.rest('GET','/transactions?select=id,reference,transaction_type,status,asset,network,crypto_amount,card_brand,card_type,card_region,card_value,card_currency,fiat_currency,fiat_amount,exchange_rate,payout_amount,payout_currency,customer_note,created_at,updated_at&customer_id='+customerFilter+'&archived_at=is.null&order=created_at.desc&limit=200').then(function(rows){
     TRADES=(Array.isArray(rows)?rows:[]).map(mapTransaction);
     page=1;draw();updateStats();
   }).catch(function(err){
