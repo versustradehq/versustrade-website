@@ -515,7 +515,7 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * {
 <div id="detailOverlay" class="hidden">
   <div class="panel" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
     <div class="panel-head"><h2 id="detailTitle">Transaction details</h2><button class="icon-btn" id="detailClose" aria-label="Close">✕</button></div>
-    <div class="panel-body"><div id="detailBody"></div><section id="evidencePanel" style="margin-top:22px;padding-top:18px;border-top:1px solid var(--line)"><div><h3 style="font-size:14px;margin:0">Transaction evidence</h3><p class="sub" style="margin:4px 0 0">Download the image from Chatwoot, then upload it here to store it permanently.</p></div><div class="toolbar" style="margin-top:13px"><label class="ghost" id="evidenceFileLabel">Choose image<input type="file" id="evidenceFile" accept="image/jpeg,image/png,image/webp,image/gif" hidden></label><button type="button" class="primary" id="evidenceUploadBtn" disabled>Upload image</button></div><div id="evidenceMessage" class="message" role="status"></div><div id="savedEvidenceGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-top:14px"></div></section><div class="toolbar" style="margin-top:18px"><label class="muted" for="detailStatus">Update status</label><select id="detailStatus" class="select" style="max-width:190px"><option value="VT-PRO">Processing</option><option value="VT-DONE">Completed</option><option value="VT-DEC">Declined</option></select><button id="detailUpdate" class="primary">Save status</button><button id="detailArchive" class="ghost">Archive transaction</button></div><div id="detailMessage" class="message" role="status"></div><div style="margin-top:22px"><h3 style="font-size:14px">Audit history</h3><div id="detailEvents" class="events"></div></div></div>
+    <div class="panel-body"><div id="detailBody"></div><section id="evidencePanel" style="margin-top:22px;padding-top:18px;border-top:1px solid var(--line)"><div><h3 style="font-size:14px;margin:0">Transaction evidence</h3><p class="sub" style="margin:4px 0 0">Download the image from Chatwoot, then upload it here to store it permanently.</p></div><div class="toolbar" style="margin-top:13px"><label class="ghost" id="evidenceFileLabel">Choose image<input type="file" id="evidenceFile" accept="image/jpeg,image/png,image/webp,image/gif" hidden></label><button type="button" class="primary" id="evidenceUploadBtn" disabled>Upload image</button></div><div id="evidenceMessage" class="message" role="status"></div><div id="savedEvidenceGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-top:14px"></div><div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--line)"><h3 style="font-size:14px;margin:0">Images from customer chat</h3><p class="sub" style="margin:4px 0 0">Images uploaded by this customer through the VersusTrade website chat. Select one to attach it to this transaction.</p><div id="chatImageMessage" class="message" role="status"></div><div id="chatImageGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-top:12px"></div></div></section><div class="toolbar" style="margin-top:18px"><label class="muted" for="detailStatus">Update status</label><select id="detailStatus" class="select" style="max-width:190px"><option value="VT-PRO">Processing</option><option value="VT-DONE">Completed</option><option value="VT-DEC">Declined</option></select><button id="detailUpdate" class="primary">Save status</button><button id="detailArchive" class="ghost">Archive transaction</button></div><div id="detailMessage" class="message" role="status"></div><div style="margin-top:22px"><h3 style="font-size:14px">Audit history</h3><div id="detailEvents" class="events"></div></div></div>
   </div>
 </div>
 <div id="statusConfirm" class="hidden" role="presentation"><section class="confirm-card" role="dialog" aria-modal="true" aria-labelledby="statusConfirmTitle" aria-describedby="statusConfirmCopy"><div class="confirm-top"><div class="confirm-brand">VersusTrade · Admin</div><button type="button" class="confirm-close" id="statusConfirmClose" aria-label="Close">×</button></div><div class="confirm-content"><div class="confirm-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2.8 20h18.4L12 3Z"/><path d="M12 9v5m0 3h.01"/></svg></div><h2 class="confirm-title" id="statusConfirmTitle">Confirm status change</h2><div class="confirm-ref" id="statusConfirmRef"></div><p class="confirm-copy" id="statusConfirmCopy">This change will be recorded in the audit log.</p></div><div class="confirm-actions"><button type="button" class="confirm-cancel" id="statusConfirmCancel">Cancel</button><button type="button" class="confirm-accept" id="statusConfirmAccept">Confirm update</button></div></section></div>
@@ -999,11 +999,40 @@ function openDetail(ref){
   $('detailOverlay').classList.remove('hidden');$('detailClose').focus();
   resetEvidencePanel();
   loadEvidence(ref);
+  loadChatImages(selected.customer_id);
   loadEvents(ref,'detailEvents');
 }
 var evidenceFile=null;
 function evidenceMessage(text,error){$('evidenceMessage').className='message'+(error?' error':'');$('evidenceMessage').textContent=text||''}
 function resetEvidencePanel(){evidenceFile=null;$('evidenceFile').value='';$('savedEvidenceGrid').innerHTML='';$('evidenceMessage').textContent='';$('evidenceUploadBtn').disabled=true}
+function chatImageMessage(text,error){var n=$('chatImageMessage');if(!n)return;n.className='message'+(error?' error':'');n.textContent=text||''}
+function loadChatImages(customerId){
+  var grid=$('chatImageGrid');if(!grid)return;
+  grid.innerHTML='';chatImageMessage('Checking the customer\u2019s website chat images…');
+  token().then(function(t){return fetch(EVIDENCE_API+'/admin/chat-images/list',{method:'POST',headers:{Authorization:'Bearer '+t,'Content-Type':'application/json'},body:JSON.stringify({customer_id:customerId})})})
+  .then(function(r){return r.json().then(function(d){if(!r.ok)throw new Error(d.error||'Could not load customer chat images');return d})})
+  .then(function(d){
+    var images=d.images||[];
+    if(!images.length){chatImageMessage('No images found in this customer\u2019s saved website chat history.');return}
+    chatImageMessage(images.length+' image'+(images.length===1?'':'s')+' found. Select an image to attach it.');
+    grid.innerHTML=images.map(function(x){return '<div class="detail-item" style="padding:8px"><div id="chat-img-'+x.index+'" style="height:110px;border-radius:7px;background:var(--panel2);display:grid;place-items:center" class="sub">Loading image…</div><strong style="display:block;margin-top:7px;font-size:11px;overflow-wrap:anywhere">'+esc(x.filename)+'</strong><small class="muted">'+esc(x.created_at?fmtDate(x.created_at):'Website chat')+'</small><button type="button" class="ghost chat-image-attach" data-chat-image-index="'+x.index+'" style="width:100%;margin-top:8px">Attach to transaction</button></div>'}).join('');
+    images.forEach(function(x){
+      token().then(function(t){return fetch(EVIDENCE_API+'/admin/chat-images/view',{method:'POST',headers:{Authorization:'Bearer '+t,'Content-Type':'application/json'},body:JSON.stringify({customer_id:customerId,index:x.index})})})
+      .then(function(r){if(!r.ok)throw new Error();return r.blob()})
+      .then(function(blob){var host=$('chat-img-'+x.index);if(host){var im=document.createElement('img');im.src=URL.createObjectURL(blob);im.alt='Customer chat image';im.style.cssText='width:100%;height:110px;object-fit:cover;border-radius:7px';host.replaceChildren(im)}})
+      .catch(function(){var host=$('chat-img-'+x.index);if(host)host.textContent='Image unavailable'});
+    });
+  }).catch(function(e){chatImageMessage(e.message,true)});
+}
+$('chatImageGrid').addEventListener('click',function(e){
+  var btn=e.target.closest('.chat-image-attach');if(!btn||!selected)return;
+  var index=Number(btn.dataset.chatImageIndex),customerId=selected.customer_id,reference=selected.reference;
+  btn.disabled=true;btn.textContent='Attaching…';chatImageMessage('Copying image into private transaction storage…');
+  token().then(function(t){return fetch(EVIDENCE_API+'/admin/chat-images/attach',{method:'POST',headers:{Authorization:'Bearer '+t,'Content-Type':'application/json'},body:JSON.stringify({customer_id:customerId,index:index,reference:reference})})})
+  .then(function(r){return r.json().then(function(d){if(!r.ok)throw new Error(d.error||'Could not attach chat image');return d})})
+  .then(function(){btn.textContent='Attached';btn.classList.add('success');chatImageMessage('Image securely attached to '+reference+'.');loadEvidence(reference)})
+  .catch(function(e){btn.disabled=false;btn.textContent='Attach to transaction';chatImageMessage(e.message,true)});
+});
 function loadEvidence(ref){
   evidenceMessage('Loading saved evidence…');$('savedEvidenceGrid').innerHTML='';
   evidenceApi('/admin/images/list',{reference:ref}).then(function(d){
