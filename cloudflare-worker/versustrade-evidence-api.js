@@ -121,7 +121,10 @@ export default {
           headers: { apikey: env.SUPABASE_SERVICE_ROLE_KEY, Authorization: "Bearer " + env.SUPABASE_SERVICE_ROLE_KEY }
         });
         if (!response.ok) throw new Error("The stored chat image is no longer available (" + response.status + ")");
-        const type = (response.headers.get("Content-Type") || "").split(";")[0].toLowerCase();
+        const headerType = (response.headers.get("Content-Type") || "").split(";")[0].toLowerCase();
+        const ext = key.split("/").pop().toLowerCase().split(".").pop();
+        const extensionType = ({ jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp", gif: "image/gif" })[ext] || "";
+        const type = MIME_EXT[headerType] ? headerType : extensionType;
         if (!MIME_EXT[type]) throw new Error("The chat attachment is not a supported image");
         const bytes = new Uint8Array(await response.arrayBuffer());
         if (!bytes.length || bytes.length > MAX_BYTES || !isImage(bytes, type)) throw new Error("The chat attachment is invalid or exceeds the 10 MB limit");
@@ -140,8 +143,13 @@ export default {
         });
         if (!storageRes.ok) throw new Error("Could not list customer chat uploads (" + storageRes.status + ")");
         const objects = await storageRes.json();
-        const images = (Array.isArray(objects) ? objects : []).filter(x => x && x.name && !x.name.startsWith(".") && MIME_EXT[String(x.metadata && (x.metadata.mimetype || x.metadata.contentType) || "").toLowerCase()])
-          .map(x => ({ key: customerId + "/" + x.name, filename: safeName(x.name), created_at: x.created_at || x.updated_at || null, file_size: Number(x.metadata && x.metadata.size || 0) }))
+        const images = (Array.isArray(objects) ? objects : []).filter(x => {
+          if (!x || !x.name || x.name.startsWith(".")) return false;
+          const metadata = x.metadata || {};
+          const mime = String(metadata.mimetype || metadata.contentType || metadata.content_type || "").split(";")[0].toLowerCase();
+          const ext = x.name.toLowerCase().split(".").pop();
+          return !!MIME_EXT[mime] || ["jpg", "jpeg", "png", "webp", "gif"].includes(ext);
+        }).map(x => ({ key: customerId + "/" + x.name, filename: safeName(x.name), created_at: x.created_at || x.updated_at || null, file_size: Number(x.metadata && x.metadata.size || 0) }))
           .sort((a,b) => String(b.created_at || "").localeCompare(String(a.created_at || "")));
         return respond({ ok: true, images });
       }
