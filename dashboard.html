@@ -1704,15 +1704,21 @@ function openCustomerEvidence(reference){
     ['Date',t.created_at?dt(t.created_at):'—'],
     ['Asset / card',gift?(t.card_brand||'Gift card'):(t.asset||'—')],
     ['Network',t.network||'—'],
-    ['Crypto amount',t.crypto_amount!=null?String(t.crypto_amount)+' '+(t.asset||''):'—'],
-    ['Card type',t.card_type||'—'],
-    ['Card region',t.card_region||'—'],
-    ['Card value',t.card_value!=null?String(t.card_value)+' '+(t.card_currency||''):'—'],
+    ['Crypto amount',t.crypto_amount!=null?String(t.crypto_amount)+' '+(t.asset||''):'—']
+  ];
+  if(gift){
+    fields.push(
+      ['Card type',t.card_type||'—'],
+      ['Card region',t.card_region||'—'],
+      ['Card value',t.card_value!=null?String(t.card_value)+' '+(t.card_currency||''):'—']
+    );
+  }
+  fields.push(
     ['Amount (USD)',t.fiat_amount!=null?String(t.fiat_amount)+' '+(t.fiat_currency||'USD'):'—'],
     ['Exchange rate',t.exchange_rate!=null?'₦'+Number(t.exchange_rate).toLocaleString('en-NG')+' per $1':'—'],
     ['Payout',t.payout_amount!=null?Number(t.payout_amount).toLocaleString('en-NG')+' '+(t.payout_currency||''):'—'],
     ['Customer note',t.customer_note||'—']
-  ];
+  );
   var host=$('transactionEvidenceContent');
   host.style.display='block';
   host.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px">'+fields.map(function(f){return '<div class="detail-item" style="padding:12px"><small class="muted">'+esc(f[0])+'</small><strong style="display:block;margin-top:5px;overflow-wrap:anywhere">'+esc(f[1])+'</strong></div>'}).join('')+'</div><h3 style="margin:20px 0 8px">Attached evidence</h3><div id="customerEvidenceGallery" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:12px"><div class="sub">Loading evidence…</div></div>';
