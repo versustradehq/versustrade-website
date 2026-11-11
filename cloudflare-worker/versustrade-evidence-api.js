@@ -112,39 +112,43 @@ export default {
         }
       };
 
-      const chatImageAt = async (customerId, index) => {
+      const chatImageAt = async (customerId, imageKey) => {
         if (!/^[0-9a-f-]{36}$/i.test(String(customerId || ""))) throw new Error("Invalid customer");
-        const rows = await dbGet("chat_state", "user_id=eq." + encodeURIComponent(customerId) + "&select=state&limit=1");
-        const msgs = rows[0] && rows[0].state && Array.isArray(rows[0].state.msgs) ? rows[0].state.msgs : [];
-        const images = msgs.map((m, i) => ({ m, i })).filter(x => x.m && x.m.role === "user" && x.m.kind === "image" && typeof x.m.url === "string" && x.m.url);
-        const item = images.find(x => x.i === Number(index));
-        if (!item) throw new Error("Customer image not found. It may have expired or the chat history may no longer contain it.");
-        const source = new URL(item.m.url);
-        const expected = new URL(env.SUPABASE_URL);
-        const prefix = "/storage/v1/object/sign/chat-uploads/" + customerId + "/";
-        if (source.origin !== expected.origin || !source.pathname.startsWith(prefix)) throw new Error("Customer image URL failed security validation");
-        const response = await fetch(source.toString());
+        const key = String(imageKey || "");
+        if (!key || key.length > 500 || key.startsWith("/") || key.includes("\\") || key.split("/").some(part => !part || part === "." || part === "..") || !key.startsWith(customerId + "/")) throw new Error("Invalid customer image");
+        const objectPath = key.split("/").map(encodeURIComponent).join("/");
+        const response = await fetch(env.SUPABASE_URL + "/storage/v1/object/chat-uploads/" + objectPath, {
+          headers: { apikey: env.SUPABASE_SERVICE_ROLE_KEY, Authorization: "Bearer " + env.SUPABASE_SERVICE_ROLE_KEY }
+        });
         if (!response.ok) throw new Error("The stored chat image is no longer available (" + response.status + ")");
         const type = (response.headers.get("Content-Type") || "").split(";")[0].toLowerCase();
         if (!MIME_EXT[type]) throw new Error("The chat attachment is not a supported image");
         const bytes = new Uint8Array(await response.arrayBuffer());
         if (!bytes.length || bytes.length > MAX_BYTES || !isImage(bytes, type)) throw new Error("The chat attachment is invalid or exceeds the 10 MB limit");
-        return { bytes, mime: type, ext: MIME_EXT[type], filename: safeName(item.m.name || "chat-image-" + item.i + "." + MIME_EXT[type]), index: item.i, created_at: item.m.at || null };
+        const filename = safeName(key.split("/").pop() || "chat-image." + MIME_EXT[type]);
+        return { bytes, mime: type, ext: MIME_EXT[type], filename, key };
       };
 
       if (path === "/admin/chat-images/list") {
         if (!isAdmin) return respond({ error: "Admin access denied" }, 403);
-        if (!/^[0-9a-f-]{36}$/i.test(String(body.customer_id || ""))) return respond({ error: "A valid customer is required" }, 400);
-        const rows = await dbGet("chat_state", "user_id=eq." + encodeURIComponent(body.customer_id) + "&select=state&limit=1");
-        const msgs = rows[0] && rows[0].state && Array.isArray(rows[0].state.msgs) ? rows[0].state.msgs : [];
-        const images = msgs.map((m, i) => ({ m, i })).filter(x => x.m && x.m.role === "user" && x.m.kind === "image" && typeof x.m.url === "string" && x.m.url)
-          .map(x => ({ index: x.i, filename: safeName(x.m.name || "Customer image"), created_at: x.m.at || null }));
+        const customerId = String(body.customer_id || "");
+        if (!/^[0-9a-f-]{36}$/i.test(customerId)) return respond({ error: "A valid customer is required" }, 400);
+        const storageRes = await fetch(env.SUPABASE_URL + "/storage/v1/object/list/chat-uploads", {
+          method: "POST",
+          headers: { apikey: env.SUPABASE_SERVICE_ROLE_KEY, Authorization: "Bearer " + env.SUPABASE_SERVICE_ROLE_KEY, "Content-Type": "application/json" },
+          body: JSON.stringify({ prefix: customerId + "/", limit: 100, offset: 0, sortBy: { column: "created_at", order: "desc" } })
+        });
+        if (!storageRes.ok) throw new Error("Could not list customer chat uploads (" + storageRes.status + ")");
+        const objects = await storageRes.json();
+        const images = (Array.isArray(objects) ? objects : []).filter(x => x && x.name && !x.name.startsWith(".") && MIME_EXT[String(x.metadata && (x.metadata.mimetype || x.metadata.contentType) || "").toLowerCase()])
+          .map(x => ({ key: customerId + "/" + x.name, filename: safeName(x.name), created_at: x.created_at || x.updated_at || null, file_size: Number(x.metadata && x.metadata.size || 0) }))
+          .sort((a,b) => String(b.created_at || "").localeCompare(String(a.created_at || "")));
         return respond({ ok: true, images });
       }
 
       if (path === "/admin/chat-images/view") {
         if (!isAdmin) return respond({ error: "Admin access denied" }, 403);
-        const image = await chatImageAt(body.customer_id, body.index);
+        const image = await chatImageAt(body.customer_id, body.image_key);
         return new Response(image.bytes, { headers: { ...cors, "Content-Type": image.mime, "Cache-Control": "private, no-store", "Content-Disposition": "inline; filename=\"" + image.filename + "\"" } });
       }
 
@@ -153,7 +157,7 @@ export default {
         const transaction = await transactionForAdmin(body.reference);
         if (transaction.archived_at) return respond({ error: "Restore this transaction before adding evidence" }, 409);
         if (transaction.customer_id !== body.customer_id) return respond({ error: "This image does not belong to the selected transaction customer" }, 403);
-        const image = await chatImageAt(body.customer_id, body.index);
+        const image = await chatImageAt(body.customer_id, body.image_key);
         const saved = await saveBytes(transaction, image, "customer_chat", { filename: image.filename }, user.id);
         return respond({ ok: true, image: saved }, 201);
       }
