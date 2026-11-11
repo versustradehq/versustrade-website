@@ -3263,23 +3263,33 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       }).catch(function () { window.location.replace('/dashboard/'); });
     }
   }
+  var navAuthCheck = 0;
   function announce(initial) {
-    var li = !!session;
-    if (window.VTNav) window.VTNav.setLabel(li ? 'Dashboard' : 'Log in');
+    var li = !!session, checkId = ++navAuthCheck, userId = li ? session.id : '';
+    if (!li && window.VTNav) window.VTNav.setLabel('Log in');
     window.dispatchEvent(new CustomEvent('vt-auth', { detail: { loggedIn: li, email: session && session.email, initial: !!initial } }));
-    if (li) {
-      askProfile();
-      getToken().then(function (tok) {
-        if (!tok) return;
-        return fetch('https://versustrade-admin-api.versustradehq.workers.dev/admin/verify', {
-          method: 'POST',
-          headers: { 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' },
-          body: '{}'
-        }).then(function (r) { return r.json(); }).then(function (d) {
-          if (d && d.authorized === true && window.VTNav) window.VTNav.setLabel('Admin');
-        }).catch(function () {});
-      }).catch(function () {});
-    }
+    if (!li) return;
+    askProfile();
+    // Resolve the account role before changing the nav label. Do not let a slower,
+    // older verification response overwrite the label for a newer login/session.
+    getToken().then(function (tok) {
+      if (!tok || checkId !== navAuthCheck || !session || session.id !== userId) return;
+      return fetch('https://versustrade-admin-api.versustradehq.workers.dev/admin/verify', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' },
+        body: '{}'
+      }).then(function (r) {
+        if (!r.ok) throw new Error('Admin verification failed');
+        return r.json();
+      }).then(function (d) {
+        if (checkId !== navAuthCheck || !session || session.id !== userId) return;
+        if (window.VTNav) window.VTNav.setLabel(d && d.authorized === true ? 'Admin' : 'Dashboard');
+      }).catch(function () {
+        if (checkId === navAuthCheck && session && session.id === userId && window.VTNav) window.VTNav.setLabel('Dashboard');
+      });
+    }).catch(function () {
+      if (checkId === navAuthCheck && session && session.id === userId && window.VTNav) window.VTNav.setLabel('Dashboard');
+    });
   }
   window.addEventListener('storage', function (e) {
     if (e.key !== STORE) return;
@@ -3795,7 +3805,7 @@ function askProfile() {
       });
     }
   };
-  announce(true); if (session) getToken();
+  announce(true);
   // links such as /?login=1 (from the dashboard when signed out) and /?account=1 (change password)
   (function fromQuery() {
     var q = String(location.search || '');
