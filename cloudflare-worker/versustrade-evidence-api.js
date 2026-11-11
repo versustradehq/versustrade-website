@@ -210,7 +210,7 @@ export default {
         if (transaction.archived_at) return respond({ error: "Restore this transaction before adding evidence" }, 409);
         if (transaction.customer_id !== body.customer_id) return respond({ error: "This image does not belong to the selected transaction customer" }, 403);
         const image = await chatImageAt(body.customer_id, body.image_key);
-        const saved = await saveBytes(transaction, image, "customer_chat", { filename: image.filename, source_key: image.key }, user.id);
+        const saved = await saveBytes(transaction, image, "chatwoot", { filename: image.filename, source_key: image.key }, user.id);
         return respond({ ok: true, image: saved }, 201);
       }
 
