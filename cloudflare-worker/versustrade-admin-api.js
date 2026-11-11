@@ -150,36 +150,55 @@ export default {
         return { ok: response.ok, row: rows[0] || null };
       };
 
-      // Search customers for admin transaction registration.
+      // Search the canonical customer profile first; Auth metadata is only a fallback.
       if (path === "/admin/customers/search") {
-        const query = String(body.query || "").trim().toLowerCase();
+        const query = String(body.query || "").trim();
         if (query.length < 2 || query.length > 100) {
           return respond({ error: "Enter at least 2 characters to search" }, 400);
         }
 
-        const customers = [];
-        const perPage = 200;
-        for (let page = 1; page <= 50; page++) {
-          const usersResponse = await fetch(
-            `${env.SUPABASE_URL}/auth/v1/admin/users?page=${page}&per_page=${perPage}`,
-            { headers: dbHeaders }
-          );
-          if (!usersResponse.ok) return respond({ error: "Customer search failed" }, 500);
-          const result = await usersResponse.json();
-          const users = result.users || [];
+        const safeQuery = query.replace(/[(),.*\\]/g, " ").trim();
+        const pattern = `*${safeQuery}*`;
+        const profileResponse = await fetch(
+          rest("profiles", `select=user_id,full_name,email&or=${encodeURIComponent(`(full_name.ilike.${pattern},email.ilike.${pattern})`)}&limit=12`),
+          { headers: dbHeaders }
+        );
+        if (!profileResponse.ok) return respond({ error: "Customer profile search failed" }, 500);
 
-          for (const customer of users) {
-            const metadata = customer.user_metadata || {};
-            const name = String(metadata.full_name || metadata.name || metadata.username || "").trim();
-            const email = String(customer.email || "").trim();
-            if (name.toLowerCase().includes(query) || email.toLowerCase().includes(query)) {
-              customers.push({ id: customer.id, name: name || "Name not provided", email });
+        const profiles = await profileResponse.json();
+        const customers = profiles.map(profile => ({
+          id: profile.user_id,
+          name: String(profile.full_name || "").trim() || "Name not provided",
+          email: String(profile.email || "").trim()
+        })).filter(customer => customer.id);
+
+        // Preserve support for older accounts that may not yet have a profiles row.
+        if (customers.length < 12) {
+          const known = new Set(customers.map(customer => customer.id));
+          const perPage = 200;
+          for (let page = 1; page <= 50; page++) {
+            const usersResponse = await fetch(
+              `${env.SUPABASE_URL}/auth/v1/admin/users?page=${page}&per_page=${perPage}`,
+              { headers: dbHeaders }
+            );
+            if (!usersResponse.ok) return respond({ error: "Customer search failed" }, 500);
+            const result = await usersResponse.json();
+            const users = result.users || [];
+            for (const customer of users) {
+              if (known.has(customer.id)) continue;
+              const metadata = customer.user_metadata || {};
+              const name = String(metadata.full_name || metadata.name || metadata.username || "").trim();
+              const email = String(customer.email || "").trim();
+              if (name.toLowerCase().includes(query.toLowerCase()) || email.toLowerCase().includes(query.toLowerCase())) {
+                customers.push({ id: customer.id, name: name || "Name not provided", email });
+                known.add(customer.id);
+              }
+              if (customers.length >= 12) break;
             }
-            if (customers.length >= 12) break;
+            if (customers.length >= 12 || users.length < perPage) break;
           }
-          if (customers.length >= 12 || users.length < perPage) break;
         }
-        return respond({ ok: true, customers });
+        return respond({ ok: true, customers: customers.slice(0, 12) });
       }
 
       // Register a transaction.
@@ -267,7 +286,7 @@ export default {
         return respond({ ok: true, message: "Transaction registered", transaction: created }, 201);
       }
 
-      // List active transactions or archived transactions.
+      // List transactions and enrich them with the canonical customer profile.
       if (path === "/admin/transactions/list") {
         const requestedLimit = Number(body.limit);
         const limit = Number.isFinite(requestedLimit)
@@ -279,7 +298,27 @@ export default {
           { headers: dbHeaders }
         );
         if (!response.ok) return respond({ error: "Could not load transactions" }, 500);
-        return respond({ ok: true, transactions: await response.json() });
+        const transactions = await response.json();
+        const customerIds = [...new Set(transactions.map(transaction => transaction.customer_id)
+          .filter(id => typeof id === "string" && /^[0-9a-f-]{36}$/i.test(id)))];
+        if (customerIds.length) {
+          const profileResponse = await fetch(
+            rest("profiles", `select=user_id,full_name,email&user_id=in.(${customerIds.join(",")})`),
+            { headers: dbHeaders }
+          );
+          if (profileResponse.ok) {
+            const profiles = await profileResponse.json();
+            const byUserId = new Map(profiles.map(profile => [profile.user_id, profile]));
+            for (const transaction of transactions) {
+              const profile = byUserId.get(transaction.customer_id);
+              if (profile) {
+                transaction.customer_name = String(profile.full_name || "").trim();
+                transaction.customer_email = String(profile.email || "").trim();
+              }
+            }
+          }
+        }
+        return respond({ ok: true, transactions });
       }
 
       // Load audit events for a single transaction.
