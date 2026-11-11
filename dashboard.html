@@ -458,7 +458,7 @@ position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom,0px));tran
 @media (max-width:899px){.vt-hp .tm-grid{grid-template-columns:minmax(0,1fr);gap:32px}}
 .vt-hp .tm-grid>div{min-width:0}
 @media (max-width:640px){.vt-hp .tm{padding:48px 0}.vt-hp .tm-card{padding:16px}.vt-hp .tm-head,.vt-hp .tm-row{grid-template-columns:minmax(0,1.4fr) minmax(0,.8fr) minmax(0,1fr);gap:8px}}
-@media (max-width:899px){.vt-hp .tm-h{justify-content:center}}
+.vt-hp .tm-h{justify-content:center;text-align:center;width:100%}
 .vt-hp #tmTrade{position:relative;min-height:540px;overflow:hidden;display:flex;flex-direction:column}
 .vt-hp .tm-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:4px}
 .vt-hp .tm-pillbtn{display:inline-flex;align-items:center;gap:10px;padding:10px 16px;border-radius:999px;font-weight:700;font-size:16px;color:var(--text)}
@@ -2152,11 +2152,31 @@ function paintAccountFilter(){var d=$('accountFilterDialog');if(!d)return;var st
   function loadSpark(s) {
     if (S[s] || P[s]) return;
     P[s] = 1;
-    var inv = s === 'USDTUSD'; // drawn from the USDC/USDT chart, flipped
-    fetch(API + '/api/v3/klines?symbol=' + (inv ? 'USDCUSDT' : s) + '&interval=1h&limit=24')
-      .then(function (r) { return r.json(); })
-      .then(function (k) { S[s] = k.map(function (x) { return inv ? 1 / +x[4] : +x[4]; }); delete P[s]; drawMarkets(); })
-      .catch(function () { S[s] = []; delete P[s]; });
+    var inv = s === 'USDTUSD'; // USDT/USD is derived from USDC/USDT and must be flipped
+    var pair = inv ? 'USDCUSDT' : s;
+    var dashPair = pair.replace(/(USDT|USDC|BTC|ETH|BNB)$/, '-$1');
+    var sources = [
+      { url: function (h) { return h + '/api/v3/klines?symbol=' + pair + '&interval=1h&limit=24'; }, parse: function (j) { return Array.isArray(j) ? j.map(function (x) { return +x[4]; }) : []; }, hosts: HOSTS },
+      { url: function () { return 'https://www.okx.com/api/v5/market/candles?instId=' + dashPair + '&bar=1H&limit=24'; }, parse: function (j) { return j && j.code === '0' && Array.isArray(j.data) ? j.data.slice().reverse().map(function (x) { return +x[4]; }) : []; } },
+      { url: function () { return 'https://api.bybit.com/v5/market/kline?category=spot&symbol=' + pair + '&interval=60&limit=24'; }, parse: function (j) { var a = j && j.result && j.result.list; return Array.isArray(a) ? a.slice().reverse().map(function (x) { return +x[4]; }) : []; } },
+      { url: function () { return 'https://api.kucoin.com/api/v1/market/candles?type=1hour&symbol=' + dashPair; }, parse: function (j) { var a = j && j.data; return Array.isArray(a) ? a.slice().reverse().map(function (x) { return +x[2]; }) : []; } }
+    ];
+    function attempt(i) {
+      if (i >= sources.length) { delete P[s]; drawMarkets(); return; }
+      var source = sources[i], urls = source.hosts ? source.hosts.map(function (h) { return source.url(h); }) : [source.url()];
+      function hostAttempt(n) {
+        if (n >= urls.length) return attempt(i + 1);
+        tf(urls[n], 6500).then(function (j) {
+          var values = source.parse(j).filter(function (v) { return Number.isFinite(v) && v > 0; });
+          if (values.length < 2) throw new Error('No candle data');
+          S[s] = values.map(function (v) { return inv ? 1 / v : v; });
+          delete P[s];
+          drawMarkets();
+        }).catch(function () { hostAttempt(n + 1); });
+      }
+      hostAttempt(0);
+    }
+    attempt(0);
   }
 
   // ---- Buy & sell card ----
