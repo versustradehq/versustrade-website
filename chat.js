@@ -10,12 +10,12 @@
   (document.head || document.documentElement).appendChild(st);
 })();
 /* VersusTrade chat: front end only (Home / Messages / Conversation).
-  /* Prevent a retry or duplicate script include from mounting a second widget. */
-  if (window.VTChat) return;
    The "AI" and "representative" replies below are SIMULATED so the UI can be built and tested.
    To go live, replace the functions inside API (aiReply, requestHuman, agentReply) with real calls
    to your backend / LLM / live-chat service, and replace CHAT.isLoggedIn with your real session check. */
 (function () {
+  /* Prevent a retry or duplicate script include from mounting a second widget. */
+  if (window.VTChat) return;
   var CHAT = {
     whatsapp: '2349015508108',
     loginUrl: '/login/',
