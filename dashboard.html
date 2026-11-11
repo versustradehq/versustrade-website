@@ -1697,9 +1697,9 @@ function openCustomerEvidence(reference){
   $('transactionEvidenceTitle').textContent='Transaction details';
   $('transactionEvidenceRef').textContent=reference;
   var statusLabel=t.status==='VT-DONE'?'Completed':t.status==='VT-DEC'?'Declined':'Processing';
-  var gift=t.type==='GIFT_CARD_SELL';
+  var gift=t.transaction_type==='GIFT_CARD_SELL';
   var fields=[
-    ['Transaction type',gift?'Gift card sale':(t.type==='CRYPTO_BUY'?'Crypto buy':'Crypto sell')],
+    ['Transaction type',gift?'Gift card sale':(t.transaction_type==='CRYPTO_BUY'?'Crypto buy':'Crypto sell')],
     ['Status',statusLabel],
     ['Date',t.created_at?dt(t.created_at):'—'],
     ['Asset / card',gift?(t.card_brand||'Gift card'):(t.asset||'—')],
