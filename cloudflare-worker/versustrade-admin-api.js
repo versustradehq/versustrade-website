@@ -205,7 +205,7 @@ export default {
       if (path === "/admin/transactions") {
         const {
           customer_id, transaction_type, asset, network, crypto_amount,
-          card_brand, card_region, card_value, card_currency,
+          card_brand, card_type, card_region, card_value, card_currency,
           fiat_currency, fiat_amount, exchange_rate, payout_amount,
           payout_currency, customer_note
         } = body;
@@ -220,9 +220,10 @@ export default {
         const reference = `VT-${prefix}-${date}-${uniquePart}`;
 
         if (transaction_type === "GIFT_CARD_SELL" &&
-          (!card_brand || !card_region || !card_currency)) {
+          (!card_brand || !card_type || !card_region || !card_currency ||
+            !Number.isFinite(Number(card_value)) || Number(card_value) <= 0)) {
           return respond({
-            error: "Gift card transactions require card_brand, card_region and card_currency"
+            error: "Gift card transactions require card_brand, card_type, card_region, card_currency and a card_value greater than zero"
           }, 400);
         }
         if ((transaction_type === "CRYPTO_BUY" || transaction_type === "CRYPTO_SELL") &&
@@ -239,8 +240,9 @@ export default {
         const transaction = {
           reference, customer_id, transaction_type, status: "VT-PRO",
           asset: asset || null, network: network || null, crypto_amount: crypto_amount ?? null,
-          card_brand: card_brand || null, card_region: card_region || null,
-          card_value: card_value ?? null, card_currency: card_currency || null,
+          card_brand: card_brand || null, card_type: card_type || null,
+          card_region: card_region || null, card_value: card_value ?? null,
+          card_currency: card_currency || null,
           fiat_currency: fiat_currency || null, fiat_amount: fiat_amount ?? null,
           exchange_rate: exchange_rate ?? null, payout_amount: payout_amount ?? null,
           payout_currency: payout_currency || null, customer_note: customer_note || null,
