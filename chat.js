@@ -1293,7 +1293,7 @@
     accountSync(authUser).then(function (adopted) {
       if (adopted || d.initial || !S.msgs.length) return;
       var tr = lastTrade && !lastTrade.card ? lastTrade : null;
-      var notice = tr ? 'You\\u2019re signed in. Your request to ' + tr.side + ' ' + qtyStr(tr.qty) + ' ' + tr.asset + (tr.network ? ' on ' + tr.network : '') + ' is still here, and a representative can confirm the payment details with you.' : lastTrade ? 'You\\u2019re signed in. Your request is still here, and a representative can confirm the details with you.' : 'You\\u2019re signed in. You can continue your transaction here, and your chats are now saved to your account.';
+      var notice = tr ? 'You’re signed in. Your request to ' + tr.side + ' ' + qtyStr(tr.qty) + ' ' + tr.asset + (tr.network ? ' on ' + tr.network : '') + ' is still here, and a representative can confirm the payment details with you.' : lastTrade ? 'You’re signed in. Your request is still here, and a representative can confirm the details with you.' : 'You’re signed in. You can continue your transaction here, and your chats are now saved to your account.';
       add({ role: 'bot', text: notice, actions: lastTrade ? [waAct(tradeText(lastTrade)), telegramAct(tradeText(lastTrade))] : [] });
     });
   });
