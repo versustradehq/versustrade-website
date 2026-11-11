@@ -14,6 +14,8 @@
    To go live, replace the functions inside API (aiReply, requestHuman, agentReply) with real calls
    to your backend / LLM / live-chat service, and replace CHAT.isLoggedIn with your real session check. */
 (function () {
+  /* Prevent a retry or duplicate script include from mounting a second widget. */
+  if (window.VTChat) return;
   var CHAT = {
     whatsapp: '2349015508108',
     loginUrl: '/login/',
@@ -1253,6 +1255,7 @@
         cw.linked = u.id; cw.linkedName = name; cwSave();
       }).catch(function () {});
   }
+  function isInternalAccount(u) { return !!(u && String(u.email || '').toLowerCase() === 'support@versustrade.co'); }
   function accountSync(u) {
     var A = window.VTAuth;
     if (!A || !A.rest || !u || !u.id) return Promise.resolve(false);
@@ -1278,11 +1281,20 @@
   window.addEventListener('vt-auth', function (e) {
     var d = e.detail || {};
     drawHi();
-    if (!d.loggedIn) { sync.ready = false; if (S.uid) resetChat(); return; }   // logged out: the next person on this device starts clean
-    accountSync(who()).then(function (adopted) {
+    if (!d.loggedIn) { sync.ready = false; if (S.uid) resetChat(); return; }
+    var authUser = who();
+    // Never expose or bind the staff support login as a customer's chat identity.
+    if (isInternalAccount(authUser)) {
+      sync.ready = false;
+      if (S.uid || S.msgs.length || S.tix.length) resetChat();
+      S.uid = null;
+      return;
+    }
+    accountSync(authUser).then(function (adopted) {
       if (adopted || d.initial || !S.msgs.length) return;
       var tr = lastTrade && !lastTrade.card ? lastTrade : null;
-      add({ role: 'bot', text: tr ? 'You\u2019re logged in as ' + d.email + '. Your request to ' + tr.side + ' ' + qtyStr(tr.qty) + ' ' + tr.asset + (tr.network ? ' on ' + tr.network : '') + ' is still here, and a representative can confirm the payment details with you.' : lastTrade ? 'You\u2019re logged in as ' + d.email + '. Your request is still here, and a representative can confirm the details with you.' : 'You\u2019re logged in as ' + d.email + '. You can continue your transaction here, and your chats are now saved to your account.', actions: lastTrade ? [waAct(tradeText(lastTrade)), telegramAct(tradeText(lastTrade))] : [] });
+      var notice = tr ? 'You’re signed in. Your request to ' + tr.side + ' ' + qtyStr(tr.qty) + ' ' + tr.asset + (tr.network ? ' on ' + tr.network : '') + ' is still here, and a representative can confirm the payment details with you.' : lastTrade ? 'You’re signed in. Your request is still here, and a representative can confirm the details with you.' : 'You’re signed in. You can continue your transaction here, and your chats are now saved to your account.';
+      add({ role: 'bot', text: notice, actions: lastTrade ? [waAct(tradeText(lastTrade)), telegramAct(tradeText(lastTrade))] : [] });
     });
   });
 
