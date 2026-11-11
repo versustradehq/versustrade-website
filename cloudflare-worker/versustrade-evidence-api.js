@@ -40,7 +40,7 @@ async function cleanupCopiedChatUploads(env) {
     Authorization: "Bearer " + env.SUPABASE_SERVICE_ROLE_KEY,
     "Content-Type": "application/json"
   };
-  const query = "source=eq.customer_chat&created_at=lt." + encodeURIComponent(cutoff) +
+  const query = "source=eq.chatwoot&created_at=lt." + encodeURIComponent(cutoff) +
     "&description=not.is.null&select=id,description&limit=500";
   const rowsRes = await fetch(env.SUPABASE_URL + "/rest/v1/transaction_images?" + query, { headers });
   if (!rowsRes.ok) throw new Error("Could not retrieve eligible chat evidence records (" + rowsRes.status + ")");
@@ -147,7 +147,7 @@ export default {
             chatwoot_message_id: meta.message_id || null,
             chatwoot_attachment_id: meta.attachment_id || null,
             uploaded_by: actorId || null,
-            description: source === "customer_chat" && meta.source_key ? JSON.stringify({ cleanup_source: "chat-uploads", source_key: meta.source_key }) : (meta.description || null)
+            description: source === "chatwoot" && meta.source_key ? JSON.stringify({ cleanup_source: "chat-uploads", source_key: meta.source_key }) : (meta.description || null)
           });
           return { id: row.id, filename: row.original_filename, mime_type: row.mime_type, file_size: row.file_size, source: row.source, created_at: row.created_at };
         } catch (e) {
