@@ -1286,7 +1286,7 @@
     // Never expose or bind the staff support login as a customer's chat identity.
     if (isInternalAccount(authUser)) {
       sync.ready = false;
-      if (S.uid && S.uid !== authUser.id) resetChat();
+      if (S.uid || S.msgs.length || S.tix.length) resetChat();
       S.uid = null;
       return;
     }
