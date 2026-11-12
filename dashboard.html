@@ -3056,12 +3056,7 @@ function paintAccountFilter(){var d=$('accountFilterDialog');if(!d)return;var st
   root.addEventListener('mousedown', function (e) { if (e.target === root) close(); });
   root.querySelector('#vaClose').addEventListener('click', close);
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && root.hasAttribute('data-open')) close(); });
-  // any other Log in / Sign up link on the page opens the same popup
-  document.addEventListener('click', function (e) {
-    if (e.defaultPrevented) return;
-    var a = e.target.closest && e.target.closest('a[href="/login/"], a[href="/signup/"]');
-    if (a) { e.preventDefault(); st.tab = a.getAttribute('href') === '/signup/' ? 'signup' : 'login'; open(); }
-  });
+  // Dedicated authentication pages handle /login/ and /signup/ navigation.
 
   // coming back from Google sign-in (or an email link): pick the session out of the address
   (function fromHash() {
