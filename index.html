@@ -2644,7 +2644,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       { desk: true, label: 'Markets', href: '#markets' },
       { desk: true, label: 'Rates', href: '#rates' },
       { desk: true, label: 'Support', href: '#support' },
-      { label: 'Log in', href: '/?login=1', auth: true }
+      { label: 'Log in', href: '/login/', auth: true }
     ],
     initialActiveIndex: 0, size: 'md', frame: true, particleCount: 15, spread: 56,
     animationTime: 600, timeVariance: 300, gooeyness: 0.5, wobble: 0.5, hoverEffect: true,
@@ -3746,12 +3746,7 @@ function askProfile() {
   root.addEventListener('mousedown', function (e) { if (e.target === root) close(); });
   root.querySelector('#vaClose').addEventListener('click', close);
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && root.hasAttribute('data-open')) close(); });
-  // any other Log in / Sign up link on the page opens the same popup
-  document.addEventListener('click', function (e) {
-    if (e.defaultPrevented) return;
-    var a = e.target.closest && e.target.closest('a[href="/login/"], a[href="/signup/"]');
-    if (a) { e.preventDefault(); st.tab = a.getAttribute('href') === '/signup/' ? 'signup' : 'login'; open(); }
-  });
+  // Dedicated authentication pages handle /login/ and /signup/ navigation.
 
   // coming back from Google sign-in (or an email link): pick the session out of the address
   (function fromHash() {
