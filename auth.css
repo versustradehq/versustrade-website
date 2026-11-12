@@ -18,7 +18,7 @@
 .auth-panel{width:100%;max-width:540px;justify-self:center;position:relative}
 .auth-top{display:flex;align-items:center;justify-content:flex-end;min-height:44px;margin-bottom:16px}
 .auth-mobile-brand{display:none;margin-right:auto}
-.auth-theme{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--auth-border);border-radius:999px;background:var(--auth-panel);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);color:var(--auth-text);padding:9px 13px;font:600 12px inherit;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.07)}
+.auth-theme{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--auth-border);border-radius:999px;background:var(--auth-panel);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);color:var(--auth-text);padding:9px 13px;font:600 12px Inter,ui-sans-serif,sans-serif;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.07)}
 .auth-theme-icon{font-size:17px;color:var(--auth-red)}
 .va-card{width:100%;padding:clamp(28px,4vw,46px);border:1px solid var(--auth-border);border-radius:26px;background:var(--auth-panel);color:var(--auth-text);box-shadow:var(--auth-shadow),inset 0 1px rgba(255,255,255,.12);backdrop-filter:blur(28px) saturate(135%);-webkit-backdrop-filter:blur(28px) saturate(135%)}
 .va-head{display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin:0 0 30px;text-align:left}
@@ -29,7 +29,7 @@
 .va .va-in::placeholder{color:var(--auth-muted);opacity:.8}.va .va-in:focus{border-color:var(--auth-red);box-shadow:0 0 0 4px var(--auth-red-soft);background:var(--auth-panel)}
 .va-pw{position:relative}.va-pw .va-in{padding-right:54px}.va-eye{position:absolute;right:9px;top:7px;width:38px;height:38px;border:0;border-radius:9px;background:transparent;color:var(--auth-muted);display:grid;place-items:center;cursor:pointer}.va-eye svg{width:19px;height:19px}
 .va .va-opts{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 20px;font-size:12px;color:var(--auth-muted)}.va .va-chk{display:flex;align-items:center;gap:8px}.va .va-chk input{accent-color:var(--auth-red)}
-.va .va-btn{width:100%;min-height:52px;margin:4px 0 12px;padding:13px 18px;border:1px solid rgba(255,255,255,.2);border-radius:12px;background:linear-gradient(135deg,#ff512d,#e62d0b);color:#fff;font:700 14px inherit;cursor:pointer;box-shadow:0 12px 28px rgba(254,58,18,.23),inset 0 1px rgba(255,255,255,.28);transition:transform .18s,filter .18s}
+.va .va-btn{width:100%;min-height:52px;margin:4px 0 12px;padding:13px 18px;border:1px solid rgba(255,255,255,.2);border-radius:12px;background:linear-gradient(135deg,#ff512d,#e62d0b);color:#fff;font:700 14px Inter,ui-sans-serif,sans-serif;cursor:pointer;box-shadow:0 12px 28px rgba(254,58,18,.23),inset 0 1px rgba(255,255,255,.28);transition:transform .18s,filter .18s}
 .va .va-btn:hover{filter:brightness(1.08);transform:translateY(-1px)}.va .va-btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
 .va .va-btn.alt{display:flex;justify-content:center;align-items:center;gap:10px;background:transparent;color:var(--auth-text);border:1px solid var(--auth-border);box-shadow:none}.va .va-btn.alt svg{width:18px;height:18px}
 .va .va-a,.va a.va-a{padding:0;border:0;background:none;color:var(--auth-text);font:inherit;font-size:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px;cursor:pointer}.va .va-a:hover{color:var(--auth-red)}
