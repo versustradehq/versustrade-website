@@ -343,15 +343,9 @@ button{background:none;border:0;cursor:pointer}
 .rv-on [data-rv].rv-in{opacity:1;transform:none;transition:opacity .8s cubic-bezier(.215,.61,.355,1) var(--rv-d,0s),transform .8s cubic-bezier(.215,.61,.355,1) var(--rv-d,0s)}
 .rv-on [data-rv].rv-now{transition:none!important}
 
-/* Static table of contents: no sticky positioning or nested scrolling. */
-.post-layout{grid-template-columns:minmax(0,1fr);gap:0;align-items:start}
-.toc{grid-column:1;grid-row:1;position:static;top:auto;margin:32px 0 0;max-height:none;overflow:visible}
-.prose{grid-column:1;grid-row:2;padding-top:32px}
-.toc-h{pointer-events:none;cursor:default}
-.toc-h svg{display:none}
-.toc-list{display:block!important;max-height:none;overflow:visible}
-.toc.collapsed .toc-list{display:block}
-.toc-list a.on{background:transparent;color:var(--muted);font-weight:500}
+/* Keep the original scrollable TOC, but hide its scrollbar. */
+.toc{scrollbar-width:none;-ms-overflow-style:none}
+.toc::-webkit-scrollbar{display:none;width:0;height:0}
 </style>
 </head>
 <body>
@@ -486,15 +480,23 @@ POSTS = POSTS.map(function (p, i) { return [p, i]; }).sort(function (a, b) { ret
 <script>
 var $ = function (id) { return document.getElementById(id); };
 
-// Table of contents: static list of links; no scroll tracking or auto-highlighting.
+// Table of contents: built from the article's h2 headings, highlights the section being read
 (function () {
-  var heads = [].slice.call(document.querySelectorAll('#article h2')), list = $('tocList');
+  var heads = [].slice.call(document.querySelectorAll('#article h2')), list = $('tocList'), links = [];
   heads.forEach(function (h, i) {
     if (!h.id) h.id = h.textContent.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'section-' + (i + 1);
     var li = document.createElement('li'), a = document.createElement('a');
-    a.href = '#' + h.id; a.textContent = h.textContent; li.appendChild(a); list.appendChild(li);
+    a.href = '#' + h.id; a.textContent = h.textContent; li.appendChild(a); list.appendChild(li); links.push(a);
   });
-  if (!heads.length) $('toc').style.display = 'none';
+  var toc = $('toc'), btn = $('tocBtn');
+  if (!heads.length) { toc.style.display = 'none'; return; }
+  btn.addEventListener('click', function () { var c = toc.classList.toggle('collapsed'); btn.setAttribute('aria-expanded', c ? 'false' : 'true'); });
+  function mark(id) { links.forEach(function (a) { var on = a.getAttribute('href') === '#' + id; a.classList.toggle('on', on); if (on) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); }); }
+  mark(heads[0].id);
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) mark(e.target.id); }); }, { rootMargin: '-96px 0px -70% 0px' });
+    heads.forEach(function (h) { io.observe(h); });
+  }
 })();
 
 // Continue reading: same-category posts first, then the newest others. Set CURRENT to this page's href in POSTS.
