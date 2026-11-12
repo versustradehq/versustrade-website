@@ -115,3 +115,81 @@
   .va .va-in{height:43px;margin-bottom:10px}
   .va-head{margin-bottom:14px}
 }
+
+
+/* Final auth layout: compact cards, centered footer copy, no page scrolling */
+html,body{width:100%;height:100%;overflow:hidden}
+body{min-height:100svh}
+.auth-page{height:100svh;min-height:0;padding:clamp(12px,2.2vh,24px) clamp(16px,3vw,42px);overflow:hidden}
+.auth-layout{height:100%;min-height:0;width:min(1240px,100%);grid-template-columns:minmax(0,1fr) minmax(390px,500px);gap:clamp(28px,5vw,76px);align-items:center}
+.auth-story{min-height:0;padding:12px 1vw}
+.auth-story-copy{padding:12px 0}
+.auth-story h1{font-size:clamp(48px,5vw,72px)}
+.auth-panel{max-width:500px}
+.va-card{padding:clamp(25px,2.5vw,36px);border-radius:24px}
+.va-head{margin-bottom:22px}
+.va .va-t{font-size:clamp(28px,2.5vw,34px)}
+.va .va-in{height:48px;margin-bottom:14px}
+.va .va-opts{margin-bottom:14px}
+.va .va-btn{min-height:48px;margin:3px 0 9px}
+.va .va-foot{text-align:center;margin-top:14px}
+.auth-legal{text-align:center;margin:10px 0 0}
+.auth-top{margin-bottom:12px}
+@media(min-width:681px){
+  .auth-top{position:absolute;right:14px;top:14px;z-index:4;margin:0;min-height:0}
+  .auth-theme{padding:0;width:38px;height:38px;justify-content:center;border-radius:50%}
+  .auth-theme-label{display:none}
+  .va-card{padding-top:58px}
+}
+@media(max-width:900px) and (min-width:681px){
+  .auth-layout{grid-template-columns:minmax(0,.85fr) minmax(360px,480px);gap:22px}
+  .auth-story h1{font-size:clamp(40px,4.5vw,56px)}
+  .va-card{padding:54px 25px 24px}
+}
+@media(max-width:680px){
+  html,body{height:100%;overflow:hidden}
+  .auth-page{height:100svh;min-height:0;padding:10px 12px;overflow:hidden}
+  .auth-layout{height:100%;min-height:0;display:flex;justify-content:center;align-items:center;gap:0}
+  .auth-story{display:none!important}
+  .auth-panel{width:100%;max-width:500px;margin:auto;position:relative}
+  .auth-top{position:absolute;top:12px;right:12px;z-index:5;min-height:0;margin:0}
+  .auth-theme{width:36px;height:36px;padding:0;display:grid;place-items:center;border-radius:50%;background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.2);box-shadow:0 4px 16px rgba(0,0,0,.18)}
+  .auth-theme-icon{font-size:17px;line-height:1}
+  .auth-theme-label{display:none}
+  .va-card{padding:56px clamp(18px,5vw,26px) 22px;border-radius:22px}
+  .va-head{margin-bottom:16px;padding-right:26px}
+  .va .va-t{font-size:clamp(25px,6vw,30px)}
+  .va .va-s{font-size:12px}
+  .va .va-lab{font-size:11px;margin-bottom:5px}
+  .va .va-in{height:43px;margin-bottom:10px;font-size:13px}
+  .va .va-opts{font-size:11px;margin-bottom:10px}
+  .va .va-btn{min-height:42px;padding:9px 14px;margin:2px 0 7px;font-size:13px}
+  .va .va-foot{font-size:12px;margin:10px 0 0;text-align:center}
+  .auth-legal{font-size:10px;line-height:1.4;margin:8px 8px 0;text-align:center}
+}
+@media(max-width:390px){
+  .auth-page{padding:8px}
+  .va-card{padding:52px 16px 17px}
+  .va-head{margin-bottom:13px}
+  .va .va-t{font-size:24px}
+  .va .va-in{height:40px;margin-bottom:8px}
+  .va .va-btn{min-height:39px;margin-bottom:6px}
+  .va .va-foot{margin-top:8px}
+  .auth-legal{font-size:9px;margin-top:6px}
+}
+/* Keep the cinematic dark-mode video in both themes; only the glass and text colours change. */
+:root[data-theme="light"] .auth-bg-video{display:block;opacity:.56;filter:saturate(.82) contrast(1.08)}
+:root[data-theme="light"] .auth-page{background:#000}
+:root[data-theme="light"] .auth-page::before{background:linear-gradient(90deg,rgba(0,0,0,.76),rgba(0,0,0,.32) 56%,rgba(0,0,0,.58)),radial-gradient(ellipse at 76% 48%,rgba(254,58,18,.12),transparent 42%)}
+:root[data-theme="light"] .auth-bg-globe{display:none}
+:root[data-theme="light"] .va-card{background:rgba(245,242,240,.78);border-color:rgba(255,255,255,.66);color:#211d1b;box-shadow:0 28px 80px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.8);backdrop-filter:blur(30px) saturate(145%);-webkit-backdrop-filter:blur(30px) saturate(145%)}
+:root[data-theme="light"] .auth-theme{background:rgba(255,255,255,.78);border-color:rgba(255,255,255,.8);color:#211d1b}
+@media(max-height:740px){
+  .auth-page{padding-top:8px;padding-bottom:8px}
+  .va-card{padding-top:22px;padding-bottom:20px}
+  .va-head{margin-bottom:12px}
+  .va .va-in{height:40px;margin-bottom:8px}
+  .va .va-btn{min-height:40px;margin-bottom:6px;padding:8px 12px}
+  .va .va-foot{margin-top:8px}
+  .auth-legal{margin-top:6px}
+}
