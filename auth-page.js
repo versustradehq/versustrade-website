@@ -137,8 +137,7 @@ function nameOf(u) {
   root.setAttribute('role', 'main');
   root.innerHTML = '<video class="auth-bg-video" autoplay muted loop playsinline preload="metadata" aria-hidden="true"><source src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/VERSUS%20CRYPTO.mp4" type="video/mp4"></video><canvas class="auth-bg-globe" id="authGlobe" aria-hidden="true"></canvas><div class="auth-layout"><section class="auth-story"><a class="auth-brand" href="/" aria-label="VersusTrade home"><img src="' + LOGO + '" alt="VersusTrade"></a><div class="auth-story-copy"><span class="auth-eyebrow">TRUST. RELIABILITY. EVERY TRANSACTION.</span><h1>Trade with confidence.<br><em>Move with reliability.</em></h1><p>Crypto, gift cards and cross-border payments — backed by a team you can count on.</p><div class="auth-trust"><span class="auth-trust-dot"></span>Secure transactions. Reliable support.</div></div><div class="auth-story-foot">POWERED BY RELIABILITY. DRIVEN BY TRUST.</div></section><section class="auth-panel"><div class="auth-top"><a class="auth-mobile-brand" href="/"><img src="' + LOGO + '" alt="VersusTrade"></a><button type="button" class="auth-theme" id="authTheme" aria-label="Switch colour theme"><span class="auth-theme-icon">◐</span><span class="auth-theme-label">Light mode</span></button></div><div class="va-card"><div id="vaBody"></div></div><p class="auth-legal">By continuing, you agree to VersusTrade’s <a href="/privacy/">Privacy Policy</a> and <a href="/terms/">Terms of Service</a>.</p></section></div>';
   document.body.appendChild(root);
-  <script>
-// Hero globe: dotted land, red arcs, city markers. Drag to rotate.
+  // Hero globe: dotted land, red arcs, city markers. Drag to rotate.
 (function () {
   var cv = document.getElementById('authGlobe');
   if (!cv || !cv.getContext) return;
@@ -341,7 +340,6 @@ function nameOf(u) {
     window.addEventListener('touchend', up, true);
   }
 })();
-</script>
   var body = root.querySelector('#vaBody');
   var st = { tab: /\/signup\/?$/.test(location.pathname) ? 'signup' : 'login', email: '', name: '', phone: '', dob: '', mode: 'email', afterNewPass: false }, timer = 0, busy = false, lastFocus = null;
 
