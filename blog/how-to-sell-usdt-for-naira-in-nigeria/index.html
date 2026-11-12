@@ -503,7 +503,7 @@ var $ = function (id) { return document.getElementById(id); };
 
 // Continue reading: same-category posts first, then the newest others. Set CURRENT to this page's href in POSTS.
 (function () {
-  var CURRENT = '/blog/how-crypto-rates-in-naira-are-set/';
+  var CURRENT = '/blog/how-to-sell-usdt-for-naira-in-nigeria/';
   function esc(x) { return String(x).replace(/[&<>"]/g, function (m) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]; }); }
   var me = POSTS.filter(function (p) { return p.href === CURRENT; })[0], cat = me && me.c;
   var rest = POSTS.filter(function (p) { return p.href !== CURRENT; });
