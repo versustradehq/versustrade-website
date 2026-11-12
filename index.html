@@ -831,6 +831,28 @@ html.va-lock{overflow:hidden}
 }
 /* room above the footer's bottom row for the flying button to rest in */
 .foot .ft-credits{margin-top:56px}
+
+/* Premium glass hero treatment */
+.vt-header{background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.52);border-bottom-color:rgba(0,0,0,.06);border-radius:0 0 22px 22px;box-shadow:0 12px 34px rgba(20,24,32,.07);-webkit-backdrop-filter:blur(24px) saturate(1.55);backdrop-filter:blur(24px) saturate(1.55)}
+:root[data-theme="dark"] .vt-header{background:rgba(8,8,10,.58);border-color:rgba(255,255,255,.12);box-shadow:0 12px 38px rgba(0,0,0,.28)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .vt-header{background:rgba(8,8,10,.58);border-color:rgba(255,255,255,.12);box-shadow:0 12px 38px rgba(0,0,0,.28)}}
+@media (min-width:1024px){.vt-header{margin-top:8px;border-radius:999px;border:1px solid rgba(255,255,255,.42)}.vt-header.scrolled{background:rgba(255,255,255,.7);-webkit-backdrop-filter:blur(28px) saturate(1.7);backdrop-filter:blur(28px) saturate(1.7)}:root[data-theme="dark"] .vt-header.scrolled{background:rgba(8,8,10,.68);border-color:rgba(255,255,255,.14)}}
+.hero{position:relative;isolation:isolate;overflow:hidden;background:var(--soft);border-radius:0 0 34px 34px}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 12% 10%,rgba(255,255,255,.94),transparent 52%),linear-gradient(120deg,rgba(255,255,255,.7),rgba(255,255,255,.08))}
+.hero-video-bg{display:none}
+.hero-grid{position:relative;z-index:1}
+.hero-copy{padding:28px 0}
+.hero h1{text-shadow:0 2px 22px rgba(255,255,255,.28)}
+.hero .ph{display:inline-flex;align-items:center;padding:9px 14px;border:1px solid rgba(255,255,255,.68);border-radius:16px;background:rgba(255,255,255,.56);box-shadow:0 10px 32px rgba(20,24,32,.07),inset 0 1px rgba(255,255,255,.9);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+:root[data-theme="dark"] .hero{background:#000}
+:root[data-theme="dark"] .hero::before{background:linear-gradient(90deg,rgba(0,0,0,.78),rgba(0,0,0,.28) 58%,rgba(0,0,0,.44))}
+:root[data-theme="dark"] .hero-video-bg{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;opacity:.58;filter:saturate(.82) contrast(1.08)}
+:root[data-theme="dark"] .hero h1,:root[data-theme="dark"] .hero .hero-globe-cap{color:#fff;text-shadow:0 3px 24px rgba(0,0,0,.72)}
+:root[data-theme="dark"] .hero .ph{color:#fff;background:rgba(0,0,0,.44);border-color:rgba(255,255,255,.2);box-shadow:0 12px 36px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.14)}
+:root[data-theme="dark"] .hero-globe{filter:drop-shadow(0 18px 42px rgba(0,0,0,.38))}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .hero{background:#000}:root:not([data-theme="light"]) .hero::before{background:linear-gradient(90deg,rgba(0,0,0,.78),rgba(0,0,0,.28) 58%,rgba(0,0,0,.44))}:root:not([data-theme="light"]) .hero-video-bg{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;opacity:.58;filter:saturate(.82) contrast(1.08)}:root:not([data-theme="light"]) .hero h1,:root:not([data-theme="light"]) .hero .hero-globe-cap{color:#fff;text-shadow:0 3px 24px rgba(0,0,0,.72)}:root:not([data-theme="light"]) .hero .ph{color:#fff;background:rgba(0,0,0,.44);border-color:rgba(255,255,255,.2)}}
+@media (max-width:640px){.hero{border-radius:0 0 24px 24px}.hero-copy{padding:12px 0}}
+
 </style>
 
 <style id="vt-android-tap-fix">
@@ -915,6 +937,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <main>
   <!-- Hero -->
   <div class="hero">
+    <video class="hero-video-bg" autoplay muted loop playsinline preload="metadata" aria-hidden="true"><source src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/VERSUS%20CRYPTO.mp4" type="video/mp4"></video>
     <div class="wrap hero-grid">
     <div class="hero-copy" data-ac="mount">
       <h1>Digital Assets Meet <em style="white-space:nowrap">Real Value</em><span style="color:var(--red)">.</span></h1>
