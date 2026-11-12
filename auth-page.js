@@ -135,8 +135,213 @@ function nameOf(u) {
   var root = document.createElement('div');
   root.className = 'va auth-page';
   root.setAttribute('role', 'main');
-  root.innerHTML = '<div class="auth-layout"><section class="auth-story"><a class="auth-brand" href="/" aria-label="VersusTrade home"><img src="' + LOGO + '" alt="VersusTrade"></a><div class="auth-story-copy"><span class="auth-eyebrow">TRUST. RELIABILITY. EVERY TRANSACTION.</span><h1>Trade with confidence.<br><em>Move with reliability.</em></h1><p>Crypto, gift cards and cross-border payments — backed by a team you can count on.</p><div class="auth-trust"><span class="auth-trust-dot"></span>Secure transactions. Reliable support.</div></div><div class="auth-story-foot">POWERED BY RELIABILITY. DRIVEN BY TRUST.</div></section><section class="auth-panel"><div class="auth-top"><a class="auth-mobile-brand" href="/"><img src="' + LOGO + '" alt="VersusTrade"></a><button type="button" class="auth-theme" id="authTheme" aria-label="Switch colour theme"><span class="auth-theme-icon">◐</span><span class="auth-theme-label">Light mode</span></button></div><div class="va-card"><div id="vaBody"></div></div><p class="auth-legal">By continuing, you agree to VersusTrade’s <a href="/privacy/">Privacy Policy</a> and <a href="/terms/">Terms of Service</a>.</p></section></div>';
+  root.innerHTML = '<video class="auth-bg-video" autoplay muted loop playsinline preload="metadata" aria-hidden="true"><source src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/VERSUS%20CRYPTO.mp4" type="video/mp4"></video><canvas class="auth-bg-globe" id="authGlobe" aria-hidden="true"></canvas><div class="auth-layout"><section class="auth-story"><a class="auth-brand" href="/" aria-label="VersusTrade home"><img src="' + LOGO + '" alt="VersusTrade"></a><div class="auth-story-copy"><span class="auth-eyebrow">TRUST. RELIABILITY. EVERY TRANSACTION.</span><h1>Trade with confidence.<br><em>Move with reliability.</em></h1><p>Crypto, gift cards and cross-border payments — backed by a team you can count on.</p><div class="auth-trust"><span class="auth-trust-dot"></span>Secure transactions. Reliable support.</div></div><div class="auth-story-foot">POWERED BY RELIABILITY. DRIVEN BY TRUST.</div></section><section class="auth-panel"><div class="auth-top"><a class="auth-mobile-brand" href="/"><img src="' + LOGO + '" alt="VersusTrade"></a><button type="button" class="auth-theme" id="authTheme" aria-label="Switch colour theme"><span class="auth-theme-icon">◐</span><span class="auth-theme-label">Light mode</span></button></div><div class="va-card"><div id="vaBody"></div></div><p class="auth-legal">By continuing, you agree to VersusTrade’s <a href="/privacy/">Privacy Policy</a> and <a href="/terms/">Terms of Service</a>.</p></section></div>';
   document.body.appendChild(root);
+  <script>
+// Hero globe: dotted land, red arcs, city markers. Drag to rotate.
+(function () {
+  var cv = document.getElementById('authGlobe');
+  if (!cv || !cv.getContext) return;
+  var ctx = cv.getContext('2d'), root = document.documentElement, D = Math.PI / 180;
+  var COLS = 144, ROWS = 72, STEP = 2.5;
+  var LAND = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPCf//8HAAAAAAAAAAAAAAAAyPzz//8A4AAAAAADAAAAAACAlAnw//8AAAAAB4AfAAAAAADAAywA/P8AAABgAP4fAAEAAQIAPvYH+H8AAABguP//7x8A4P//K9wc+B8AgH+g1///////z////z98+AMC4L/8////////AP///684+AAB8P7///////9/wP///wMGcAAAfP7//////38fgAf+/wd+AAAAfP7//////wEBAAH4/x9+AABAKP//////f8ABAADw/3//AQCw+P///////8AAAADg////AwDA/////////wAAAADA//8vBwDA/////////wAAAADA//8/AACA/6/v////fwAAAADA//8PAACA1wf3////PwIAAADA//8HAADwYW/P////DwEAAACA//8DAADwQPnP//9/BAEAAACA//8DAAAAD+D/////yAAAAAAA/v8BAADgD8D/////IAAAAAAA+n8AAADwf9f/////AQAAAAAA/IMAAADw///3////AQAAAAAA8IEAAAD8/7/P////AAAAAAAA4AEAAAD8/79/+P9/AQAAAAAAwBEAAAD+/3//8OcHAAAAAAAAwBsYAAD8/39/4MMLAAAAAAAAAB4AAAD+//8e4IEHAQAAAAAAAHAAAAD+//8HwIAPAwAAAAAAAAAUAAD8//8JwIAGAAAAAAAAAID+AAD4//8PAIAABAAAAAAAAAD+AQDw/f8PAAEBAAAAAAAAAAD+DwAA8P8HAIBhAAAAAAAAAAD/DwAA8P8DAABzAAAAAAAAAAD/PwAA8P8BAABzMQAAAAAAAAD//wEA8P8AAAACwQMAAAAAAAD//wMA4P8AAAAEgAcAAAAAAAD//wMA4P8AAACABQEAAAAAAAD+/wEA4P8AAAAAAAAAAAAAAAD+/wAA4P8IAAAAMAAAAAAAAAD4/wAA4P8MAAAAfgIAAAAAAADw/wAA4D8MAAAA/gcAAAAAAADw/wAA4D8GAADA/w8AAAAAAADwPwAAwD8GAADg/w8AAAAAAADwHwAAwB8AAADg/x8AAAAAAAD4DwAAgB8AAADA/x8AAAAAAAD4DwAAgA8AAADA/x8AAAAAAAD4BwAAgAMAAADAwx8AAAAAAAD4AQAAAAAAAAAAAA8AAAAAAAD4AAAAAAAAAAAAAARAAAAAAAA8AAAAAAAAAAAAAAQgAAAAAAA4AAAAAAAAAAAAAAAQAAAAAAAcAAAAAAAAAAAAAAAIAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAMAQAAAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+  var MARKERS = [
+    { n: 'Lagos', t: '\u20A610M sent', lat: 6.52, lng: 3.38, side: 'bl', big: 1 },
+    { n: 'Abuja', t: '\u20A625M received', lat: 9.07, lng: 7.4, side: 'tr' },
+    { n: 'London', t: '\u00A350K received', lat: 51.51, lng: -0.13, side: 'l' },
+    { n: 'New York', t: '5,000 USDT received', lat: 40.71, lng: -74.01, side: 'bl' },
+    { n: 'S\u00E3o Paulo', t: '20 SOL sent', lat: -23.55, lng: -46.63, side: 'l' },
+    { n: 'Dubai', t: '1 BTC sent', lat: 25.2, lng: 55.27, side: 'r' },
+    { n: 'Singapore', t: '3,200 USDT sent', lat: 1.35, lng: 103.82, side: 'r' }
+  ];
+  var ARCS = [['London', 'New York'], ['London', 'Dubai'], ['New York', 'S\u00E3o Paulo'], ['Lagos', 'London'], ['Lagos', 'Dubai'], ['Lagos', 'New York'], ['Lagos', 'Abuja']];
+  // Visitors who ask their device for reduced motion get a calmer globe (slower spin, no pulses).
+  // Set RESPECT_REDUCED_MOTION to true to make it fully still for them. Dragging always works.
+  var RESPECT_REDUCED_MOTION = false;
+  var reduced = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var still = reduced && RESPECT_REDUCED_MOTION, calm = reduced, spin = reduced ? 2 : 5;
+
+  // land dots from the packed mask
+  var bin = atob(LAND), dots = [];
+  for (var r = 0; r < ROWS; r++) for (var c = 0; c < COLS; c++) {
+    var i = r * COLS + c;
+    if ((bin.charCodeAt(i >> 3) >> (i & 7)) & 1) {
+      var la = (90 - (r + .5) * STEP) * D, ln = (-180 + (c + .5) * STEP) * D;
+      dots.push([la, ln, Math.sin(la), Math.cos(la)]);
+    }
+  }
+
+  function byName(n) { for (var k = 0; k < MARKERS.length; k++) if (MARKERS[k].n === n) return MARKERS[k]; }
+  function vec(m) { var la = m.lat * D, ln = m.lng * D; return [Math.cos(la) * Math.cos(ln), Math.cos(la) * Math.sin(ln), Math.sin(la)]; }
+  var arcs = ARCS.map(function (p, idx) {
+    var a = vec(byName(p[0])), b = vec(byName(p[1]));
+    var dot = Math.max(-1, Math.min(1, a[0] * b[0] + a[1] * b[1] + a[2] * b[2])), om = Math.acos(dot), so = Math.sin(om), pts = [];
+    for (var s = 0; s <= 48; s++) {
+      var t = s / 48, w1 = Math.sin((1 - t) * om) / so, w2 = Math.sin(t * om) / so;
+      var v = [w1 * a[0] + w2 * b[0], w1 * a[1] + w2 * b[1], w1 * a[2] + w2 * b[2]];
+      pts.push([Math.asin(v[2]), Math.atan2(v[1], v[0]), 1 + (0.03 + 0.25 * om / Math.PI) * Math.sin(Math.PI * t)]);
+    }
+    return { pts: pts, off: idx * 0.17 };
+  });
+
+  var W = 300, R = 120, cx = 150, cy = 150, lat0 = 30 * D, lng0 = -25 * D, pal = null, tick = 0;
+
+  // Light page: black land on a light globe with red lines.
+  // Dark page: black globe with white land and white lines (markers stay red).
+  // Set BLACK_SPHERE to true to use the black globe on the light page too.
+  var BLACK_SPHERE = false;
+  function palette() {
+    var dark = BLACK_SPHERE || getComputedStyle(root).colorScheme === 'dark';
+    return dark
+      ? { s0: '#141416', s1: '#000000', edge: 'rgba(255,255,255,.28)', halo: 'rgba(255,255,255,.07)', dot: '255,255,255', line: '255,255,255', rgb: '255,64,80', text: '#F5F5F5', pill: 'rgba(12,12,12,.9)', ring: '#FFFFFF' }
+      : { s0: '#FFFFFF', s1: '#E9E9EC', edge: 'rgba(0,0,0,.16)', halo: 'rgba(0,0,0,.06)', dot: '22,22,24', line: '225,29,46', rgb: '225,29,46', text: '#1A1A1A', pill: 'rgba(255,255,255,.92)', ring: '#FFFFFF' };
+  }
+  function proj(lat, lng, k) {
+    var cl = Math.cos(lat), dl = lng - lng0, c0 = Math.cos(lat0), s0 = Math.sin(lat0), sl = Math.sin(lat);
+    var x = cl * Math.sin(dl), y = c0 * sl - s0 * cl * Math.cos(dl), z = s0 * sl + c0 * cl * Math.cos(dl);
+    return [cx + R * k * x, cy - R * k * y, z];
+  }
+  function pill(x, y, w, h, rad) {
+    if (ctx.roundRect) { ctx.beginPath(); ctx.roundRect(x, y, w, h, rad); }
+    else { ctx.beginPath(); ctx.rect(x, y, w, h); }
+  }
+
+  function draw(ts) {
+    if (!pal || tick++ % 45 === 0) pal = palette();
+    var t = ts / 1000;
+    ctx.clearRect(0, 0, W, W);
+
+    var h = ctx.createRadialGradient(cx, cy, R, cx, cy, R * 1.2);
+    h.addColorStop(0, pal.halo); h.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = h; ctx.beginPath(); ctx.arc(cx, cy, R * 1.2, 0, 6.2832); ctx.fill();
+
+    var g = ctx.createRadialGradient(cx - R * .35, cy - R * .4, R * .1, cx, cy, R);
+    g.addColorStop(0, pal.s0); g.addColorStop(1, pal.s1);
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, R, 0, 6.2832); ctx.fill();
+    ctx.strokeStyle = pal.edge; ctx.lineWidth = 1; ctx.stroke();
+
+    // land dots in three depth bands
+    var sz = Math.max(1.1, R / 150), bands = [new Path2D(), new Path2D(), new Path2D()];
+    var c0 = Math.cos(lat0), s0 = Math.sin(lat0);
+    for (var n = 0; n < dots.length; n++) {
+      var d = dots[n], dl = d[1] - lng0, cd = Math.cos(dl);
+      var z = s0 * d[2] + c0 * d[3] * cd;
+      if (z <= 0.02) continue;
+      var x = d[3] * Math.sin(dl), y = c0 * d[2] - s0 * d[3] * cd;
+      var bp = bands[z > .6 ? 2 : z > .3 ? 1 : 0], px0 = cx + R * x, py0 = cy - R * y;
+      bp.moveTo(px0 + sz, py0); bp.arc(px0, py0, sz, 0, 6.2832);
+    }
+    var al = [.3, .55, .9];
+    for (var b = 0; b < 3; b++) { ctx.fillStyle = 'rgba(' + pal.dot + ',' + al[b] + ')'; ctx.fill(bands[b]); }
+
+    // arcs and travelling pulses
+    ctx.lineWidth = 1.4; ctx.lineCap = 'round';
+    arcs.forEach(function (a) {
+      ctx.strokeStyle = 'rgba(' + pal.line + ',.7)'; ctx.beginPath();
+      var pen = false;
+      a.pts.forEach(function (p) {
+        var q = proj(p[0], p[1], p[2]);
+        if (q[2] > 0) { if (pen) ctx.lineTo(q[0], q[1]); else { ctx.moveTo(q[0], q[1]); pen = true; } } else pen = false;
+      });
+      ctx.stroke();
+      if (!calm) {
+        var f = ((t * .22 + a.off) % 1) * 48, k = Math.floor(f), p0 = a.pts[k], q = proj(p0[0], p0[1], p0[2]);
+        if (q[2] > 0) {
+          ctx.fillStyle = 'rgba(' + pal.line + ',.95)'; ctx.beginPath(); ctx.arc(q[0], q[1], 2.4, 0, 6.2832); ctx.fill();
+        }
+      }
+    });
+
+    // markers and labels
+    var fs = Math.max(10, Math.min(12, W / 34)); // smaller labels on small screens
+    ctx.font = '600 ' + fs.toFixed(1) + 'px -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Roboto,Ubuntu,sans-serif'; ctx.textBaseline = 'middle';
+    MARKERS.forEach(function (m) {
+      var q = proj(m.lat * D, m.lng * D, 1);
+      if (q[2] <= 0.05) return;
+      var rad = m.big ? 5.5 : 4;
+      if (!calm) {
+        var ph = (t * .8 + MARKERS.indexOf(m) * .137) % 1;
+        ctx.strokeStyle = 'rgba(' + pal.rgb + ',' + (0.45 * (1 - ph)).toFixed(3) + ')'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(q[0], q[1], rad + ph * 12, 0, 6.2832); ctx.stroke();
+      }
+      ctx.fillStyle = 'rgb(' + pal.rgb + ')'; ctx.strokeStyle = pal.ring; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(q[0], q[1], rad, 0, 6.2832); ctx.stroke(); ctx.fill();
+
+      var label = m.t || m.n, tw = ctx.measureText(label).width, pw = tw + 14, ph2 = Math.round(fs * 1.85), px, py;
+      if (m.side === 'r') { px = q[0] + 9; py = q[1] - ph2 / 2; }
+      else if (m.side === 'l') { px = q[0] - 9 - pw; py = q[1] - ph2 / 2; }
+      else if (m.side === 'tr') { px = q[0] + 8; py = q[1] - ph2 - 6; }
+      else { px = q[0] - 8 - pw; py = q[1] + 6; }
+      px = Math.max(4, Math.min(W - pw - 4, px)); py = Math.max(4, Math.min(W - ph2 - 4, py)); // keep the label inside the canvas
+      ctx.globalAlpha = Math.min(1, (q[2] - .05) * 4);
+      ctx.fillStyle = pal.pill; pill(px, py, pw, ph2, 11); ctx.fill();
+      ctx.fillStyle = pal.text; ctx.textAlign = 'left'; ctx.fillText(label, px + 7, py + ph2 / 2 + .5);
+      ctx.globalAlpha = 1;
+    });
+  }
+
+  function size() {
+    var w = cv.clientWidth || 300, dpr = Math.min(2, window.devicePixelRatio || 1);
+    W = w; cv.width = Math.round(w * dpr); cv.height = Math.round(w * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    R = w / 2 * 0.74; cx = cy = w / 2;
+  }
+
+  var run = false, last = 0, drag = false, lx = 0, ly = 0, raf = 0, vx = 0, vy = 0, onScreen = true;
+  function clampLat(v) { return Math.max(-1, Math.min(1, v)); }
+  function frame(ts) {
+    if (!run) return;
+    var dt = Math.min(.05, (ts - last) / 1000); last = ts;
+    if (!drag && !still) {
+      lng0 += dt * spin * D - vx; lat0 = clampLat(lat0 + vy);   // slow spin + momentum from the last drag
+      vx *= .94; vy *= .9;
+    }
+    draw(ts);
+    raf = requestAnimationFrame(frame);
+  }
+  function start() { if (run || still) return; run = true; last = performance.now(); raf = requestAnimationFrame(frame); }
+  function stop() { run = false; cancelAnimationFrame(raf); }
+
+  size(); draw(0);
+  if (window.ResizeObserver) new ResizeObserver(function () { size(); draw(performance.now()); }).observe(cv);
+  else window.addEventListener('resize', function () { size(); draw(performance.now()); });
+  if (window.IntersectionObserver) new IntersectionObserver(function (e) { onScreen = e[0].isIntersecting; if (onScreen && !document.hidden) start(); else stop(); }).observe(cv);
+  document.addEventListener('visibilitychange', function () { if (document.hidden) stop(); else if (onScreen) start(); });
+  start();
+
+  // Drag to rotate: mouse, touch or pen. Listens on the whole window and checks whether the pointer is
+  // over the globe, so nothing sitting on top of the canvas can block it. Redraws straight away.
+  var activeId = null;
+  function over(x, y) { var r = cv.getBoundingClientRect(); return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom; }
+  function down(x, y) { drag = true; lx = x; ly = y; vx = vy = 0; cv.classList.add('grab'); document.body.style.userSelect = 'none'; }
+  function move(x, y) {
+    if (!drag) return;
+    var dx = x - lx, dy = y - ly;
+    lng0 -= dx * .007; lat0 = clampLat(lat0 + dy * .005);
+    vx = dx * .007; vy = dy * .005;
+    lx = x; ly = y;
+    draw(performance.now());
+  }
+  function up() { if (!drag) return; drag = false; activeId = null; cv.classList.remove('grab'); document.body.style.userSelect = ''; if (still) { vx = vy = 0; } }
+  if (window.PointerEvent) {
+    window.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      if (!over(e.clientX, e.clientY)) return;
+      activeId = e.pointerId; down(e.clientX, e.clientY);
+    }, true);
+    window.addEventListener('pointermove', function (e) { if (drag && e.pointerId === activeId) move(e.clientX, e.clientY); }, true);
+    window.addEventListener('pointerup', function (e) { if (e.pointerId === activeId) up(); }, true);
+    window.addEventListener('pointercancel', function (e) { if (e.pointerId === activeId) up(); }, true);
+  } else {
+    window.addEventListener('mousedown', function (e) { if (over(e.clientX, e.clientY)) down(e.clientX, e.clientY); }, true);
+    window.addEventListener('mousemove', function (e) { move(e.clientX, e.clientY); }, true);
+    window.addEventListener('mouseup', up, true);
+    window.addEventListener('touchstart', function (e) { var t = e.touches[0]; if (over(t.clientX, t.clientY)) down(t.clientX, t.clientY); }, { passive: true, capture: true });
+    window.addEventListener('touchmove', function (e) { var t = e.touches[0]; move(t.clientX, t.clientY); }, { passive: true, capture: true });
+    window.addEventListener('touchend', up, true);
+  }
+})();
+</script>
   var body = root.querySelector('#vaBody');
   var st = { tab: /\/signup\/?$/.test(location.pathname) ? 'signup' : 'login', email: '', name: '', phone: '', dob: '', mode: 'email', afterNewPass: false }, timer = 0, busy = false, lastFocus = null;
 
