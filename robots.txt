@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin.html
+Disallow: /dashboard
+Disallow: /dashboard.html
+Disallow: /docs/broadcast-template.html
+Disallow: /site/newsletter/
+Disallow: /blog/newsletter/confirm/
+
+Sitemap: https://versustrade.co/sitemap.xml
