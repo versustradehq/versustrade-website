@@ -111,10 +111,9 @@
       '<form class="vc-comp" id="vcForm" autocomplete="off"><textarea class="vc-in" id="vcIn" rows="1" maxlength="1000" placeholder="Message\u2026" aria-label="Message"></textarea>' +
       '<div class="vc-crow"><div class="vc-tools"><label class="vc-attach" title="Attach a file" aria-label="Attach a file">' + svg(P.clip) + '<input type="file" id="vcFile" accept="image/*,.pdf" hidden></label>' +
       '<button type="button" class="vc-attach" id="vcEmojiBtn" title="Emoji" aria-label="Emoji" aria-expanded="false">' + svg(P.emoji) + '</button>' +
-      '<button type="button" class="vc-attach" id="vcMicBtn" title="Voice note" aria-label="Record a voice note">' + svg(P.mic) + '</button></div>' +
+      '</div>' +
       '<button type="submit" class="vc-send" id="vcSend" aria-label="Send" disabled>' + svg(P.sendArrow, ' stroke-width="2.2"') + '</button></div>' +
-      '<div class="vc-rec"><button type="button" class="vc-attach" id="vcRecCancel" aria-label="Cancel recording">' + svg(P.trash) + '</button><span class="vc-recdot"></span><span class="vc-rect" id="vcRecTime">0:00</span><span class="vc-recl">Recording\u2026</span>' +
-      '<button type="button" class="vc-send" id="vcRecSend" aria-label="Send voice note">' + svg(P.sendArrow, ' stroke-width="2.2"') + '</button></div></form>' +
+      '</form>' +
       '<div class=\"vc-end\" id=\"vcEnd\"><span>Your conversation has ended</span><button type=\"button\" class=\"vc-act\" id=\"vcNew\">Start a new conversation</button></div>' +
       '</div>' +
     '<nav class="vc-tabs" aria-label="Chat sections"><button type="button" data-go="home">' + svg(P.home) + '<span>Home</span></button>' +
@@ -1110,9 +1109,8 @@
     flowNext(); return true;
   }
 
-  /* ---------- emoji and voice notes ---------- */
-  var pop = $('vcPop'), emojiBtn = $('vcEmojiBtn'), micBtn = $('vcMicBtn'), form = $('vcForm');
-  function dur(sec) { sec = Math.max(0, Math.round(sec || 0)); return Math.floor(sec / 60) + ':' + ('0' + (sec % 60)).slice(-2); }
+  /* ---------- emoji picker ---------- */
+  var pop = $('vcPop'), emojiBtn = $('vcEmojiBtn');
   function showPop(kind) {
     var cur = pop.getAttribute('data-kind');
     if (!kind || cur === kind) { pop.hidden = true; pop.removeAttribute('data-kind'); pop.innerHTML = ''; emojiBtn.setAttribute('aria-expanded', 'false'); return; }
@@ -1122,46 +1120,18 @@
   }
   function insertText(t) {
     var a = input.selectionStart == null ? input.value.length : input.selectionStart, b = input.selectionEnd == null ? a : input.selectionEnd;
-    input.setRangeText(t, a, b, 'end'); input.dispatchEvent(new Event('input')); input.focus({ preventScroll: true });
+    input.value = input.value.slice(0, a) + t + input.value.slice(b);
+    input.focus();
+    input.setSelectionRange(a + t.length, a + t.length);
+    input.dispatchEvent(new Event('input', { bubbles: true }));
   }
   function drawEmoji() {
-    pop.innerHTML = ''; var g = el('div', 'vc-eg'); g.setAttribute('role', 'listbox'); g.setAttribute('aria-label', 'Emoji');
+    pop.innerHTML = '';
+    var g = el('div', 'vc-eg'); g.setAttribute('role', 'listbox'); g.setAttribute('aria-label', 'Emoji');
     EMOJIS.forEach(function (e) { var b = el('button', 'vc-em', e); b.type = 'button'; b.setAttribute('aria-label', e); b.addEventListener('click', function () { insertText(e); }); g.appendChild(b); });
     pop.appendChild(g);
   }
-  var rec = { mr: null, chunks: [], t0: 0, timer: 0, stream: null };
-  function recUI(on) { form.classList.toggle('rec', on); if (!on) { clearInterval(rec.timer); $('vcRecTime').textContent = '0:00'; } }
-  function startRec() {
-    showPop(null);
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) { add({ role: 'system', text: 'Voice notes aren\u2019t supported in this browser.' }); return; }
-    navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
-      var types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus'], mime = '';
-      for (var i = 0; i < types.length; i++) { if (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(types[i])) { mime = types[i]; break; } }
-      rec.stream = stream; rec.chunks = []; rec.mr = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
-      rec.mr.ondataavailable = function (e) { if (e.data && e.data.size) rec.chunks.push(e.data); };
-      rec.mr.start(); rec.t0 = Date.now(); recUI(true);
-      rec.timer = setInterval(function () { var s = (Date.now() - rec.t0) / 1000; $('vcRecTime').textContent = dur(s); if (s >= 120) stopRec(true); }, 250);
-    }).catch(function () { add({ role: 'system', text: 'Microphone access was blocked. Allow it in your browser settings to send voice notes.' }); });
-  }
-  function stopRec(sendIt) {
-    if (!rec.mr) return;
-    var mr = rec.mr, secs = (Date.now() - rec.t0) / 1000, chunks = rec.chunks, stream = rec.stream; rec.mr = null; recUI(false);
-    mr.onstop = function () {
-      stream.getTracks().forEach(function (t) { t.stop(); });
-      if (sendIt && chunks.length && secs >= 1) sendVoice(URL.createObjectURL(new Blob(chunks, { type: mr.mimeType || 'audio/webm' })), secs);
-    };
-    try { mr.stop(); } catch (e) { stream.getTracks().forEach(function (t) { t.stop(); }); }
-  }
-  function sendVoice(url, secs) {
-    if (isEnded()) return;
-    // Front end only: the audio stays in this browser tab. Hook your upload here.
-    add({ role: 'user', kind: 'voice', dur: secs, url: url, text: 'Voice note' });
-    if (S.mode === 'ai') { showTyping(); pause(900).then(function () { botSay({ text: 'Thanks. I can\u2019t listen to voice notes myself, but a representative can. Want me to connect you?', actions: [repAct()] }); }); } else toTeam('Thanks, I\u2019ll listen to your voice note now.');
-  }
   emojiBtn.addEventListener('click', function () { showPop('emoji'); });
-  micBtn.addEventListener('click', startRec);
-  $('vcRecCancel').addEventListener('click', function () { stopRec(false); });
-  $('vcRecSend').addEventListener('click', function () { stopRec(true); });
   panel.addEventListener('click', function (e) { if (!pop.hidden && !e.target.closest('#vcPop, .vc-tools')) showPop(null); });
 
   function greet() { add({ role: 'bot', text: 'Hi! I\u2019m Betty from VersusTrade customer support. Ask me anything about what we do, or pick a coin in the trade box and I\u2019ll take it from there. A representative is available any time you need one.' }); }
