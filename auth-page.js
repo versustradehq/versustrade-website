@@ -22,7 +22,7 @@
   function now() { return Math.floor(Date.now() / 1000); }
   function redirectAfterAuth() {
     // Route newly authenticated admins to the admin workspace; customers go to their dashboard.
-    if ((location.pathname === '/' || /\\/(login|signup)\\/?$/.test(location.pathname)) && String(location.search || '').indexOf('account=1') < 0) {
+    if ((location.pathname === '/' || /\/(login|signup)\/?$/.test(location.pathname)) && String(location.search || '').indexOf('account=1') < 0) {
       getToken().then(function (tok) {
         if (!tok) { window.location.replace('/dashboard/'); return; }
         return fetch('https://versustrade-admin-api.versustradehq.workers.dev/admin/verify', {
@@ -138,7 +138,7 @@ function nameOf(u) {
   root.innerHTML = '<div class="auth-layout"><section class="auth-story"><a class="auth-brand" href="/" aria-label="VersusTrade home"><img src="' + LOGO + '" alt="VersusTrade"></a><div class="auth-story-copy"><span class="auth-eyebrow">TRUST. RELIABILITY. EVERY TRANSACTION.</span><h1>Trade with confidence.<br><em>Move with reliability.</em></h1><p>Crypto, gift cards and cross-border payments — backed by a team you can count on.</p><div class="auth-trust"><span class="auth-trust-dot"></span>Secure transactions. Reliable support.</div></div><div class="auth-story-foot">POWERED BY RELIABILITY. DRIVEN BY TRUST.</div></section><section class="auth-panel"><div class="auth-top"><a class="auth-mobile-brand" href="/"><img src="' + LOGO + '" alt="VersusTrade"></a><button type="button" class="auth-theme" id="authTheme" aria-label="Switch colour theme"><span class="auth-theme-icon">◐</span><span class="auth-theme-label">Light mode</span></button></div><div class="va-card"><div id="vaBody"></div></div><p class="auth-legal">By continuing, you agree to VersusTrade’s <a href="/privacy/">Privacy Policy</a> and <a href="/terms/">Terms of Service</a>.</p></section></div>';
   document.body.appendChild(root);
   var body = root.querySelector('#vaBody');
-  var st = { tab: /\\/signup\\/?$/.test(location.pathname) ? 'signup' : 'login', email: '', name: '', phone: '', dob: '', mode: 'email', afterNewPass: false }, timer = 0, busy = false, lastFocus = null;
+  var st = { tab: /\/signup\/?$/.test(location.pathname) ? 'signup' : 'login', email: '', name: '', phone: '', dob: '', mode: 'email', afterNewPass: false }, timer = 0, busy = false, lastFocus = null;
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function $(sel) { return body.querySelector(sel); }
