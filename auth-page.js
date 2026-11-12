@@ -573,7 +573,7 @@ function askProfile() {
   (function initAuthPage() {
     var q = String(location.search || '');
     if (q.indexOf('account=1') > -1) st.tab = 'login';
-    if (session) {
+    if (session && q.indexOf('account=1') < 0) {
       getToken().then(function (tok) {
         if (tok) { redirectAfterAuth(); return; }
         open();
