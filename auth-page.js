@@ -402,8 +402,8 @@ function nameOf(u) {
       });
     });
   }
-  function head(title, sub, logo) {
-    return '<div class="va-head">' + (logo ? '<span class="va-logo"><img src="' + LOGO + '" alt="" width="36" height="36"></span>' : '') + '<h2 class="va-t" id="vaTitle">' + title + '</h2>' + (sub ? '<p class="va-s">' + sub + '</p>' : '') + '</div>';
+  function head(title, sub) {
+    return '<div class="va-head"><h2 class="va-t" id="vaTitle">' + title + '</h2>' + (sub ? '<p class="va-s">' + sub + '</p>' : '') + '</div>';
   }
 
   function view(name) {
