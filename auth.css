@@ -193,3 +193,12 @@ body{min-height:100svh}
   .va .va-foot{margin-top:8px}
   .auth-legal{margin-top:6px}
 }
+
+
+/* Use Inter consistently across every auth element and control. */
+html, body, button, input, select, textarea {
+  font-family: "Inter", sans-serif !important;
+}
+.auth-page, .auth-page * {
+  font-family: "Inter", sans-serif;
+}
