@@ -1,21 +1,282 @@
-<!doctype html>
-<html lang="en" data-theme="dark">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#090909"><meta name="description" content="Access your secure VersusTrade account.">
-<title>Sign in | VersusTrade</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/auth.css">
-<script>(function(){try{var t=localStorage.getItem('vt-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VersusTrade | Secure Account Access</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<meta name="robots" content="noindex">
+<link rel="icon" href="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/REAL%20LOGO%20%20VERSUSTRADE.png">
+<style>
+:root{--bg:#07070a;--glow:rgba(225,29,46,.16);--glow2:rgba(255,255,255,.05);--ink:#F5F5F5;--mute:rgba(245,245,245,.58);--line:rgba(255,255,255,.12);--red:#E11D2E;--card:linear-gradient(155deg,rgba(255,255,255,.09) 0%,rgba(255,255,255,.025) 55%,rgba(225,29,46,.05) 100%);--cardsh:0 30px 80px -20px rgba(0,0,0,.7),inset 0 1px 1px rgba(255,255,255,.16);--field:rgba(255,255,255,.05);--gbtn:rgba(255,255,255,.06);--gbtnh:rgba(255,255,255,.12);--obbg:rgba(8,8,11,.86);--dots:rgba(255,255,255,.07);--errt:#ffb4bb;color-scheme:dark}
+:root[data-theme="light"]{--bg:#f2f2f5;--glow:rgba(225,29,46,.11);--glow2:rgba(0,0,0,.03);--ink:#1A1A1A;--mute:rgba(26,26,26,.62);--line:rgba(0,0,0,.12);--card:linear-gradient(155deg,rgba(255,255,255,.78) 0%,rgba(255,255,255,.48) 60%,rgba(225,29,46,.05) 100%);--cardsh:0 30px 70px -25px rgba(24,24,27,.35),inset 0 1px 1px rgba(255,255,255,.95);--field:rgba(255,255,255,.7);--gbtn:rgba(255,255,255,.65);--gbtnh:rgba(255,255,255,.95);--obbg:rgba(244,244,247,.9);--dots:rgba(0,0,0,.09);--errt:#b3101f;color-scheme:light}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden;line-height:1.5;transition:background .3s}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(60% 70% at 38% 50%,var(--glow),transparent 70%),radial-gradient(40% 40% at 90% 10%,var(--glow2),transparent 70%)}
+#globe{position:fixed;left:31%;top:41%;height:112vh;width:112vh;max-width:none;transform:translate(-50%,-50%);pointer-events:none}
+.brand{position:fixed;top:max(28px,env(safe-area-inset-top));left:48px;z-index:3;display:flex;align-items:center;gap:10px;font-size:26px;font-weight:600;letter-spacing:-.02em;color:var(--ink);text-decoration:none}
+.brand i{width:40px;height:40px;padding:5px;border:2px solid var(--red);border-radius:11px;display:grid;place-items:center}
+.brand img{width:100%;height:100%;object-fit:contain}
+.tag{position:fixed;left:48px;bottom:max(44px,env(safe-area-inset-bottom));z-index:2;max-width:520px}
+.tag h1{text-shadow:0 2px 24px var(--bg),0 0 8px var(--bg);font-size:clamp(30px,3.4vw,46px);line-height:1.05;letter-spacing:-.035em;font-weight:800}
+.tag p{text-shadow:0 0 12px var(--bg);margin-top:12px;color:var(--mute);font-size:18px}
+main{position:relative;z-index:4;min-height:100vh;display:flex;align-items:center;justify-content:flex-end;padding:24px 6vw}
+.cw{position:relative;width:100%;max-width:440px}
+.theme{position:absolute;top:20px;right:20px;z-index:2;width:40px;height:40px;display:grid;place-items:center;border-radius:50%;border:1px solid var(--line);background:var(--gbtn);color:var(--ink);cursor:pointer;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);transition:.3s}
+.theme:hover{background:var(--gbtnh);border-color:rgba(225,29,46,.5)}
+.theme svg{width:20px;height:20px;transition:transform .3s}.theme:hover svg{transform:rotate(35deg)}
+.card{width:100%;max-height:calc(100dvh - 48px);overflow:auto;padding:36px 36px 28px;border-radius:24px;border:1px solid var(--line);background:var(--card);-webkit-backdrop-filter:blur(36px) saturate(1.3);backdrop-filter:blur(36px) saturate(1.3);box-shadow:var(--cardsh);scrollbar-width:none}
+.card::-webkit-scrollbar{display:none}
+h2{font-size:34px;line-height:1.15;letter-spacing:-.03em;font-weight:700;padding-right:52px}
+.sub{margin-top:6px;color:var(--mute);font-size:15px}
+.sub b{color:var(--ink);word-break:break-all}
+label{display:block;margin:0 0 6px;font-size:13px;color:var(--mute)}
+input[type=text],input[type=email],input[type=tel],input[type=password]{width:100%;height:48px;margin-bottom:16px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:var(--field);color:var(--ink);font:inherit;font-size:16px;outline:0;transition:border-color .15s,box-shadow .15s}
+input::placeholder{color:var(--mute);opacity:.7}
+input:focus{border-color:rgba(225,29,46,.8);box-shadow:0 0 0 4px rgba(225,29,46,.16)}
+.pw{position:relative}.pw input{padding-right:46px}
+.eye{position:absolute;right:0;top:0;width:46px;height:48px;display:grid;place-items:center;border:0;background:none;color:var(--mute);cursor:pointer}
+.eye svg{width:20px;height:20px}
+.opts{display:flex;justify-content:space-between;align-items:center;margin:-4px 0 18px;font-size:14px}
+.chk{display:flex;align-items:center;gap:8px;margin:0;color:var(--ink);cursor:pointer}
+.chk input{accent-color:var(--red);width:16px;height:16px}
+.lnk{border:0;background:none;color:var(--ink);font:inherit;font-size:14px;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:48px;margin-bottom:12px;border-radius:12px;font:inherit;font-size:16px;font-weight:700;cursor:pointer;transition:.25s;color:#fff;border:1px solid rgba(255,255,255,.28);background:linear-gradient(145deg,#F64B5C,#C9121F);box-shadow:0 12px 28px -10px rgba(225,29,46,.6),inset 0 1px 1px rgba(255,255,255,.45)}
+.btn:hover:not(:disabled){filter:brightness(1.08)}
+.btn:disabled{opacity:.5;cursor:default}
+.btn.g{background:var(--gbtn);color:var(--ink);border-color:var(--line);box-shadow:inset 0 1px 1px rgba(255,255,255,.12);font-weight:600;font-size:15px}
+.btn.g:hover:not(:disabled){background:var(--gbtnh)}
+.btn svg{width:20px;height:20px}
+.or{margin:6px 0 14px;text-align:center;color:var(--mute);font-size:13px}
+.err{margin-bottom:14px;padding:10px 12px;border-radius:10px;background:rgba(225,29,46,.14);border:1px solid rgba(225,29,46,.4);color:var(--errt);font-size:14px}
+.err[hidden]{display:none}
+.hint{margin:-10px 0 16px;color:var(--mute);font-size:13px}
+.foot{margin-top:16px;text-align:center;color:var(--mute);font-size:14px}
+.row{display:flex;justify-content:space-between;margin-top:4px}
+.code{letter-spacing:.7em;text-align:center;font-size:24px!important;font-weight:700;padding-left:.7em!important}
+:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+@media(max-width:899px){
+ .brand{position:absolute;left:20px;top:max(18px,env(safe-area-inset-top));font-size:22px}
+ .brand i{width:34px;height:34px}
+ .tag{display:none}
+ main{min-height:0;display:block;padding:calc(max(18px,env(safe-area-inset-top)) + 54px) 14px 0}
+ .cw{max-width:none}
+ .card{max-height:none;overflow:visible;padding:26px 20px 22px}
+ h2{font-size:28px}
+ .theme{top:16px;right:16px}
+ #globe{position:relative;left:auto;top:auto;transform:none;height:auto;width:100%;max-width:560px;aspect-ratio:1;display:block;margin:8px auto 0}
+ .obmain{padding:0 20px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+.ob{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;background:radial-gradient(var(--dots) 1px,transparent 1.2px) 0 0/22px 22px,var(--obbg);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+.ob[hidden]{display:none}
+.obtop{display:flex;align-items:center;gap:14px;padding:max(22px,env(safe-area-inset-top)) 24px 0;color:var(--mute);font-size:15px}
+.obback{width:36px;height:36px;border:0;border-radius:50%;background:none;color:var(--ink);cursor:pointer;display:grid;place-items:center}
+.obback:hover{background:rgba(255,255,255,.08)}
+.obback[hidden]{display:none}
+.obmain{flex:1;display:flex;flex-direction:column;justify-content:center;width:100%;max-width:540px;margin:0 auto}
+.obmark{width:44px;height:44px;padding:6px;margin-bottom:18px;border:2px solid var(--red);border-radius:12px;display:grid;place-items:center}
+.obmark img{width:100%;height:100%;object-fit:contain}
+.obq{min-height:2.5em;font:500 clamp(28px,4.4vw,38px)/1.2 Georgia,"Iowan Old Style","Times New Roman",serif;letter-spacing:-.01em}
+.typing::after{content:"";display:inline-block;width:2px;height:.95em;margin-left:3px;vertical-align:-.1em;background:var(--ink);animation:bl .8s steps(2,start) infinite}
+@keyframes bl{to{visibility:hidden}}
+.obfield{position:relative;margin-top:22px;opacity:0;transform:translateY(8px);transition:opacity .4s,transform .4s}
+.obfield.show{opacity:1;transform:none}
+.obfield input{width:100%;height:62px;margin:0;padding:0 64px 0 18px;border-radius:12px;font-size:20px}
+.obgo{position:absolute;right:8px;top:8px;width:46px;height:46px;border:0;border-radius:10px;background:var(--gbtn);color:var(--ink);cursor:pointer;display:grid;place-items:center;transition:.2s}
+.obgo:not(:disabled){background:var(--red)}
+.obgo:disabled{opacity:.5;cursor:default}
+.obpress{margin-top:10px;text-align:right;color:var(--mute);font-size:13px;opacity:0;transition:opacity .4s}
+.obfield.show~.obpress{opacity:1}
+.oberr{margin-top:10px;color:var(--errt);font-size:14px}
+.oberr[hidden]{display:none}
+.obfoot{min-height:3em;max-width:540px;margin:0 auto;padding:0 24px max(30px,env(safe-area-inset-bottom));text-align:center;color:var(--mute);font-size:14px;line-height:1.6}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<script>try{var t=localStorage.getItem("vt-theme");if(!t&&matchMedia("(prefers-color-scheme:light)").matches)t="light";if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 </head>
 <body>
-<script src="/auth-page.js" defer></script>
+<a class="brand" href="/"><i><img src="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/REAL%20LOGO%20%20VERSUSTRADE.png" alt=""></i>VersusTrade</a>
+<div class="tag"><h1>Delivering value beyond borders.</h1><p>Buy and sell crypto and gift cards at clear rates, with real people on hand.</p></div>
+<main><div class="cw"><button class="theme" id="theme" type="button" aria-label="Toggle light or dark theme"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="3.5"/><path d="M10 1.5v2M10 16.5v2M1.5 10h2M16.5 10h2M4 4l1.4 1.4M14.6 14.6L16 16M4 16l1.4-1.4M14.6 5.4L16 4"/></svg></button><section class="card" id="card" aria-live="polite"></section></div></main>
+<canvas id="globe" role="img" aria-label="Globe showing example VersusTrade transactions between Lagos, Abuja, London, New York, São Paulo, Dubai and Singapore"></canvas>
+<div class="ob" id="ob" hidden role="dialog" aria-modal="true" aria-label="Finish setting up your account"></div>
+
 <script>
-document.addEventListener('DOMContentLoaded',function(){
- var b=document.getElementById('authTheme');if(!b)return;
- function sync(){var light=document.documentElement.getAttribute('data-theme')==='light';b.querySelector('.auth-theme-label').textContent=light?'Dark mode':'Light mode';b.querySelector('.auth-theme-icon').textContent=light?'☼':'◐';}
- b.addEventListener('click',function(){var next=document.documentElement.getAttribute('data-theme')==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',next);try{localStorage.setItem('vt-theme',next)}catch(e){}sync();});sync();
-});
+/* ---------- Theme toggle (shares the homepage setting) ---------- */
+document.getElementById('theme').addEventListener('click',function(){var r=document.documentElement,n=r.getAttribute('data-theme')==='light'?'dark':'light';r.setAttribute('data-theme',n);try{localStorage.setItem('vt-theme',n)}catch(e){}});
+
+/* ---------- Globe: same as the homepage ---------- */
+(function(){
+var cv=document.getElementById('globe'),ctx=cv.getContext('2d'),root=document.documentElement,D=Math.PI/180,COLS=144,ROWS=72,STEP=2.5;
+var LAND='AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPCf//8HAAAAAAAAAAAAAAAAyPzz//8A4AAAAAADAAAAAACAlAnw//8AAAAAB4AfAAAAAADAAywA/P8AAABgAP4fAAEAAQIAPvYH+H8AAABguP//7x8A4P//K9wc+B8AgH+g1///////z////z98+AMC4L/8////////AP///684+AAB8P7///////9/wP///wMGcAAAfP7//////38fgAf+/wd+AAAAfP7//////wEBAAH4/x9+AABAKP//////f8ABAADw/3//AQCw+P///////8AAAADg////AwDA/////////wAAAADA//8vBwDA/////////wAAAADA//8/AACA/6/v////fwAAAADA//8PAACA1wf3////PwIAAADA//8HAADwYW/P////DwEAAACA//8DAADwQPnP//9/BAEAAACA//8DAAAAD+D/////yAAAAAAA/v8BAADgD8D/////IAAAAAAA+n8AAADwf9f/////AQAAAAAA/IMAAADw///3////AQAAAAAA8IEAAAD8/7/P////AAAAAAAA4AEAAAD8/79/+P9/AQAAAAAAwBEAAAD+/3//8OcHAAAAAAAAwBsYAAD8/39/4MMLAAAAAAAAAB4AAAD+//8e4IEHAQAAAAAAAHAAAAD+//8HwIAPAwAAAAAAAAAUAAD8//8JwIAGAAAAAAAAAID+AAD4//8PAIAABAAAAAAAAAD+AQDw/f8PAAEBAAAAAAAAAAD+DwAA8P8HAIBhAAAAAAAAAAD/DwAA8P8DAABzAAAAAAAAAAD/PwAA8P8BAABzMQAAAAAAAAD//wEA8P8AAAACwQMAAAAAAAD//wMA4P8AAAAEgAcAAAAAAAD//wMA4P8AAACABQEAAAAAAAD+/wEA4P8AAAAAAAAAAAAAAAD+/wAA4P8IAAAAMAAAAAAAAAD4/wAA4P8MAAAAfgIAAAAAAADw/wAA4D8MAAAA/gcAAAAAAADw/wAA4D8GAADA/w8AAAAAAADwPwAAwD8GAADg/w8AAAAAAADwHwAAwB8AAADg/x8AAAAAAAD4DwAAgB8AAADA/x8AAAAAAAD4DwAAgA8AAADA/x8AAAAAAAD4BwAAgAMAAADAwx8AAAAAAAD4AQAAAAAAAAAAAA8AAAAAAAD4AAAAAAAAAAAAAARAAAAAAAA8AAAAAAAAAAAAAAQgAAAAAAA4AAAAAAAAAAAAAAAQAAAAAAAcAAAAAAAAAAAAAAAIAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAMAQAAAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+var MARKERS=[{n:'Lagos',t:'\u20A610M sent',lat:6.52,lng:3.38,side:'bl',big:1},{n:'Abuja',t:'\u20A625M received',lat:9.07,lng:7.4,side:'tr'},{n:'London',t:'\u00A350K received',lat:51.51,lng:-0.13,side:'l'},{n:'New York',t:'5,000 USDT received',lat:40.71,lng:-74.01,side:'bl'},{n:'S\u00E3o Paulo',t:'20 SOL sent',lat:-23.55,lng:-46.63,side:'l'},{n:'Dubai',t:'1 BTC sent',lat:25.2,lng:55.27,side:'r'},{n:'Singapore',t:'3,200 USDT sent',lat:1.35,lng:103.82,side:'r'}];
+var ARCS=[['London','New York'],['London','Dubai'],['New York','S\u00E3o Paulo'],['Lagos','London'],['Lagos','Dubai'],['Lagos','New York'],['Lagos','Abuja']];
+var reduced=matchMedia('(prefers-reduced-motion:reduce)').matches,spin=reduced?2:5,calm=reduced;
+var bin=atob(LAND),dots=[];
+for(var r=0;r<ROWS;r++)for(var c=0;c<COLS;c++){var i=r*COLS+c;if((bin.charCodeAt(i>>3)>>(i&7))&1){var la=(90-(r+.5)*STEP)*D,ln=(-180+(c+.5)*STEP)*D;dots.push([la,ln,Math.sin(la),Math.cos(la)])}}
+function byName(n){for(var k=0;k<MARKERS.length;k++)if(MARKERS[k].n===n)return MARKERS[k]}
+function vec(m){var la=m.lat*D,ln=m.lng*D;return[Math.cos(la)*Math.cos(ln),Math.cos(la)*Math.sin(ln),Math.sin(la)]}
+var arcs=ARCS.map(function(p,idx){var a=vec(byName(p[0])),b=vec(byName(p[1])),dot=Math.max(-1,Math.min(1,a[0]*b[0]+a[1]*b[1]+a[2]*b[2])),om=Math.acos(dot),so=Math.sin(om),pts=[];
+ for(var s=0;s<=48;s++){var t=s/48,w1=Math.sin((1-t)*om)/so,w2=Math.sin(t*om)/so,v=[w1*a[0]+w2*b[0],w1*a[1]+w2*b[1],w1*a[2]+w2*b[2]];pts.push([Math.asin(v[2]),Math.atan2(v[1],v[0]),1+(0.03+0.25*om/Math.PI)*Math.sin(Math.PI*t)])}
+ return{pts:pts,off:idx*0.17}});
+var W=300,R=120,cx=150,cy=150,lat0=30*D,lng0=-25*D,pal=null,tick=0;
+function palette(){var dark=root.getAttribute('data-theme')!=='light';
+ return dark?{s0:'#141416',s1:'#000000',edge:'rgba(255,255,255,.28)',halo:'rgba(255,255,255,.07)',dot:'255,255,255',line:'255,255,255',rgb:'255,64,80',text:'#F5F5F5',pill:'rgba(12,12,12,.9)',ring:'#FFFFFF'}
+ :{s0:'#FFFFFF',s1:'#E9E9EC',edge:'rgba(0,0,0,.16)',halo:'rgba(0,0,0,.06)',dot:'22,22,24',line:'225,29,46',rgb:'225,29,46',text:'#1A1A1A',pill:'rgba(255,255,255,.92)',ring:'#FFFFFF'}}
+function proj(lat,lng,k){var cl=Math.cos(lat),dl=lng-lng0,c0=Math.cos(lat0),s0=Math.sin(lat0),sl=Math.sin(lat);return[cx+R*k*cl*Math.sin(dl),cy-R*k*(c0*sl-s0*cl*Math.cos(dl)),s0*sl+c0*cl*Math.cos(dl)]}
+function pill(x,y,w,h,rad){ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x,y,w,h,rad);else ctx.rect(x,y,w,h)}
+function draw(ts){if(!pal||tick++%45===0)pal=palette();var t=ts/1000;ctx.clearRect(0,0,W,W);
+ var h=ctx.createRadialGradient(cx,cy,R,cx,cy,R*1.2);h.addColorStop(0,pal.halo);h.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=h;ctx.beginPath();ctx.arc(cx,cy,R*1.2,0,6.2832);ctx.fill();
+ var g=ctx.createRadialGradient(cx-R*.35,cy-R*.4,R*.1,cx,cy,R);g.addColorStop(0,pal.s0);g.addColorStop(1,pal.s1);ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,R,0,6.2832);ctx.fill();ctx.strokeStyle=pal.edge;ctx.lineWidth=1;ctx.stroke();
+ var sz=Math.max(1.1,R/150),bands=[new Path2D(),new Path2D(),new Path2D()],c0=Math.cos(lat0),s0=Math.sin(lat0);
+ for(var n=0;n<dots.length;n++){var d=dots[n],dl=d[1]-lng0,cd=Math.cos(dl),z=s0*d[2]+c0*d[3]*cd;if(z<=.02)continue;var x=d[3]*Math.sin(dl),y=c0*d[2]-s0*d[3]*cd,bp=bands[z>.6?2:z>.3?1:0],px0=cx+R*x,py0=cy-R*y;bp.moveTo(px0+sz,py0);bp.arc(px0,py0,sz,0,6.2832)}
+ var al=[.3,.55,.9];for(var b=0;b<3;b++){ctx.fillStyle='rgba('+pal.dot+','+al[b]+')';ctx.fill(bands[b])}
+ ctx.lineWidth=1.4;ctx.lineCap='round';
+ arcs.forEach(function(a){ctx.strokeStyle='rgba('+pal.line+',.7)';ctx.beginPath();var pen=false;
+  a.pts.forEach(function(p){var q=proj(p[0],p[1],p[2]);if(q[2]>0){if(pen)ctx.lineTo(q[0],q[1]);else{ctx.moveTo(q[0],q[1]);pen=true}}else pen=false});ctx.stroke();
+  if(!calm){var f=((t*.22+a.off)%1)*48,k=Math.floor(f),p0=a.pts[k],q=proj(p0[0],p0[1],p0[2]);if(q[2]>0){ctx.fillStyle='rgba('+pal.line+',.95)';ctx.beginPath();ctx.arc(q[0],q[1],2.4,0,6.2832);ctx.fill()}}});
+ var fs=Math.max(10,Math.min(12,W/34));ctx.font='600 '+fs.toFixed(1)+'px -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Roboto,Ubuntu,sans-serif';ctx.textBaseline='middle';
+ MARKERS.forEach(function(m){var q=proj(m.lat*D,m.lng*D,1);if(q[2]<=0.05)return;var rad=m.big?5.5:4;
+  if(!calm){var ph=(t*.8+MARKERS.indexOf(m)*.137)%1;ctx.strokeStyle='rgba('+pal.rgb+','+(0.45*(1-ph)).toFixed(3)+')';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(q[0],q[1],rad+ph*12,0,6.2832);ctx.stroke()}
+  ctx.fillStyle='rgb('+pal.rgb+')';ctx.strokeStyle=pal.ring;ctx.lineWidth=2;ctx.beginPath();ctx.arc(q[0],q[1],rad,0,6.2832);ctx.stroke();ctx.fill();
+  var label=m.t||m.n,tw=ctx.measureText(label).width,pw=tw+14,ph2=Math.round(fs*1.85),px,py;
+  if(m.side==='r'){px=q[0]+9;py=q[1]-ph2/2}else if(m.side==='l'){px=q[0]-9-pw;py=q[1]-ph2/2}else if(m.side==='tr'){px=q[0]+8;py=q[1]-ph2-6}else{px=q[0]-8-pw;py=q[1]+6}
+  px=Math.max(4,Math.min(W-pw-4,px));py=Math.max(4,Math.min(W-ph2-4,py));
+  ctx.globalAlpha=Math.min(1,(q[2]-.05)*4);ctx.fillStyle=pal.pill;pill(px,py,pw,ph2,11);ctx.fill();ctx.fillStyle=pal.text;ctx.textAlign='left';ctx.fillText(label,px+7,py+ph2/2+.5);ctx.globalAlpha=1})}
+function size(){var w=cv.clientWidth||300,dpr=Math.min(2,devicePixelRatio||1);W=w;cv.width=Math.round(w*dpr);cv.height=Math.round(w*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);R=w/2*0.74;cx=cy=w/2}
+var run=false,last=0,raf=0;
+function frame(ts){if(!run)return;var dt=Math.min(.05,(ts-last)/1000);last=ts;lng0+=dt*spin*D;draw(ts);raf=requestAnimationFrame(frame)}
+function start(){if(run)return;run=true;last=performance.now();raf=requestAnimationFrame(frame)}
+function stop(){run=false;cancelAnimationFrame(raf)}
+size();draw(0);
+if(window.ResizeObserver)new ResizeObserver(function(){size();draw(performance.now())}).observe(cv);else addEventListener('resize',size);
+if(window.IntersectionObserver)new IntersectionObserver(function(e){if(e[0].isIntersecting&&!document.hidden)start();else stop()}).observe(cv);
+document.addEventListener('visibilitychange',function(){if(document.hidden)stop();else start()});start();
+})();
+
+/* ---------- Auth (same Supabase project and session key as the homepage, so logins carry across) ---------- */
+(function(){
+var SB={url:'https://axldgaxsdgeycinxqbem.supabase.co',key:'sb_publishable_eU9t7DqMTbeAOIdsXhcYmg_wwvmwm3j'},STORE='vt_auth_session',ADMIN='https://versustrade-admin-api.versustradehq.workers.dev/admin/verify';
+var card=document.getElementById('card'),session=null,remember=true,st={tab:/signup/.test(location.pathname)||/mode=signup/.test(location.search)?'signup':'login',email:'',mode:'email',afterNew:false},busy=false,timer=0;
+var now=function(){return Math.floor(Date.now()/1000)};
+function readStore(){try{var v=localStorage.getItem(STORE);if(v){remember=true;return JSON.parse(v)}v=sessionStorage.getItem(STORE);if(v){remember=false;return JSON.parse(v)}}catch(e){}return null}
+function persist(){try{localStorage.removeItem(STORE);sessionStorage.removeItem(STORE);if(session)(remember?localStorage:sessionStorage).setItem(STORE,JSON.stringify(session))}catch(e){}}
+function setSession(d){var u=d.user||{},m=u.user_metadata||{},p=session||{};session={access_token:d.access_token,refresh_token:d.refresh_token||p.refresh_token||'',expires_at:d.expires_at||now()+(d.expires_in||3600),email:u.email||p.email||'',id:u.id||p.id||'',name:m.name||m.full_name||p.name||'',phone:m.phone||p.phone||'',dob:m.dob||p.dob||'',profileDone:!!(m.dob&&m.phone&&(m.full_name||m.name))||!!p.profileDone,created:u.created_at?Date.parse(u.created_at):p.created||0};persist()}
+session=readStore();
+function call(path,o){o=o||{};var h={apikey:SB.key};if(o.body)h['Content-Type']='application/json';if(o.token)h.Authorization='Bearer '+o.token;
+ return fetch(SB.url+'/auth/v1'+path,{method:o.method||'POST',headers:h,body:o.body?JSON.stringify(o.body):undefined}).then(function(r){return r.text().then(function(t){var j={};try{j=t?JSON.parse(t):{}}catch(e){}return{ok:r.ok,status:r.status,data:j}})})}
+function getToken(){if(!session)return Promise.resolve(null);if(session.expires_at-60>now())return Promise.resolve(session.access_token);
+ return call('/token?grant_type=refresh_token',{body:{refresh_token:session.refresh_token}}).then(function(r){if(r.ok&&r.data.access_token){setSession(r.data);return session.access_token}return null},function(){return null})}
+function redirect(){getToken().then(function(t){if(!t)return location.replace('/dashboard/');return fetch(ADMIN,{method:'POST',headers:{Authorization:'Bearer '+t,'Content-Type':'application/json'},body:'{}'}).then(function(r){return r.json()}).then(function(d){location.replace(d&&d.authorized===true?'/admin':'/dashboard/')})}).catch(function(){location.replace('/dashboard/')})}
+
+function goNext(){if(session&&!session.profileDone&&!(session.phone&&session.dob))onboard(0);else redirect()}
+var EYE='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+EYEOFF='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4M6.5 6.6C3.7 8.4 2 12 2 12s3.6 7 10 7a9.6 9.6 0 0 0 4.4-1M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>',
+GIC='<svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.6 5.9c4.5-4.1 7-10.2 7-17.6z"/><path fill="#FBBC05" d="M10.5 28.7a14.5 14.5 0 0 1 0-9.4l-7.9-6.1a24 24 0 0 0 0 21.6l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.9 2.3-8.3 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>';
+function $(s){return card.querySelector(s)}
+function err(m){var e=$('.err');if(e){e.textContent=m||'';e.hidden=!m}}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function pw(id,ac,ph){return'<div class="pw"><input id="'+id+'" type="password" autocomplete="'+ac+'" placeholder="'+ph+'"><button type="button" class="eye" data-eye="'+id+'" aria-label="Show password">'+EYE+'</button></div>'}
+function eyes(){[].forEach.call(card.querySelectorAll('[data-eye]'),function(b){b.onclick=function(){var i=$('#'+b.dataset.eye),s=i.type==='password';i.type=s?'text':'password';b.innerHTML=s?EYEOFF:EYE;b.setAttribute('aria-label',s?'Hide password':'Show password')}})}
+var validEmail=function(v){return/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)};
+function normPhone(raw){var t=String(raw||'').trim().replace(/[\s().\-]/g,'');if(/^00/.test(t))t='+'+t.slice(2);if(!/^\+?\d+$/.test(t))return'';if(t[0]==='+'){var d=t.slice(1);return d.length>=8&&d.length<=15&&d[0]!=='0'?'+'+d:''}if(/^0\d{10}$/.test(t))return'+234'+t.slice(1);if(/^234\d{10}$/.test(t))return'+'+t;if(/^[789]\d{9}$/.test(t))return'+234'+t;return''}
+function maxDob(){var d=new Date();d.setFullYear(d.getFullYear()-18);return d.toISOString().slice(0,10)}
+function checkDob(v){if(!/^\d{4}-\d{2}-\d{2}$/.test(v||''))return'Please enter your date of birth.';if(+v.slice(0,4)<1900)return'Please enter a valid date of birth.';if(v>maxDob())return'You must be 18 or older to create an account.';return''}
+function low(r){return String((r.data&&(r.data.msg||r.data.error_description||r.data.message||r.data.error_code))||'').toLowerCase()}
+function friendly(r,ctx){var m=low(r);if(r.status===429||m.indexOf('rate')>-1||m.indexOf('seconds')>-1)return'Too many tries. Please wait a minute, then try again.';if(ctx==='login'&&(m.indexOf('invalid')>-1||m.indexOf('credentials')>-1))return'Incorrect email or password.';if(ctx==='code'&&(m.indexOf('expired')>-1||m.indexOf('invalid')>-1||m.indexOf('token')>-1))return'That code didn\u2019t work. Check it, or ask for a new one.';if(m.indexOf('password')>-1)return'Please choose a stronger password (at least 8 characters).';if(m.indexOf('already')>-1)return'This email already has an account. Please log in.';return'Something went wrong. Please try again.'}
+var NET='Couldn\u2019t reach the sign-in service. Check your connection and try again.';
+function lock(b,t){if(b){b.disabled=true;b.dataset.t=b.textContent;b.textContent=t}}function unlock(b){if(b){b.disabled=false;b.textContent=b.dataset.t||b.textContent}}
+
+function view(n){clearInterval(timer);busy=false;
+ if(n==='main'){var L=st.tab==='login';
+  card.innerHTML='<h2>'+(L?'Log in':'Create account')+'</h2><p class="sub">'+(L?'Welcome back. Enter your details.':'Enter your details to get started.')+'</p>'+
+  '<form id="f" novalidate style="margin-top:24px"><div class="err" hidden></div>'+
+  (L?'':'<label for="nm">Full name</label><input id="nm" type="text" autocomplete="name" maxlength="80" placeholder="First and last name">')+
+  '<label for="em">Email</label><input id="em" type="email" inputmode="email" autocomplete="email" placeholder="Enter your email">'+
+  '<label for="pa">Password</label>'+pw('pa',L?'current-password':'new-password',L?'Enter your password':'Create a password')+
+  (L?'':'<p class="hint">At least 8 characters.</p>')+
+  '<div class="opts"><label class="chk"><input type="checkbox" id="kp"><span>Keep me signed in</span></label>'+(L?'<button type="button" class="lnk" id="fg">Forgot password?</button>':'')+'</div>'+
+  '<button class="btn" id="go" type="submit">'+(L?'Log in':'Create account')+'</button></form>'+
+  (L?'<button type="button" class="btn g" id="cl">Email me a code instead</button>':'')+
+  '<p class="or">Or</p><button type="button" class="btn g" id="gg">'+GIC+'Continue with Google</button>'+
+  '<p class="foot">'+(L?'Don\u2019t have an account? ':'Already have an account? ')+'<button type="button" class="lnk" data-tab="'+(L?'signup':'login')+'">'+(L?'Sign up':'Log in')+'</button></p>';
+  var em=$('#em'),kp=$('#kp');em.value=st.email;kp.checked=remember;
+  [].forEach.call(card.querySelectorAll('[data-tab]'),function(t){t.onclick=function(){location.href=t.dataset.tab==='signup'?'/signup/':'/login/'}});
+  $('#f').onsubmit=function(e){e.preventDefault();remember=kp.checked;L?login(em.value.trim(),$('#pa').value):signup(em.value.trim(),$('#pa').value,{name:$('#nm').value})};
+  if(L){$('#fg').onclick=function(){remember=kp.checked;startCode(em.value.trim(),true)};$('#cl').onclick=function(){remember=kp.checked;startCode(em.value.trim(),false)}}
+  $('#gg').onclick=function(){location.href=SB.url+'/auth/v1/authorize?provider=google&redirect_to='+encodeURIComponent(location.origin+location.pathname)};
+  eyes();
+ }else if(n==='code'){
+  card.innerHTML='<h2>Check your email</h2><p class="sub">We sent a 6-digit code to <b>'+esc(st.email)+'</b>.</p><form id="f2" novalidate style="margin-top:22px"><div class="err" hidden></div><input class="code" id="cd" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" aria-label="Six-digit code"><button class="btn" id="vf" type="submit" disabled>Verify</button></form><div class="row"><button type="button" class="lnk" id="rs" disabled>Resend code</button><button type="button" class="lnk" id="bk">Back</button></div>';
+  var cd=$('#cd'),vf=$('#vf');cd.oninput=function(){cd.value=cd.value.replace(/\D/g,'').slice(0,6);vf.disabled=cd.value.length!==6;err('')};
+  $('#f2').onsubmit=function(e){e.preventDefault();if(cd.value.length===6)verify(cd.value)};$('#bk').onclick=function(){view('main')};$('#rs').onclick=resend;cool(60);setTimeout(function(){cd.focus()},60);
+ }else if(n==='newpass'){
+  card.innerHTML='<h2>'+(st.afterNew?'Set a new password':'Change password')+'</h2><p class="sub">Choose a password you\u2019ll use next time.</p><form id="f3" novalidate style="margin-top:22px"><div class="err" hidden></div><label for="np">New password</label>'+pw('np','new-password','Create a password')+'<p class="hint">At least 8 characters.</p><button class="btn" id="sv" type="submit">Save password</button></form><button type="button" class="btn g" id="sk">'+(st.afterNew?'Skip for now':'Cancel')+'</button>';
+  $('#f3').onsubmit=function(e){e.preventDefault();savePw($('#np').value)};$('#sk').onclick=function(){goNext()};eyes();
+ }else{
+  card.innerHTML='<h2>You\u2019re signed in</h2><p class="sub">Signed in as <b>'+esc(session.email)+'</b>.</p><div style="margin-top:22px"><button class="btn" id="ct">Continue</button><button class="btn g" id="cp">Change password</button><button class="btn g" id="lo">Log out</button></div>';
+  $('#ct').onclick=goNext;$('#cp').onclick=function(){st.afterNew=false;view('newpass')};$('#lo').onclick=function(){var t=session.access_token;session=null;persist();if(t)call('/logout',{token:t,body:{}}).catch(function(){});view('main')};
+ }}
+function cool(sec){var b=$('#rs');if(!b)return;var left=sec;function tick(){if(!card.contains(b)){clearInterval(timer);return}b.disabled=left>0;b.textContent=left>0?'Resend code in '+left+'s':'Resend code';if(--left<-1)clearInterval(timer)}tick();timer=setInterval(tick,1000)}
+function login(email,pass){if(busy)return;if(!validEmail(email))return err('Please enter a valid email address.');if(!pass)return err('Please enter your password.');busy=true;st.email=email.toLowerCase();var b=$('#go');lock(b,'Signing in\u2026');err('');
+ call('/token?grant_type=password',{body:{email:st.email,password:pass}}).then(function(r){busy=false;if(r.ok&&r.data.access_token){setSession(r.data);goNext();return}unlock(b);if(low(r).indexOf('not confirmed')>-1){st.mode='signup';call('/resend',{body:{type:'signup',email:st.email}});view('code');return}err(friendly(r,'login'))},function(){busy=false;unlock(b);err(NET)})}
+function signup(email,pass,x){if(busy)return;var nm=String(x.name||'').replace(/\s+/g,' ').trim();
+ if(nm.split(' ').length<2||nm.length>80)return err('Please enter your first and last name.');if(!validEmail(email))return err('Please enter a valid email address.');if(pass.length<8)return err('Your password must be at least 8 characters.');
+ busy=true;st.email=email.toLowerCase();var b=$('#go');lock(b,'Creating account\u2026');err('');
+ call('/signup',{body:{email:st.email,password:pass,data:{full_name:nm,name:nm}}}).then(function(r){busy=false;if(r.ok&&r.data.access_token){setSession(r.data);goNext();return}if(r.ok){st.mode='signup';st.afterNew=false;view('code');return}unlock(b);err(friendly(r,'signup'))},function(){busy=false;unlock(b);err(NET)})}
+function startCode(email,forgot){if(busy)return;if(!validEmail(email))return err(forgot?'Enter your email above first, then choose Forgot password.':'Enter your email above first.');busy=true;st.email=email.toLowerCase();err('');
+ call('/otp',{body:{email:st.email,create_user:true}}).then(function(r){busy=false;if(r.ok){st.mode='email';st.afterNew=!!forgot;view('code');return}err(friendly(r,'otp'))},function(){busy=false;err(NET)})}
+function resend(){if(busy)return;busy=true;var p=st.mode==='signup'?call('/resend',{body:{type:'signup',email:st.email}}):call('/otp',{body:{email:st.email,create_user:true}});p.then(function(r){busy=false;if(r.ok){err('');cool(60)}else err(friendly(r,'otp'))},function(){busy=false;err(NET)})}
+function verify(tok){if(busy)return;busy=true;var vb=$('#vf');lock(vb,'Checking\u2026');
+ call('/verify',{body:{type:st.mode==='signup'?'signup':'email',email:st.email,token:tok}}).then(function(r){busy=false;if(r.ok&&r.data.access_token){setSession(r.data);if(st.afterNew)view('newpass');else goNext();return}unlock(vb);err(friendly(r,'code'))},function(){busy=false;unlock(vb);err(NET)})}
+function savePw(p){if(busy)return;if(p.length<8)return err('Your password must be at least 8 characters.');busy=true;var b=$('#sv');lock(b,'Saving\u2026');
+ getToken().then(function(t){if(!t){busy=false;unlock(b);return err('Your session expired. Please log in again.')}return call('/user',{method:'PUT',token:t,body:{password:p}}).then(function(r){busy=false;if(r.ok)goNext();else{unlock(b);err(friendly(r,'pw'))}})},function(){busy=false;unlock(b);err(NET)})}
+/* ---------- Onboarding: phone number, then birth date, one question at a time ---------- */
+var ob=document.getElementById('ob'),obData={},LOGO='https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/REAL%20LOGO%20%20VERSUSTRADE.png',still=matchMedia('(prefers-reduced-motion:reduce)').matches;
+var STEPS=[
+ {q:'What\u2019s your phone number?',ph:'e.g. 0801 234 5678',mode:'tel',ac:'tel',max:20,note:'We only use it to reach you about your trades and keep your account secure.'},
+ {q:'When were you born?',ph:'DD / MM / YYYY',mode:'numeric',ac:'bday',max:10,note:'You must be 18 or older. Your birth date can\u2019t be changed later.'}];
+function typeInto(el,text,done){el.setAttribute('aria-label',text);if(still){el.textContent=text;if(done)done();return}el.textContent='';el.classList.add('typing');var i=0,t=setInterval(function(){el.textContent=text.slice(0,++i);if(i>=text.length){clearInterval(t);el.classList.remove('typing');if(done)done()}},34);return t}
+function parseDob(v){var m=/^(\d{2})\/(\d{2})\/(\d{4})$/.exec(v);if(!m)return{e:'Enter your birth date as DD/MM/YYYY.'};var d=+m[1],mo=+m[2],y=+m[3],dt=new Date(y,mo-1,d);if(dt.getFullYear()!==y||dt.getMonth()!==mo-1||dt.getDate()!==d||y<1900||dt>new Date())return{e:'Please enter a valid birth date.'};var iso=y+'-'+m[2]+'-'+m[1];if(iso>maxDob())return{e:'You must be 18 or older to use VersusTrade.'};return{iso:iso}}
+var obTimer;
+function onboard(i){clearInterval(obTimer);var S=STEPS[i];ob.hidden=false;document.documentElement.style.overflow='hidden';
+ ob.innerHTML='<div class="obtop"><button type="button" class="obback" id="obb" aria-label="Back"'+(i?'':' hidden')+'><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button><span>'+(i+1)+' / '+STEPS.length+'</span></div>'+
+ '<form class="obmain" id="obf" novalidate><span class="obmark"><img src="'+LOGO+'" alt=""></span><h3 class="obq" id="obq"></h3>'+
+ '<div class="obfield" id="obfield"><input id="obi" type="text" inputmode="'+S.mode+'" autocomplete="'+S.ac+'" maxlength="'+S.max+'" placeholder="'+S.ph+'" aria-label="'+S.q+'"><button type="submit" class="obgo" id="obgo" aria-label="Continue" disabled><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button></div>'+
+ '<p class="obpress">Press Enter \u21B5</p><p class="oberr" id="obe" role="alert" hidden></p></form><p class="obfoot" id="obn"></p>';
+ var inp=$o('#obi'),go=$o('#obgo'),oe=$o('#obe');
+ if(obData[i])inp.value=obData[i];go.disabled=!inp.value;
+ obTimer=typeInto($o('#obq'),S.q,function(){$o('#obfield').classList.add('show');inp.focus({preventScroll:true});typeInto($o('#obn'),S.note)});
+ if(still)$o('#obfield').classList.add('show');
+ inp.oninput=function(){oe.hidden=true;if(i===1){var d=inp.value.replace(/\D/g,'').slice(0,8),o=d.slice(0,2);if(d.length>2)o+='/'+d.slice(2,4);if(d.length>4)o+='/'+d.slice(4);inp.value=o}go.disabled=!inp.value.trim()};
+ if($o('#obb'))$o('#obb').onclick=function(){obData[i]=inp.value;onboard(i-1)};
+ $o('#obf').onsubmit=function(e){e.preventDefault();if(busy)return;var v=inp.value.trim(),bad='';
+  if(i===0){var p=normPhone(v);if(!p)bad='Please enter a valid phone number, for example 0801 234 5678.';else{obData[0]=v;obData.phone=p}}
+  else{var r=parseDob(v);if(r.e)bad=r.e;else{obData[1]=v;obData.dob=r.iso}}
+  if(bad){oe.textContent=bad;oe.hidden=false;return}
+  if(i===0)return onboard(1);
+  busy=true;go.disabled=true;
+  getToken().then(function(t){if(!t){busy=false;go.disabled=false;oe.textContent='Your session expired. Please log in again.';oe.hidden=false;return}
+   return call('/user',{method:'PUT',token:t,body:{data:{phone:obData.phone,dob:obData.dob}}}).then(function(r){busy=false;if(!r.ok){go.disabled=false;oe.textContent='We couldn\u2019t save your details. Please try again.';oe.hidden=false;return}session.phone=obData.phone;session.dob=obData.dob;session.profileDone=true;persist();redirect()})},function(){busy=false;go.disabled=false;oe.textContent=NET;oe.hidden=false})}}
+function $o(s){return ob.querySelector(s)}
+
+function needs(){return session&&!session.profileDone&&!(session.phone&&session.dob)}
+function fresh(tok,rt,exp){return call('/user',{method:'GET',token:tok}).then(function(r){if(r.ok){setSession({access_token:tok,refresh_token:rt,expires_at:exp,user:r.data})}return r.ok},function(){return false})}
+var h=String(location.hash||'');
+if(h.indexOf('access_token=')>-1){ /* coming back from Google */
+ var p={};h.replace(/^#/,'').split('&').forEach(function(kv){var i=kv.indexOf('=');if(i>0)p[kv.slice(0,i)]=decodeURIComponent(kv.slice(i+1))});
+ try{history.replaceState(null,'',location.pathname)}catch(e){}
+ remember=true;view('main');
+ if(p.access_token)fresh(p.access_token,p.refresh_token||'',now()+(+p.expires_in||3600)).then(function(ok){if(ok)goNext()});
+}else if(session&&(needs()||/onboard=1/.test(location.search))){ /* signed in but details missing: they cannot go anywhere else until they finish */
+ view('main');
+ getToken().then(function(t){if(!t){session=null;persist();return}return fresh(t,session.refresh_token,session.expires_at).then(function(){if(needs())onboard(0);else redirect()})});
+}else{
+ view(session&&/account=1/.test(location.search)?'account':'main');
+}
+})();
 </script>
-</body></html>
+</body>
+</html>
