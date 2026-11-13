@@ -287,5 +287,37 @@
   </div>
   <div class="f-giant" id="fGiant" aria-hidden="true">VERSUSTRADE</div>
 </footer>
+<script>
+// Newsletter form (ported from the NewsletterForm component). Submits through newsletter.js to /api/subscribe (Resend, double opt-in).
+(function () {
+  var form = document.getElementById('nlForm'); if (!form) return;
+  var $ = function (id) { return document.getElementById(id); };
+  var input = $('nlEmail'), btn = $('nlBtn'), label = $('nlLabel'), spin = btn.querySelector('.nl-spin'), chev = btn.querySelector('svg:not(.nl-spin)');
+  var hint = $('nlHint'), err = $('nlErr'), fail = $('nlFail'), fields = $('nlFields'), ok = $('nlOk');
+  var RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/, busy = false, done = false;
+  function setError(msg) {
+    err.textContent = msg; err.hidden = !msg; hint.hidden = !!msg;
+    input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+    input.setAttribute('aria-describedby', msg ? 'nlErr' : 'nlHint');
+  }
+  function setBusy(b) { busy = b; input.disabled = b; btn.disabled = b; spin.hidden = !b; chev.style.display = b ? 'none' : ''; label.textContent = b ? 'Joining\u2026' : 'Subscribe'; form.setAttribute('aria-busy', b ? 'true' : 'false'); }
+  function subscribe(email) {
+    if (window.VT_NEWSLETTER && typeof window.VT_NEWSLETTER.subscribe === 'function') return window.VT_NEWSLETTER.subscribe(email, { website: (form.elements['website'] || {}).value || '' });
+    return Promise.reject(new Error('newsletter.js is not loaded')); // never pretend it worked
+  }
+  input.addEventListener('input', function () { fail.hidden = true; if (!err.hidden) setError(''); });
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (busy || done) return;
+    var v = input.value.trim();
+    if (!v) { setError('Email is required.'); return; }
+    if (!RE.test(v)) { setError('Enter a valid email address.'); return; }
+    setError(''); fail.hidden = true; setBusy(true);
+    Promise.resolve().then(function () { return subscribe(v); }).then(function () {
+      done = true; fields.hidden = true; ok.hidden = false;
+    }, function () { fail.hidden = false; }).then(function () { setBusy(false); });
+  });
+})();
+</script>
 <script src="/coins.js" defer></script><script src="/newsletter.js" defer></script><script>(function(){var h=document.getElementById('vtHeader'),b=document.getElementById('vtBurger');if(b)b.addEventListener('click',function(){var o=h.classList.toggle('menu-open');b.setAttribute('aria-expanded',String(o));});var top=document.getElementById('cfTop');if(top)top.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});var theme=document.getElementById('vtTheme');if(theme)theme.addEventListener('click',function(){var r=document.documentElement,n=getComputedStyle(r).colorScheme==='dark'?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem('vt-theme',n)}catch(e){}});try{var t=localStorage.getItem('vt-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}})();</script>
 </body></html>
