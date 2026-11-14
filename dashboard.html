@@ -2202,39 +2202,38 @@ function paintAccountFilter(){var d=$('accountFilterDialog');if(!d)return;var st
     return '<svg class="tm-spark ' + (up ? 'up' : 'down') + '" viewBox="0 0 100 36" preserveAspectRatio="none"><polyline points="' + pts + '" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>';
   }
   function loadSpark(s) {
-    // Empty arrays can be left in the shared localStorage cache after a failed request.
-    // Only treat a chart as loaded when it contains at least two valid candles.
-    if (S[s] && S[s].length >= 2) return;
-    if (S[s] && S[s].length < 2) delete S[s];
+    if (S[s] && S[s].length >= 2 && S[s].every(function(v){return Number.isFinite(v)&&v>0;})) return;
+    if (S[s]) delete S[s];
     if (P[s]) return;
     P[s] = 1;
-    var inv = s === 'USDTUSD';
-    var pair = inv ? 'USDCUSDT' : s;
+    var base = s === 'USDTUSD' ? 'USDT' : s.replace(/(USDT|USDC)$/, '');
+    var id = CG[base] || (base === 'USDT' ? 'tether' : base === 'USDC' ? 'usd-coin' : '');
+    var pair = s === 'USDTUSD' ? 'USDT' : s;
     var dashPair = pair.replace(/(USDT|USDC|BTC|ETH|BNB)$/, '-$1');
     var sources = [
-      { url: function (h) { return h + '/api/v3/klines?symbol=' + pair + '&interval=1h&limit=24'; }, parse: function (j) { return Array.isArray(j) ? j.map(function (x) { return +x[4]; }) : []; }, hosts: HOSTS },
+      { url: function (h) { return h + '/api/v3/klines?symbol=' + (s === 'USDTUSD' ? 'USDCUSDT' : s) + '&interval=1h&limit=24'; }, parse: function (j) { return Array.isArray(j) ? j.map(function (x) { return +x[4]; }) : []; }, hosts: HOSTS, inverse: s === 'USDTUSD' },
       { url: function () { return 'https://www.okx.com/api/v5/market/candles?instId=' + dashPair + '&bar=1H&limit=24'; }, parse: function (j) { return j && j.code === '0' && Array.isArray(j.data) ? j.data.slice().reverse().map(function (x) { return +x[4]; }) : []; } },
-      { url: function () { return 'https://api.bybit.com/v5/market/kline?category=spot&symbol=' + pair + '&interval=60&limit=24'; }, parse: function (j) { var a = j && j.result && j.result.list; return Array.isArray(a) ? a.slice().reverse().map(function (x) { return +x[4]; }) : []; } },
-      { url: function () { return 'https://api.kucoin.com/api/v1/market/candles?type=1hour&symbol=' + dashPair; }, parse: function (j) { var a = j && j.data; return Array.isArray(a) ? a.slice().reverse().map(function (x) { return +x[2]; }) : []; } }
-    ];
+      { url: function () { return 'https://api.bybit.com/v5/market/kline?category=spot&symbol=' + (s === 'USDTUSD' ? 'USDCUSDT' : s) + '&interval=60&limit=24'; }, parse: function (j) { var a = j && j.result && j.result.list; return Array.isArray(a) ? a.slice().reverse().map(function (x) { return +x[4]; }) : []; } },
+      { url: function () { return 'https://api.kucoin.com/api/v1/market/candles?type=1hour&symbol=' + dashPair; }, parse: function (j) { var a = j && j.data; return Array.isArray(a) ? a.slice().reverse().map(function (x) { return +x[2]; }) : []; } },
+      { url: function () { return id ? 'https://api.coingecko.com/api/v3/coins/' + id + '/market_chart?vs_currency=usd&days=1&interval=hourly' : ''; }, parse: function (j) { return j && Array.isArray(j.prices) ? j.prices.map(function (x) { return +x[1]; }) : []; } }
+    ].filter(function (x) { return typeof x.url === 'function'; });
     function attempt(i) {
       if (i >= sources.length) { delete P[s]; drawMarkets(); return; }
       var source = sources[i], urls = source.hosts ? source.hosts.map(function (h) { return source.url(h); }) : [source.url()];
       function hostAttempt(n) {
         if (n >= urls.length) return attempt(i + 1);
-        tf(urls[n], 6500).then(function (j) {
+        if (!urls[n]) return hostAttempt(n + 1);
+        tf(urls[n], 9000).then(function (j) {
           var values = source.parse(j).filter(function (v) { return Number.isFinite(v) && v > 0; });
           if (values.length < 2) throw new Error('No candle data');
-          S[s] = values.map(function (v) { return inv ? 1 / v : v; });
-          delete P[s];
-          drawMarkets();
+          S[s] = values.map(function (v) { return source.inverse ? 1 / v : v; });
+          delete P[s]; drawMarkets();
         }).catch(function () { hostAttempt(n + 1); });
       }
       hostAttempt(0);
     }
     attempt(0);
   }
-
   // ---- Buy & sell card ----
   var NAME = { BTC: 'Bitcoin', ETH: 'Ethereum', BNB: 'BNB', SOL: 'Solana', XRP: 'XRP', DOGE: 'Dogecoin', ADA: 'Cardano', TRX: 'Tron', AVAX: 'Avalanche', LINK: 'Chainlink', TON: 'Toncoin', DOT: 'Polkadot', LTC: 'Litecoin', SHIB: 'Shiba Inu', BCH: 'Bitcoin Cash', NEAR: 'NEAR Protocol', ATOM: 'Cosmos', UNI: 'Uniswap', XLM: 'Stellar', APT: 'Aptos', USDT: 'Tether', USDC: 'USD Coin' };
   var NET = { BTC: 'Bitcoin', ETH: 'Ethereum', BNB: 'BNB Chain', SOL: 'Solana', XRP: 'XRPL', DOGE: 'Dogecoin', ADA: 'Cardano', TRX: 'Tron', AVAX: 'Avalanche', LINK: 'Ethereum', TON: 'TON', DOT: 'Polkadot', LTC: 'Litecoin', SHIB: 'Ethereum', BCH: 'Bitcoin Cash', NEAR: 'NEAR', ATOM: 'Cosmos', UNI: 'Ethereum', XLM: 'Stellar', APT: 'Aptos', USDT: 'Multiple networks', USDC: 'Multiple networks' };
