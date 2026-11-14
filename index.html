@@ -1639,13 +1639,37 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     return '<svg class="tm-spark ' + (up ? 'up' : 'down') + '" viewBox="0 0 100 36" preserveAspectRatio="none"><polyline points="' + pts + '" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>';
   }
   function loadSpark(s) {
-    if (S[s] || P[s]) return;
+    // Empty arrays can be left in the shared localStorage cache after a failed request.
+    // Only treat a chart as loaded when it contains at least two valid candles.
+    if (S[s] && S[s].length >= 2) return;
+    if (S[s] && S[s].length < 2) delete S[s];
+    if (P[s]) return;
     P[s] = 1;
-    var inv = s === 'USDTUSD'; // drawn from the USDC/USDT chart, flipped
-    fetch(API + '/api/v3/klines?symbol=' + (inv ? 'USDCUSDT' : s) + '&interval=1h&limit=24')
-      .then(function (r) { return r.json(); })
-      .then(function (k) { S[s] = k.map(function (x) { return inv ? 1 / +x[4] : +x[4]; }); delete P[s]; drawMarkets(); })
-      .catch(function () { S[s] = []; delete P[s]; });
+    var inv = s === 'USDTUSD';
+    var pair = inv ? 'USDCUSDT' : s;
+    var dashPair = pair.replace(/(USDT|USDC|BTC|ETH|BNB)$/, '-$1');
+    var sources = [
+      { url: function (h) { return h + '/api/v3/klines?symbol=' + pair + '&interval=1h&limit=24'; }, parse: function (j) { return Array.isArray(j) ? j.map(function (x) { return +x[4]; }) : []; }, hosts: HOSTS },
+      { url: function () { return 'https://www.okx.com/api/v5/market/candles?instId=' + dashPair + '&bar=1H&limit=24'; }, parse: function (j) { return j && j.code === '0' && Array.isArray(j.data) ? j.data.slice().reverse().map(function (x) { return +x[4]; }) : []; } },
+      { url: function () { return 'https://api.bybit.com/v5/market/kline?category=spot&symbol=' + pair + '&interval=60&limit=24'; }, parse: function (j) { var a = j && j.result && j.result.list; return Array.isArray(a) ? a.slice().reverse().map(function (x) { return +x[4]; }) : []; } },
+      { url: function () { return 'https://api.kucoin.com/api/v1/market/candles?type=1hour&symbol=' + dashPair; }, parse: function (j) { var a = j && j.data; return Array.isArray(a) ? a.slice().reverse().map(function (x) { return +x[2]; }) : []; } }
+    ];
+    function attempt(i) {
+      if (i >= sources.length) { delete P[s]; drawMarkets(); return; }
+      var source = sources[i], urls = source.hosts ? source.hosts.map(function (h) { return source.url(h); }) : [source.url()];
+      function hostAttempt(n) {
+        if (n >= urls.length) return attempt(i + 1);
+        tf(urls[n], 6500).then(function (j) {
+          var values = source.parse(j).filter(function (v) { return Number.isFinite(v) && v > 0; });
+          if (values.length < 2) throw new Error('No candle data');
+          S[s] = values.map(function (v) { return inv ? 1 / v : v; });
+          delete P[s];
+          drawMarkets();
+        }).catch(function () { hostAttempt(n + 1); });
+      }
+      hostAttempt(0);
+    }
+    attempt(0);
   }
 
   // ---- Buy & sell card ----

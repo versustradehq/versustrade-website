@@ -2202,9 +2202,13 @@ function paintAccountFilter(){var d=$('accountFilterDialog');if(!d)return;var st
     return '<svg class="tm-spark ' + (up ? 'up' : 'down') + '" viewBox="0 0 100 36" preserveAspectRatio="none"><polyline points="' + pts + '" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>';
   }
   function loadSpark(s) {
-    if (S[s] || P[s]) return;
+    // Empty arrays can be left in the shared localStorage cache after a failed request.
+    // Only treat a chart as loaded when it contains at least two valid candles.
+    if (S[s] && S[s].length >= 2) return;
+    if (S[s] && S[s].length < 2) delete S[s];
+    if (P[s]) return;
     P[s] = 1;
-    var inv = s === 'USDTUSD'; // USDT/USD is derived from USDC/USDT and must be flipped
+    var inv = s === 'USDTUSD';
     var pair = inv ? 'USDCUSDT' : s;
     var dashPair = pair.replace(/(USDT|USDC|BTC|ETH|BNB)$/, '-$1');
     var sources = [
