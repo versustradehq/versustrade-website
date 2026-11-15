@@ -554,6 +554,7 @@
 <aside class="panel"><h2>How to get started</h2><div class="steps"><div class="step"><b>1. Tell us what you need</b><span>Share whether you want to buy or sell, plus the asset and amount.</span></div><div class="step"><b>2. Confirm the details</b><span>Our team confirms supported options, rate and transaction instructions.</span></div><div class="step"><b>3. Complete the transaction</b><span>Proceed only after you have reviewed and confirmed the details.</span></div></div></aside>
 </section>
 </main>
+<div id="cfWrap">
 <footer class="foot">
   <div class="fx-aurora" aria-hidden="true"></div><div class="fx-grid" aria-hidden="true"></div>
   <div class="fx-band" aria-hidden="true"><div class="fx-marquee"><div class="fx-track"><div class="fx-item"><span>Live Markets</span><span class="p">&#10022;</span><span>Buy &amp; Sell Crypto</span><span class="s">&#10022;</span><span>Transparent Rates</span><span class="p">&#10022;</span><span>Reliable as Always</span><span class="s">&#10022;</span><span>Real People, Real Support</span><span class="p">&#10022;</span></div><div class="fx-item"><span>Live Markets</span><span class="p">&#10022;</span><span>Buy &amp; Sell Crypto</span><span class="s">&#10022;</span><span>Transparent Rates</span><span class="p">&#10022;</span><span>Reliable as Always</span><span class="s">&#10022;</span><span>Real People, Real Support</span><span class="p">&#10022;</span></div></div></div></div>
@@ -606,6 +607,7 @@
     <div class="ft-credits" id="cfBottom"><span>&copy; 2026 VersusTrade. All rights reserved.</span><nav aria-label="Legal"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="/security/">Security</a></nav><div class="ft-ctrls"><button class="ft-top" id="vtTheme" type="button" aria-label="Toggle light or dark theme"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="3.5"/><path d="M10 1.5v2M10 16.5v2M1.5 10h2M16.5 10h2M4 4l1.4 1.4M14.6 14.6L16 16M4 16l1.4-1.4M14.6 5.4L16 4"/></svg></button><button class="ft-top" id="cfTop" type="button" aria-label="Back to top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></div></div></div>
   <div class="f-giant" id="fGiant" aria-hidden="true">VERSUSTRADE</div>
 </footer>
+</div>
 <script src="/coins.js" defer></script><script src="/newsletter.js" defer></script>
 
 <script>(function(){var root=document.documentElement,h=document.getElementById('vtHeader'),theme=document.getElementById('vtTheme'),top=document.getElementById('cfTop');try{var saved=localStorage.getItem('vt-theme');if(saved)root.setAttribute('data-theme',saved);}catch(e){}if(theme)theme.addEventListener('click',function(){var next=getComputedStyle(root).colorScheme==='dark'?'light':'dark';root.setAttribute('data-theme',next);try{localStorage.setItem('vt-theme',next);}catch(e){}});if(h){function scroll(){h.classList.toggle('scrolled',window.scrollY>10);}window.addEventListener('scroll',scroll,{passive:true});scroll();}if(top)top.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});})();</script>
@@ -1255,4 +1257,261 @@
 (function () { var b = document.getElementById('cfTop'); if (b) b.addEventListener('click', function () { if (window.vtFlyToTop && window.vtFlyToTop()) return; window.scrollTo({ top: 0, behavior: 'smooth' }); }); })();
 </script>
 
+<script>
+/* VersusTrade homepage auth bridge. Login and signup UI lives only on /login/ and /signup/. */
+(function () {
+  var SB = { url: 'https://axldgaxsdgeycinxqbem.supabase.co', key: 'sb_publishable_eU9t7DqMTbeAOIdsXhcYmg_wwvmwm3j' };
+  var STORE = 'vt_auth_session';
+  var session = null, remember = true, refreshing = null, navAuthCheck = 0;
+
+  function now() { return Math.floor(Date.now() / 1000); }
+  function readStore() {
+    try {
+      var v = localStorage.getItem(STORE);
+      if (v) { remember = true; return JSON.parse(v); }
+      v = sessionStorage.getItem(STORE);
+      if (v) { remember = false; return JSON.parse(v); }
+    } catch (e) {}
+    return null;
+  }
+  session = readStore();
+
+  function persist() {
+    try {
+      localStorage.removeItem(STORE);
+      sessionStorage.removeItem(STORE);
+      if (session) (remember ? localStorage : sessionStorage).setItem(STORE, JSON.stringify(session));
+    } catch (e) {}
+  }
+  function hasProfile(u) {
+    var m = u && u.user_metadata;
+    return !!(m && m.dob && m.phone && (m.full_name || m.name));
+  }
+  function nameOf(u) {
+    var m = u && u.user_metadata;
+    return String((m && (m.name || m.full_name || m.username)) || '').trim();
+  }
+  function setSession(d) {
+    var user = d.user || null, previous = session;
+    session = {
+      access_token: d.access_token || (previous && previous.access_token) || '',
+      refresh_token: d.refresh_token || (previous && previous.refresh_token) || '',
+      expires_at: d.expires_at || (now() + (d.expires_in || 3600)),
+      email: (user && user.email) || (previous && previous.email) || '',
+      id: (user && user.id) || (previous && previous.id) || '',
+      name: user ? nameOf(user) : ((previous && previous.name) || ''),
+      phone: (user && user.user_metadata && user.user_metadata.phone) || (previous && previous.phone) || '',
+      dob: (user && user.user_metadata && user.user_metadata.dob) || (previous && previous.dob) || '',
+      profileDone: user ? hasProfile(user) : !!(previous && previous.profileDone),
+      created: (user && user.created_at && Date.parse(user.created_at)) || (previous && previous.created) || 0
+    };
+    persist();
+  }
+  function call(path, o) {
+    o = o || {};
+    var h = { apikey: SB.key };
+    if (o.body) h['Content-Type'] = 'application/json';
+    if (o.token) h.Authorization = 'Bearer ' + o.token;
+    return fetch(SB.url + '/auth/v1' + path, {
+      method: o.method || 'POST', headers: h,
+      body: o.body ? JSON.stringify(o.body) : undefined
+    }).then(function (r) {
+      return r.text().then(function (t) {
+        var j = {}; try { j = t ? JSON.parse(t) : {}; } catch (e) {}
+        return { ok: r.ok, status: r.status, data: j };
+      });
+    });
+  }
+  function getToken() {
+    if (!session) return Promise.resolve(null);
+    if (session.expires_at - 60 > now()) return Promise.resolve(session.access_token);
+    if (!refreshing) {
+      var oldRefresh = session.refresh_token;
+      refreshing = call('/token?grant_type=refresh_token', { body: { refresh_token: oldRefresh } }).then(function (r) {
+        refreshing = null;
+        if (r.ok && r.data.access_token) { setSession(r.data); return session.access_token; }
+        var latest = readStore();
+        if (latest && latest.refresh_token && latest.refresh_token !== oldRefresh) {
+          session = latest;
+          if (session.expires_at - 60 > now()) return session.access_token;
+        }
+        if (r.status >= 400 && r.status < 500 && r.status !== 429) {
+          session = null; persist(); announce();
+        }
+        return null;
+      }, function () { refreshing = null; return null; });
+    }
+    return refreshing;
+  }
+  function askProfile() {
+    if (session && !session.profileDone) {
+      setTimeout(function () {
+        if (session && !session.profileDone && location.pathname === '/') window.location.assign('/login/?onboard=1');
+      }, 700);
+    }
+  }
+  function announce(initial) {
+    var li = !!session, checkId = ++navAuthCheck, userId = li ? session.id : '';
+    if (!li && window.VTNav) window.VTNav.setLabel('Log in');
+    window.dispatchEvent(new CustomEvent('vt-auth', {
+      detail: { loggedIn: li, email: session && session.email, initial: !!initial }
+    }));
+    if (!li) return;
+    askProfile();
+    getToken().then(function (tok) {
+      if (!tok || checkId !== navAuthCheck || !session || session.id !== userId) return;
+      return fetch('https://versustrade-admin-api.versustradehq.workers.dev/admin/verify', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' },
+        body: '{}'
+      }).then(function (r) {
+        if (!r.ok) throw new Error('Admin verification failed');
+        return r.json();
+      }).then(function (d) {
+        if (checkId !== navAuthCheck || !session || session.id !== userId) return;
+        if (window.VTNav) window.VTNav.setLabel(d && d.authorized === true ? 'Admin' : 'Dashboard');
+      }).catch(function () {
+        if (checkId === navAuthCheck && session && session.id === userId && window.VTNav) window.VTNav.setLabel('Dashboard');
+      });
+    }).catch(function () {
+      if (checkId === navAuthCheck && session && session.id === userId && window.VTNav) window.VTNav.setLabel('Dashboard');
+    });
+  }
+  window.addEventListener('storage', function (e) {
+    if (e.key !== STORE) return;
+    var prev = session;
+    session = readStore();
+    if (!!session !== !!prev) announce();
+    else if (session && prev && session.name !== prev.name) {
+      window.dispatchEvent(new CustomEvent('vt-profile', { detail: { name: session.name } }));
+    }
+  });
+
+  function redirectAfterAuth() {
+    if (location.pathname !== '/' || String(location.search || '').indexOf('account=1') > -1) return;
+    getToken().then(function (tok) {
+      if (!tok) { window.location.replace('/dashboard/'); return; }
+      return fetch('https://versustrade-admin-api.versustradehq.workers.dev/admin/verify', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' },
+        body: '{}'
+      }).then(function (r) { return r.json(); }).then(function (d) {
+        window.location.replace(d && d.authorized === true ? '/admin' : '/dashboard/');
+      }).catch(function () { window.location.replace('/dashboard/'); });
+    }).catch(function () { window.location.replace('/dashboard/'); });
+  }
+
+  function open() {
+    window.location.assign(session ? '/login/?account=1' : '/login/');
+  }
+  function rest(method, path, body, extra) {
+    return getToken().then(function (tok) {
+      if (!tok) throw new Error('nosession');
+      var h = { apikey: SB.key, Authorization: 'Bearer ' + tok };
+      if (body) h['Content-Type'] = 'application/json';
+      if (extra) for (var k in extra) h[k] = extra[k];
+      return fetch(SB.url + '/rest/v1' + path, {
+        method: method, headers: h, body: body ? JSON.stringify(body) : undefined
+      }).then(function (r) {
+        return r.text().then(function (t) {
+          var j = null; try { j = t ? JSON.parse(t) : null; } catch (e) {}
+          if (!r.ok) {
+            var err = new Error((j && (j.message || j.hint)) || ('HTTP ' + r.status));
+            err.status = r.status; throw err;
+          }
+          return j;
+        });
+      });
+    });
+  }
+  function upload(blob, ext, type) {
+    return getToken().then(function (tok) {
+      if (!tok || !session) throw new Error('Please log in again to send pictures.');
+      var path = session.id + '/' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8) + (ext || '');
+      return fetch(SB.url + '/storage/v1/object/chat-uploads/' + path, {
+        method: 'POST',
+        headers: { apikey: SB.key, Authorization: 'Bearer ' + tok,
+          'Content-Type': type || blob.type || 'application/octet-stream', 'x-upsert': 'false' },
+        body: blob
+      }).then(function (r) {
+        if (!r.ok) throw new Error(r.status === 404 ? 'Picture storage is not set up yet (run supabase-chat-uploads.sql).' : 'The picture could not be uploaded (' + r.status + ').');
+        return fetch(SB.url + '/storage/v1/object/sign/chat-uploads/' + path, {
+          method: 'POST',
+          headers: { apikey: SB.key, Authorization: 'Bearer ' + tok, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ expiresIn: 2592000 })
+        });
+      }).then(function (r) {
+        if (!r.ok) throw new Error('The picture link could not be created (' + r.status + ').');
+        return r.json();
+      }).then(function (d) { return SB.url + '/storage/v1' + d.signedURL; });
+    });
+  }
+
+  window.VTAuth = {
+    rest: rest,
+    upload: upload,
+    open: open,
+    click: function () {
+      if (!session) { open(); return; }
+      getToken().then(function (tok) {
+        if (!tok) { window.location.href = '/dashboard/'; return; }
+        return fetch('https://versustrade-admin-api.versustradehq.workers.dev/admin/verify', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' },
+          body: '{}'
+        }).then(function (r) { return r.json(); }).then(function (d) {
+          if (d && d.authorized === true) {
+            if (window.VTNav) window.VTNav.setLabel('Admin');
+            window.location.href = '/admin';
+          } else window.location.href = '/dashboard/';
+        }).catch(function () { window.location.href = '/dashboard/'; });
+      }).catch(function () { window.location.href = '/dashboard/'; });
+    },
+    isLoggedIn: function () { return !!session; },
+    getToken: getToken,
+    email: function () { return session ? session.email : ''; },
+    user: function () { return session ? { id: session.id, email: session.email, name: session.name || '' } : null; },
+    setName: function (n) {
+      n = String(n || '').replace(/\s+/g, ' ').trim().slice(0, 40);
+      return getToken().then(function (tok) {
+        if (!tok) throw new Error('Please log in again.');
+        return call('/user', { method: 'PUT', token: tok, body: { data: { name: n } } });
+      }).then(function (r) {
+        if (!r.ok) throw new Error('Could not save your name.');
+        session.name = n; persist();
+        window.dispatchEvent(new CustomEvent('vt-profile', { detail: { name: n } }));
+        return n;
+      });
+    }
+  };
+
+  announce(true);
+  (function fromHash() {
+    var h = String(location.hash || '');
+    if (h.indexOf('access_token=') < 0) return;
+    var p = {};
+    h.replace(/^#/, '').split('&').forEach(function (kv) {
+      var i = kv.indexOf('=');
+      if (i > 0) p[kv.slice(0, i)] = decodeURIComponent(kv.slice(i + 1));
+    });
+    if (!p.access_token || !p.refresh_token) return;
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+    remember = true;
+    call('/user', { method: 'GET', token: p.access_token }).then(function (r) {
+      if (!r.ok) return;
+      setSession({ access_token: p.access_token, refresh_token: p.refresh_token,
+        expires_in: Number(p.expires_in) || 3600, user: r.data });
+      announce(); redirectAfterAuth();
+    });
+  })();
+  (function fromQuery() {
+    var q = String(location.search || '');
+    var wantsLogin = q.indexOf('login=1') > -1;
+    var wantsAccount = q.indexOf('account=1') > -1;
+    if (!wantsLogin && !wantsAccount) return;
+    if (wantsLogin && session) return;
+    window.location.replace('/login/' + (wantsAccount ? '?account=1' : ''));
+  })();
+})();
+</script>
 </body></html>
