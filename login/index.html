@@ -92,6 +92,13 @@ input:focus{border-color:rgba(225,29,46,.8);box-shadow:0 0 0 4px rgba(225,29,46,
 .oberr[hidden]{display:none}
 .obfoot{min-height:3em;max-width:540px;margin:0 auto;padding:0 24px max(30px,env(safe-area-inset-bottom));text-align:center;color:var(--mute);font-size:14px;line-height:1.6}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* Login typography: Inter by default, native San Francisco on iPhone/iPad */
+body{font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@supports (-webkit-touch-callout: none){body{font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif}}
+/* Keep the decorative globe off small screens so the login form stays clear */
+@media(max-width:899px){#globe{display:none!important}}
 </style>
 <script>try{var t=localStorage.getItem("vt-theme");if(!t&&matchMedia("(prefers-color-scheme:light)").matches)t="light";if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 </head>
