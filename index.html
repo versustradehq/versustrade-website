@@ -248,7 +248,7 @@ h2{font-size:clamp(28px,4vw,40px);line-height:1.2;font-weight:900;letter-spacing
 .rc-top{display:flex;justify-content:space-between;align-items:center}
 .rc-brand{font-weight:800;letter-spacing:-.01em;font-size:18px;color:var(--rc-text)}
 .rc-tag{font-size:13px;font-weight:500;padding:6px 14px;border-radius:999px;background:var(--rc-chip);border:1px solid var(--rc-line)}
-.rc-std{font-size:13px;opacity:.75;text-align:center;width:100%;}
+.rc-std{font-size:13px;opacity:.75}
 .rt-cols{display:flex}
 .rt-col{flex:1;padding:0 24px}
 .rt-col:first-child{padding-left:0}
@@ -890,6 +890,70 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
   .support-glass-actions .support-glass-btn{flex:1 1 100%;max-width:100%;min-height:52px}
 }
 @media(prefers-reduced-motion:reduce){.support-glass-actions .support-glass-btn{transition:none}}
+</style>
+
+<style id="vt-mystack-containers">
+/* ==========================================================================
+   MyStack-style containers (additive override).
+   Big rounded solid containers: deep maroon, brand red, soft tint.
+   Header, footer, scripts, links and all behaviour are untouched.
+   ========================================================================== */
+:root{--box-dark:#320A0A;--box-radius:28px;--box-gutter:24px}
+@media (max-width:640px){:root{--box-gutter:16px}}
+
+/* Hero is plain, so the containers below carry the colour */
+.hero{background:var(--bg)}
+
+/* Stats: maroon container instead of a full-width band */
+.stats{background:transparent;padding:0 var(--box-gutter)}
+.stats-grid{max-width:1152px;margin:0 auto;background:var(--box-dark);border-radius:var(--box-radius)}
+
+/* Buy & sell + markets */
+.tm-card{border:0;border-radius:var(--box-radius);padding:28px}
+@media (max-width:640px){.tm-card{padding:20px}}
+
+/* Trade card: maroon container (colours re-themed inside it) */
+#tmTrade{background:var(--box-dark);color:#fff;
+  --bg:#320A0A;--text:#fff;--muted:rgba(255,255,255,.62);--line:rgba(255,255,255,.14);
+  --pill:rgba(255,255,255,.1);--soft:rgba(255,255,255,.06);--red-tint:rgba(255,255,255,.1)}
+#tmTrade .tm-thumb{background:#fff;box-shadow:none}
+#tmTrade .tm-tabs button[aria-selected="true"]{color:var(--box-dark)}
+#tmTrade .tm-pillbtn,#tmTrade .tm-swapbtn,#tmTrade .tm-back{color:#fff;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.18);box-shadow:none}
+#tmTrade .tm-pillbtn:hover,#tmTrade .tm-swapbtn:hover,#tmTrade .tm-back:hover{color:#fff;background:rgba(255,255,255,.17);border-color:rgba(255,255,255,.38)}
+#tmTrade .tm-go.sell{background:#fff;color:var(--box-dark);border-color:#fff;box-shadow:none}
+#tmTrade .tm-go.sell:hover{background:#fff;color:var(--box-dark)}
+#tmTrade .tm-ico img{background:#fff}
+#tmTrade .tm-sheet{--al-tile:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.05));--al-tile-edge:rgba(255,255,255,.08);--al-tile-highlight:rgba(255,255,255,.12);--al-tile-shadow:none;--al-ring:rgba(255,255,255,.4);--al-ring-fill:rgba(255,255,255,.06);--al-hover:brightness(1.15);--al-press:brightness(.9);--al-active:brightness(1.15);--al-thumb:rgba(255,255,255,.2)}
+
+/* Markets card: soft tint container with white inner controls */
+.tm-grid>div:last-child .tm-card{background:var(--red-tint)}
+.tm-grid>div:last-child .tm-search{background:var(--bg)}
+.tm-grid>div:last-child .tm-chip[aria-pressed="true"]{background:var(--text);color:var(--bg);border-color:var(--text)}
+.tm-grid>div:last-child .tm-row{border-top-color:color-mix(in srgb,var(--text) 10%,transparent)}
+.tm-grid>div:last-child .tm-row:hover{background:color-mix(in srgb,var(--bg) 55%,transparent)}
+
+/* Rate card: restored original metallic, theme-aware design from the previous homepage. */
+
+/* Gift cards: tint container behind the bouncing cards */
+.gc .wrap{width:min(1152px,calc(100% - 2*var(--box-gutter)));background:var(--red-tint);border-radius:var(--box-radius);padding:36px 16px 40px}
+
+/* CEO video */
+.video{border-radius:var(--box-radius)}
+
+/* Trust: tint container */
+.trust{background:transparent}
+.trust .wrap{width:min(1152px,calc(100% - 2*var(--box-gutter)));background:var(--red-tint);border-radius:var(--box-radius);padding:56px 24px}
+
+/* Support: brand-red container, white primary button */
+.side .card{background:var(--red);border:0;border-radius:var(--box-radius);padding:56px 24px}
+.side .card h3{color:#fff}
+.side .card p{color:rgba(255,255,255,.9)}
+.side .support-glass-actions .support-glass-btn{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.45);box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
+.side .support-glass-actions .support-glass-btn:hover{background:rgba(255,255,255,.24);box-shadow:none}
+.side .support-glass-actions #supportChatBtn{background:#fff;border-color:#fff;color:var(--red-dark)}
+.side .support-glass-actions #supportChatBtn svg{color:currentColor}
+.side .support-glass-actions #supportChatBtn:hover{background:#fff;color:var(--red-dark)}
+.side .support-glass-actions .support-glass-btn:focus-visible{outline-color:#fff}
 </style>
 </head>
 <body>
