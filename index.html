@@ -248,7 +248,7 @@ h2{font-size:clamp(28px,4vw,40px);line-height:1.2;font-weight:900;letter-spacing
 .rc-top{display:flex;justify-content:space-between;align-items:center}
 .rc-brand{font-weight:800;letter-spacing:-.01em;font-size:18px;color:var(--rc-text)}
 .rc-tag{font-size:13px;font-weight:500;padding:6px 14px;border-radius:999px;background:var(--rc-chip);border:1px solid var(--rc-line)}
-.rc-std{font-size:13px;opacity:.75}
+.rc-std{font-size:13px;opacity:.75;text-align:center;width:100%;}
 .rt-cols{display:flex}
 .rt-col{flex:1;padding:0 24px}
 .rt-col:first-child{padding-left:0}
@@ -932,7 +932,10 @@ button *, a *, [role="button"] *, [role="tab"] *, [role="menuitem"] * { -webkit-
 .tm-grid>div:last-child .tm-row{border-top-color:color-mix(in srgb,var(--text) 10%,transparent)}
 .tm-grid>div:last-child .tm-row:hover{background:color-mix(in srgb,var(--bg) 55%,transparent)}
 
-/* Rate card: restored original metallic, theme-aware design from the previous homepage. */
+/* Rate card: solid brand-red container */
+.rc{border-radius:var(--box-radius);box-shadow:none}
+.rc-metal{background-image:linear-gradient(115deg,#F03A4A 0%,#E11D2E 35%,#C9121F 70%,#E11D2E 100%)}
+:root:root:root .rc{--rc-text:#fff;--rc-num:#fff;--rc-label:#fff;--rc-line:rgba(255,255,255,.32);--rc-chip:rgba(255,255,255,.16)}
 
 /* Gift cards: tint container behind the bouncing cards */
 .gc .wrap{width:min(1152px,calc(100% - 2*var(--box-gutter)));background:var(--red-tint);border-radius:var(--box-radius);padding:36px 16px 40px}
@@ -994,8 +997,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </a>
       </div>
     </div>
-    <div class="hero-globe" data-ac="mount" data-ac-delay="250">
-      <canvas id="vtGlobe" role="img" aria-label="Globe showing example VersusTrade transactions between Lagos, Abuja, London, New York, S&atilde;o Paulo, Dubai and Singapore"></canvas>
+    <div class="hero-globe" data-ac="mount" data-ac-delay="250">      <canvas id="vtGlobe" role="img" aria-label="Globe showing example VersusTrade transactions between Lagos, Abuja, London, New York, S&atilde;o Paulo, Dubai and Singapore"></canvas>
       <p class="hero-globe-cap">Delivering Value Beyond Borders.</p>
     </div>
     </div>
@@ -1994,8 +1996,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     var a = asset(st.base), pf = a ? a.p * perUsd() : 0, v = val(), fiatP = st.prim === 'fiat';
     if (!(v > 0)) return;
     var fiat = fiatP ? v : (pf > 0 ? v * pf : 0), qty = fiatP ? (pf > 0 ? v / pf : 0) : v; // still works if live prices are down
-    var trade = { side: st.mode, asset: st.base, name: NAME[st.base] || st.base, currency: st.ccy, network: st.net, amount: fiat, qty: qty };
-    if (window.VTChat && fiat > 0 && qty > 0) { window.VTChat.sendTrade(trade); return; }
+    var trade = { side: st.mode, asset: st.base, name: NAME[st.base] || st.base, currency: st.ccy, network: st.net, amount: fiat, qty: qty };    if (window.VTChat && fiat > 0 && qty > 0) { window.VTChat.sendTrade(trade); return; }
     var q = ['side=' + st.mode, 'asset=' + st.base, 'network=' + encodeURIComponent(st.net), 'currency=' + st.ccy, 'amount=' + (fiat > 0 ? fiat.toFixed(2) : ''), 'qty=' + (qty > 0 ? qty.toFixed(8) : ''), 'rate=' + (st.ccy === 'NGN' ? rate() : 1)].join('&');
     window.location.href = CFG.checkoutUrl + (CFG.checkoutUrl.indexOf('?') > -1 ? '&' : '?') + q;
   });
@@ -2994,8 +2995,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       if (drop.state === 'waiting') continue;
       var radius = 0.26 * height * drop.size * Math.min(drop.emerged, 1 - drop.absorbed);
       if (radius <= 0.05) continue;
-      var speed = Math.hypot(drop.vx, drop.vy), length = Math.min(radius * 1.1, speed * 0.018);
-      blobs.push({ x: drop.x, y: drop.y, r: radius, tx: speed > 0.01 ? drop.vx / speed * length : 0, ty: speed > 0.01 ? drop.vy / speed * length : 0, tint: drop.tint });
+      var speed = Math.hypot(drop.vx, drop.vy), length = Math.min(radius * 1.1, speed * 0.018);      blobs.push({ x: drop.x, y: drop.y, r: radius, tx: speed > 0.01 ? drop.vx / speed * length : 0, ty: speed > 0.01 ? drop.vy / speed * length : 0, tint: drop.tint });
     }
     if (boxes.length === 1 && !blobs.length) {
       var b0 = boxes[0];
@@ -3711,14 +3711,10 @@ function nameOf(u) {
 
 function askProfile() {
   if (!needsProfile()) return;
-
+  // Profile completion stays inside the dedicated authentication experience.
   setTimeout(function () {
-    if (!needsProfile() || root.hasAttribute('data-open')) return;
-
-    lastFocus = document.activeElement;
-    view('profile');
-    root.setAttribute('data-open', '');
-    document.documentElement.classList.add('va-lock');
+    if (!needsProfile()) return;
+    window.location.assign('/login/?onboard=1');
   }, 700);
 }
  function saveProfile(x) {
@@ -3806,12 +3802,9 @@ function askProfile() {
     if (t) call('/logout', { token: t, body: {} }).catch(function () {});
   }
   function open() {
-    lastFocus = document.activeElement;
-    if (needsProfile()) view('profile');
-    else if (session) view('account');
-    else view('main');
-    root.setAttribute('data-open', '');
-    document.documentElement.classList.add('va-lock');
+    // Use the dedicated authentication page instead of the legacy homepage modal.
+    // The login page shares the same Supabase session and handles profile completion too.
+    window.location.assign(session ? '/login/?account=1' : '/login/');
   }
   function close() {
     if (needsProfile()) {
@@ -3924,10 +3917,12 @@ function askProfile() {
   // links such as /?login=1 (from the dashboard when signed out) and /?account=1 (change password)
   (function fromQuery() {
     var q = String(location.search || '');
-    if (q.indexOf('login=1') < 0 && q.indexOf('account=1') < 0) return;
-    try { history.replaceState(null, '', location.pathname + location.hash); } catch (e) {}
-    if (q.indexOf('login=1') > -1 && session) return;
-    setTimeout(open, 350);
+    var wantsLogin = q.indexOf('login=1') > -1;
+    var wantsAccount = q.indexOf('account=1') > -1;
+    if (!wantsLogin && !wantsAccount) return;
+    if (wantsLogin && session) return;
+    // Keep legacy links working, but send them to the dedicated auth experience.
+    window.location.replace('/login/' + (wantsAccount ? '?account=1' : ''));
   })();
 })();
 </script>
@@ -3999,8 +3994,7 @@ out vec4 outColor;
 const JETS = `
 uniform vec4 uJetA[${MAX_JETS}];
 uniform vec4 uJetB[${MAX_JETS}];
-uniform float uJetBend[${MAX_JETS}];
-float jetWeight(vec2 p, vec4 a, vec4 b, out float along) {
+uniform float uJetBend[${MAX_JETS}];float jetWeight(vec2 p, vec4 a, vec4 b, out float along) {
   vec2 rel = p - a.xy;
   along = dot(rel, a.zw);
   vec2 off = rel - a.zw * clamp(along, 0.0, b.z);
@@ -4999,8 +4993,7 @@ function createEngine({ root, canvas, button, cursor, props }) {
     if (over && s.armed && s.phase === 'rest' && p.type === 'mouse' && P.trigger !== 'click' && launch()) {
       s.attached = Boolean(P.carryCursor);
     }
-    if (s.phase === 'rest' && Math.abs(s.off.x) + Math.abs(s.off.y) < 12) {
-      const k = Math.exp(-dt * 6);
+    if (s.phase === 'rest' && Math.abs(s.off.x) + Math.abs(s.off.y) < 12) {      const k = Math.exp(-dt * 6);
       s.off.x *= k;
       s.off.y *= k;
     }
