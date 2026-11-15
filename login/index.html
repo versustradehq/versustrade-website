@@ -7,13 +7,14 @@
 <meta name="robots" content="noindex">
 <link rel="icon" href="https://pub-d09b462a1f3c4a8c8b73f79bcf29c60e.r2.dev/REAL%20LOGO%20%20VERSUSTRADE.png">
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 :root{--bg:#07070a;--glow:rgba(225,29,46,.16);--glow2:rgba(255,255,255,.05);--ink:#F5F5F5;--mute:rgba(245,245,245,.58);--line:rgba(255,255,255,.12);--red:#E11D2E;--card:linear-gradient(155deg,rgba(255,255,255,.09) 0%,rgba(255,255,255,.025) 55%,rgba(225,29,46,.05) 100%);--cardsh:0 30px 80px -20px rgba(0,0,0,.7),inset 0 1px 1px rgba(255,255,255,.16);--field:rgba(255,255,255,.05);--gbtn:rgba(255,255,255,.06);--gbtnh:rgba(255,255,255,.12);--obbg:rgba(8,8,11,.86);--dots:rgba(255,255,255,.07);--errt:#ffb4bb;color-scheme:dark}
 :root[data-theme="light"]{--bg:#f2f2f5;--glow:rgba(225,29,46,.11);--glow2:rgba(0,0,0,.03);--ink:#1A1A1A;--mute:rgba(26,26,26,.62);--line:rgba(0,0,0,.12);--card:linear-gradient(155deg,rgba(255,255,255,.78) 0%,rgba(255,255,255,.48) 60%,rgba(225,29,46,.05) 100%);--cardsh:0 30px 70px -25px rgba(24,24,27,.35),inset 0 1px 1px rgba(255,255,255,.95);--field:rgba(255,255,255,.7);--gbtn:rgba(255,255,255,.65);--gbtnh:rgba(255,255,255,.95);--obbg:rgba(244,244,247,.9);--dots:rgba(0,0,0,.09);--errt:#b3101f;color-scheme:light}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{min-height:100%}
 body{font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden;line-height:1.5;transition:background .3s}
 body::before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(60% 70% at 38% 50%,var(--glow),transparent 70%),radial-gradient(40% 40% at 90% 10%,var(--glow2),transparent 70%)}
-#globe{position:fixed;left:31%;top:41%;height:112vh;width:112vh;max-width:none;transform:translate(-50%,-50%);pointer-events:none}
+#globe{position:fixed;left:31%;top:82%;height:112vh;width:112vh;max-width:none;transform:translate(-50%,-50%);pointer-events:none}
 .brand{position:fixed;top:max(28px,env(safe-area-inset-top));left:48px;z-index:3;display:flex;align-items:center;gap:10px;font-size:26px;font-weight:600;letter-spacing:-.02em;color:var(--ink);text-decoration:none}
 .brand i{width:40px;height:40px;padding:5px;border:2px solid var(--red);border-radius:11px;display:grid;place-items:center}
 .brand img{width:100%;height:100%;object-fit:contain}
@@ -95,7 +96,6 @@ input:focus{border-color:rgba(225,29,46,.8);box-shadow:0 0 0 4px rgba(225,29,46,
 
 /* Login typography: Inter by default, native San Francisco on iPhone/iPad */
 body{font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @supports (-webkit-touch-callout: none){body{font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif}}
 /* Keep the decorative globe off small screens so the login form stays clear */
 @media(max-width:899px){#globe{display:none!important}}
