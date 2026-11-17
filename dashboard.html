@@ -1362,6 +1362,56 @@ body:has(#v-rates.on){overflow:hidden!important;overscroll-behavior:none}
  .vt-tutorial-bar{left:12px;right:12px}
  .vt-tutorial-player.is-mini{right:12px;bottom:calc(94px + env(safe-area-inset-bottom,0px));width:min(300px,calc(100vw - 24px))}
 }</style>
+
+<style id="vt-dash-containers">
+/* ==========================================================================
+   Dashboard containers – same look as the homepage (big rounded solid containers).
+   Additive override: header, dock, scripts, links and data code are untouched.
+   ========================================================================== */
+:root{--box-dark:#320A0A;--box-radius:28px}
+
+/* ---- Trade: maroon container (colours re-themed inside it) ---- */
+.vt-hp .tm-card{border:0;border-radius:var(--box-radius);padding:28px}
+@media (max-width:640px){.vt-hp .tm-card{padding:20px}}
+.vt-hp #tmTrade{background:var(--box-dark);color:#fff;
+  --bg:#320A0A;--text:#fff;--muted:rgba(255,255,255,.62);--line:rgba(255,255,255,.14);
+  --pill:rgba(255,255,255,.1);--soft:rgba(255,255,255,.06);--red-tint:rgba(255,255,255,.1)}
+.vt-hp #tmTrade .tm-thumb{background:#fff;box-shadow:none}
+.vt-hp #tmTrade .tm-tabs button[aria-selected="true"]{color:var(--box-dark)}
+.vt-hp #tmTrade .tm-pillbtn,.vt-hp #tmTrade .tm-swapbtn,.vt-hp #tmTrade .tm-back{color:#fff;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.18);box-shadow:none}
+.vt-hp #tmTrade .tm-pillbtn:hover,.vt-hp #tmTrade .tm-swapbtn:hover,.vt-hp #tmTrade .tm-back:hover{color:#fff;background:rgba(255,255,255,.17);border-color:rgba(255,255,255,.38)}
+.vt-hp #tmTrade .tm-go.sell{background:#fff;color:var(--box-dark);border-color:#fff;box-shadow:none}
+.vt-hp #tmTrade .tm-go.sell:hover{background:#fff;color:var(--box-dark)}
+.vt-hp #tmTrade .tm-ico img{background:#fff}
+.vt-hp #tmTrade .tm-sheet{--al-tile:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.05));--al-tile-edge:rgba(255,255,255,.08);--al-tile-highlight:rgba(255,255,255,.12);--al-tile-shadow:none;--al-ring:rgba(255,255,255,.4);--al-ring-fill:rgba(255,255,255,.06);--al-hover:brightness(1.15);--al-press:brightness(.9);--al-active:brightness(1.15);--al-thumb:rgba(255,255,255,.2)}
+/* a little less empty space above the button on phones */
+@media (max-width:640px){#v-trade .tm{padding-top:28px}.vt-hp .tm-big{margin-top:32px}}
+
+/* ---- Home: markets in a soft tint container ---- */
+#v-home .tm-card{background:var(--red-tint)}
+#v-home .tm-search{background:var(--bg)}
+#v-home .tm-chip[aria-pressed="true"]{background:var(--text);color:var(--bg);border-color:var(--text)}
+#v-home .tm-row{border-top-color:color-mix(in srgb,var(--text) 10%,transparent)}
+#v-home .tm-row:hover{background:color-mix(in srgb,var(--bg) 55%,transparent)}
+
+/* ---- Account: tinted overview containers ---- */
+.ov .oc{border-radius:24px;padding:22px;gap:6px}
+.ov .oc:nth-child(1){background:var(--up-bg)}
+.ov .oc:nth-child(2){background:var(--wait-bg)}
+.ov .oc:nth-child(3){background:var(--red-tint)}
+.ov .oc i.ok,.ov .oc i.wt,.ov .oc i.fl{background:var(--bg)}
+.ov .oc span{color:var(--text);opacity:.72}
+@media (max-width:640px){.ov .oc{padding:16px;border-radius:20px}}
+
+/* ---- Account: trade history container ---- */
+.acv+main .card,.main .card{border:0;border-radius:var(--box-radius);background:var(--red-tint)}
+.main .card .seg{background:color-mix(in srgb,var(--bg) 55%,transparent)}
+.main .card .seg button[aria-selected="true"]{box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.main .card .search{background:var(--bg)}
+.main .card .chip{background:color-mix(in srgb,var(--bg) 55%,transparent)}
+.main .card .chip[aria-pressed="true"]{background:var(--text);color:var(--bg);border-color:var(--text)}
+@media (max-width:640px){.main .card{border-radius:24px}.th{display:none}}
+</style>
 </head>
 <body>
 <!-- Google Tag Manager (noscript) -->
