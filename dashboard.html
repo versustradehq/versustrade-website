@@ -3251,12 +3251,23 @@ function paintAccountFilter(){var d=$('accountFilterDialog');if(!d)return;var st
     [].forEach.call(document.querySelectorAll('.dock-item[data-view]'),function(b){var on=b.getAttribute('data-view')===n;b.classList.toggle('on',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
     if(!keep)window.scrollTo(0,0);
     try{history.replaceState(null,'','#'+n)}catch(e){}
-    requestAnimationFrame(function(){window.dispatchEvent(new Event('resize'))});
+    requestAnimationFrame(function(){
+      window.dispatchEvent(new Event('resize'));
+      // Chat can leave the mobile document scroll-locked if its close state races a section change.
+      if(n!=='chat'){
+        document.documentElement.classList.remove('vc-lock');
+        if(!keep)window.scrollTo(0,0);
+      }
+    });
     if(n==='rates')drawRates();
     if(n==='chat'){
       if(chatUp()){var p=document.getElementById('vtChat');VTChat.open(keep&&p?(p.getAttribute('data-view')||'home'):'home');}
       else {pendingChat=true;if(window.__vtChatLoaded===0)ensureChatLoad();}
-    } else if(chatUp())VTChat.close();
+    } else {
+      if(chatUp())VTChat.close();
+      // Always clear the lock, even if the chat's internal state already thinks it is closed.
+      document.documentElement.classList.remove('vc-lock');
+    }
   }
   window.vtChatFail=function(){
     window.__vtChatLoading=false;
