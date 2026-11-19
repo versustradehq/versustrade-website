@@ -1160,14 +1160,24 @@
     go(view || S.view); badges();
   }
   function close() {
-    if (!S.open) { document.documentElement.classList.remove('vc-lock'); return; }
+    // Always normalize the chat state, even if the open flag became stale.
+    var wasOpen = S.open;
     S.open = false;
     stopRec(false); showPop(null);
-    if (S.pushed) { S.pushed = false; S.skipPop = true; try { history.back(); } catch (e) { S.skipPop = false; } setTimeout(function () { S.skipPop = false; }, 500); }
-    panel.removeAttribute('data-open'); if (fab) { fab.removeAttribute('data-open'); fab.setAttribute('aria-expanded', 'false'); }
+    if (wasOpen && S.pushed) { S.pushed = false; S.skipPop = true; try { history.back(); } catch (e) { S.skipPop = false; } setTimeout(function () { S.skipPop = false; }, 500); }
+    else S.pushed = false;
+    panel.removeAttribute('data-open');
+    if (fab) { fab.removeAttribute('data-open'); fab.setAttribute('aria-expanded', 'false'); }
     document.documentElement.classList.remove('vc-lock'); badges();
   }
   function toggle() { S.open ? close() : open('home'); }
+  // Bind close controls directly in capture phase so nested SVG clicks or other
+  // delegated handlers cannot swallow the close action (homepage + dashboard).
+  panel.querySelectorAll('.vc-x[data-act="close"]').forEach(function (button) {
+    button.addEventListener('click', function (e) {
+      e.preventDefault(); e.stopImmediatePropagation(); close();
+    }, true);
+  });
 
   function startOrResumeChat() { if (S.closedAt || isEnded()) resetChat(true); go('chat'); }
   panel.addEventListener('click', function (e) {
