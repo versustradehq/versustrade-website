@@ -720,7 +720,7 @@
     text = (text || '').trim(); if (!text) return;
     // Numeric gift-card value entry is local flow processing; don't let a stale busy
     // flag from an earlier request prevent the value from being submitted.
-    var giftValueEntry = S.flow && S.flow.type === 'gift' && S.flow.step === 'value' && /^[0-9][0-9,.]*(?:\\.[0-9]+)?(?:\\s*[kK])?$/.test(text);
+    var giftValueEntry = S.flow && S.flow.type === 'gift' && S.flow.step === 'value' && /^[0-9][0-9,.]*([.][0-9]+)?([ ]*[kK])?$/.test(text);
     if ((S.busy && !giftValueEntry) || isEnded()) return;
     add({ role: 'user', text: text });
     if (S.mode === 'ai') { if (flowTry(text)) return; if (CHAT.api) aiRespond(); else { showTyping(); API.aiReply(text).then(botSay); } } else toTeam(null, text);
