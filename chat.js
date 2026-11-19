@@ -1202,7 +1202,7 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !imageViewer.hidden) { closeImageViewer(); return; } if (S.open && e.key === 'Escape') { if (!pop.hidden) { showPop(null); return; } close(); if (fab) fab.focus(); } });
   input.addEventListener('input', function () { send.disabled = !input.value.trim(); input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 112) + 'px'; });
   input.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('vcForm').requestSubmit(); } });
-  $('vcForm').addEventListener('submit', function (e) { e.preventDefault(); if (form.classList.contains('rec')) return; var v = input.value.trim(); var giftValueEntry = S.flow && S.flow.type === 'gift' && S.flow.step === 'value' && /^[0-9][0-9,.]*([.][0-9]+)?([ ]*[kK])?$/.test(v); if (S.busy && !giftValueEntry) return; showPop(null); input.value = ''; input.style.height = 'auto'; send.disabled = true; userSay(v); });
+  $('vcForm').addEventListener('submit', function (e) { e.preventDefault(); if ($('vcForm').classList.contains('rec')) return; var v = input.value.trim(); var giftValueEntry = S.flow && S.flow.type === 'gift' && S.flow.step === 'value' && /^[0-9][0-9,.]*([.][0-9]+)?([ ]*[kK])?$/.test(v); if (S.busy && !giftValueEntry) return; showPop(null); input.value = ''; input.style.height = 'auto'; send.disabled = true; userSay(v); });
   $('vcFile').addEventListener('change', function (e) { attach(e.target.files[0]); e.target.value = ''; });
   [].forEach.call(document.querySelectorAll('a[href="/support/"]'), function (a) {
     if (/chat with us/i.test(a.textContent)) a.addEventListener('click', function (e) { e.preventDefault(); open('chat'); });
