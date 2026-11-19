@@ -1160,7 +1160,8 @@
     go(view || S.view); badges();
   }
   function close() {
-    if (!S.open) return; S.open = false;
+    if (!S.open) { document.documentElement.classList.remove('vc-lock'); return; }
+    S.open = false;
     stopRec(false); showPop(null);
     if (S.pushed) { S.pushed = false; S.skipPop = true; try { history.back(); } catch (e) { S.skipPop = false; } setTimeout(function () { S.skipPop = false; }, 500); }
     panel.removeAttribute('data-open'); if (fab) { fab.removeAttribute('data-open'); fab.setAttribute('aria-expanded', 'false'); }

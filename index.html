@@ -5478,5 +5478,19 @@ function createSim(gl) {
 <script src="coins.js" defer></script>
 <script src="newsletter.js" defer></script>
 
+<script>
+/* Restore the Buy/Sell tab requested by a service-page navigation link. */
+(function () {
+  var tab = null;
+  try { tab = sessionStorage.getItem('vt-home-tab'); sessionStorage.removeItem('vt-home-tab'); } catch (e) {}
+  if (!tab) return;
+  function selectTab() {
+    var button = document.getElementById(tab);
+    if (button) button.click();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(selectTab, 350); });
+  else setTimeout(selectTab, 350);
+})();
+</script>
 </body>
 </html>
