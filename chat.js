@@ -164,7 +164,7 @@
     var chatSvg = fab.querySelector('svg'); if (chatSvg) chatSvg.classList.add('fab-chat');
     fab.insertAdjacentHTML('beforeend', svg(P.x, ' class="fab-x"'));
     fabBadge = el('span', 'fab-badge'); fabBadge.hidden = true; fab.appendChild(fabBadge);
-    fab.addEventListener('click', function (e) { e.preventDefault(); toggle(); });
+    fab.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); if (S.open) close(); else open('home'); });
   }
 
   /* ---------- helpers ---------- */
