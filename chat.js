@@ -1188,7 +1188,6 @@
     function returnHomeFromControl(e) {
       e.preventDefault(); e.stopImmediatePropagation();
       close();
-      else close();
     }
     button.addEventListener('pointerdown', returnHomeFromControl, true);
     button.addEventListener('click', returnHomeFromControl, true);
