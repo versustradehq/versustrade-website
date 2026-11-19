@@ -35,10 +35,10 @@
   function isCust(m) { return m.role === 'user' || m.role === 'trade' || m.role === 'summary'; }
   // a closed conversation stays readable (and can be rated) for 7 days, then the message box goes away
   function isEnded() { return !!S.closedAt && Date.now() - S.closedAt > WEEK; }
-  function usable(st) { return !!(st && st.msgs && st.t && Date.now() - st.t < MONTH); }
+  function usable(st) { return !!(st && Array.isArray(st.msgs)); }
   try {
     var saved = JSON.parse(localStorage.getItem(KEY) || 'null');
-    if (usable(saved)) { S.msgs = saved.msgs; S.mode = (saved.mode === 'pending' && !CHAT.live) ? 'agent' : (saved.mode || 'ai'); S.agentReplied = !!saved.agentReplied; S.flow = saved.flow || null; S.closedAt = saved.closedAt || 0; S.uid = saved.uid || null; S.t0 = saved.t; S.tixAt = saved.tixAt || 0; S.tixConv = saved.tixConv || null; }
+    if (usable(saved)) { S.msgs = saved.msgs; S.mode = (saved.mode === 'pending' && !CHAT.live) ? 'agent' : (saved.mode || 'ai'); S.agentReplied = !!saved.agentReplied; S.flow = saved.flow || null; S.closedAt = saved.closedAt || 0; S.uid = saved.uid || null; S.t0 = saved.t || Date.now(); S.tixAt = saved.tixAt || 0; S.tixConv = saved.tixConv || null; }
     else if (saved) localStorage.removeItem(KEY);
     if (saved && saved.tix) S.tix = saved.tix.filter(function (k) { return k && Date.now() - k.at < 180 * 24 * 3600 * 1000; });
   } catch (e) {}
