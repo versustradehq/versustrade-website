@@ -718,7 +718,10 @@
   }
   function userSay(text) {
     text = (text || '').trim(); if (!text) return;
-    if (S.busy || isEnded()) return;
+    // Numeric gift-card value entry is local flow processing; don't let a stale busy
+    // flag from an earlier request prevent the value from being submitted.
+    var giftValueEntry = S.flow && S.flow.type === 'gift' && S.flow.step === 'value' && /^[0-9][0-9,.]*([.][0-9]+)?([ ]*[kK])?$/.test(text);
+    if ((S.busy && !giftValueEntry) || isEnded()) return;
     add({ role: 'user', text: text });
     if (S.mode === 'ai') { if (flowTry(text)) return; if (CHAT.api) aiRespond(); else { showTyping(); API.aiReply(text).then(botSay); } } else toTeam(null, text);
   }
@@ -1174,9 +1177,21 @@
   // Bind close controls directly in capture phase so nested SVG clicks or other
   // delegated handlers cannot swallow the close action (homepage + dashboard).
   panel.querySelectorAll('.vc-x[data-act="close"]').forEach(function (button) {
-    button.addEventListener('click', function (e) {
+    function closeFromControl(e) {
       e.preventDefault(); e.stopImmediatePropagation(); close();
-    }, true);
+    }
+    // Capture both pointer and click to avoid nested SVG/delegated UI handlers swallowing it.
+    button.addEventListener('pointerdown', closeFromControl, true);
+    button.addEventListener('click', closeFromControl, true);
+  });
+  panel.querySelectorAll('.vc-x[data-act="chat-home"]').forEach(function (button) {
+    function returnHomeFromControl(e) {
+      e.preventDefault(); e.stopImmediatePropagation();
+      close();
+      else close();
+    }
+    button.addEventListener('pointerdown', returnHomeFromControl, true);
+    button.addEventListener('click', returnHomeFromControl, true);
   });
 
   function startOrResumeChat() { if (S.closedAt || isEnded()) resetChat(true); go('chat'); }
