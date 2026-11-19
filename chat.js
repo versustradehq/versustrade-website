@@ -32,7 +32,7 @@
   function isCust(m) { return m.role === 'user' || m.role === 'trade' || m.role === 'summary'; }
   // a closed conversation stays readable (and can be rated) for 7 days, then the message box goes away
   function isEnded() { return !!S.closedAt && Date.now() - S.closedAt > WEEK; }
-  function usable(st) { return !!(st && st.msgs && st.t && Date.now() - st.t < MONTH && (st.closedAt || Date.now() - st.t < WEEK)); }
+  function usable(st) { return !!(st && st.msgs && st.t && Date.now() - st.t < MONTH); }
   try {
     var saved = JSON.parse(localStorage.getItem(KEY) || 'null');
     if (usable(saved)) { S.msgs = saved.msgs; S.mode = (saved.mode === 'pending' && !CHAT.live) ? 'agent' : (saved.mode || 'ai'); S.agentReplied = !!saved.agentReplied; S.flow = saved.flow || null; S.closedAt = saved.closedAt || 0; S.uid = saved.uid || null; S.t0 = saved.t; S.tixAt = saved.tixAt || 0; S.tixConv = saved.tixConv || null; }
@@ -1166,7 +1166,7 @@
     // Always normalize the chat state, even if the open flag became stale.
     var wasOpen = S.open;
     S.open = false;
-    stopRec(false); showPop(null);
+    if (typeof stopRec === 'function') stopRec(false); showPop(null);
     if (wasOpen && S.pushed) { S.pushed = false; S.skipPop = true; try { history.back(); } catch (e) { S.skipPop = false; } setTimeout(function () { S.skipPop = false; }, 500); }
     else S.pushed = false;
     panel.removeAttribute('data-open');
