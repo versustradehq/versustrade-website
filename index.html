@@ -2041,11 +2041,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   // If none of them can be reached, the lists say so and offer a "Try again" button.
   var net = 'loading', lastData = 0, lastWs = 0, srcFn = null, cached = false;
   function ready() {}
-  function fresh() { return Date.now() - lastData < 45000; }
+  function fresh() { return Date.now() - lastWs < 20000; }
+  function dataFresh() { return Date.now() - lastData < 45000; }
   function updateChip() {
     var c = $('tmLive'), f = fresh();
     c.className = 'tm-live' + (f ? '' : ' off');
-    c.textContent = f ? 'Live' : (net === 'failed' ? 'Offline' : cached ? 'Cached' : 'Connecting');
+    c.textContent = f ? 'Live' : (dataFresh() ? 'Updating' : net === 'failed' ? 'Offline' : cached ? 'Cached' : 'Connecting');
   }
   function connect() {
     var ws;
