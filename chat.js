@@ -1187,7 +1187,7 @@
   panel.querySelectorAll('.vc-x[data-act="chat-home"]').forEach(function (button) {
     function returnHomeFromControl(e) {
       e.preventDefault(); e.stopImmediatePropagation();
-      if (/^\/dashboard(?:\/|$)/.test(location.pathname)) go('home');
+      close();
       else close();
     }
     button.addEventListener('pointerdown', returnHomeFromControl, true);
