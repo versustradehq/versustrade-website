@@ -107,6 +107,16 @@ body{font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans
 /* Inter remains the first-choice font on Apple devices too. */
 /* Keep the decorative globe off small screens so the login form stays clear */
 @media(max-width:899px){#globe{display:none!important}}
+
+ /* Mobile auth card fills the viewport below the top brand; no bottom gap. */
+ @media(max-width:899px){
+   html,body{height:100%;overflow:hidden}
+   main{height:100dvh;min-height:0;padding:calc(max(18px,env(safe-area-inset-top)) + 54px) 14px max(8px,env(safe-area-inset-bottom));}
+   .cw{height:calc(100dvh - max(18px,env(safe-area-inset-top)) - 54px - max(8px,env(safe-area-inset-bottom)));display:flex;flex-direction:column}
+   .card{height:100%;max-height:none;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;-ms-overflow-style:none}
+   .card::-webkit-scrollbar{display:none;width:0;height:0}
+ }
+
 </style>
 <script>try{var t=localStorage.getItem("vt-theme");if(!t&&matchMedia("(prefers-color-scheme:light)").matches)t="light";if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 </head>
